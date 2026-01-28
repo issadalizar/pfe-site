@@ -1,7 +1,5 @@
+// Dans User.js, modifiez le schéma :
 import mongoose from 'mongoose';
-
-// Schéma utilisateur avec les nouvelles colonnes
-
 const userSchema = new mongoose.Schema({
   client_code: {
     type: String,
@@ -45,7 +43,12 @@ const userSchema = new mongoose.Schema({
   dateCreation: {
     type: Date,
     default: Date.now
+  },
+  // AJOUTEZ CE CHAMP :
+  actif: {
+    type: Boolean,
+    default: true  // Par défaut, le compte est actif
   }
 });
-
-export default mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+export default User;

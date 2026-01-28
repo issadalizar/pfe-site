@@ -1,5 +1,4 @@
 import User from '../models/User.js';
-
 // POST - Créer un nouvel utilisateur
 export const createUser = async (req, res) => {
   try {
@@ -24,18 +23,19 @@ export const createUser = async (req, res) => {
     }
 
     // Créer le nouvel utilisateur
-    const newUser = new User({
-      Client_code: client_code.toUpperCase(),
-      nomClient: client_name,
-      role: role || 'client',
-      article,
-      description: description || '',
-      date: date ? new Date(date) : new Date(),
-      numeroFacture: facture_num,
-      quantite: Number(quantite),
-      montant: Number(montant),
-      actif: actif !== undefined ? actif : true,
-    });
+    // Dans createUser (userController.js) :
+const newUser = new User({
+  client_code: client_code.toUpperCase(),    // CORRIGÉ
+  client_name: client_name,                  // CORRIGÉ
+  role: role || 'client',
+  article,
+  description: description || '',
+  date: date ? new Date(date) : new Date(),
+  facture_num: facture_num,                  // CORRIGÉ
+  quantite: Number(quantite),
+  montant: Number(montant),
+  actif: actif !== undefined ? actif : true, // Maintenant possible avec le schéma corrigé
+});
 
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);

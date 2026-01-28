@@ -1,15 +1,16 @@
 import { useState, useEffect } from "react";
 import Header from "../components/Header";
-import { 
-  FaUsers, 
-  FaUserCheck, 
-  FaUserTimes, 
+import Sidebar from "../components/Sidebar";
+import {
+  FaUsers,
+  FaUserCheck,
+  FaUserTimes,
   FaChartLine,
   FaArrowUp,
   FaArrowDown
 } from "react-icons/fa";
 import { getAllUsers } from "../services/userService";
-import "./Dashboard.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -19,215 +20,196 @@ export default function Dashboard() {
     loading: true
   });
 
+  const [users, setUsers] = useState([]);
+
   useEffect(() => {
     loadStats();
   }, []);
 
-  const [users, setUsers] = useState([]);
-
   const loadStats = async () => {
     try {
-      const usersData = await getAllUsers();
-      setUsers(usersData);
+      const data = await getAllUsers();
+      setUsers(data);
       setStats({
-        total: usersData.length,
-        actifs: usersData.filter(u => u.actif).length,
-        inactifs: usersData.filter(u => !u.actif).length,
+        total: data.length,
+        actifs: data.filter(u => u.actif).length,
+        inactifs: data.filter(u => !u.actif).length,
         loading: false
       });
-    } catch (error) {
-      console.error("Erreur lors du chargement des statistiques:", error);
+    } catch {
       setStats(prev => ({ ...prev, loading: false }));
     }
   };
 
-  const totalMontant = users.reduce((sum, u) => sum + (u.montant || 0), 0);
-  const formatMontant = (montant) => {
-    return new Intl.NumberFormat('fr-FR', {
-      style: 'currency',
-      currency: 'EUR',
-      minimumFractionDigits: 0
-    }).format(montant);
-  };
+  const totalMontant = users.reduce((s, u) => s + Number(u.montant || 0), 0);
 
-  const statCards = [
+  const formatMontant = (m) =>
+    new Intl.NumberFormat("fr-FR", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: 0
+    }).format(m);
+
+  const cards = [
     {
       title: "Total Clients",
       value: stats.total,
-      icon: FaUsers,
-      color: "#3498db",
-      bgColor: "#e3f2fd",
-      change: "+12%",
-      trend: "up"
+      icon: <FaUsers />,
+      color: "primary",
+      trend: "up",
+      change: "+12%"
     },
     {
       title: "Clients Actifs",
       value: stats.actifs,
-      icon: FaUserCheck,
-      color: "#27ae60",
-      bgColor: "#e8f5e9",
-      change: "+8%",
-      trend: "up"
+      icon: <FaUserCheck />,
+      color: "success",
+      trend: "up",
+      change: "+8%"
     },
     {
       title: "Clients Inactifs",
       value: stats.inactifs,
-      icon: FaUserTimes,
-      color: "#e74c3c",
-      bgColor: "#ffebee",
-      change: "-5%",
-      trend: "down"
+      icon: <FaUserTimes />,
+      color: "danger",
+      trend: "down",
+      change: "-5%"
     },
     {
       title: "Montant Total",
       value: formatMontant(totalMontant),
-      icon: FaChartLine,
-      color: "#f39c12",
-      bgColor: "#fff3e0",
-      change: "+15%",
+      icon: <FaChartLine />,
+      color: "warning",
       trend: "up",
-      isCurrency: true
+      change: "+15%"
     }
   ];
 
   return (
-    <div className="dashboard-container">
-      <Header />
-      
-      <main className="dashboard-main">
-        <div className="dashboard-header">
-          <div>
-            <h1 className="dashboard-title">Dashboard</h1>
-            <p className="dashboard-subtitle">
-              Vue d'ensemble de votre système de gestion
-            </p>
-          </div>
-          <button className="btn btn-primary" onClick={loadStats}>
-            <FaChartLine className="me-2" />
-            Actualiser
-          </button>
-        </div>
+    <div className="d-flex min-vh-100 bg-light">
+      {/* Sidebar */}
+      <Sidebar />
 
-        {/* Statistiques */}
-        <div className="stats-grid">
-          {statCards.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <div key={index} className="stat-card">
-                <div className="stat-card-header">
-                  <div 
-                    className="stat-icon-wrapper"
-                    style={{ backgroundColor: stat.bgColor }}
-                  >
-                    <Icon style={{ color: stat.color }} />
-                  </div>
-                  <div className={`stat-trend stat-trend-${stat.trend}`}>
-                    {stat.trend === "up" ? <FaArrowUp /> : <FaArrowDown />}
-                    <span>{stat.change}</span>
-                  </div>
-                </div>
-                <div className="stat-card-body">
-                  <h3 className="stat-value">
-                    {stats.loading ? "..." : stat.value}
-                    {stat.suffix && !stat.isCurrency && <span className="stat-suffix">{stat.suffix}</span>}
-                  </h3>
-                  <p className="stat-title">{stat.title}</p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+      {/* Main content */}
+      <div className="flex-grow-1" style={{ marginLeft: "250px" }}>
+        {/* Header */}
+        <Header />
 
-        {/* Graphiques et Activité */}
-        <div className="dashboard-grid">
-          <div className="dashboard-card chart-card">
-            <div className="card-header">
-              <h5 className="card-title">Évolution des Utilisateurs</h5>
-              <select className="form-select form-select-sm period-select">
-                <option>Cette année</option>
-                <option>Ce mois</option>
-                <option>Cette semaine</option>
-              </select>
+        {/* Page content */}
+        <main className="p-4">
+          {/* Header */}
+          <div className="d-flex justify-content-between flex-wrap mb-4 gap-3">
+            <div>
+              <h1 className="fw-bold">Dashboard</h1>
+              <p className="text-muted">
+                Vue d'ensemble de votre système
+              </p>
             </div>
-            <div className="card-body chart-placeholder">
-              <div className="chart-content">
-                <FaChartLine className="chart-icon" />
-                <p className="text-muted">Graphique à implémenter</p>
-                <small className="text-muted">
-                  Intégrez Chart.js ou Recharts pour afficher les données
-                </small>
-              </div>
-            </div>
+            <button className="btn btn-primary" onClick={loadStats}>
+              <FaChartLine className="me-2" />
+              Actualiser
+            </button>
           </div>
 
-          <div className="dashboard-card">
-            <div className="card-header">
-              <h5 className="card-title">Actions Rapides</h5>
+          {/* Stats */}
+          <div className="row g-4 mb-4">
+            {cards.map((c, i) => (
+              <div key={i} className="col-md-6 col-xl-3">
+                <div className="card shadow-sm h-100">
+                  <div className="card-body">
+                    <div className="d-flex justify-content-between mb-3">
+                      <div className={`text-${c.color} fs-3`}>
+                        {c.icon}
+                      </div>
+                      <span
+                        className={`badge ${
+                          c.trend === "up" ? "bg-success" : "bg-danger"
+                        }`}
+                      >
+                        {c.trend === "up" ? <FaArrowUp /> : <FaArrowDown />}
+                        {c.change}
+                      </span>
+                    </div>
+                    <h3 className="fw-bold">
+                      {stats.loading ? "…" : c.value}
+                    </h3>
+                    <p className="text-muted mb-0">{c.title}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Charts & Actions */}
+          <div className="row g-4 mb-4">
+            <div className="col-lg-8">
+              <div className="card shadow-sm h-100">
+                <div className="card-header d-flex justify-content-between">
+                  <h5 className="mb-0">Évolution des Utilisateurs</h5>
+                  <select className="form-select form-select-sm w-auto">
+                    <option>Cette année</option>
+                    <option>Ce mois</option>
+                    <option>Cette semaine</option>
+                  </select>
+                </div>
+                <div className="card-body text-center text-muted">
+                  <FaChartLine size={60} className="mb-3" />
+                  <p>Graphique à implémenter</p>
+                  <small>Chart.js / Recharts</small>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-lg-4">
+              <div className="card shadow-sm h-100">
+                <div className="card-header">
+                  <h5 className="mb-0">Actions Rapides</h5>
+                </div>
+                <div className="card-body d-grid gap-2">
+                  <button className="btn btn-outline-primary">
+                    <FaUsers className="me-2" />
+                    Nouvel Utilisateur
+                  </button>
+                  <button className="btn btn-outline-secondary">
+                    <FaChartLine className="me-2" />
+                    Générer Rapport
+                  </button>
+                  <button className="btn btn-outline-success">
+                    <FaUserCheck className="me-2" />
+                    Vérifier Statuts
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Activity */}
+          <div className="card shadow-sm">
+            <div className="card-header d-flex justify-content-between">
+              <h5 className="mb-0">Activité Récente</h5>
+              <button className="btn btn-sm btn-outline-primary">
+                Voir tout
+              </button>
             </div>
             <div className="card-body">
-              <div className="quick-actions">
-                <button className="action-btn">
-                  <FaUsers />
-                  <span>Nouvel Utilisateur</span>
-                </button>
-                <button className="action-btn">
-                  <FaChartLine />
-                  <span>Générer Rapport</span>
-                </button>
-                <button className="action-btn">
-                  <FaUserCheck />
-                  <span>Vérifier Statuts</span>
-                </button>
-              </div>
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item">
+                  <FaUserCheck className="text-success me-2" />
+                  <strong>CLI001</strong> activé – il y a 2h
+                </li>
+                <li className="list-group-item">
+                  <FaUsers className="text-primary me-2" />
+                  <strong>CLI002</strong> créé – il y a 5h
+                </li>
+                <li className="list-group-item">
+                  <FaUserTimes className="text-danger me-2" />
+                  <strong>CLI003</strong> désactivé – il y a 1 jour
+                </li>
+              </ul>
             </div>
           </div>
-        </div>
-
-        {/* Activité Récente */}
-        <div className="dashboard-card">
-          <div className="card-header">
-            <h5 className="card-title">Activité Récente</h5>
-            <button className="btn btn-sm btn-outline-primary">Voir tout</button>
-          </div>
-          <div className="card-body">
-            <div className="activity-list">
-              <div className="activity-item">
-                <div className="activity-icon success">
-                  <FaUserCheck />
-                </div>
-                <div className="activity-content">
-                  <p className="activity-text">
-                    <strong>CLI001 - Dupont Jean</strong> a été activé
-                  </p>
-                  <span className="activity-time">Il y a 2 heures</span>
-                </div>
-              </div>
-              <div className="activity-item">
-                <div className="activity-icon info">
-                  <FaUsers />
-                </div>
-                <div className="activity-content">
-                  <p className="activity-text">
-                    <strong>CLI002 - Martin Sophie</strong> a été créé
-                  </p>
-                  <span className="activity-time">Il y a 5 heures</span>
-                </div>
-              </div>
-              <div className="activity-item">
-                <div className="activity-icon warning">
-                  <FaUserTimes />
-                </div>
-                <div className="activity-content">
-                  <p className="activity-text">
-                    <strong>CLI003 - Bernard Pierre</strong> a été désactivé
-                  </p>
-                  <span className="activity-time">Il y a 1 jour</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

@@ -1,50 +1,40 @@
-// Service pour communiquer avec l'API backend
+// services/userService.js
+const API_URL = "http://localhost:3000/api";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-
-// Récupérer tous les utilisateurs
+// ✅ AJOUTE CETTE FONCTION (manquante)
 export const getAllUsers = async () => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users`);
+    const response = await fetch(`${API_URL}/users`);
+    
     if (!response.ok) {
-      throw new Error('Erreur lors de la récupération des utilisateurs');
+      throw new Error(`Erreur HTTP: ${response.status}`);
     }
-    return await response.json();
+    
+    const data = await response.json();
+    return data;
   } catch (error) {
-    console.error('Erreur getAllUsers:', error);
+    console.error("Erreur dans getAllUsers:", error);
     throw error;
   }
 };
 
-// Récupérer un utilisateur par ID
-export const getUserById = async (userId) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}`);
-    if (!response.ok) {
-      throw new Error('Utilisateur non trouvé');
-    }
-    return await response.json();
-  } catch (error) {
-    console.error('Erreur getUserById:', error);
-    throw error;
-  }
-};
-
-// Activer ou désactiver un utilisateur
+// ✅ Cette fonction est déjà là
 export const toggleUserStatus = async (userId) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/users/${userId}/toggle`, {
-      method: 'PATCH',
+    const response = await fetch(`${API_URL}/users/${userId}/toggle`, {
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
-      },
+        "Content-Type": "application/json"
+      }
     });
+    
     if (!response.ok) {
-      throw new Error('Erreur lors de la modification du statut');
+      throw new Error(`Erreur HTTP: ${response.status}`);
     }
+    
     return await response.json();
   } catch (error) {
-    console.error('Erreur toggleUserStatus:', error);
+    console.error("Erreur dans toggleUserStatus:", error);
     throw error;
   }
 };

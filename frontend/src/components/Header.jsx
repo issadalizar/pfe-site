@@ -1,26 +1,32 @@
+import React from "react";
 import { FaUserCircle, FaSearch } from "react-icons/fa";
-import "./Header.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 
-export default function Header() {
+function Header() {
   return (
-    <header className="main-header">
-      <div className="header-content">
-        <div className="header-search">
-          <FaSearch className="search-icon" />
-          <input
-            type="text"
-            className="search-input"
-            placeholder="Rechercher..."
-          />
-        </div>
-        
-        <div className="header-actions">
-          <button className="header-btn profile-btn" title="Profil">
-            <FaUserCircle />
-            <span className="profile-name">Admin</span>
-          </button>
-        </div>
+    <nav className="navbar navbar-light bg-light px-4 shadow-sm">
+      
+      {/* Search - recherche */}
+      <form className="d-flex align-items-center w-50">
+        <FaSearch className="me-2 text-secondary" />
+        <input
+          className="form-control"
+          type="search"
+          placeholder="Rechercher..."
+          aria-label="Search"
+        />
+      </form>
+
+      {/* Profile - profil l'admin */}
+      <div>
+        <button className="btn btn-outline-primary d-flex align-items-center gap-2">
+          <FaUserCircle size={22} />
+          <span>Admin</span>
+        </button>
       </div>
-    </header>
+
+    </nav>
   );
 }
+
+export default Header;
