@@ -109,7 +109,7 @@ export default function UserList() {
   /* ===== LOADING ===== */
   if (loading) {
     return (
-      <div className="d-flex justify-content-center align-items-center vh-50">
+      <div className="d-flex justify-content-center align-items-center" style={{ height: "300px" }}>
         <div className="text-center">
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Chargement...</span>
@@ -122,7 +122,7 @@ export default function UserList() {
 
   return (
     <div className="p-4">
-      {/* Header SIMPLIFIÉ */}
+      {/* Header SIMPLIFIÉ - CORRIGÉ */}
       <div className="mb-4">
         <h1 className="fw-bold text-dark mb-2">Gestion des Comptes Clients</h1>
         <p className="text-muted">
@@ -155,7 +155,7 @@ export default function UserList() {
         </div>
       )}
 
-      {/* Statistiques - DÉPLACÉES EN HAUT */}
+      {/* Statistiques */}
       <div className="row mb-4">
         <div className="col-md-3">
           <div className="card text-center border-0 shadow-sm h-100">
@@ -243,11 +243,11 @@ export default function UserList() {
         </div>
       </div>
 
-      {/* Tableau des utilisateurs - TABLE FIXE (sans scroll interne) */}
+      {/* Tableau des utilisateurs - TABLE FIXE */}
       <div className="card shadow-sm border-0">
-        <div className="table-responsive">
+        <div className="table-responsive" style={{ maxHeight: "600px", overflowY: "auto" }}>
           <table className="table table-hover table-striped mb-0">
-            <thead className="table-dark text-uppercase small">
+            <thead className="table-dark text-uppercase small" style={{ position: "sticky", top: 0, zIndex: 1 }}>
               <tr>
                 <th style={{ minWidth: "100px" }}>Code</th>
                 <th style={{ minWidth: "250px" }}>Client</th>

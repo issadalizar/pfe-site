@@ -15,7 +15,7 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/api/users");
+      const response = await fetch("http://localhost:5000/api/users");
       if (!response.ok) throw new Error("Erreur lors du chargement");
       const data = await response.json();
       setUsers(data);

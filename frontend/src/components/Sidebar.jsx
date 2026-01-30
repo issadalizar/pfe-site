@@ -7,15 +7,44 @@ import {
   FaSignOutAlt,
   FaBuilding,
   FaUserCircle,
-  FaChartBar
+  FaChartBar,
+  FaBox,
+  FaTags
 } from "react-icons/fa";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Sidebar() {
   const location = useLocation();
 
   const isActive = (path) =>
-    location.pathname === path ? "active text-white" : "text-light";
+    location.pathname === path ? "active" : "";
+
+  const menuItems = [
+    { 
+      path: "/dashboard", 
+      icon: <FaHome className="me-2" style={{ color: "#4dc0ff" }} />, 
+      label: "Dashboard" 
+    },
+    { 
+      path: "/categories", 
+      icon: <FaTags className="me-2" style={{ color: "#4dc0ff" }} />, 
+      label: "Catégories" 
+    },
+    { 
+      path: "/products", 
+      icon: <FaBox className="me-2" style={{ color: "#4dc0ff" }} />, 
+      label: "Produits" 
+    },
+    { 
+      path: "/users", 
+      icon: <FaUserCircle className="me-2" style={{ color: "#4dc0ff" }} />, 
+      label: "Clients" 
+    },
+    { 
+      path: "/admin", 
+      icon: <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />, 
+      label: "Admin" 
+    },
+  ];
 
   return (
     <aside
@@ -23,130 +52,53 @@ export default function Sidebar() {
       style={{ 
         width: "250px",
         zIndex: 1000,
-        background: "linear-gradient(180deg, #1e3c72 0%, #2a5298 100%)" // Nouveau dégradé bleu
+        background: "linear-gradient(180deg, #1e3c72 0%, #2a5298 100%)"
       }}
     >
       {/* Header */}
-      <div className="p-4 border-bottom border-light" style={{ borderColor: "rgba(255,255,255,0.1) !important" }}>
+      <div className="p-4 border-bottom" style={{ borderColor: "rgba(255,255,255,0.1) !important" }}>
         <h4 className="text-white fw-bold d-flex align-items-center justify-content-center mb-0">
           <FaChartLine className="me-2" />
-          <span style={{ color: "#4dc0ff" }}>Espace </span>
-          <span style={{ color: "#ffffff" }}>Admin</span>
+          <span style={{ color: "#4dc0ff" }}>Administration  </span>
+          <span style={{ color: "#ffffff" }}>Space</span>
         </h4>
       </div>
 
       {/* Navigation */}
       <nav className="flex-grow-1 nav nav-pills flex-column gap-2 p-3">
-        <Link
-          to="/dashboard"
-          className={`nav-link d-flex align-items-center ${isActive("/dashboard")}`}
-          style={{ 
-            borderRadius: "8px",
-            transition: "all 0.3s",
-            backgroundColor: location.pathname === "/dashboard" 
-              ? "rgba(77, 192, 255, 0.2)" 
-              : "transparent",
-            border: location.pathname === "/dashboard" 
-              ? "1px solid #4dc0ff" 
-              : "1px solid transparent"
-          }}
-          onMouseEnter={(e) => {
-            if (location.pathname !== "/dashboard") {
-              e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)";
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (location.pathname !== "/dashboard") {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "transparent";
-            }
-          }}
-        >
-          <FaHome className="me-2" style={{ color: "#4dc0ff" }} />
-          Dashboard
-        </Link>
-
-        <Link
-          to="/users"
-          className={`nav-link d-flex align-items-center ${isActive("/users")}`}
-          style={{ 
-            borderRadius: "8px",
-            transition: "all 0.3s",
-            backgroundColor: location.pathname === "/users" 
-              ? "rgba(77, 192, 255, 0.2)" 
-              : "transparent",
-            border: location.pathname === "/users" 
-              ? "1px solid #4dc0ff" 
-              : "1px solid transparent"
-          }}
-          onMouseEnter={(e) => {
-            if (location.pathname !== "/users") {
-              e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)";
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (location.pathname !== "/users") {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "transparent";
-            }
-          }}
-        >
-          <FaUserCircle className="me-2" style={{ color: "#4dc0ff" }} />
-          Clients
-        </Link>
-
-        <Link
-          to="/admin"
-          className={`nav-link d-flex align-items-center ${isActive("/admin")}`}
-          style={{ 
-            borderRadius: "8px",
-            transition: "all 0.3s",
-            backgroundColor: location.pathname === "/admin" 
-              ? "rgba(77, 192, 255, 0.2)" 
-              : "transparent",
-            border: location.pathname === "/admin" 
-              ? "1px solid #4dc0ff" 
-              : "1px solid transparent"
-          }}
-          onMouseEnter={(e) => {
-            if (location.pathname !== "/admin") {
-              e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)";
-              e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (location.pathname !== "/admin") {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.borderColor = "transparent";
-            }
-          }}
-        >
-          <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />
-          Admin
-        </Link>
-
-        {/* Nouvelles options optionnelles - Vous pouvez les activer si besoin */}
-        {false && ( // Mettez à true si vous voulez ajouter ces options
-          <>
-            <Link
-              to="/properties"
-              className={`nav-link d-flex align-items-center ${isActive("/properties")}`}
-            >
-              <FaBuilding className="me-2" />
-              Properties
-            </Link>
-            
-            <Link
-              to="/leads"
-              className={`nav-link d-flex align-items-center ${isActive("/leads")}`}
-            >
-              <FaChartBar className="me-2" />
-              Leads Statistics
-            </Link>
-          </>
-        )}
+        {menuItems.map((item) => (
+          <Link
+            key={item.path}
+            to={item.path}
+            className={`nav-link d-flex align-items-center ${isActive(item.path)}`}
+            style={{ 
+              borderRadius: "8px",
+              transition: "all 0.3s",
+              backgroundColor: location.pathname === item.path 
+                ? "rgba(77, 192, 255, 0.2)" 
+                : "transparent",
+              border: location.pathname === item.path 
+                ? "1px solid #4dc0ff" 
+                : "1px solid transparent",
+              color: location.pathname === item.path ? "white" : "#e9ecef"
+            }}
+            onMouseEnter={(e) => {
+              if (location.pathname !== item.path) {
+                e.currentTarget.style.backgroundColor = "rgba(255,255,255,0.1)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (location.pathname !== item.path) {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.borderColor = "transparent";
+              }
+            }}
+          >
+            {item.icon}
+            {item.label}
+          </Link>
+        ))}
       </nav>
 
       {/* Footer */}

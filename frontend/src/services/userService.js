@@ -1,7 +1,7 @@
 // services/userService.js
-const API_URL = "http://localhost:3000/api";
+const API_URL = "http://localhost:5000/api";
 
-// ✅ AJOUTE CETTE FONCTION (manquante)
+// ✅ Fonction pour récupérer tous les utilisateurs
 export const getAllUsers = async () => {
   try {
     const response = await fetch(`${API_URL}/users`);
@@ -18,7 +18,7 @@ export const getAllUsers = async () => {
   }
 };
 
-// ✅ Cette fonction est déjà là
+// ✅ Fonction pour basculer le statut d'un utilisateur
 export const toggleUserStatus = async (userId) => {
   try {
     const response = await fetch(`${API_URL}/users/${userId}/toggle`, {
