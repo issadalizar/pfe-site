@@ -41,16 +41,8 @@ function App() {
 
               <Route path="/users" element={<UsersPage />} /> 
               <Route path="/admin" element={<AdminPage />} />
+             
               
-              {/* Routes temporaires */}
-              <Route path="/users" element={
-                <div className="card">
-                  <div className="card-body text-center py-5">
-                    <h3>Page Clients</h3>
-                    <p className="text-muted">Page en cours de développement</p>
-                  </div>
-                </div>
-              } />
               
               <Route path="/admin" element={
                 <div className="card">
