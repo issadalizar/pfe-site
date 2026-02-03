@@ -51,7 +51,11 @@ app.get('/', (req, res) => {
         getById: 'GET /api/products/:id',
         create: 'POST /api/products',
         update: 'PUT /api/products/:id',
-        delete: 'DELETE /api/products/:id'
+        delete: 'DELETE /api/products/:id',
+        // API DE STOCK AJOUTÉES
+        outOfStock: 'GET /api/products/out-of-stock',
+        lowStock: 'GET /api/products/low-stock',
+        stockStats: 'GET /api/products/stock-stats'
       },
       users: {
         list: 'GET /api/users',
@@ -113,6 +117,10 @@ app.use((req, res) => {
       'GET /api/products/:id',
       'PUT /api/products/:id',
       'DELETE /api/products/:id',
+      // ROUTES DE STOCK AJOUTÉES
+      'GET /api/products/out-of-stock',
+      'GET /api/products/low-stock',
+      'GET /api/products/stock-stats',
       'GET /api/users',
       'POST /api/users',
       'GET /api/users/:id',
@@ -139,6 +147,9 @@ app.listen(PORT, () => {
   console.log(`📋 Test: http://localhost:${PORT}/api/health`);
   console.log(`📂 API Categories: http://localhost:${PORT}/api/categories`);
   console.log(`📦 API Products: http://localhost:${PORT}/api/products`);
+  console.log(`📊 API Stock Stats: http://localhost:${PORT}/api/products/stock-stats`);
+  console.log(`🚨 API Rupture stock: http://localhost:${PORT}/api/products/out-of-stock`);
+  console.log(`⚠️  API Stock faible: http://localhost:${PORT}/api/products/low-stock`);
 });
 
 export default app;

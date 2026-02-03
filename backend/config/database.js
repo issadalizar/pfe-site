@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+// Charger les variables d'environnement depuis le fichier .env
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -32,7 +33,7 @@ export const connectDB = async () => {
   }
 };
 
-// Gestion des événements de connexion
+// Gestion des événements de connexion c'est à dire connecté, déconnecté, erreur
 mongoose.connection.on('connected', () => {
   console.log('✅ Mongoose connecté à MongoDB');
 });

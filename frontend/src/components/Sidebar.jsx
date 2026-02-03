@@ -9,7 +9,8 @@ import {
   FaUserCircle,
   FaChartBar,
   FaBox,
-  FaTags
+  FaTags,
+  FaBell
 } from "react-icons/fa";
 
 export default function Sidebar() {
@@ -34,6 +35,7 @@ export default function Sidebar() {
       icon: <FaBox className="me-2" style={{ color: "#4dc0ff" }} />, 
       label: "Produits" 
     },
+    
     { 
       path: "/users", 
       icon: <FaUserCircle className="me-2" style={{ color: "#4dc0ff" }} />, 
@@ -55,13 +57,16 @@ export default function Sidebar() {
         background: "linear-gradient(180deg, #1e3c72 0%, #2a5298 100%)"
       }}
     >
-      {/* Header */}
+      {/* Header avec notification */}
       <div className="p-4 border-bottom" style={{ borderColor: "rgba(255,255,255,0.1) !important" }}>
-        <h4 className="text-white fw-bold d-flex align-items-center justify-content-center mb-0">
-          <FaChartLine className="me-2" />
-          <span style={{ color: "#4dc0ff" }}>Administration  </span>
-          <span style={{ color: "#ffffff" }}>Space</span>
-        </h4>
+        <div className="d-flex flex-column">
+          <h4 className="text-white fw-bold d-flex align-items-center justify-content-center mb-0">
+            <FaChartLine className="me-2" />
+            <span style={{ color: "#4dc0ff" }}>Administration  </span>
+            <span style={{ color: "#ffffff" }}>Space</span>
+          </h4>
+          
+        </div>
       </div>
 
       {/* Navigation */}

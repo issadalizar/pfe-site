@@ -12,7 +12,8 @@ import {
   FaEuroSign,
   FaCube,
   FaCheckCircle,
-  FaTimesCircle
+  FaTimesCircle,
+  FaExclamationTriangle // Ajouté
 } from "react-icons/fa";
 
 export default function ProductList({ 
@@ -28,18 +29,23 @@ export default function ProductList({
   onSelectAll 
 }) {
   const getStockStatus = (stock) => {
-    if (stock === 0) {
+    const stockNum = Number(stock);
+    
+    // Ajoutez des logs pour déboguer
+    console.log(`getStockStatus: stock=${stock}, num=${stockNum}`);
+    
+    if (isNaN(stockNum) || stockNum === 0) {
       return {
         badge: "danger",
         text: "Rupture",
-        icon: <FaTimesCircle className="me-1" />
+        icon: <FaExclamationTriangle className="me-1" /> // Changé d'icône
       };
     }
-    if (stock < 5) {
+    if (stockNum < 5) {
       return {
         badge: "warning",
         text: "Faible",
-        icon: <FaCube className="me-1" />
+        icon: <FaExclamationTriangle className="me-1" />
       };
     }
     return {
@@ -162,6 +168,7 @@ export default function ProductList({
                 <span className="ms-1">{getSortIcon('stock')}</span>
               </div>
             </th>
+            <th>Statut Stock</th>
             <th>Statut</th>
             <th width="150">Actions</th>
           </tr>
@@ -169,6 +176,11 @@ export default function ProductList({
         <tbody>
           {products.map((product) => {
             const stockStatus = getStockStatus(product.stock || 0);
+            
+            // Log pour déboguer les produits en rupture
+            if (stockStatus.text === "Rupture") {
+              console.log(`⚠️ Produit en rupture dans ProductList: ${product.name} (ID: ${product._id}, Stock: ${product.stock})`);
+            }
             
             return (
               <tr key={product._id} className="align-middle">
@@ -222,11 +234,13 @@ export default function ProductList({
                     <span className="me-2 fw-bold">
                       {product.stock || 0}
                     </span>
-                    <span className={`badge bg-${stockStatus.badge}`}>
-                      {stockStatus.icon}
-                      {stockStatus.text}
-                    </span>
                   </div>
+                </td>
+                <td>
+                  <span className={`badge bg-${stockStatus.badge}`}>
+                    {stockStatus.icon}
+                    {stockStatus.text}
+                  </span>
                 </td>
                 <td>
                   <span 

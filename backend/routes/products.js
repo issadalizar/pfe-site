@@ -5,7 +5,10 @@ import {
   getProductById,
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getOutOfStockProducts,
+  getLowStockProducts,
+  getStockStats
 } from '../controllers/productController.js';
 
 const router = express.Router();
@@ -22,5 +25,15 @@ router.route('/:id')
   .get(getProductById)       // GET /api/products/:id
   .put(updateProduct)        // PUT /api/products/:id
   .delete(deleteProduct);    // DELETE /api/products/:id
+
+// Routes pour les alertes stock
+router.route('/out-of-stock')
+  .get(getOutOfStockProducts);  // GET /api/products/out-of-stock
+
+router.route('/low-stock')
+  .get(getLowStockProducts);    // GET /api/products/low-stock
+
+router.route('/stock-stats')
+  .get(getStockStats);          // GET /api/products/stock-stats
 
 export default router;

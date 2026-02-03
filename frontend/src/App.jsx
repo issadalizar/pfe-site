@@ -8,6 +8,7 @@ import Categories from './pages/Categories';
 import Products from './pages/Products';
 import UsersPage from './pages/UsersPage';
 import AdminPage from './pages/AdminPage';
+import StockAlertsPage from "./pages/StockAlertsPage";
 function App() {
   return (
     <div className="d-flex vh-100 bg-light">
@@ -41,7 +42,8 @@ function App() {
 
               <Route path="/users" element={<UsersPage />} /> 
               <Route path="/admin" element={<AdminPage />} />
-             
+              <Route path="/stock-alerts" element={<StockAlertsPage />} />
+          
               
               
               <Route path="/admin" element={

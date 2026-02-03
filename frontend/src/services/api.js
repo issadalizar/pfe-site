@@ -25,9 +25,17 @@ export const productAPI = {
   getAll: () => api.get('/products'),
   getByCategory: (categoryId) => api.get(`/products/category/${categoryId}`),
   getById: (id) => api.get(`/products/${id}`),
+    // Méthodes CRUD
   create: (data) => api.post('/products', data),
   update: (id, data) => api.put(`/products/${id}`, data),
   delete: (id) => api.delete(`/products/${id}`),
+  // Nouvelles fonctions pour les alertes stock
+  getOutOfStock: () => api.get('/products/out-of-stock'),
+  getLowStock: () => api.get('/products/low-stock'),
+  getStockStats: () => api.get('/products/stock-stats'),
+
+
 };
+
 
 export default api;

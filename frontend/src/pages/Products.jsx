@@ -31,9 +31,14 @@ export default function Products() {
   });
   
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [alertCounts, setAlertCounts] = useState({
+    outOfStock: 0,
+    lowStock: 0
+  });
 
   useEffect(() => {
     fetchData();
+    fetchAlertCount();
   }, [categoryId]);
 
   const fetchData = async () => {
@@ -58,6 +63,41 @@ export default function Products() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchAlertCount = async () => {
+    try {
+      console.log("🔍 Tentative de récupération des alertes stock...");
+      
+      const response = await productAPI.getStockStats();
+      console.log("📊 Réponse API:", response.data);
+      
+      if (response.data && response.data.data) {
+        const { outOfStockCount, lowStockCount } = response.data.data;
+        setAlertCounts({
+          outOfStock: outOfStockCount || 0,
+          lowStock: lowStockCount || 0
+        });
+      }
+    } catch (error) {
+      console.error("⚠️ API échouée, utilisation des valeurs par défaut:", error.message);
+      
+      // Valeurs par défaut quand l'API échoue
+      setAlertCounts({
+        outOfStock: 0,
+        lowStock: 0
+      });
+      
+      // Optionnel: Afficher un message à l'utilisateur
+      // alert("Les alertes stock sont temporairement indisponibles");
+    }
+  };
+
+  // Calcul du total des alertes
+  const alertCount = alertCounts.outOfStock + alertCounts.lowStock;
+
+  const handleNavigateToAlerts = () => {
+    navigate('/stock-alerts'); 
   };
 
   const handleSort = (key) => {
@@ -116,6 +156,7 @@ export default function Products() {
         showAlert("Produit créé avec succès", "success");
       }
       fetchData();
+      fetchAlertCount();
       handleCloseModal();
     } catch (error) {
       console.error("Erreur lors de la sauvegarde:", error);
@@ -128,6 +169,7 @@ export default function Products() {
       try {
         await productAPI.delete(id);
         fetchData();
+        fetchAlertCount();
         showAlert("Produit supprimé avec succès", "success");
       } catch (error) {
         console.error("Erreur lors de la suppression:", error);
@@ -148,6 +190,7 @@ export default function Products() {
           await productAPI.delete(productId);
         }
         fetchData();
+        fetchAlertCount();
         setSelectedProducts([]);
         showAlert(`${selectedProducts.length} produit(s) supprimé(s)`, "success");
       } catch (error) {
@@ -220,9 +263,13 @@ export default function Products() {
     sum + (p.price || 0) * (p.stock || 0), 0
   );
 
+  const activeProductsCount = products.filter(p => p.isActive).length;
+  const outOfStockCount = products.filter(p => p.stock === 0).length;
+  const lowStockCount = products.filter(p => p.stock > 0 && p.stock < 5).length;
+
   return (
     <div>
-      {/* Header */}
+      {/* Header avec icône de notification */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
           <h1 className="h3 mb-2 text-dark">Gestion des Produits</h1>
@@ -230,44 +277,217 @@ export default function Products() {
             Gérez votre catalogue de produits
           </p>
         </div>
-        <div className="d-flex gap-2">
-          {selectedProducts.length > 0 && (
+        
+        <div className="d-flex align-items-center gap-3">
+          {/* Icône de notification - Version corrigée */}
+          <div className="position-relative">
             <button
-              className="btn btn-danger d-flex align-items-center"
-              onClick={handleDeleteSelected}
+              className="btn btn-light position-relative"
+              onClick={handleNavigateToAlerts}
+              style={{
+                borderRadius: "8px",
+                width: "44px",
+                height: "44px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid #dee2e6",
+                backgroundColor: "white",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+              }}
+              title="Voir les alertes stock"
             >
-              <FaTrash className="me-2" />
-              Supprimer ({selectedProducts.length})
+              {/* Icône de notification - plusieurs options */}
+              <div className="position-relative">
+                {/* Option 1: Image PNG */}
+                <img 
+                  src="/notification.png" 
+                  alt="Alertes Stock" 
+                  style={{ 
+                    width: '24px', 
+                    height: '24px'
+                  }}
+                  onError={(e) => {
+                    // Si l'image n'est pas trouvée, utiliser une icône SVG
+                    e.target.style.display = 'none';
+                    e.target.parentElement.innerHTML = `
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.37 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.64 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z" fill="#dc3545"/>
+                      </svg>
+                    `;
+                  }}
+                />
+              </div>
+              
+              {alertCount > 0 && (
+                <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  {alertCount}
+                  <span className="visually-hidden">Alertes stock</span>
+                </span>
+              )}
             </button>
-          )}
-          <button
-            className="btn btn-primary d-flex align-items-center"
-            onClick={handleAddNewProduct}
-          >
-            <FaPlus className="me-2" />
-            Nouveau Produit
-          </button>
+          </div>
+          
+          {/* Boutons d'action */}
+          <div className="d-flex gap-2">
+            {selectedProducts.length > 0 && (
+              <button
+                className="btn btn-danger d-flex align-items-center"
+                onClick={handleDeleteSelected}
+              >
+                <FaTrash className="me-2" />
+                Supprimer ({selectedProducts.length})
+              </button>
+            )}
+            <button
+              className="btn btn-primary d-flex align-items-center"
+              onClick={handleAddNewProduct}
+            >
+              <FaPlus className="me-2" />
+              Nouveau Produit
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="card shadow-sm mb-4 border-0">
+      {/* Statistiques */}
+      <div className="row mb-4">
+        <div className="col-md-3 mb-3">
+          <div className="card border-start-primary border-start-3 border-0 shadow-sm h-100">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <div className="text-muted small text-uppercase fw-semibold">
+                    Total Produits
+                  </div>
+                  <div className="fw-bold text-primary fs-3">
+                    {products.length}
+                  </div>
+                </div>
+                <div className="text-primary opacity-25">
+                  <FaPlus size={24} />
+                </div>
+              </div>
+              <div className="mt-2">
+                <small className="text-muted">
+                  {activeProductsCount} actifs • {products.length - activeProductsCount} inactifs
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="col-md-3 mb-3">
+          <div className="card border-start-success border-start-3 border-0 shadow-sm h-100">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <div className="text-muted small text-uppercase fw-semibold">
+                    Valeur du stock
+                  </div>
+                  <div className="fw-bold text-success fs-3">
+                    {totalValue.toFixed(2)}€
+                  </div>
+                </div>
+                <div className="text-success opacity-25">
+                  <FaFilter size={24} />
+                </div>
+              </div>
+              <div className="mt-2">
+                <small className="text-muted">
+                  {products.length > 0 ? ((totalValue / products.length) || 0).toFixed(2) : '0'}€/produit
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="col-md-3 mb-3">
+          <div className="card border-start-warning border-start-3 border-0 shadow-sm h-100">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <div className="text-muted small text-uppercase fw-semibold">
+                    Alertes Stock
+                  </div>
+                  <div className="fw-bold text-warning fs-3">
+                    {alertCount}
+                  </div>
+                </div>
+                <div className="position-relative">
+                  {/* Icône dans la carte stats */}
+                  <img 
+                    src="/notification.png" 
+                    alt="Alertes" 
+                    style={{ 
+                      width: '24px', 
+                      height: '24px'
+                    }}
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.parentElement.innerHTML = `
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.37 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.64 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z" fill="#ffc107"/>
+                        </svg>
+                      `;
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="mt-2">
+                <small className="text-muted">
+                  {alertCounts.outOfStock} rupture • {alertCounts.lowStock} faible
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="col-md-3 mb-3">
+          <div className="card border-start-info border-start-3 border-0 shadow-sm h-100">
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-center">
+                <div>
+                  <div className="text-muted small text-uppercase fw-semibold">
+                    Produits actifs
+                  </div>
+                  <div className="fw-bold text-info fs-3">
+                    {activeProductsCount}
+                  </div>
+                </div>
+                <div className="text-info opacity-25">
+                  <FaPlus size={24} />
+                </div>
+              </div>
+              <div className="mt-2">
+                <small className="text-muted">
+                  {products.length > 0 ? ((activeProductsCount / products.length) * 100).toFixed(1) : '0'}% actifs
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Barre de filtres */}
+      <div className="card shadow-sm mb-4 border">
         <div className="card-body">
           <div className="row g-3">
             <div className="col-md-4">
               <div className="input-group">
-                <span className="input-group-text">
-                  <FaSearch />
+                <span className="input-group-text bg-white border-end-0">
+                  <FaSearch className="text-muted" />
                 </span>
                 <input
                   type="text"
-                  className="form-control"
-                  placeholder="Rechercher..."
+                  className="form-control border-start-0"
+                  placeholder="Rechercher produit..."
                   value={filters.search}
                   onChange={(e) => handleFilterChange('search', e.target.value)}
                 />
               </div>
             </div>
+            
             <div className="col-md-3">
               <select
                 className="form-select"
@@ -282,6 +502,7 @@ export default function Products() {
                 ))}
               </select>
             </div>
+            
             <div className="col-md-3">
               <select
                 className="form-select"
@@ -293,9 +514,10 @@ export default function Products() {
                 <option value="inactive">Inactifs seulement</option>
               </select>
             </div>
+            
             <div className="col-md-2">
               <button
-                className="btn btn-outline-secondary w-100"
+                className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"
                 onClick={() => setFilters({
                   search: "",
                   category: "",
@@ -310,7 +532,7 @@ export default function Products() {
             </div>
           </div>
           
-          {/* Advanced filters */}
+          {/* Filtres avancés - Prix */}
           <div className="row g-3 mt-3">
             <div className="col-md-3">
               <label className="form-label small text-muted mb-1">
@@ -323,10 +545,13 @@ export default function Products() {
                   placeholder="Min"
                   value={filters.minPrice}
                   onChange={(e) => handleFilterChange('minPrice', e.target.value)}
+                  min="0"
+                  step="0.01"
                 />
                 <span className="input-group-text">€</span>
               </div>
             </div>
+            
             <div className="col-md-3">
               <label className="form-label small text-muted mb-1">
                 Prix maximum
@@ -338,6 +563,8 @@ export default function Products() {
                   placeholder="Max"
                   value={filters.maxPrice}
                   onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
+                  min="0"
+                  step="0.01"
                 />
                 <span className="input-group-text">€</span>
               </div>
@@ -346,61 +573,21 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Stats Cards */}
-      <div className="row mb-4">
-        <div className="col-md-3 mb-3">
-          <div className="card border-primary">
-            <div className="card-body">
-              <h6 className="card-subtitle mb-2 text-muted">Total Produits</h6>
-              <h2 className="card-title text-primary">{products.length}</h2>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3 mb-3">
-          <div className="card border-success">
-            <div className="card-body">
-              <h6 className="card-subtitle mb-2 text-muted">Produits actifs</h6>
-              <h2 className="card-title text-success">
-                {products.filter(p => p.isActive).length}
-              </h2>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3 mb-3">
-          <div className="card border-info">
-            <div className="card-body">
-              <h6 className="card-subtitle mb-2 text-muted">Valeur du stock</h6>
-              <h2 className="card-title text-info">
-                {totalValue.toFixed(2)}€
-              </h2>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-3 mb-3">
-          <div className="card border-warning">
-            <div className="card-body">
-              <h6 className="card-subtitle mb-2 text-muted">En vedette</h6>
-              <h2 className="card-title text-warning">
-                {products.filter(p => p.isFeatured).length}
-              </h2>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Product List */}
-      <div className="card shadow-sm border-0">
+      {/* Liste des produits */}
+      <div className="card shadow-sm border">
         <div className="card-body">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div>
-              <span className="text-muted">
+              <h6 className="mb-0 text-dark">Liste des Produits</h6>
+              <small className="text-muted">
                 {filteredProducts.length} produit(s) trouvé(s)
-              </span>
+              </small>
             </div>
+            
             <div>
-              <span className="text-muted me-3">
+              <small className="text-muted me-3">
                 {selectedProducts.length} sélectionné(s)
-              </span>
+              </small>
             </div>
           </div>
           

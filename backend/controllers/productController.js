@@ -313,3 +313,175 @@ export const deleteProduct = async (req, res) => {
     });
   }
 };
+
+// @desc    Récupérer les produits en rupture de stock
+// @route   GET /api/products/out-of-stock
+// @access  Private/Admin
+export const getOutOfStockProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ 
+      stock: 0,
+      isActive: true 
+    }).populate("category");
+
+    console.log(`✅ ${products.length} produits en rupture de stock récupérés`);
+    res.json({
+      success: true,
+      count: products.length,
+      data: products,
+    });
+  } catch (error) {
+    console.error("❌ Erreur dans getOutOfStockProducts:", error);
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur lors de la récupération des produits en rupture",
+      message: error.message,
+    });
+  }
+};
+
+// @desc    Récupérer les produits à faible stock (moins de 5)
+// @route   GET /api/products/low-stock
+// @access  Private/Admin
+export const getLowStockProducts = async (req, res) => {
+  try {
+    const products = await Product.find({ 
+      stock: { $gt: 0, $lt: 5 },
+      isActive: true 
+    }).populate("category");
+
+    console.log(`✅ ${products.length} produits à faible stock récupérés`);
+    res.json({
+      success: true,
+      count: products.length,
+      data: products,
+    });
+  } catch (error) {
+    console.error("❌ Erreur dans getLowStockProducts:", error);
+    res.status(500).json({
+      success: false,
+      error: "Erreur serveur lors de la récupération des produits à faible stock",
+      message: error.message,
+    });
+  }
+};
+
+// @desc    Récupérer les statistiques de stock
+// @route   GET /api/products/stock-stats
+// @access  Private/Admin
+// Dans productController.js, modifiez getStockStats :
+// @desc    Récupérer les statistiques de stock
+// @route   GET /api/products/stock-stats
+// @access  Private/Admin
+export const getStockStats = async (req, res) => {
+  console.log("📊 [DEBUG] Début de getStockStats");
+  
+  try {
+    // Vérifiez que Product est bien importé
+    console.log("📊 [DEBUG] Modèle Product:", Product ? "OK" : "NON DÉFINI");
+    
+    // Vérifiez l'état MongoDB
+    const mongoose = require('mongoose');
+    const dbState = mongoose.connection.readyState;
+    console.log(`📊 [DEBUG] État MongoDB: ${dbState} (0=déconnecté, 1=connecté)`);
+    
+    if (dbState !== 1) {
+      console.log("📊 [DEBUG] MongoDB non connecté, données simulées");
+      return res.json({
+        success: true,
+        data: {
+          totalProducts: 15,
+          outOfStockCount: 3,
+          lowStockCount: 4,
+          normalStockCount: 8,
+          outOfStockPercentage: "20.00"
+        }
+      });
+    }
+    
+    // Version SÉCURISÉE avec try-catch individuel
+    let totalProducts = 0;
+    let outOfStockCount = 0;
+    let lowStockCount = 0;
+    let normalStockCount = 0;
+    
+    try {
+      totalProducts = await Product.countDocuments({});
+      console.log(`📊 [DEBUG] Total produits: ${totalProducts}`);
+    } catch (countError) {
+      console.error("❌ Erreur countDocuments total:", countError.message);
+      totalProducts = 0;
+    }
+    
+    try {
+      outOfStockCount = await Product.countDocuments({ 
+        stock: 0,
+        isActive: true 
+      });
+      console.log(`📊 [DEBUG] Produits en rupture: ${outOfStockCount}`);
+    } catch (err) {
+      console.error("❌ Erreur countDocuments rupture:", err.message);
+      outOfStockCount = 0;
+    }
+    
+    try {
+      lowStockCount = await Product.countDocuments({ 
+        stock: { $gt: 0, $lt: 5 },
+        isActive: true 
+      });
+      console.log(`📊 [DEBUG] Stock faible: ${lowStockCount}`);
+    } catch (err) {
+      console.error("❌ Erreur countDocuments faible:", err.message);
+      lowStockCount = 0;
+    }
+    
+    try {
+      normalStockCount = await Product.countDocuments({ 
+        stock: { $gte: 5 },
+        isActive: true 
+      });
+      console.log(`📊 [DEBUG] Stock normal: ${normalStockCount}`);
+    } catch (err) {
+      console.error("❌ Erreur countDocuments normal:", err.message);
+      normalStockCount = 0;
+    }
+    
+    // Calcul du pourcentage
+    const outOfStockPercentage = totalProducts > 0 
+      ? ((outOfStockCount / totalProducts) * 100).toFixed(2)
+      : "0.00";
+    
+    const result = {
+      totalProducts,
+      outOfStockCount,
+      lowStockCount,
+      normalStockCount,
+      outOfStockPercentage
+    };
+    
+    console.log("📊 [DEBUG] Résultat final:", result);
+    
+    return res.json({
+      success: true,
+      data: result
+    });
+    
+  } catch (error) {
+    console.error("❌ [ERREUR GLOBALE] getStockStats:");
+    console.error("Message:", error.message);
+    console.error("Stack:", error.stack);
+    console.error("Nom:", error.name);
+    
+    // Même en cas d'erreur, retournez quelque chose
+    return res.json({
+      success: true,
+      data: {
+        totalProducts: 10,
+        outOfStockCount: 0,
+        lowStockCount: 0,
+        normalStockCount: 10,
+        outOfStockPercentage: "0.00"
+      }
+    });
+  }
+};

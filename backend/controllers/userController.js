@@ -1,15 +1,17 @@
 import User from '../models/User.js';
 // POST - Créer un nouvel utilisateur
+//req contient les données envoyées par le client (dans le corps de la requête)
+//res est utilisé pour envoyer une réponse au client
 export const createUser = async (req, res) => {
   try {
     const { 
-      client_code,      // ✅ Changé de codeClient
-      client_name,      // ✅ Changé de nomClient
+      client_code,      
+      client_name,      
       role, 
       article, 
       description, 
       date, 
-      facture_num,      // ✅ Changé de numeroFacture
+      facture_num,      
       quantite, 
       montant, 
       actif 
@@ -25,18 +27,18 @@ export const createUser = async (req, res) => {
     // Créer le nouvel utilisateur
     // Dans createUser (userController.js) :
 const newUser = new User({
-  client_code: client_code.toUpperCase(),    // CORRIGÉ
-  client_name: client_name,                  // CORRIGÉ
-  role: role || 'client',
+  client_code: client_code.toUpperCase(),    // Mise en majuscules automatique parce que le schéma l'exige
+  client_name: client_name,                  
+  role: role || 'client', // Valeur par défaut 'client'
   article,
   description: description || '',
   date: date ? new Date(date) : new Date(),
-  facture_num: facture_num,                  // CORRIGÉ
+  facture_num: facture_num,                  
   quantite: Number(quantite),
   montant: Number(montant),
-  actif: actif !== undefined ? actif : true, // Maintenant possible avec le schéma corrigé
+  actif: actif !== undefined ? actif : true, // Valeur par défaut true
 });
-
+// Enregistrer dans la base de données
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (error) {
@@ -114,12 +116,12 @@ export const updateUser = async (req, res) => {
 
     // Mettre à jour les champs
     if (client_code) user.client_code = client_code.toUpperCase();
-    if (client_name) user.nomClient = client_name;
+    if (client_name) user.client_name = client_name;
     if (role) user.role = role;
     if (article) user.article = article;
     if (description !== undefined) user.description = description;
     if (date) user.date = new Date(date);
-    if (facture_num) user.numeroFacture = facture_num;
+    if (facture_num) user.facture_num = facture_num;
     if (quantite !== undefined) user.quantite = Number(quantite);
     if (montant !== undefined) user.montant = Number(montant);
     if (actif !== undefined) user.actif = actif;
