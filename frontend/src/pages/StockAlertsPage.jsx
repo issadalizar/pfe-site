@@ -28,7 +28,7 @@ export default function StockAlertsPage() {
   const [activeTab, setActiveTab] = useState('outOfStock');
   const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [allProducts, setAllProducts] = useState([]); // Nouveau state
+  const [allProducts, setAllProducts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,21 +44,38 @@ export default function StockAlertsPage() {
       setLoading(true);
       console.log("🔄 Début du chargement des alertes...");
       
-      // Essayez d'abord l'API spécifique
+      // Même logique que dans Products.jsx pour garantir la cohérence
       try {
-        const [outOfStockRes, lowStockRes, statsRes] = await Promise.all([
+        // Essayez d'abord l'API spécifique
+        const [outOfStockRes, lowStockRes] = await Promise.all([
           productAPI.getOutOfStock(),
-          productAPI.getLowStock(),
-          productAPI.getStockStats()
+          productAPI.getLowStock()
         ]);
         
         console.log("✅ API spécifique réussie");
-        console.log("Produits en rupture:", outOfStockRes.data.data);
-        console.log("Produits à faible stock:", lowStockRes.data.data);
+        console.log("Produits en rupture:", outOfStockRes.data.data?.length || 0);
+        console.log("Produits à faible stock:", lowStockRes.data.data?.length || 0);
         
-        setOutOfStock(outOfStockRes.data.data || []);
-        setLowStock(lowStockRes.data.data || []);
-        setStats(statsRes.data.data);
+        const outOfStockProducts = outOfStockRes.data.data || [];
+        const lowStockProducts = lowStockRes.data.data || [];
+        
+        setOutOfStock(outOfStockProducts);
+        setLowStock(lowStockProducts);
+        
+        // Calculer les stats
+        const allProductsRes = await productAPI.getAll();
+        const totalProducts = allProductsRes.data.data?.length || 0;
+        const normalStockCount = totalProducts - (outOfStockProducts.length + lowStockProducts.length);
+        
+        setStats({
+          outOfStockCount: outOfStockProducts.length,
+          lowStockCount: lowStockProducts.length,
+          normalStockCount: normalStockCount,
+          totalProducts: totalProducts,
+          outOfStockPercentage: totalProducts > 0 ? 
+            ((outOfStockProducts.length / totalProducts) * 100).toFixed(1) : 0
+        });
+        
       } catch (apiError) {
         console.log("⚠️ API spécifique échouée, utilisation alternative...");
         
@@ -69,7 +86,7 @@ export default function StockAlertsPage() {
         
         console.log(`📦 Total produits récupérés: ${products.length}`);
         
-        // Filtrer localement
+        // Même calcul que dans Products.jsx
         const outOfStockProducts = products.filter(p => {
           const stock = Number(p.stock);
           return isNaN(stock) || stock === 0;
@@ -130,7 +147,6 @@ export default function StockAlertsPage() {
   const handleDeleteProduct = (productId) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
       console.log("Suppression du produit:", productId);
-      // Appeler l'API pour supprimer
       productAPI.delete(productId).then(() => {
         refreshAlerts();
       }).catch(error => {
@@ -352,7 +368,7 @@ export default function StockAlertsPage() {
                 className={`nav-link ${activeTab === 'outOfStock' ? 'active text-danger' : ''}`}
                 onClick={() => {
                   setActiveTab('outOfStock');
-                  setSelectedProducts([]); // Réinitialiser la sélection
+                  setSelectedProducts([]);
                 }}
               >
                 <FaExclamationCircle className="me-2" />
@@ -367,7 +383,7 @@ export default function StockAlertsPage() {
                 className={`nav-link ${activeTab === 'lowStock' ? 'active text-warning' : ''}`}
                 onClick={() => {
                   setActiveTab('lowStock');
-                  setSelectedProducts([]); // Réinitialiser la sélection
+                  setSelectedProducts([]);
                 }}
               >
                 <FaExclamationTriangle className="me-2" />

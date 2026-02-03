@@ -43,7 +43,6 @@ function App() {
               <Route path="/users" element={<UsersPage />} /> 
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/stock-alerts" element={<StockAlertsPage />} />
-          
               
               
               <Route path="/admin" element={

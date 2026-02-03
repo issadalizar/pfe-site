@@ -6,7 +6,6 @@ import {
   FaSchool, 
   FaBook,
   FaFolder,
-  FaPlus,
   FaChevronRight,
   FaEye,
   FaEyeSlash
@@ -105,17 +104,11 @@ export default function CategoryList({
           </td>
           <td>
             <div className="btn-group btn-group-sm">
-              <button
-                className="btn btn-outline-info"
-                onClick={() => onAddSubcategory && onAddSubcategory(category)}
-                title="Ajouter une sous-catégorie"
-              >
-                <FaPlus />
-              </button>
               <Link
                 to={`/products/category/${category._id}`}
+                state={{ viewDirectProductsOnly: true }} 
                 className="btn btn-outline-primary"
-                title="Voir les produits"
+                title="Voir les produits de cette catégorie"
               >
                 <FaBook />
               </Link>
@@ -179,7 +172,7 @@ export default function CategoryList({
             <th>Description</th>
             <th>Niveau / Slug</th>
             <th>Statut</th>
-            <th width="180">Actions</th>
+            <th width="140">Actions</th>
           </tr>
         </thead>
         <tbody>

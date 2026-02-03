@@ -1,28 +1,33 @@
 // src/pages/Products.jsx
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useMemo } from "react";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ProductForm from "../components/ProductForm";
 import ProductList from "../components/ProductList";
 import { productAPI, categoryAPI } from "../services/api";
-import { FaPlus, FaSearch, FaFilter, FaTrash } from "react-icons/fa";
+import { FaPlus, FaSearch, FaFilter, FaTrash, FaBook, FaArrowLeft, FaLayerGroup, FaEye } from "react-icons/fa";
 
 export default function Products() {
   const { categoryId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [products, setProducts] = useState([]);
+  const [allProducts, setAllProducts] = useState([]); // Stocker tous les produits
   const [categories, setCategories] = useState([]);
+  const [subCategories, setSubCategories] = useState([]);
+  const [allSubCategories, setAllSubCategories] = useState([]); // Toutes les sous-catégories de la catégorie parent
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [currentCategory, setCurrentCategory] = useState(null);
+  const [viewDirectProductsOnly, setViewDirectProductsOnly] = useState(false);
   
   // State for filtering and sorting
   const [filters, setFilters] = useState({
     search: "",
     category: categoryId || "",
+    subCategory: "", // Ajout du filtre par sous-catégorie
     status: "all",
-    minPrice: "",
-    maxPrice: "",
   });
   
   const [sortConfig, setSortConfig] = useState({
@@ -36,10 +41,104 @@ export default function Products() {
     lowStock: 0
   });
 
+  // Effet pour gérer la catégorie depuis l'URL
+  useEffect(() => {
+    // Si un categoryId est passé dans l'URL, l'utiliser comme filtre
+    if (categoryId) {
+      console.log("CategoryId depuis URL:", categoryId);
+      
+      // Lire l'état du location pour savoir si on veut seulement les produits directs
+      const fromCategoryList = location.state?.viewDirectProductsOnly || false;
+      setViewDirectProductsOnly(fromCategoryList);
+      console.log("🔍 Mode vue:", fromCategoryList ? "Produits directs seulement" : "Tous les produits (avec sous-catégories)");
+      
+      // Mettre à jour le filtre catégorie avec l'ID de l'URL
+      setFilters(prev => ({
+        ...prev,
+        category: categoryId
+      }));
+      
+      // Récupérer les informations de la catégorie
+      const fetchCategoryInfo = async () => {
+        try {
+          const response = await categoryAPI.getById(categoryId);
+          if (response.data.data) {
+            setCurrentCategory(response.data.data);
+            console.log("Catégorie trouvée:", response.data.data);
+          }
+        } catch (error) {
+          console.error("Erreur récupération catégorie:", error);
+        }
+      };
+      
+      fetchCategoryInfo();
+    } else {
+      // Si pas de categoryId, réinitialiser le filtre
+      setFilters(prev => ({
+        ...prev,
+        category: ""
+      }));
+      setCurrentCategory(null);
+      setViewDirectProductsOnly(false);
+    }
+  }, [categoryId, location.state]);
+
   useEffect(() => {
     fetchData();
     fetchAlertCount();
-  }, [categoryId]);
+    
+    // Rafraîchir les alertes toutes les minutes
+    const interval = setInterval(fetchAlertCount, 60000);
+    return () => clearInterval(interval);
+  }, [categoryId, viewDirectProductsOnly]);
+
+  // Charger les sous-catégories quand une catégorie est sélectionnée
+  useEffect(() => {
+    if (filters.category) {
+      loadAllSubCategories(filters.category);
+    } else {
+      setSubCategories([]);
+      setAllSubCategories([]);
+      setFilters(prev => ({ ...prev, subCategory: "" }));
+    }
+  }, [filters.category]);
+
+  // NOUVELLE FONCTION : Charger toutes les sous-catégories (récursivement)
+  const loadAllSubCategories = async (parentCategoryId) => {
+    try {
+      const response = await categoryAPI.getSubCategories(parentCategoryId);
+      const directSubCategories = response.data.data || [];
+      setSubCategories(directSubCategories);
+      
+      // Fonction récursive pour obtenir toutes les sous-catégories
+      const getAllNestedSubCategories = async (categoryId) => {
+        try {
+          const res = await categoryAPI.getSubCategories(categoryId);
+          const subs = res.data.data || [];
+          let allSubs = [...subs];
+          
+          // Récursivement obtenir les sous-catégories de chaque sous-catégorie
+          for (const sub of subs) {
+            const nestedSubs = await getAllNestedSubCategories(sub._id);
+            allSubs = [...allSubs, ...nestedSubs];
+          }
+          
+          return allSubs;
+        } catch (error) {
+          console.error("Erreur lors du chargement des sous-catégories:", error);
+          return [];
+        }
+      };
+      
+      const allNestedSubCategories = await getAllNestedSubCategories(parentCategoryId);
+      setAllSubCategories([...directSubCategories, ...allNestedSubCategories]);
+      
+    } catch (error) {
+      console.error("Erreur lors du chargement des sous-catégories:", error);
+      setSubCategories([]);
+      setAllSubCategories([]);
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -49,14 +148,83 @@ export default function Products() {
       const categoriesResponse = await categoryAPI.getAll();
       setCategories(categoriesResponse.data.data);
       
-      // Load products
+      // Load products - PRIORITÉ À LA CATÉGORIE DE L'URL
       let productsResponse;
+      
       if (categoryId) {
-        productsResponse = await productAPI.getByCategory(categoryId);
+        console.log("🎯 Chargement produits POUR LA CATÉGORIE:", categoryId);
+        console.log("🔍 Mode:", viewDirectProductsOnly ? "Produits DIRECTS seulement" : "Tous (avec sous-catégories)");
+        
+        if (viewDirectProductsOnly) {
+          // MODE 1: Uniquement les produits DIRECTS de cette catégorie
+          try {
+            // Essayer l'API spécifique d'abord
+            productsResponse = await productAPI.getByCategory(categoryId);
+            console.log("✅ Produits DIRECTS de la catégorie (API):", productsResponse.data.data.length);
+          } catch (apiError) {
+            console.log("⚠️ API getByCategory échouée, fallback...");
+            
+            // Fallback: récupérer tous et filtrer côté client
+            const allProducts = await productAPI.getAll();
+            // Filtrer uniquement les produits DIRECTS de cette catégorie
+            const filteredProducts = allProducts.data.data.filter(product => {
+              const productCategoryId = product.category?._id || product.categoryId;
+              const isDirectProduct = productCategoryId === categoryId;
+              
+              console.log(`  Produit "${product.name}": catégorie=${productCategoryId}, direct=${isDirectProduct}`);
+              return isDirectProduct;
+            });
+            
+            productsResponse = { data: { data: filteredProducts } };
+            console.log("🎯 Produits DIRECTS filtrés:", filteredProducts.length);
+          }
+        } else {
+          // MODE 2: Produits de la catégorie ET de ses sous-catégories (comportement actuel)
+          // D'abord charger tous les produits
+          const allProducts = await productAPI.getAll();
+          const allProductsData = allProducts.data.data || [];
+          
+          // Obtenir tous les IDs de catégories enfants
+          const getAllChildCategoryIds = (parentId) => {
+            let ids = [parentId];
+            const children = categoriesResponse.data.data.filter(cat => 
+              cat.parent?._id === parentId || cat.parentId === parentId
+            );
+            
+            children.forEach(child => {
+              ids = [...ids, ...getAllChildCategoryIds(child._id)];
+            });
+            
+            return ids;
+          };
+          
+          const allCategoryIds = getAllChildCategoryIds(categoryId);
+          console.log("📂 Catégories incluses:", allCategoryIds);
+          
+          // Filtrer les produits qui appartiennent à l'une de ces catégories
+          const filteredProducts = allProductsData.filter(product => {
+            const productCategoryId = product.category?._id || product.categoryId;
+            return allCategoryIds.includes(productCategoryId);
+          });
+          
+          productsResponse = { data: { data: filteredProducts } };
+          console.log("🌳 Produits avec sous-catégories:", filteredProducts.length);
+        }
       } else {
+        console.log("🌍 Chargement de tous les produits...");
         productsResponse = await productAPI.getAll();
+        console.log("📦 Tous les produits chargés:", productsResponse.data.data?.length || 0);
       }
-      setProducts(productsResponse.data.data);
+      
+      const productsData = productsResponse.data.data || [];
+      console.log("🏁 Produits finaux à afficher:", productsData.length);
+      setProducts(productsData);
+      setAllProducts(productsData);
+      
+      if (productsData.length === 0 && categoryId) {
+        console.log("ℹ️ Aucun produit trouvé pour la catégorie", categoryId);
+      }
+      
     } catch (error) {
       console.error("Erreur lors du chargement:", error);
       showAlert("Erreur lors du chargement des données", "danger");
@@ -69,27 +237,55 @@ export default function Products() {
     try {
       console.log("🔍 Tentative de récupération des alertes stock...");
       
-      const response = await productAPI.getStockStats();
-      console.log("📊 Réponse API:", response.data);
-      
-      if (response.data && response.data.data) {
-        const { outOfStockCount, lowStockCount } = response.data.data;
+      try {
+        const [outOfStockRes, lowStockRes] = await Promise.all([
+          productAPI.getOutOfStock(),
+          productAPI.getLowStock()
+        ]);
+        
+        const outOfStockCount = outOfStockRes.data.data?.length || 0;
+        const lowStockCount = lowStockRes.data.data?.length || 0;
+        
+        console.log("📊 Résultats API directe:", { outOfStockCount, lowStockCount });
+        
         setAlertCounts({
-          outOfStock: outOfStockCount || 0,
-          lowStock: lowStockCount || 0
+          outOfStock: outOfStockCount,
+          lowStock: lowStockCount
+        });
+        
+      } catch (apiError) {
+        console.log("⚠️ API spécifique échouée, méthode alternative...");
+        
+        const allProductsRes = await productAPI.getAll();
+        const products = allProductsRes.data.data || [];
+        
+        const outOfStockProducts = products.filter(p => {
+          const stock = Number(p.stock);
+          return isNaN(stock) || stock === 0;
+        });
+        
+        const lowStockProducts = products.filter(p => {
+          const stock = Number(p.stock);
+          return stock > 0 && stock < 5;
+        });
+        
+        console.log("📊 Calcul local:", {
+          outOfStock: outOfStockProducts.length,
+          lowStock: lowStockProducts.length
+        });
+        
+        setAlertCounts({
+          outOfStock: outOfStockProducts.length,
+          lowStock: lowStockProducts.length
         });
       }
-    } catch (error) {
-      console.error("⚠️ API échouée, utilisation des valeurs par défaut:", error.message);
       
-      // Valeurs par défaut quand l'API échoue
+    } catch (error) {
+      console.error("❌ Erreur lors du chargement des alertes:", error.message);
       setAlertCounts({
         outOfStock: 0,
         lowStock: 0
       });
-      
-      // Optionnel: Afficher un message à l'utilisateur
-      // alert("Les alertes stock sont temporairement indisponibles");
     }
   };
 
@@ -121,6 +317,24 @@ export default function Products() {
     return 0;
   });
 
+  // NOUVEAU : Fonction pour obtenir tous les IDs de catégories enfants
+  const getAllChildCategoryIds = useMemo(() => {
+    if (!categoryId || categories.length === 0) return [];
+    
+    const getChildrenIds = (parentId) => {
+      let ids = [parentId];
+      const children = categories.filter(cat => cat.parent?._id === parentId || cat.parentId === parentId);
+      
+      children.forEach(child => {
+        ids = [...ids, ...getChildrenIds(child._id)];
+      });
+      
+      return ids;
+    };
+    
+    return getChildrenIds(categoryId);
+  }, [categoryId, categories]);
+
   const filteredProducts = sortedProducts.filter(product => {
     // Search filter
     const matchesSearch = !filters.search || 
@@ -128,23 +342,56 @@ export default function Products() {
       product.description?.toLowerCase().includes(filters.search.toLowerCase()) ||
       product.model?.toLowerCase().includes(filters.search.toLowerCase());
     
-    // Category filter
-    const matchesCategory = !filters.category || 
-      product.category?._id === filters.category;
+    // Category filter - MODIFIÉ pour inclure les sous-catégories
+    let matchesCategory = true;
+    if (filters.category) {
+      if (categoryId && !viewDirectProductsOnly) {
+        // Si on a une catégorie parent et qu'on veut inclure les sous-catégories
+        const productCategoryId = product.category?._id || product.categoryId;
+        matchesCategory = getAllChildCategoryIds.includes(productCategoryId);
+      } else if (categoryId && viewDirectProductsOnly) {
+        // Mode direct: seulement la catégorie exacte
+        const productCategoryId = product.category?._id || product.categoryId;
+        matchesCategory = productCategoryId === categoryId;
+      } else {
+        // Filtre normal sans catégorie spécifique dans l'URL
+        matchesCategory = product.category?._id === filters.category;
+      }
+    }
+    
+    // Sub-category filter
+    const matchesSubCategory = !filters.subCategory || 
+      product.subCategory?._id === filters.subCategory;
     
     // Status filter
     const matchesStatus = filters.status === "all" || 
       (filters.status === "active" && product.isActive) ||
       (filters.status === "inactive" && !product.isActive);
     
-    // Price filters
-    const price = product.price || 0;
-    const matchesMinPrice = !filters.minPrice || price >= parseFloat(filters.minPrice);
-    const matchesMaxPrice = !filters.maxPrice || price <= parseFloat(filters.maxPrice);
-    
-    return matchesSearch && matchesCategory && matchesStatus && 
-           matchesMinPrice && matchesMaxPrice;
+    return matchesSearch && matchesCategory && matchesSubCategory && matchesStatus;
   });
+
+  // NOUVEAU : Calcul des statistiques pour les produits filtrés
+  const categoryStats = useMemo(() => {
+    if (!categoryId) return null;
+    
+    const productsInCategory = allProducts.filter(product => {
+      const productCategoryId = product.category?._id || product.categoryId;
+      if (viewDirectProductsOnly) {
+        return productCategoryId === categoryId;
+      } else {
+        return getAllChildCategoryIds.includes(productCategoryId);
+      }
+    });
+    
+    return {
+      total: productsInCategory.length,
+      active: productsInCategory.filter(p => p.isActive).length,
+      outOfStock: productsInCategory.filter(p => p.stock === 0).length,
+      lowStock: productsInCategory.filter(p => p.stock > 0 && p.stock < 5).length,
+      totalValue: productsInCategory.reduce((sum, p) => sum + (p.price || 0) * (p.stock || 0), 0)
+    };
+  }, [categoryId, allProducts, getAllChildCategoryIds, viewDirectProductsOnly]);
 
   const handleSaveProduct = async (formData) => {
     try {
@@ -232,14 +479,42 @@ export default function Products() {
   };
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
-    
-    // Update URL if category filter changes
-    if (key === 'category' && value) {
-      navigate(`/products/category/${value}`);
-    } else if (key === 'category' && !value) {
-      navigate('/products');
+    if (key === 'category') {
+      const newFilters = { ...filters, [key]: value, subCategory: "" };
+      setFilters(newFilters);
+      
+      if (value) {
+        loadAllSubCategories(value);
+        navigate(`/products/category/${value}`);
+        setViewDirectProductsOnly(false); // Réinitialiser le mode quand on change de catégorie via le filtre
+      } else {
+        setSubCategories([]);
+        setAllSubCategories([]);
+        navigate('/products');
+      }
+    } else {
+      setFilters(prev => ({ ...prev, [key]: value }));
     }
+  };
+
+  const handleResetFilters = () => {
+    setFilters({
+      search: "",
+      category: "",
+      subCategory: "",
+      status: "all",
+    });
+    setSubCategories([]);
+    setAllSubCategories([]);
+    setCurrentCategory(null);
+    setViewDirectProductsOnly(false);
+    navigate('/products');
+  };
+
+  const toggleViewMode = () => {
+    setViewDirectProductsOnly(!viewDirectProductsOnly);
+    // Recharger les données avec le nouveau mode
+    fetchData();
   };
 
   const showAlert = (message, type) => {
@@ -272,14 +547,93 @@ export default function Products() {
       {/* Header avec icône de notification */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h1 className="h3 mb-2 text-dark">Gestion des Produits</h1>
+          <h1 className="h3 mb-2 text-dark">
+            {categoryId ? (
+              <>
+                <div className="d-flex align-items-center">
+                  <button
+                    className="btn btn-outline-secondary btn-sm me-3"
+                    onClick={() => {
+                      navigate('/products');
+                      handleResetFilters();
+                    }}
+                    title="Retour à tous les produits"
+                  >
+                    <FaArrowLeft />
+                  </button>
+                  <div>
+                    <div className="d-flex align-items-center">
+                      <FaLayerGroup className="text-primary me-2" />
+                      <span>
+                        {viewDirectProductsOnly ? "Produits de la catégorie" : "Produits de la catégorie et sous-catégories"}
+                        <span className="text-primary ms-2">
+                          {currentCategory?.name || categories.find(c => c._id === categoryId)?.name || ""}
+                        </span>
+                      </span>
+                    </div>
+                    {viewDirectProductsOnly && (
+                      <div className="mt-1">
+                        <small className="text-info">
+                          <FaEye className="me-1" size={12} />
+                          Mode: Produits directs seulement
+                        </small>
+                      </div>
+                    )}
+                    {!viewDirectProductsOnly && allSubCategories.length > 0 && (
+                      <div className="mt-1">
+                        <small className="text-muted">
+                          <FaLayerGroup className="me-1" size={12} />
+                          Inclut {allSubCategories.length} sous-catégorie(s) et leurs produits
+                        </small>
+                      </div>
+                    )}
+                    {currentCategory?.description && (
+                      <p className="text-muted mb-0 mt-1">
+                        <small>{currentCategory.description}</small>
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : (
+              "Gestion des Produits"
+            )}
+          </h1>
           <p className="text-muted mb-0">
-            Gérez votre catalogue de produits
+            {categoryId 
+              ? viewDirectProductsOnly 
+                ? "Uniquement les produits directs de cette catégorie" 
+                : "Tous les produits de cette catégorie et ses sous-catégories"
+              : "Gérez votre catalogue de produits"
+            }
           </p>
         </div>
         
         <div className="d-flex align-items-center gap-3">
-          {/* Icône de notification - Version corrigée */}
+          {/* Bouton toggle pour basculer entre les modes (seulement en mode catégorie) */}
+          {categoryId && (
+            <div className="d-flex align-items-center me-2">
+              <div className="form-check form-switch">
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  id="includeSubcategories"
+                  checked={!viewDirectProductsOnly}
+                  onChange={toggleViewMode}
+                />
+                <label 
+                  className="form-check-label small ms-2" 
+                  htmlFor="includeSubcategories"
+                  style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}
+                  title="Inclure les produits des sous-catégories"
+                >
+                  Inclure sous-catégories
+                </label>
+              </div>
+            </div>
+          )}
+          
+          {/* Icône de notification */}
           <div className="position-relative">
             <button
               className="btn btn-light position-relative"
@@ -297,9 +651,7 @@ export default function Products() {
               }}
               title="Voir les alertes stock"
             >
-              {/* Icône de notification - plusieurs options */}
               <div className="position-relative">
-                {/* Option 1: Image PNG */}
                 <img 
                   src="/notification.png" 
                   alt="Alertes Stock" 
@@ -308,7 +660,6 @@ export default function Products() {
                     height: '24px'
                   }}
                   onError={(e) => {
-                    // Si l'image n'est pas trouvée, utiliser une icône SVG
                     e.target.style.display = 'none';
                     e.target.parentElement.innerHTML = `
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -350,7 +701,7 @@ export default function Products() {
         </div>
       </div>
 
-      {/* Statistiques */}
+      {/* Statistiques - MODIFIÉ pour afficher les stats de la catégorie */}
       <div className="row mb-4">
         <div className="col-md-3 mb-3">
           <div className="card border-start-primary border-start-3 border-0 shadow-sm h-100">
@@ -361,7 +712,7 @@ export default function Products() {
                     Total Produits
                   </div>
                   <div className="fw-bold text-primary fs-3">
-                    {products.length}
+                    {categoryStats?.total || products.length}
                   </div>
                 </div>
                 <div className="text-primary opacity-25">
@@ -370,8 +721,27 @@ export default function Products() {
               </div>
               <div className="mt-2">
                 <small className="text-muted">
-                  {activeProductsCount} actifs • {products.length - activeProductsCount} inactifs
+                  {categoryStats 
+                    ? `${categoryStats.active} actifs • ${categoryStats.total - categoryStats.active} inactifs`
+                    : `${activeProductsCount} actifs • ${products.length - activeProductsCount} inactifs`
+                  }
                 </small>
+                {categoryId && !viewDirectProductsOnly && allSubCategories.length > 0 && (
+                  <div className="mt-1">
+                    <small className="text-success">
+                      <FaLayerGroup className="me-1" size={10} />
+                      Inclut {allSubCategories.length} sous-catégories
+                    </small>
+                  </div>
+                )}
+                {categoryId && viewDirectProductsOnly && (
+                  <div className="mt-1">
+                    <small className="text-info">
+                      <FaEye className="me-1" size={10} />
+                      Produits directs seulement
+                    </small>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -386,7 +756,7 @@ export default function Products() {
                     Valeur du stock
                   </div>
                   <div className="fw-bold text-success fs-3">
-                    {totalValue.toFixed(2)}€
+                    {(categoryStats?.totalValue || totalValue).toFixed(2)}€
                   </div>
                 </div>
                 <div className="text-success opacity-25">
@@ -395,7 +765,10 @@ export default function Products() {
               </div>
               <div className="mt-2">
                 <small className="text-muted">
-                  {products.length > 0 ? ((totalValue / products.length) || 0).toFixed(2) : '0'}€/produit
+                  {categoryStats?.total 
+                    ? `${((categoryStats.totalValue || 0) / categoryStats.total).toFixed(2)}€/produit`
+                    : `${products.length > 0 ? ((totalValue / products.length) || 0).toFixed(2) : '0'}€/produit`
+                  }
                 </small>
               </div>
             </div>
@@ -411,11 +784,13 @@ export default function Products() {
                     Alertes Stock
                   </div>
                   <div className="fw-bold text-warning fs-3">
-                    {alertCount}
+                    {categoryStats 
+                      ? categoryStats.outOfStock + categoryStats.lowStock
+                      : alertCount
+                    }
                   </div>
                 </div>
                 <div className="position-relative">
-                  {/* Icône dans la carte stats */}
                   <img 
                     src="/notification.png" 
                     alt="Alertes" 
@@ -436,7 +811,10 @@ export default function Products() {
               </div>
               <div className="mt-2">
                 <small className="text-muted">
-                  {alertCounts.outOfStock} rupture • {alertCounts.lowStock} faible
+                  {categoryStats
+                    ? `${categoryStats.outOfStock} rupture • ${categoryStats.lowStock} faible`
+                    : `${alertCounts.outOfStock} rupture • ${alertCounts.lowStock} faible`
+                  }
                 </small>
               </div>
             </div>
@@ -452,7 +830,7 @@ export default function Products() {
                     Produits actifs
                   </div>
                   <div className="fw-bold text-info fs-3">
-                    {activeProductsCount}
+                    {categoryStats?.active || activeProductsCount}
                   </div>
                 </div>
                 <div className="text-info opacity-25">
@@ -461,7 +839,10 @@ export default function Products() {
               </div>
               <div className="mt-2">
                 <small className="text-muted">
-                  {products.length > 0 ? ((activeProductsCount / products.length) * 100).toFixed(1) : '0'}% actifs
+                  {categoryStats?.total 
+                    ? `${((categoryStats.active / categoryStats.total) * 100).toFixed(1)}% actifs`
+                    : `${products.length > 0 ? ((activeProductsCount / products.length) * 100).toFixed(1) : '0'}% actifs`
+                  }
                 </small>
               </div>
             </div>
@@ -503,7 +884,36 @@ export default function Products() {
               </select>
             </div>
             
+            {/* Sélecteur de sous-catégories */}
             <div className="col-md-3">
+              <select
+                className="form-select"
+                value={filters.subCategory}
+                onChange={(e) => handleFilterChange('subCategory', e.target.value)}
+                disabled={!filters.category}
+              >
+                <option value="">Toutes les sous-catégories</option>
+                {subCategories.map((subCategory) => (
+                  <option key={subCategory._id} value={subCategory._id}>
+                    {subCategory.icon} {subCategory.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            <div className="col-md-2">
+              <button
+                className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"
+                onClick={handleResetFilters}
+              >
+                <FaFilter className="me-2" />
+                Réinitialiser
+              </button>
+            </div>
+          </div>
+          
+          <div className="row g-3 mt-3">
+            <div className="col-md-4">
               <select
                 className="form-select"
                 value={filters.status}
@@ -514,61 +924,6 @@ export default function Products() {
                 <option value="inactive">Inactifs seulement</option>
               </select>
             </div>
-            
-            <div className="col-md-2">
-              <button
-                className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"
-                onClick={() => setFilters({
-                  search: "",
-                  category: "",
-                  status: "all",
-                  minPrice: "",
-                  maxPrice: "",
-                })}
-              >
-                <FaFilter className="me-2" />
-                Réinitialiser
-              </button>
-            </div>
-          </div>
-          
-          {/* Filtres avancés - Prix */}
-          <div className="row g-3 mt-3">
-            <div className="col-md-3">
-              <label className="form-label small text-muted mb-1">
-                Prix minimum
-              </label>
-              <div className="input-group">
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Min"
-                  value={filters.minPrice}
-                  onChange={(e) => handleFilterChange('minPrice', e.target.value)}
-                  min="0"
-                  step="0.01"
-                />
-                <span className="input-group-text">€</span>
-              </div>
-            </div>
-            
-            <div className="col-md-3">
-              <label className="form-label small text-muted mb-1">
-                Prix maximum
-              </label>
-              <div className="input-group">
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="Max"
-                  value={filters.maxPrice}
-                  onChange={(e) => handleFilterChange('maxPrice', e.target.value)}
-                  min="0"
-                  step="0.01"
-                />
-                <span className="input-group-text">€</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -578,9 +933,34 @@ export default function Products() {
         <div className="card-body">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <div>
-              <h6 className="mb-0 text-dark">Liste des Produits</h6>
+              <h6 className="mb-0 text-dark">
+                {categoryId ? (
+                  <div className="d-flex align-items-center">
+                    <FaLayerGroup className="me-2 text-primary" />
+                    <span>
+                      {viewDirectProductsOnly 
+                        ? "Produits de la catégorie" 
+                        : "Produits de la catégorie et sous-catégories"
+                      }
+                      {!viewDirectProductsOnly && allSubCategories.length > 0 && (
+                        <span className="badge bg-info ms-2">
+                          {allSubCategories.length} sous-catégorie(s)
+                        </span>
+                      )}
+                      {viewDirectProductsOnly && (
+                        <span className="badge bg-primary ms-2">
+                          Produits directs
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                ) : (
+                  "Liste des Produits"
+                )}
+              </h6>
               <small className="text-muted">
                 {filteredProducts.length} produit(s) trouvé(s)
+                {categoryId && ` (${viewDirectProductsOnly ? 'catégorie parent seulement' : 'catégorie parent et sous-catégories'})`}
               </small>
             </div>
             
@@ -591,17 +971,68 @@ export default function Products() {
             </div>
           </div>
           
-          <ProductList
-            products={filteredProducts}
-            onEdit={handleEditProduct}
-            onDelete={handleDeleteProduct}
-            loading={loading}
-            sortConfig={sortConfig}
-            onSort={handleSort}
-            selectedProducts={selectedProducts}
-            onSelectProduct={handleSelectProduct}
-            onSelectAll={handleSelectAll}
-          />
+          {loading ? (
+            <div className="text-center py-5">
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Chargement...</span>
+              </div>
+              <p className="mt-3 text-muted">
+                {categoryId 
+                  ? viewDirectProductsOnly 
+                    ? "Chargement des produits directs de la catégorie..." 
+                    : "Chargement des produits de la catégorie et sous-catégories..."
+                  : "Chargement des produits..."
+                }
+              </p>
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-5">
+              <FaLayerGroup className="text-muted mb-3" size={48} />
+              <h5 className="text-muted">
+                {categoryId 
+                  ? viewDirectProductsOnly
+                    ? "Aucun produit direct dans cette catégorie"
+                    : "Aucun produit dans cette catégorie et ses sous-catégories"
+                  : "Aucun produit trouvé"
+                }
+              </h5>
+              <p className="text-muted">
+                {categoryId 
+                  ? viewDirectProductsOnly
+                    ? "Commencez par ajouter un produit à cette catégorie"
+                    : "Commencez par ajouter un produit à cette catégorie ou ses sous-catégories"
+                  : "Commencez par créer votre premier produit"
+                }
+              </p>
+              <button
+                className="btn btn-primary"
+                onClick={handleAddNewProduct}
+              >
+                <FaPlus className="me-2" />
+                {categoryId ? "Ajouter un produit" : "Créer un produit"}
+              </button>
+              {categoryId && (
+                <button
+                  className="btn btn-outline-secondary ms-2"
+                  onClick={() => navigate('/products')}
+                >
+                  Voir tous les produits
+                </button>
+              )}
+            </div>
+          ) : (
+            <ProductList
+              products={filteredProducts}
+              onEdit={handleEditProduct}
+              onDelete={handleDeleteProduct}
+              loading={loading}
+              sortConfig={sortConfig}
+              onSort={handleSort}
+              selectedProducts={selectedProducts}
+              onSelectProduct={handleSelectProduct}
+              onSelectAll={handleSelectAll}
+            />
+          )}
         </div>
       </div>
 
@@ -630,6 +1061,7 @@ export default function Products() {
                   onSave={handleSaveProduct}
                   onCancel={handleCloseModal}
                   categories={categories}
+                  initialCategoryId={categoryId}
                 />
               </div>
             </div>
