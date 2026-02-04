@@ -587,11 +587,7 @@ export default function Products() {
                         </small>
                       </div>
                     )}
-                    {currentCategory?.description && (
-                      <p className="text-muted mb-0 mt-1">
-                        <small>{currentCategory.description}</small>
-                      </p>
-                    )}
+                    {/* Description de la catégorie masquée conformément à la demande */}
                   </div>
                 </div>
               </>
@@ -611,27 +607,7 @@ export default function Products() {
         
         <div className="d-flex align-items-center gap-3">
           {/* Bouton toggle pour basculer entre les modes (seulement en mode catégorie) */}
-          {categoryId && (
-            <div className="d-flex align-items-center me-2">
-              <div className="form-check form-switch">
-                <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="includeSubcategories"
-                  checked={!viewDirectProductsOnly}
-                  onChange={toggleViewMode}
-                />
-                <label 
-                  className="form-check-label small ms-2" 
-                  htmlFor="includeSubcategories"
-                  style={{ cursor: 'pointer', whiteSpace: 'nowrap' }}
-                  title="Inclure les produits des sous-catégories"
-                >
-                  Inclure sous-catégories
-                </label>
-              </div>
-            </div>
-          )}
+          {/* Bouton "Inclure sous-catégories" supprimé (gestion via la navigation) */}
           
           {/* Icône de notification */}
           <div className="position-relative">

@@ -106,7 +106,7 @@ export default function CategoryList({
             <div className="btn-group btn-group-sm">
               <Link
                 to={`/products/category/${category._id}`}
-                state={{ viewDirectProductsOnly: true }} 
+                state={{ viewDirectProductsOnly: false }} 
                 className="btn btn-outline-primary"
                 title="Voir les produits de cette catégorie"
               >
