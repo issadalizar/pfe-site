@@ -19,6 +19,12 @@ export default function StockAlertsPage() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  // Modal & état pour modification de stock
+  const [showStockModal, setShowStockModal] = useState(false);
+  const [stockModalProduct, setStockModalProduct] = useState(null);
+  const [stockValue, setStockValue] = useState("");
+  const [stockSaving, setStockSaving] = useState(false);
+
   useEffect(() => {
     fetchAlerts();
     
@@ -50,8 +56,21 @@ export default function StockAlertsPage() {
     fetchAlerts();
   };
 
-  const handleEditProduct = (productId) => {
-    navigate(`/products/edit/${productId}`);
+  const handleEditProduct = async (productId) => {
+    try {
+      // Charger le produit pour obtenir l'état le plus récent
+      setStockSaving(true);
+      const res = await productAPI.getById(productId);
+      const product = res.data.data;
+      setStockModalProduct(product);
+      setStockValue(product.stock !== undefined && product.stock !== null ? String(product.stock) : "");
+      setShowStockModal(true);
+    } catch (error) {
+      console.error("Erreur chargement produit:", error);
+      window.alert("Erreur lors du chargement du produit");
+    } finally {
+      setStockSaving(false);
+    }
   };
 
   return (
@@ -279,17 +298,11 @@ export default function StockAlertsPage() {
                       </td>
                       <td>
                         <button
-                          className="btn btn-sm btn-primary me-2"
+                          className="btn btn-sm btn-primary"
                           onClick={() => handleEditProduct(product._id)}
                         >
                           Réapprovisionner
                         </button>
-                        <Link 
-                          to={`/products/${product._id}`}
-                          className="btn btn-sm btn-outline-secondary"
-                        >
-                          Voir
-                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -372,17 +385,11 @@ export default function StockAlertsPage() {
                       </td>
                       <td>
                         <button
-                          className="btn btn-sm btn-warning me-2"
+                          className="btn btn-sm btn-warning"
                           onClick={() => handleEditProduct(product._id)}
                         >
                           Mettre à jour
                         </button>
-                        <Link 
-                          to={`/products/${product._id}`}
-                          className="btn btn-sm btn-outline-secondary"
-                        >
-                          Voir
-                        </Link>
                       </td>
                     </tr>
                   ))}
@@ -392,6 +399,53 @@ export default function StockAlertsPage() {
           )}
         </div>
       </div>
-    </div>
+
+      {/* Modal de modification de stock */}
+      {showStockModal && (
+        <>
+          <div className="modal show d-block" tabIndex="-1" role="dialog">
+            <div className="modal-dialog modal-dialog-centered" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Modifier le stock{stockModalProduct && ` - ${stockModalProduct.name}`}</h5>
+                  <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowStockModal(false)}></button>
+                </div>
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (stockValue === "" || isNaN(Number(stockValue)) || Number(stockValue) < 0 || !Number.isInteger(Number(stockValue))) {
+                    window.alert("Le stock doit être un entier >= 0");
+                    return;
+                  }
+                  try {
+                    setStockSaving(true);
+                    await productAPI.update(stockModalProduct._id, { stock: Number(stockValue) });
+                    window.alert("Stock mis à jour.");
+                    setShowStockModal(false);
+                    fetchAlerts();
+                  } catch (err) {
+                    console.error(err);
+                    window.alert("Erreur lors de la mise à jour du stock");
+                  } finally {
+                    setStockSaving(false);
+                  }
+                }}>
+                  <div className="modal-body">
+                    <div className="mb-3">
+                      <label htmlFor="stockInput" className="form-label">Stock</label>
+                      <input id="stockInput" className="form-control" type="number" min="0" step="1" value={stockValue} onChange={(e) => setStockValue(e.target.value)} />
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={() => setShowStockModal(false)} disabled={stockSaving}>Annuler</button>
+                    <button type="submit" className="btn btn-primary" disabled={stockSaving}>{stockSaving ? 'En cours...' : 'Enregistrer'}</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div className="modal-backdrop show"></div>
+        </>
+      )}
+
   );
 }

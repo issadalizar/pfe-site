@@ -31,6 +31,12 @@ export default function StockAlertsPage() {
   const [allProducts, setAllProducts] = useState([]);
   const navigate = useNavigate();
 
+  // Modal & état pour modification de stock
+  const [showStockModal, setShowStockModal] = useState(false);
+  const [stockModalProduct, setStockModalProduct] = useState(null);
+  const [stockValue, setStockValue] = useState("");
+  const [stockSaving, setStockSaving] = useState(false);
+
   useEffect(() => {
     fetchAlerts();
     
@@ -136,9 +142,21 @@ export default function StockAlertsPage() {
     fetchAlerts();
   };
 
-  const handleEditProduct = (product) => {
-    navigate(`/products/edit/${product._id}`);
-  };
+  const handleEditProduct = async (product) => {
+    try {
+      setStockSaving(true);
+      const res = await productAPI.getById(product._id);
+      const p = res.data.data;
+      setStockModalProduct(p);
+      setStockValue(p.stock !== undefined && p.stock !== null ? String(p.stock) : "");
+      setShowStockModal(true);
+    } catch (error) {
+      console.error("Erreur chargement produit:", error);
+      window.alert("Erreur lors du chargement du produit");
+    } finally {
+      setStockSaving(false);
+    }
+  }; 
 
   const handleViewProduct = (product) => {
     navigate(`/products/${product._id}`);
@@ -440,7 +458,6 @@ export default function StockAlertsPage() {
                   <ProductList
                     products={sortedOutOfStock}
                     onEdit={handleEditProduct}
-                    onView={handleViewProduct}
                     onDelete={handleDeleteProduct}
                     loading={false}
                     sortConfig={sortConfig}
@@ -492,7 +509,6 @@ export default function StockAlertsPage() {
                   <ProductList
                     products={sortedLowStock}
                     onEdit={handleEditProduct}
-                    onView={handleViewProduct}
                     onDelete={handleDeleteProduct}
                     loading={false}
                     sortConfig={sortConfig}
@@ -537,6 +553,54 @@ export default function StockAlertsPage() {
           </div>
         </div>
       )}
+
+      {/* Modal de modification de stock */}
+      {showStockModal && (
+        <>
+          <div className="modal show d-block" tabIndex="-1" role="dialog">
+            <div className="modal-dialog modal-dialog-centered" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Modifier le stock{stockModalProduct && ` - ${stockModalProduct.name}`}</h5>
+                  <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowStockModal(false)}></button>
+                </div>
+                <form onSubmit={async (e) => {
+                  e.preventDefault();
+                  if (stockValue === "" || isNaN(Number(stockValue)) || Number(stockValue) < 0 || !Number.isInteger(Number(stockValue))) {
+                    window.alert("Le stock doit être un entier >= 0");
+                    return;
+                  }
+                  try {
+                    setStockSaving(true);
+                    await productAPI.update(stockModalProduct._id, { stock: Number(stockValue) });
+                    window.alert("Stock mis à jour.");
+                    setShowStockModal(false);
+                    fetchAlerts();
+                  } catch (err) {
+                    console.error(err);
+                    window.alert("Erreur lors de la mise à jour du stock");
+                  } finally {
+                    setStockSaving(false);
+                  }
+                }}>
+                  <div className="modal-body">
+                    <div className="mb-3">
+                      <label htmlFor="stockInput" className="form-label">Stock</label>
+                      <input id="stockInput" className="form-control" type="number" min="0" step="1" value={stockValue} onChange={(e) => setStockValue(e.target.value)} />
+                    </div>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={() => setShowStockModal(false)} disabled={stockSaving}>Annuler</button>
+                    <button type="submit" className="btn btn-primary" disabled={stockSaving}>{stockSaving ? 'En cours...' : 'Enregistrer'}</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div className="modal-backdrop show"></div>
+        </>
+      )}
+
     </div>
   );
 }
