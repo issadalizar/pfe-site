@@ -446,6 +446,6 @@ export default function StockAlertsPage() {
           <div className="modal-backdrop show"></div>
         </>
       )}
-
+    </div>
   );
-}
+} 
