@@ -830,7 +830,7 @@ export default function Products() {
       <div className="card shadow-sm mb-4 border">
         <div className="card-body">
           <div className="row g-3">
-            <div className="col-md-4">
+            <div className="col-md-6">
               <div className="input-group">
                 <span className="input-group-text bg-white border-end-0">
                   <FaSearch className="text-muted" />
@@ -845,7 +845,7 @@ export default function Products() {
               </div>
             </div>
             
-            <div className="col-md-3">
+            <div className="col-md-4">
               <select
                 className="form-select"
                 value={filters.category}
@@ -859,25 +859,8 @@ export default function Products() {
                 ))}
               </select>
             </div>
-            
-            {/* Sélecteur de sous-catégories */}
-            <div className="col-md-3">
-              <select
-                className="form-select"
-                value={filters.subCategory}
-                onChange={(e) => handleFilterChange('subCategory', e.target.value)}
-                disabled={!filters.category}
-              >
-                <option value="">Toutes les sous-catégories</option>
-                {subCategories.map((subCategory) => (
-                  <option key={subCategory._id} value={subCategory._id}>
-                    {subCategory.icon} {subCategory.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            
-            <div className="col-md-2">
+
+            <div className="col-md-2 d-flex align-items-center">
               <button
                 className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"
                 onClick={handleResetFilters}
