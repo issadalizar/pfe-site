@@ -35,12 +35,6 @@ export default function Sidebar() {
       icon: <FaBox className="me-2" style={{ color: "#4dc0ff" }} />, 
       label: "Products" 
     },
-    
-    { 
-      path: "/users", 
-      icon: <FaUserCircle className="me-2" style={{ color: "#4dc0ff" }} />, 
-      label: "Clients" 
-    },
     { 
       path: "/admin", 
       icon: <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />, 
