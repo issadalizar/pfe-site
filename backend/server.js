@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 // Import des nouvelles routes
 import categoryRoutes from './routes/categories.js';
 import productRoutes from './routes/products.js';
+import contactRoutes from './routes/contact.js';
 import mongoose from 'mongoose';
 
 // Charger les variables d'environnement
@@ -64,6 +65,14 @@ app.get('/', (req, res) => {
         toggle: 'PATCH /api/users/:id/toggle',
         update: 'PUT /api/users/:id',
         delete: 'DELETE /api/users/:id'
+      },
+      contact: {
+        create: 'POST /api/contact',
+        list: 'GET /api/contact',
+        stats: 'GET /api/contact/stats',
+        getById: 'GET /api/contact/:id',
+        updateStatus: 'PATCH /api/contact/:id/status',
+        delete: 'DELETE /api/contact/:id'
       }
     }
   });
@@ -95,6 +104,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Gestion des erreurs 404 (doit être après toutes les routes)
 app.use((req, res) => {
@@ -126,7 +136,13 @@ app.use((req, res) => {
       'GET /api/users/:id',
       'PATCH /api/users/:id/toggle',
       'PUT /api/users/:id',
-      'DELETE /api/users/:id'
+      'DELETE /api/users/:id',
+      'POST /api/contact',
+      'GET /api/contact',
+      'GET /api/contact/stats',
+      'GET /api/contact/:id',
+      'PATCH /api/contact/:id/status',
+      'DELETE /api/contact/:id'
     ]
   });
 });

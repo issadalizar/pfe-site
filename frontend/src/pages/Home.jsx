@@ -92,9 +92,13 @@ const Home = () => {
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#contact">
+                <button 
+                  className="nav-link btn"
+                  onClick={() => navigate("/contact")}
+                  style={{ background: "none", border: "none", cursor: "pointer" }}
+                >
                   Contact
-                </a>
+                </button>
               </li>
             </ul>
             <button 
@@ -264,7 +268,10 @@ const Home = () => {
           <p className="lead mb-4">
             Contactez nos experts pour une consultation gratuite
           </p>
-          <button className="btn btn-light btn-lg px-5 fw-bold">
+          <button 
+            className="btn btn-light btn-lg px-5 fw-bold"
+            onClick={() => navigate("/contact")}
+          >
             Planifier une Démonstration
           </button>
         </div>

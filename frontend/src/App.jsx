@@ -10,12 +10,14 @@ import UsersPage from './pages/UsersPage';
 import AdminPage from './pages/AdminPage';
 import StockAlertsPage from "./pages/StockAlertsPage";
 import Home from './pages/Home';
+import Contact from './pages/Contact';
 
 function App() {
   return (
     <Routes>
       {/* Route Home - Sans Sidebar */}
       <Route path="/home" element={<Home />} />
+      <Route path="/contact" element={<Contact />} />
       
       {/* Routes Admin - Avec Sidebar */}
       <Route
