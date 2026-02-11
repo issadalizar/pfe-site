@@ -28,12 +28,12 @@ export default function Sidebar() {
     { 
       path: "/categories", 
       icon: <FaTags className="me-2" style={{ color: "#4dc0ff" }} />, 
-      label: "Catégories" 
+      label: "Categories" 
     },
     { 
       path: "/products", 
       icon: <FaBox className="me-2" style={{ color: "#4dc0ff" }} />, 
-      label: "Produits" 
+      label: "Products" 
     },
     
     { 
@@ -44,7 +44,7 @@ export default function Sidebar() {
     { 
       path: "/admin", 
       icon: <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />, 
-      label: "Admin" 
+      label: " Accounts " 
     },
   ];
 
