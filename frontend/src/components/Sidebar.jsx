@@ -103,7 +103,7 @@ export default function Sidebar() {
       {/* Footer */}
       <div className="p-3 border-top" style={{ borderColor: "rgba(255,255,255,0.1) !important" }}>
         <Link
-          to="/logout"
+          to="/home"
           className="nav-link d-flex align-items-center"
           style={{ 
             color: "#4dc0ff",
