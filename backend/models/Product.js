@@ -60,7 +60,7 @@ const productSchema = new mongoose.Schema(
       default: "",
     },
 
-    isActive: {
+    isActive: {//nbadalha isAvailable
       type: Boolean,
       default: true,
       index: true,

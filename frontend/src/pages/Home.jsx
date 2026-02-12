@@ -107,7 +107,7 @@ const Home = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
+      {/* Hero Section - CORRIGÉE */}
       <section className="hero-section bg-light py-5">
         <div className="container-fluid px-5">
           <div className="row align-items-center g-5">
@@ -125,17 +125,9 @@ const Home = () => {
               </div>
             </div>
             <div className="col-lg-6">
-              <div className="hero-image-placeholder">
-                <div className="d-flex align-items-center justify-content-center h-100">
-                    <div className="text-center d-flex flex-column h-100">
-                      <div className="hero-card-description d-flex align-items-center justify-content-center flex-column flex-grow-1">
-                        <p className="lead text-muted mb-0 text-center">
-                          Votre Partenaire Technologique pour l'Innovation
-                        </p>
-                        <p className="small text-muted mt-3">Équipements Technologiques</p>
-                      </div>
-                    </div>
-                </div>
+              {/* Placeholder vide pour une future image */}
+              <div className="hero-image-placeholder bg-transparent border-0">
+                {/* L'image sera ajoutée ici plus tard */}
               </div>
             </div>
           </div>

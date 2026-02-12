@@ -1,0 +1,829 @@
+// ProductDetails.jsx
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { 
+  FaArrowLeft, 
+  FaStar, 
+  FaCheck, 
+  FaCog, 
+  FaCube, 
+  FaRuler, 
+  FaTachometerAlt, 
+  FaWrench,
+  FaIndustry,
+  FaShieldAlt,
+  FaMicrochip,
+  FaBox,
+  FaDownload,
+  FaTimes,
+  FaEnvelope,
+  FaPhone,
+  FaBuilding,
+  FaUser,
+  FaFilePdf,
+  FaImage // Ajout de l'icône pour les images manquantes
+} from 'react-icons/fa';
+import { getProductDetails } from './productData';
+
+const ProductDetails = () => {
+  const { productName } = useParams();
+  const navigate = useNavigate();
+  const [selectedImage, setSelectedImage] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [showQuoteForm, setShowQuoteForm] = useState(false);
+  const [quoteSubmitted, setQuoteSubmitted] = useState(false);
+  const [imageErrors, setImageErrors] = useState({});
+  
+  // Formulaire de devis
+  const [quoteForm, setQuoteForm] = useState({
+    company: '',
+    name: '',
+    email: '',
+    phone: '',
+    quantity: 1,
+    message: '',
+    productTitle: ''
+  });
+
+  // Décoder le nom du produit depuis l'URL
+  const decodedProductName = decodeURIComponent(productName);
+  
+  // Récupérer les détails du produit
+  const productDetails = getProductDetails(decodedProductName);
+  
+  // Fonction pour gérer les erreurs de chargement d'images
+  const handleImageError = (imagePath) => {
+    console.log(`Erreur de chargement: ${imagePath}`);
+    setImageErrors(prev => ({
+      ...prev,
+      [imagePath]: true
+    }));
+  };
+
+  // Vérifier si une image est valide
+  const isValidImage = (imagePath) => {
+    return imagePath && !imageErrors[imagePath];
+  };
+
+  useEffect(() => {
+    if (productDetails) {
+      // Réinitialiser les erreurs d'images pour ce produit
+      setImageErrors({});
+      
+      // Trouver la première image valide
+      const firstValidImage = productDetails.images?.find(img => !imageErrors[img]);
+      setSelectedImage(firstValidImage || productDetails.images?.[0] || '');
+      
+      setLoading(false);
+      // Pré-remplir le formulaire avec le titre du produit
+      setQuoteForm(prev => ({
+        ...prev,
+        productTitle: productDetails.title
+      }));
+    } else {
+      setLoading(false);
+    }
+  }, [productDetails]);
+
+  // Fonction pour gérer l'ouverture du formulaire de devis
+  const handleRequestQuote = () => {
+    setShowQuoteForm(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  // Fonction pour fermer le formulaire de devis
+  const handleCloseQuoteForm = () => {
+    setShowQuoteForm(false);
+    document.body.style.overflow = 'auto';
+  };
+
+  // Fonction pour gérer les changements dans le formulaire
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setQuoteForm(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  // Fonction pour soumettre la demande de devis
+  const handleSubmitQuote = (e) => {
+    e.preventDefault();
+    
+    console.log('Demande de devis envoyée:', quoteForm);
+    
+    setQuoteSubmitted(true);
+    
+    setTimeout(() => {
+      setShowQuoteForm(false);
+      setQuoteSubmitted(false);
+      document.body.style.overflow = 'auto';
+      setQuoteForm(prev => ({
+        ...prev,
+        company: '',
+        name: '',
+        email: '',
+        phone: '',
+        quantity: 1,
+        message: ''
+      }));
+    }, 3000);
+  };
+
+  // Fonction pour générer un PDF (simulation)
+  const handleGeneratePDF = () => {
+    alert(`Génération du PDF pour ${productDetails.title}\n\nCette fonctionnalité sera bientôt disponible.`);
+  };
+
+  // Fonction pour obtenir l'icône selon le type de spécification
+  const getSpecIcon = (specKey) => {
+    if (specKey.includes('Moteur') || specKey.includes('broche') || specKey.includes('Vitesse')) 
+      return <FaTachometerAlt className="text-primary me-2" />;
+    if (specKey.includes('Vis') || specKey.includes('Guide') || specKey.includes('Rail') || specKey.includes('Course'))
+      return <FaRuler className="text-success me-2" />;
+    if (specKey.includes('Changeur') || specKey.includes('Magasin') || specKey.includes('Porte-outils'))
+      return <FaWrench className="text-warning me-2" />;
+    if (specKey.includes('Structure') || specKey.includes('Bâti') || specKey.includes('Banc'))
+      return <FaIndustry className="text-secondary me-2" />;
+    if (specKey.includes('Certification') || specKey.includes('Sécurité'))
+      return <FaShieldAlt className="text-info me-2" />;
+    if (specKey.includes('Système') || specKey.includes('Interface') || specKey.includes('Compatibilité'))
+      return <FaMicrochip className="text-danger me-2" />;
+    return <FaCog className="text-dark me-2" />;
+  };
+
+  const renderStars = (rating = 4.8) => {
+    return (
+      <div className="d-flex align-items-center gap-1 mb-3">
+        {[...Array(5)].map((_, i) => (
+          <FaStar
+            key={i}
+            size={18}
+            color={i < Math.floor(rating) ? "#ffc107" : "#e4e5e9"}
+          />
+        ))}
+        <span className="ms-2 text-dark fw-bold">{rating}/5</span>
+        <span className="text-muted ms-2">(12 avis)</span>
+      </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <div className="container py-5 text-center">
+        <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}>
+          <span className="visually-hidden">Chargement...</span>
+        </div>
+        <p className="mt-3">Chargement des détails du produit...</p>
+      </div>
+    );
+  }
+
+  if (!productDetails) {
+    return (
+      <div className="container py-5">
+        <div className="alert alert-warning">
+          <h4>Produit non trouvé</h4>
+          <p>Les détails pour "{decodedProductName}" ne sont pas encore disponibles.</p>
+          <button className="btn btn-primary" onClick={() => navigate(-1)}>
+            <FaArrowLeft className="me-2" /> Retour
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="product-details-page">
+      {/* Navigation */}
+      <div className="bg-light border-bottom">
+        <div className="container py-3">
+          <div className="d-flex align-items-center">
+            <button 
+              className="btn btn-link text-dark p-0 me-3" 
+              onClick={() => navigate(-1)}
+              style={{ textDecoration: 'none' }}
+            >
+              <FaArrowLeft size={20} />
+            </button>
+            <nav aria-label="breadcrumb">
+              <ol className="breadcrumb mb-0">
+                <li className="breadcrumb-item">
+                  <Link to="/home" className="text-decoration-none">Accueil</Link>
+                </li>
+                <li className="breadcrumb-item">
+                  <Link to="/shop" className="text-decoration-none">{productDetails.mainCategory}</Link>
+                </li>
+                <li className="breadcrumb-item">
+                  <Link to={`/shop/${productDetails.category}`} className="text-decoration-none">
+                    {productDetails.category}
+                  </Link>
+                </li>
+                <li className="breadcrumb-item active" aria-current="page">
+                  {productDetails.title}
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+
+      {/* Contenu principal */}
+      <div className="container py-5">
+        <div className="row g-5">
+          {/* Colonne gauche - Images */}
+          <div className="col-lg-6">
+            <div className="product-gallery">
+              {/* Image principale */}
+              <div className="main-image-container bg-light rounded-3 mb-3 d-flex align-items-center justify-content-center" 
+                   style={{ height: '400px', border: '1px solid #dee2e6' }}>
+                {isValidImage(selectedImage) ? (
+                  <img 
+                    src={selectedImage} 
+                    alt={productDetails.title}
+                    style={{ 
+                      maxWidth: '100%', 
+                      maxHeight: '100%', 
+                      objectFit: 'contain',
+                      padding: '20px'
+                    }}
+                    onError={() => handleImageError(selectedImage)}
+                  />
+                ) : (
+                  <div className="text-center p-4">
+                    <FaImage size={64} className="text-muted mb-3" />
+                    <h5 className="text-muted">{productDetails.title}</h5>
+                    <p className="text-muted small">Image non disponible</p>
+                  </div>
+                )}
+              </div>
+              
+              {/* Miniatures */}
+              {productDetails.images && productDetails.images.length > 0 && (
+                <div className="thumbnail-row d-flex gap-2 overflow-auto pb-2">
+                  {productDetails.images.map((img, index) => (
+                    <div 
+                      key={index}
+                      className={`thumbnail-item border rounded-3 d-flex align-items-center justify-content-center ${selectedImage === img && isValidImage(img) ? 'border-primary border-2' : ''}`}
+                      style={{ 
+                        width: '100px', 
+                        height: '100px', 
+                        cursor: isValidImage(img) ? 'pointer' : 'default',
+                        background: '#f8f9fa',
+                        opacity: isValidImage(img) ? 1 : 0.5
+                      }}
+                      onClick={() => isValidImage(img) && setSelectedImage(img)}
+                    >
+                      {isValidImage(img) ? (
+                        <img 
+                          src={img} 
+                          alt={`${productDetails.title} - ${index + 1}`}
+                          style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }}
+                          onError={() => handleImageError(img)}
+                        />
+                      ) : (
+                        <FaImage size={30} className="text-muted" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Colonne droite - Informations produit */}
+          <div className="col-lg-6">
+            <div className="product-info">
+              {/* Catégorie et badge */}
+              <div className="d-flex align-items-center gap-2 mb-3">
+                <span className="badge bg-primary">{productDetails.category}</span>
+                <span className="badge bg-secondary">{productDetails.mainCategory}</span>
+                <span className="badge bg-success">En stock</span>
+              </div>
+              
+              {/* Titre */}
+              <h1 className="display-6 fw-bold mb-3">{productDetails.title}</h1>
+              
+              {/* Évaluation */}
+              {renderStars(4.8)}
+              
+              {/* Description courte */}
+              <p className="lead mb-4">
+                {productDetails.fullDescription}
+              </p>
+              
+              {/* Caractéristiques principales */}
+              <div className="features-section bg-light p-4 rounded-3 mb-4">
+                <h5 className="fw-bold mb-3">
+                  <FaCheck className="text-success me-2" />
+                  Caractéristiques principales
+                </h5>
+                <ul className="list-unstyled mb-0">
+                  {productDetails.features.map((feature, index) => (
+                    <li key={index} className="mb-2 d-flex align-items-start">
+                      <FaCheck size={16} className="text-success me-2 mt-1 flex-shrink-0" />
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* Prix et actions */}
+              <div className="pricing-section bg-white p-4 rounded-3 border mb-4">
+                <div className="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span className="text-muted text-decoration-line-through me-2">
+                      {productDetails.price ? `${Math.round(productDetails.price * 1.2)}€` : 'Sur devis'}
+                    </span>
+                    <span className="display-6 fw-bold text-primary">
+                      {productDetails.price ? `${productDetails.price}€` : 'Prix sur demande'}
+                    </span>
+                  </div>
+                  <div className="d-flex gap-2">
+                    <button 
+                      className="btn btn-outline-primary"
+                      onClick={handleGeneratePDF}
+                      title="Télécharger la fiche technique PDF"
+                    >
+                      <FaFilePdf size={20} />
+                    </button>
+                    <button 
+                      className="btn btn-primary btn-lg px-5"
+                      onClick={handleRequestQuote}
+                    >
+                      Demander un devis
+                    </button>
+                  </div>
+                </div>
+                <p className="text-muted small mt-3 mb-0">
+                  <FaShieldAlt className="me-1" />
+                  Garantie 2 ans • Livraison express • Support technique inclus
+                </p>
+              </div>
+              
+              {/* Documents techniques */}
+              <div className="d-flex gap-3">
+                <button className="btn btn-outline-secondary">
+                  <FaDownload className="me-2" />
+                  Fiche technique
+                </button>
+                <button className="btn btn-outline-secondary">
+                  <FaDownload className="me-2" />
+                  Manuel d'utilisation
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Spécifications techniques détaillées */}
+        <div className="row mt-5">
+          <div className="col-12">
+            <div className="specifications-section">
+              <ul className="nav nav-tabs" id="productTab" role="tablist">
+                <li className="nav-item" role="presentation">
+                  <button className="nav-link active" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab">
+                    Spécifications techniques
+                  </button>
+                </li>
+                <li className="nav-item" role="presentation">
+                  <button className="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
+                    Description détaillée
+                  </button>
+                </li>
+              </ul>
+              
+              <div className="tab-content p-4 border border-top-0 rounded-bottom-3 bg-white" id="productTabContent">
+                {/* Onglet Spécifications */}
+                <div className="tab-pane fade show active" id="specs" role="tabpanel">
+                  <div className="row">
+                    <div className="col-md-6">
+                      <h5 className="fw-bold mb-3">Spécifications générales</h5>
+                      <table className="table table-borderless">
+                        <tbody>
+                          {Object.entries(productDetails.specifications || {}).map(([key, value], index) => (
+                            <tr key={index}>
+                              <td style={{ width: '40%' }} className="text-muted">
+                                {getSpecIcon(key)}
+                                {key}
+                              </td>
+                              <td className="fw-medium">{value}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="col-md-6">
+                      {productDetails.technicalSpecs && (
+                        <>
+                          <h5 className="fw-bold mb-3">Spécifications techniques avancées</h5>
+                          <table className="table table-borderless">
+                            <tbody>
+                              {Object.entries(productDetails.technicalSpecs).map(([key, value], index) => (
+                                <tr key={index}>
+                                  <td style={{ width: '40%' }} className="text-muted">
+                                    {getSpecIcon(key)}
+                                    {key}
+                                  </td>
+                                  <td className="fw-medium">{value}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Onglet Description détaillée */}
+                <div className="tab-pane fade" id="details" role="tabpanel">
+                  <h5 className="fw-bold mb-3">À propos de {productDetails.title}</h5>
+                  <p className="mb-4">{productDetails.fullDescription}</p>
+                  
+                  <h6 className="fw-bold mb-2">Applications pédagogiques</h6>
+                  <ul className="mb-4">
+                    <li>Formation initiale aux techniques d'usinage CNC</li>
+                    <li>Programmation avancée et optimisation des trajectoires</li>
+                    <li>Maintenance et dépannage des systèmes CNC</li>
+                    <li>Projets de fabrication numérique et prototypage</li>
+                  </ul>
+                  
+                  <h6 className="fw-bold mb-2">Avantages pour l'enseignement</h6>
+                  <ul className="mb-0">
+                    <li>Interface intuitive adaptée aux étudiants</li>
+                    <li>Documentation pédagogique complète incluse</li>
+                    <li>Support technique et formation des formateurs</li>
+                    <li>Conforme aux programmes d'enseignement technique</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Produits similaires */}
+        <div className="row mt-5">
+          <div className="col-12">
+            <h3 className="fw-bold mb-4">Produits similaires</h3>
+            <div className="row g-4">
+              <div className="col-md-3">
+                <div className="card h-100 border-0 shadow-sm">
+                  <div className="card-body text-center p-4">
+                    <FaCube size={48} className="text-primary mb-3" />
+                    <h6 className="fw-bold">De4-Pro (iKC4)</h6>
+                    <p className="small text-muted">Bench CNC Lathe</p>
+                    <button className="btn btn-sm btn-outline-primary mt-2">Voir</button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="card h-100 border-0 shadow-sm">
+                  <div className="card-body text-center p-4">
+                    <FaCube size={48} className="text-primary mb-3" />
+                    <h6 className="fw-bold">De6 (iKC6S)</h6>
+                    <p className="small text-muted">CNC Turning Machine</p>
+                    <button className="btn btn-sm btn-outline-primary mt-2">Voir</button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="card h-100 border-0 shadow-sm">
+                  <div className="card-body text-center p-4">
+                    <FaCube size={48} className="text-primary mb-3" />
+                    <h6 className="fw-bold">Fa4 (iKX1)</h6>
+                    <p className="small text-muted">CNC Milling Center</p>
+                    <button className="btn btn-sm btn-outline-primary mt-2">Voir</button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-3">
+                <div className="card h-100 border-0 shadow-sm">
+                  <div className="card-body text-center p-4">
+                    <FaCube size={48} className="text-primary mb-3" />
+                    <h6 className="fw-bold">ECO1</h6>
+                    <p className="small text-muted">5-axis Milling Machine</p>
+                    <button className="btn btn-sm btn-outline-primary mt-2">Voir</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* MODAL DE DEMANDE DE DEVIS */}
+      {showQuoteForm && (
+        <div className="quote-modal-overlay">
+          <div className="quote-modal">
+            <button className="quote-modal-close" onClick={handleCloseQuoteForm}>
+              <FaTimes />
+            </button>
+            
+            {quoteSubmitted ? (
+              <div className="quote-modal-success">
+                <div className="success-icon">
+                  <FaCheck size={48} />
+                </div>
+                <h3>Demande envoyée avec succès !</h3>
+                <p>Votre demande de devis pour <strong>{productDetails.title}</strong> a bien été reçue.</p>
+                <p className="text-muted">Notre équipe commerciale vous contactera sous 24h ouvrées.</p>
+              </div>
+            ) : (
+              <>
+                <div className="quote-modal-header">
+                  <h2>Demande de devis personnalisé</h2>
+                  <p className="text-muted">Pour : <strong>{productDetails.title}</strong></p>
+                </div>
+                
+                <form onSubmit={handleSubmitQuote} className="quote-modal-form">
+                  <div className="row">
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">
+                        <FaBuilding className="me-2" />
+                        Entreprise *
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="company"
+                        value={quoteForm.company}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Nom de votre entreprise"
+                      />
+                    </div>
+                    
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">
+                        <FaUser className="me-2" />
+                        Nom complet *
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="name"
+                        value={quoteForm.name}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Votre nom et prénom"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="row">
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">
+                        <FaEnvelope className="me-2" />
+                        Email professionnel *
+                      </label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        name="email"
+                        value={quoteForm.email}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="votre@email.com"
+                      />
+                    </div>
+                    
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">
+                        <FaPhone className="me-2" />
+                        Téléphone *
+                      </label>
+                      <input
+                        type="tel"
+                        className="form-control"
+                        name="phone"
+                        value={quoteForm.phone}
+                        onChange={handleInputChange}
+                        required
+                        placeholder="Votre numéro de téléphone"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="row">
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Quantité souhaitée *</label>
+                      <input
+                        type="number"
+                        className="form-control"
+                        name="quantity"
+                        value={quoteForm.quantity}
+                        onChange={handleInputChange}
+                        min="1"
+                        max="100"
+                        required
+                      />
+                    </div>
+                    
+                    <div className="col-md-6 mb-3">
+                      <label className="form-label">Prix unitaire</label>
+                      <input
+                        type="text"
+                        className="form-control bg-light"
+                        value={`${productDetails.price || 'Sur devis'}€`}
+                        disabled
+                        readOnly
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <label className="form-label">Message / Besoins spécifiques</label>
+                    <textarea
+                      className="form-control"
+                      name="message"
+                      value={quoteForm.message}
+                      onChange={handleInputChange}
+                      rows="4"
+                      placeholder="Précisez vos besoins : options, accessoires, délais, financement, etc."
+                    ></textarea>
+                  </div>
+                  
+                  <div className="quote-modal-footer">
+                    <div className="quote-modal-info">
+                      <FaShieldAlt className="text-primary me-2" />
+                      <small>Votre demande sera traitée par notre service commercial dans les plus brefs délais.</small>
+                    </div>
+                    <div className="quote-modal-actions">
+                      <button 
+                        type="button" 
+                        className="btn btn-outline-secondary me-2"
+                        onClick={handleCloseQuoteForm}
+                      >
+                        Annuler
+                      </button>
+                      <button type="submit" className="btn btn-primary">
+                        Envoyer la demande
+                      </button>
+                    </div>
+                  </div>
+                </form>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* CSS additionnel */}
+      <style jsx>{`
+        .product-details-page .breadcrumb {
+          background: transparent;
+        }
+        .product-details-page .thumbnail-item {
+          transition: all 0.2s;
+        }
+        .product-details-page .thumbnail-item:hover {
+          border-color: #0d6efd !important;
+          transform: scale(1.05);
+        }
+        .product-details-page .nav-tabs .nav-link {
+          color: #495057;
+          font-weight: 500;
+        }
+        .product-details-page .nav-tabs .nav-link.active {
+          color: #0d6efd;
+          font-weight: 600;
+        }
+        .product-details-page .table td {
+          padding: 0.75rem 0;
+          border-bottom: 1px solid #f1f1f1;
+        }
+        
+        /* Styles pour le modal de devis */
+        .quote-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1050;
+          padding: 20px;
+        }
+        
+        .quote-modal {
+          background: white;
+          border-radius: 12px;
+          width: 100%;
+          max-width: 800px;
+          max-height: 90vh;
+          overflow-y: auto;
+          position: relative;
+          padding: 30px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .quote-modal-close {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          background: none;
+          border: none;
+          font-size: 24px;
+          color: #6c757d;
+          cursor: pointer;
+          padding: 5px;
+          line-height: 1;
+          transition: color 0.2s;
+        }
+        
+        .quote-modal-close:hover {
+          color: #dc3545;
+        }
+        
+        .quote-modal-header {
+          margin-bottom: 25px;
+          padding-right: 30px;
+        }
+        
+        .quote-modal-header h2 {
+          font-size: 24px;
+          font-weight: 700;
+          color: #212529;
+          margin-bottom: 5px;
+        }
+        
+        .quote-modal-form .form-label {
+          font-weight: 600;
+          color: #495057;
+          margin-bottom: 5px;
+          display: flex;
+          align-items: center;
+        }
+        
+        .quote-modal-form .form-control {
+          border-radius: 8px;
+          border: 1px solid #ced4da;
+          padding: 10px 15px;
+        }
+        
+        .quote-modal-form .form-control:focus {
+          border-color: #0d6efd;
+          box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
+        }
+        
+        .quote-modal-footer {
+          margin-top: 20px;
+          padding-top: 20px;
+          border-top: 1px solid #dee2e6;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+        
+        .quote-modal-info {
+          color: #6c757d;
+          max-width: 60%;
+        }
+        
+        .quote-modal-actions .btn {
+          padding: 10px 25px;
+          border-radius: 8px;
+        }
+        
+        .quote-modal-success {
+          text-align: center;
+          padding: 40px 20px;
+        }
+        
+        .quote-modal-success .success-icon {
+          width: 80px;
+          height: 80px;
+          background: #28a745;
+          color: white;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 20px;
+        }
+        
+        @media (max-width: 768px) {
+          .quote-modal {
+            padding: 20px;
+          }
+          
+          .quote-modal-footer {
+            flex-direction: column;
+            gap: 15px;
+          }
+          
+          .quote-modal-info {
+            max-width: 100%;
+            text-align: center;
+          }
+        }
+      `}</style>
+    </div>
+  );
+};
+
+export default ProductDetails;

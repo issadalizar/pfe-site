@@ -10,12 +10,17 @@ import UsersPage from './pages/UsersPage';
 import AdminPage from './pages/AdminPage';
 import StockAlertsPage from "./pages/StockAlertsPage";
 import Home from './pages/Home';
+// AJOUTER CET IMPORT !!!
+import ProductDetails from './pages/ProductDetails';
 
 function App() {
   return (
     <Routes>
       {/* Route Home - Sans Sidebar */}
       <Route path="/home" element={<Home />} />
+      
+      {/* ✅ AJOUTER LA ROUTE PRODUCT DETAILS ICI - HORS ADMIN */}
+      <Route path="/product/:productName" element={<ProductDetails />} />
       
       {/* Routes Admin - Avec Sidebar */}
       <Route
@@ -49,20 +54,12 @@ function App() {
                     <Route path="/categories" element={<Categories />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/products/category/:categoryId" element={<Products />} />
-
                     <Route path="/users" element={<UsersPage />} /> 
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/stock-alerts" element={<StockAlertsPage />} />
                     
-                    
-                    <Route path="/admin" element={
-                      <div className="card">
-                        <div className="card-body text-center py-5">
-                          <h3>Administration</h3>
-                          <p className="text-muted">Page en cours de développement</p>
-                        </div>
-                      </div>
-                    } />
+                    {/* ❌ SUPPRIMER LA ROUTE D'ICI - ELLE EST DANS LA MAUVAISE SECTION */}
+                    {/* <Route path="/product/:productName" element={<ProductDetails />} /> */}
                     
                     {/* Route 404 - Page non trouvée */}
                     <Route path="*" element={
