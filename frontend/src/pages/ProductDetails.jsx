@@ -21,7 +21,9 @@ import {
   FaBuilding,
   FaUser,
   FaFilePdf,
-  FaImage // Ajout de l'icône pour les images manquantes
+  FaImage,
+  FaEye, // Ajout de l'icône pour voir spécifications
+  FaChartBar // Ajout de l'icône pour spécifications
 } from 'react-icons/fa';
 import { getProductDetails } from './productData';
 
@@ -33,6 +35,8 @@ const ProductDetails = () => {
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
+  // Nouvel état pour la modale des spécifications
+  const [showSpecsModal, setShowSpecsModal] = useState(false);
   
   // Formulaire de devis
   const [quoteForm, setQuoteForm] = useState({
@@ -94,6 +98,17 @@ const ProductDetails = () => {
   // Fonction pour fermer le formulaire de devis
   const handleCloseQuoteForm = () => {
     setShowQuoteForm(false);
+    document.body.style.overflow = 'auto';
+  };
+
+  // Fonctions pour la modale des spécifications
+  const handleOpenSpecsModal = () => {
+    setShowSpecsModal(true);
+    document.body.style.overflow = 'hidden';
+  };
+
+  const handleCloseSpecsModal = () => {
+    setShowSpecsModal(false);
     document.body.style.overflow = 'auto';
   };
 
@@ -376,93 +391,44 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Spécifications techniques détaillées */}
+        {/* Description détaillée avec bouton Voir spécifications */}
         <div className="row mt-5">
           <div className="col-12">
-            <div className="specifications-section">
-              <ul className="nav nav-tabs" id="productTab" role="tablist">
-                <li className="nav-item" role="presentation">
-                  <button className="nav-link active" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab">
-                    Spécifications techniques
-                  </button>
-                </li>
-                <li className="nav-item" role="presentation">
-                  <button className="nav-link" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab">
-                    Description détaillée
-                  </button>
-                </li>
+            <div className="description-section bg-white p-4 rounded-3 border">
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h4 className="fw-bold mb-0">Description détaillée</h4>
+                <button 
+                  className="btn btn-primary"
+                  onClick={handleOpenSpecsModal}
+                >
+                  <FaEye className="me-2" />
+                  Voir spécifications techniques
+                </button>
+              </div>
+              
+              <h6 className="fw-bold mb-2">À propos de {productDetails.title}</h6>
+              <p className="mb-4">{productDetails.fullDescription}</p>
+              
+              <h6 className="fw-bold mb-2">Applications pédagogiques</h6>
+              <ul className="mb-4">
+                <li>Formation initiale aux techniques d'usinage CNC</li>
+                <li>Programmation avancée et optimisation des trajectoires</li>
+                <li>Maintenance et dépannage des systèmes CNC</li>
+                <li>Projets de fabrication numérique et prototypage</li>
               </ul>
               
-              <div className="tab-content p-4 border border-top-0 rounded-bottom-3 bg-white" id="productTabContent">
-                {/* Onglet Spécifications */}
-                <div className="tab-pane fade show active" id="specs" role="tabpanel">
-                  <div className="row">
-                    <div className="col-md-6">
-                      <h5 className="fw-bold mb-3">Spécifications générales</h5>
-                      <table className="table table-borderless">
-                        <tbody>
-                          {Object.entries(productDetails.specifications || {}).map(([key, value], index) => (
-                            <tr key={index}>
-                              <td style={{ width: '40%' }} className="text-muted">
-                                {getSpecIcon(key)}
-                                {key}
-                              </td>
-                              <td className="fw-medium">{value}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
-                    <div className="col-md-6">
-                      {productDetails.technicalSpecs && (
-                        <>
-                          <h5 className="fw-bold mb-3">Spécifications techniques avancées</h5>
-                          <table className="table table-borderless">
-                            <tbody>
-                              {Object.entries(productDetails.technicalSpecs).map(([key, value], index) => (
-                                <tr key={index}>
-                                  <td style={{ width: '40%' }} className="text-muted">
-                                    {getSpecIcon(key)}
-                                    {key}
-                                  </td>
-                                  <td className="fw-medium">{value}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                </div>
-                
-                {/* Onglet Description détaillée */}
-                <div className="tab-pane fade" id="details" role="tabpanel">
-                  <h5 className="fw-bold mb-3">À propos de {productDetails.title}</h5>
-                  <p className="mb-4">{productDetails.fullDescription}</p>
-                  
-                  <h6 className="fw-bold mb-2">Applications pédagogiques</h6>
-                  <ul className="mb-4">
-                    <li>Formation initiale aux techniques d'usinage CNC</li>
-                    <li>Programmation avancée et optimisation des trajectoires</li>
-                    <li>Maintenance et dépannage des systèmes CNC</li>
-                    <li>Projets de fabrication numérique et prototypage</li>
-                  </ul>
-                  
-                  <h6 className="fw-bold mb-2">Avantages pour l'enseignement</h6>
-                  <ul className="mb-0">
-                    <li>Interface intuitive adaptée aux étudiants</li>
-                    <li>Documentation pédagogique complète incluse</li>
-                    <li>Support technique et formation des formateurs</li>
-                    <li>Conforme aux programmes d'enseignement technique</li>
-                  </ul>
-                </div>
-              </div>
+              <h6 className="fw-bold mb-2">Avantages pour l'enseignement</h6>
+              <ul className="mb-0">
+                <li>Interface intuitive adaptée aux étudiants</li>
+                <li>Documentation pédagogique complète incluse</li>
+                <li>Support technique et formation des formateurs</li>
+                <li>Conforme aux programmes d'enseignement technique</li>
+              </ul>
             </div>
           </div>
         </div>
 
-        {/* Produits similaires */}
+        {/* Section des produits similaires (conservée) */}
         <div className="row mt-5">
           <div className="col-12">
             <h3 className="fw-bold mb-4">Produits similaires</h3>
@@ -511,6 +477,80 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* MODAL DES SPÉCIFICATIONS TECHNIQUES */}
+      {showSpecsModal && (
+        <div className="specs-modal-overlay" onClick={handleCloseSpecsModal}>
+          <div className="specs-modal" onClick={(e) => e.stopPropagation()}>
+            <button className="specs-modal-close" onClick={handleCloseSpecsModal}>
+              <FaTimes />
+            </button>
+            
+            <div className="specs-modal-header">
+              <h2>
+                <FaChartBar className="me-2" />
+                Spécifications techniques
+              </h2>
+              <p className="text-muted">{productDetails.title}</p>
+            </div>
+            
+            <div className="specs-modal-body">
+              {/* Spécifications générales */}
+              {productDetails.specifications && Object.keys(productDetails.specifications).length > 0 && (
+                <div className="specs-section mb-4">
+                  <h5 className="fw-bold mb-3 pb-2 border-bottom">Spécifications générales</h5>
+                  <div className="specs-grid">
+                    {Object.entries(productDetails.specifications).map(([key, value], index) => (
+                      <div key={index} className="specs-item">
+                        <div className="specs-key">
+                          {getSpecIcon(key)}
+                          <span>{key}</span>
+                        </div>
+                        <div className="specs-value">{value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Spécifications techniques avancées */}
+              {productDetails.technicalSpecs && Object.keys(productDetails.technicalSpecs).length > 0 && (
+                <div className="specs-section mb-4">
+                  <h5 className="fw-bold mb-3 pb-2 border-bottom">Spécifications techniques avancées</h5>
+                  <div className="specs-grid">
+                    {Object.entries(productDetails.technicalSpecs).map(([key, value], index) => (
+                      <div key={index} className="specs-item">
+                        <div className="specs-key">
+                          {getSpecIcon(key)}
+                          <span>{key}</span>
+                        </div>
+                        <div className="specs-value">{value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Caractéristiques principales */}
+              {productDetails.features && productDetails.features.length > 0 && (
+                <div className="specs-section">
+                  <h5 className="fw-bold mb-3 pb-2 border-bottom">Caractéristiques principales</h5>
+                  <ul className="specs-features-list">
+                    {productDetails.features.map((feature, index) => (
+                      <li key={index}>
+                        <FaCheck className="text-success me-2" size={14} />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+            
+           
+          </div>
+        </div>
+      )}
 
       {/* MODAL DE DEMANDE DE DEVIS */}
       {showQuoteForm && (
@@ -681,21 +721,9 @@ const ProductDetails = () => {
           border-color: #0d6efd !important;
           transform: scale(1.05);
         }
-        .product-details-page .nav-tabs .nav-link {
-          color: #495057;
-          font-weight: 500;
-        }
-        .product-details-page .nav-tabs .nav-link.active {
-          color: #0d6efd;
-          font-weight: 600;
-        }
-        .product-details-page .table td {
-          padding: 0.75rem 0;
-          border-bottom: 1px solid #f1f1f1;
-        }
         
-        /* Styles pour le modal de devis */
-        .quote-modal-overlay {
+        /* Styles pour la modale de spécifications */
+        .specs-modal-overlay {
           position: fixed;
           top: 0;
           left: 0;
@@ -706,6 +734,150 @@ const ProductDetails = () => {
           align-items: center;
           justify-content: center;
           z-index: 1050;
+          padding: 20px;
+        }
+        
+        .specs-modal {
+          background: white;
+          border-radius: 12px;
+          width: 100%;
+          max-width: 900px;
+          max-height: 85vh;
+          overflow-y: auto;
+          position: relative;
+          padding: 30px;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        .specs-modal-close {
+          position: absolute;
+          top: 15px;
+          right: 15px;
+          background: none;
+          border: none;
+          font-size: 24px;
+          color: #6c757d;
+          cursor: pointer;
+          padding: 5px;
+          line-height: 1;
+          transition: color 0.2s;
+          z-index: 1;
+        }
+        
+        .specs-modal-close:hover {
+          color: #dc3545;
+        }
+        
+        .specs-modal-header {
+          margin-bottom: 25px;
+          padding-right: 30px;
+          border-bottom: 2px solid #f1f1f1;
+          padding-bottom: 15px;
+        }
+        
+        .specs-modal-header h2 {
+          font-size: 24px;
+          font-weight: 700;
+          color: #212529;
+          margin-bottom: 5px;
+          display: flex;
+          align-items: center;
+        }
+        
+        .specs-modal-body {
+          padding: 10px 0;
+        }
+        
+        .specs-section {
+          background: #f8f9fa;
+          padding: 20px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+        }
+        
+        .specs-section h5 {
+          color: #0d6efd;
+        }
+        
+        .specs-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 15px;
+        }
+        
+        .specs-item {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 15px;
+          background: white;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .specs-key {
+          display: flex;
+          align-items: center;
+          color: #495057;
+          font-weight: 500;
+          flex: 1;
+        }
+        
+        .specs-key span {
+          margin-left: 8px;
+        }
+        
+        .specs-value {
+          font-weight: 600;
+          color: #212529;
+          text-align: right;
+        }
+        
+        .specs-features-list {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+          gap: 10px;
+        }
+        
+        .specs-features-list li {
+          background: white;
+          padding: 10px 15px;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+        }
+        
+        .specs-modal-footer {
+          margin-top: 25px;
+          padding-top: 20px;
+          border-top: 1px solid #dee2e6;
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+        }
+        
+        .specs-modal-footer .btn {
+          padding: 10px 25px;
+          border-radius: 8px;
+        }
+        
+        /* Styles pour le modal de devis (inchangé) */
+        .quote-modal-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: rgba(0, 0, 0, 0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 1060;
           padding: 20px;
         }
         
@@ -807,6 +979,22 @@ const ProductDetails = () => {
         }
         
         @media (max-width: 768px) {
+          .specs-grid {
+            grid-template-columns: 1fr;
+          }
+          
+          .specs-features-list {
+            grid-template-columns: 1fr;
+          }
+          
+          .specs-modal-footer {
+            flex-direction: column;
+          }
+          
+          .specs-modal-footer .btn {
+            width: 100%;
+          }
+          
           .quote-modal {
             padding: 20px;
           }

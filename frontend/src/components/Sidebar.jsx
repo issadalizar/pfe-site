@@ -36,7 +36,7 @@ export default function Sidebar() {
       label: "Products" 
     },
     { 
-      path: "/admin", 
+      path: "/users", 
       icon: <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />, 
       label: " Accounts " 
     },

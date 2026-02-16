@@ -9,42 +9,27 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  article: {
+  email: {
     type: String,
-    required: true
+    required: false,
+    trim: true,
+    lowercase: true,
+    match: [/^\S+@\S+\.\S+$/, 'Format email invalide']
   },
-  description: {
+  adresse: {
     type: String,
-    required: true
+    required: false,
+    trim: true
   },
-  date: {
-    type: Date,
-    default: Date.now
-  },
-  facture_num: {
+  telephone: {
     type: String,
-    required: true
+    required: false,
+    trim: true
   },
-  quantite: {
-    type: Number,
-    required: true,
-    default: 1
+   isAdmin: {
+    type: Boolean,
+    default: false  // Par défaut, l'utilisateur n'est pas admin
   },
-  montant: {
-    type: Number,
-    required: true,
-    default: 0
-  },
-  role: {
-    type: String,
-    enum: ['user', 'admin', 'client'],
-    default: 'user'
-  },
-  dateCreation: {
-    type: Date,
-    default: Date.now
-  },
-  // AJOUTEZ CE CHAMP :
   actif: {
     type: Boolean,
     default: true  // Par défaut, le compte est actif

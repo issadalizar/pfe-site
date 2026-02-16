@@ -1,7 +1,9 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const SectorCard = ({ category, index, onClick }) => {
+const SectorCard = ({ category, index }) => {
+  const navigate = useNavigate();
   const colors = ["#0066cc", "#ff9900", "#0099ff", "#666666"];
   
   // Fonction pour obtenir l'icône basée sur le nom de la catégorie
@@ -15,10 +17,10 @@ const SectorCard = ({ category, index, onClick }) => {
     if (category.name === "MCP lab electronics") {
       return "🔬";
     }
-    return "🖥️"; // Icône par défaut
+    return "🖥️";
   };
 
-  // Fonction pour obtenir l'image du secteur basée sur le nom exact de la catégorie
+  // Fonction pour obtenir l'image du secteur
   const getSectorImage = () => {
     if (category.name === "CNC for Education") {
       return '/education.png';
@@ -36,12 +38,29 @@ const SectorCard = ({ category, index, onClick }) => {
   const sectorIcon = getSectorIcon();
   const [imageError, setImageError] = useState(false);
 
+  const handleCardClick = () => {
+    console.log("🖱️ Clic sur carte - Catégorie:", category.name);
+    console.log("🆔 ID:", category._id);
+    console.log("🔗 Navigation vers:", `/category/${category._id}`);
+    
+    // Navigation vers la page de catégorie
+    navigate(`/category/${category._id}`);
+  };
+
+  const handleLearnMoreClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log("🔗 En savoir plus - Catégorie:", category.name);
+    console.log("🆔 ID:", category._id);
+    navigate(`/category/${category._id}`);
+  };
+
   return (
     <div className="sector-card-wrapper h-100 d-flex flex-column">
       {/* Cadre avec l'image uniquement */}
       <div
         className="sector-card card border-0 position-relative overflow-hidden"
-        onClick={() => onClick && onClick(category._id)}
+        onClick={handleCardClick}
         style={{ 
           cursor: "pointer",
           height: "180px",
@@ -80,7 +99,7 @@ const SectorCard = ({ category, index, onClick }) => {
         )}
       </div>
 
-      {/* Informations à l'extérieur du cadre - fond transparent */}
+      {/* Informations à l'extérieur du cadre */}
       <div 
         className="sector-info p-3"
         style={{
@@ -103,11 +122,7 @@ const SectorCard = ({ category, index, onClick }) => {
           href="#" 
           className="text-decoration-none fw-bold d-inline-flex align-items-center"
           style={{ color: "#0066cc" }}
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            onClick && onClick(category._id);
-          }}
+          onClick={handleLearnMoreClick}
         >
           En savoir plus +
         </a>
@@ -123,7 +138,6 @@ SectorCard.propTypes = {
     description: PropTypes.string,
   }).isRequired,
   index: PropTypes.number.isRequired,
-  onClick: PropTypes.func,
 };
 
 export default SectorCard;

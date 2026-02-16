@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+
 // POST - Créer un nouvel utilisateur
 //req contient les données envoyées par le client (dans le corps de la requête)
 //res est utilisé pour envoyer une réponse au client
@@ -6,39 +7,43 @@ export const createUser = async (req, res) => {
   try {
     const { 
       client_code,      
-      client_name,      
-      role, 
-      article, 
-      description, 
-      date, 
-      facture_num,      
-      quantite, 
-      montant, 
+      client_name,
+      email,
+      adresse,
+      telephone,
+      isAdmin,          
       actif 
     } = req.body;
 
     // Validation des champs requis
-    if (!client_code || !client_name || !article || !facture_num || quantite === undefined || montant === undefined) {
+    if (!client_code || !client_name) {
       return res.status(400).json({ 
-        error: 'Les champs codeClient, nomClient, article, numeroFacture, quantite et montant sont requis' 
+        error: 'Les champs codeClient et nomClient sont requis' 
       });
     }
 
+    // Validation email si fourni
+    if (email) {
+      const emailRegex = /^\S+@\S+\.\S+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ 
+          error: 'Format d\'email invalide' 
+        });
+      }
+    }
+
     // Créer le nouvel utilisateur
-    // Dans createUser (userController.js) :
-const newUser = new User({
-  client_code: client_code.toUpperCase(),    // Mise en majuscules automatique parce que le schéma l'exige
-  client_name: client_name,                  
-  role: role || 'client', // Valeur par défaut 'client'
-  article,
-  description: description || '',
-  date: date ? new Date(date) : new Date(),
-  facture_num: facture_num,                  
-  quantite: Number(quantite),
-  montant: Number(montant),
-  actif: actif !== undefined ? actif : true, // Valeur par défaut true
-});
-// Enregistrer dans la base de données
+    const newUser = new User({
+      client_code: client_code.toUpperCase(),    // Mise en majuscules automatique
+      client_name: client_name,
+      email: email || '',
+      adresse: adresse || '',
+      telephone: telephone || '',
+      isAdmin: isAdmin !== undefined ? isAdmin : false, // Valeur par défaut false
+      actif: actif !== undefined ? actif : true, // Valeur par défaut true
+    });
+    
+    // Enregistrer dans la base de données
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (error) {
@@ -56,13 +61,60 @@ const newUser = new User({
 
 // POST - Créer plusieurs utilisateurs en masse (Bulk Create)
 export const bulkCreateUsers = async (req, res) => {
-  res.status(501).json({ message: 'Fonctionnalité non implémentée' });
+  try {
+    const users = req.body;
+    
+    if (!Array.isArray(users) || users.length === 0) {
+      return res.status(400).json({ 
+        error: 'Veuillez fournir un tableau d\'utilisateurs' 
+      });
+    }
+
+    // Validation des emails pour chaque utilisateur
+    for (const user of users) {
+      if (user.email) {
+        const emailRegex = /^\S+@\S+\.\S+$/;
+        if (!emailRegex.test(user.email)) {
+          return res.status(400).json({ 
+            error: `Format d'email invalide pour l'utilisateur ${user.client_name || 'inconnu'}` 
+          });
+        }
+      }
+    }
+
+    // Mise en majuscules des codes clients
+    const processedUsers = users.map(user => ({
+      ...user,
+      client_code: user.client_code?.toUpperCase(),
+      email: user.email || '',
+      adresse: user.adresse || '',
+      telephone: user.telephone || '',
+      isAdmin: user.isAdmin !== undefined ? user.isAdmin : false, // Remplacé 'role'
+      actif: user.actif !== undefined ? user.actif : true
+    }));
+
+    const savedUsers = await User.insertMany(processedUsers);
+    res.status(201).json({
+      message: `${savedUsers.length} utilisateurs créés avec succès`,
+      users: savedUsers
+    });
+  } catch (error) {
+    if (error.name === 'ValidationError') {
+      return res.status(400).json({ 
+        error: Object.values(error.errors).map(e => e.message).join(', ') 
+      });
+    }
+    res.status(500).json({ 
+      error: 'Erreur lors de la création en masse',
+      details: error.message 
+    });
+  }
 };
 
 // GET - Récupérer tous les utilisateurs
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().sort({ date: -1 });
+    const users = await User.find().sort({ dateCreation: -1 });
     res.json(users);
   } catch (error) {
     res.status(500).json({ 
@@ -97,14 +149,11 @@ export const updateUser = async (req, res) => {
   try {
     const { 
       client_code,      
-      client_name,      // ✅ Changé
-      role, 
-      article, 
-      description, 
-      date, 
-      facture_num,      // ✅ Changé
-      quantite, 
-      montant, 
+      client_name,
+      email,
+      adresse,
+      telephone,
+      isAdmin,           // Remplacé 'role' par 'isAdmin'
       actif
     } = req.body;
     
@@ -114,16 +163,23 @@ export const updateUser = async (req, res) => {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
+    // Validation email si fourni
+    if (email) {
+      const emailRegex = /^\S+@\S+\.\S+$/;
+      if (!emailRegex.test(email)) {
+        return res.status(400).json({ 
+          error: 'Format d\'email invalide' 
+        });
+      }
+    }
+
     // Mettre à jour les champs
     if (client_code) user.client_code = client_code.toUpperCase();
     if (client_name) user.client_name = client_name;
-    if (role) user.role = role;
-    if (article) user.article = article;
-    if (description !== undefined) user.description = description;
-    if (date) user.date = new Date(date);
-    if (facture_num) user.facture_num = facture_num;
-    if (quantite !== undefined) user.quantite = Number(quantite);
-    if (montant !== undefined) user.montant = Number(montant);
+    if (email !== undefined) user.email = email;
+    if (adresse !== undefined) user.adresse = adresse;
+    if (telephone !== undefined) user.telephone = telephone;
+    if (isAdmin !== undefined) user.isAdmin = isAdmin; // Remplacé 'role'
     if (actif !== undefined) user.actif = actif;
 
     const updatedUser = await user.save();

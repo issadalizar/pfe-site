@@ -2,34 +2,23 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaArrowRight, FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/fa";
 import { productAPI, categoryAPI } from "../services/api";
-import ProductCard from "../components/ProductCard";
 import SectorCard from "../components/SectorCard";
+import FeaturedProducts from "../components/FeaturedProducts";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/home.css";
+import { cncProductDetails } from "./productData";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [featuredProducts, setFeaturedProducts] = useState([]);
 
   useEffect(() => {
-    fetchProducts();
     fetchCategories();
+    loadFeaturedProducts();
   }, []);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await productAPI.getAll();
-      setProducts(response.data.data ? response.data.data.slice(0, 6) : []);
-    } catch (error) {
-      console.error("Erreur lors de la récupération des produits:", error);
-    } finally {
-      setLoadingProducts(false);
-    }
-  };
-
+  
   const fetchCategories = async () => {
     try {
       const response = await categoryAPI.getAll();
@@ -44,6 +33,26 @@ const Home = () => {
     } finally {
       setLoadingCategories(false);
     }
+  };
+  
+  // Fonction pour charger un produit de chaque catégorie
+  const loadFeaturedProducts = () => {
+    // Liste des produits qui existent DANS productData.js
+    const featured = [
+      cncProductDetails['De2-Ultra Mini CNC Turning Center'],
+      cncProductDetails['Fa2-Ultra Mini CNC Milling Center'],
+      cncProductDetails['De8 (iKC8) CNC Turning Machine'],
+      cncProductDetails['PX1 Baby CNC Milling Machine'],
+      cncProductDetails['DT-M002 – Mesure des Positions'],
+      cncProductDetails['PTL908-2H – High Voltage Safety Test Lead 10kV']
+    ].filter(product => product !== null && product !== undefined);
+    
+    console.log("Produits vedettes chargés:", featured);
+    setFeaturedProducts(featured);
+  };
+
+  const handleSectorClick = (categoryId, categoryName) => {
+    navigate(`/category/${categoryId}`);
   };
 
   const renderStars = (rating = 4.5) => {
@@ -82,8 +91,8 @@ const Home = () => {
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto gap-4">
               <li className="nav-item">
-                <a className="nav-link" href="#tendances">
-                  Produits
+                <a className="nav-link" href="#produits-vedettes">
+                  Produits vedettes
                 </a>
               </li>
               <li className="nav-item">
@@ -107,7 +116,7 @@ const Home = () => {
         </div>
       </nav>
 
-      {/* Hero Section - CORRIGÉE */}
+      {/* Hero Section */}
       <section className="hero-section bg-light py-5">
         <div className="container-fluid px-5">
           <div className="row align-items-center g-5">
@@ -125,7 +134,6 @@ const Home = () => {
               </div>
             </div>
             <div className="col-lg-6">
-              {/* Placeholder vide pour une future image */}
               <div className="hero-image-placeholder bg-transparent border-0">
                 {/* L'image sera ajoutée ici plus tard */}
               </div>
@@ -134,33 +142,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Produits en Tendance */}
-      <section id="tendances" className="py-5">
-        <div className="container-fluid px-5">
-          <div className="mb-5">
-            <h2 className="display-5 fw-bold mb-2">Tendances Actuelles</h2>
-            <p className="text-muted">Les produits les plus demandés</p>
-          </div>
-
-          {loadingProducts ? (
-            <div className="text-center py-5">
-              <div className="spinner-border text-primary" role="status">
-                <span className="visually-hidden">Chargement...</span>
-              </div>
-            </div>
-          ) : (
-            <div className="row g-4">
-              {products.map((product) => (
-                <div key={product._id} className="col-md-6 col-lg-4">
-                  <ProductCard 
-                    product={product} 
-                    onView={(id) => console.log("Voir produit:", id)}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      {/* Produits Vedettes */}
+      <section id="produits-vedettes">
+        <FeaturedProducts 
+          products={featuredProducts}
+          title="Nos Produits Iconiques"
+          subtitle="Une sélection de nos équipements les plus populaires"
+        />
       </section>
 
       {/* Secteurs d'Expertise */}
@@ -184,66 +172,12 @@ const Home = () => {
                   <SectorCard 
                     category={category} 
                     index={index}
-                    onClick={(id) => console.log("Voir secteur:", id)}
+                    onClick={() => handleSectorClick(category._id, category.name)}
                   />
                 </div>
               ))}
             </div>
           )}
-        </div>
-      </section>
-
-      {/* Témoignages */}
-      <section className="py-5">
-        <div className="container-fluid px-5">
-          <div className="mb-5">
-            <h2 className="display-5 fw-bold mb-2">Ce que nos clients disent</h2>
-            <p className="text-muted">Découvrez les avis de nos partenaires</p>
-          </div>
-
-          <div className="row g-4">
-            {[
-              {
-                name: "Ahmed Ben Ali",
-                company: "Tech Solutions SARL",
-                text: "UniverTechno+ a transformé notre infrastructure technologique. Un partenaire fiable!",
-                role: "Directeur Général",
-              },
-              {
-                name: "Fatima Zahra",
-                company: "Innovation Labs",
-                text: "Qualité exceptionnelle et support client impeccable. Hautement recommandé!",
-                role: "Responsable Projets",
-              },
-              {
-                name: "Mohamed Karim",
-                company: "Digital Future",
-                text: "Les solutions proposées dépassent nos attentes. Partenaires depuis 3 ans!",
-                role: "CTO",
-              },
-            ].map((testimonial, index) => (
-              <div key={index} className="col-md-6 col-lg-4">
-                <div className="card border-0 shadow-sm p-4">
-                  <div className="mb-3">{renderStars(5)}</div>
-                  <p className="card-text text-muted mb-4 fst-italic">
-                    "{testimonial.text}"
-                  </p>
-                  <div className="d-flex align-items-center gap-3">
-                    <div
-                      className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
-                      style={{ width: "45px", height: "45px" }}
-                    >
-                      <span className="fw-bold">{testimonial.name[0]}</span>
-                    </div>
-                    <div>
-                      <p className="mb-0 fw-bold">{testimonial.name}</p>
-                      <small className="text-muted">{testimonial.role}</small>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
 

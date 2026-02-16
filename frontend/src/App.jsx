@@ -7,30 +7,25 @@ import Dashboard from './pages/Dashboard';
 import Categories from './pages/Categories';
 import Products from './pages/Products';
 import UsersPage from './pages/UsersPage';
-import AdminPage from './pages/AdminPage';
 import StockAlertsPage from "./pages/StockAlertsPage";
 import Home from './pages/Home';
-// AJOUTER CET IMPORT !!!
 import ProductDetails from './pages/ProductDetails';
+import PublicCategoryPage from "./pages/PublicCategoryPage";
 
 function App() {
   return (
     <Routes>
-      {/* Route Home - Sans Sidebar */}
+      {/* ROUTES PUBLIQUES - SANS SIDEBAR */}
       <Route path="/home" element={<Home />} />
-      
-      {/* ✅ AJOUTER LA ROUTE PRODUCT DETAILS ICI - HORS ADMIN */}
       <Route path="/product/:productName" element={<ProductDetails />} />
+      <Route path="/category/:categoryId" element={<PublicCategoryPage />} /> {/* ✅ DÉPLACÉ ICI */}
       
-      {/* Routes Admin - Avec Sidebar */}
+      {/* ROUTES ADMIN - AVEC SIDEBAR */}
       <Route
         path="/*"
         element={
           <div className="d-flex vh-100 bg-light">
-            {/* Sidebar */}
             <Sidebar />
-            
-            {/* Main Content */}
             <div 
               className="flex-grow-1 d-flex flex-column"
               style={{ 
@@ -39,29 +34,21 @@ function App() {
                 transition: "margin-left 0.3s ease"
               }}
             >
-              {/* Header */}
               <Header />
-              
-              {/* Page Content */}
               <main className="flex-grow-1 p-4 overflow-auto">
                 <div className="container-fluid">
                   <Routes>
-                    {/* Redirection par défaut */}
                     <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                    
-                    {/* Routes principales */}
                     <Route path="/dashboard" element={<Dashboard />} />
                     <Route path="/categories" element={<Categories />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/products/category/:categoryId" element={<Products />} />
                     <Route path="/users" element={<UsersPage />} /> 
-                    <Route path="/admin" element={<AdminPage />} />
                     <Route path="/stock-alerts" element={<StockAlertsPage />} />
                     
-                    {/* ❌ SUPPRIMER LA ROUTE D'ICI - ELLE EST DANS LA MAUVAISE SECTION */}
-                    {/* <Route path="/product/:productName" element={<ProductDetails />} /> */}
+                    {/* ❌ SUPPRIMEZ LA ROUTE D'ICI MAINTENANT */}
+                    {/* <Route path="/category/:categoryId" element={<PublicCategoryPage />} /> */}
                     
-                    {/* Route 404 - Page non trouvée */}
                     <Route path="*" element={
                       <div className="card">
                         <div className="card-body text-center py-5">
@@ -74,8 +61,6 @@ function App() {
                   </Routes>
                 </div>
               </main>
-              
-              {/* Footer optionnel */}
               <footer className="border-top bg-white py-3 px-4">
                 <div className="d-flex justify-content-between align-items-center">
                   <small className="text-muted">
