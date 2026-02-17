@@ -4,6 +4,7 @@ import { FaArrowRight, FaMapMarkerAlt, FaPhone, FaEnvelope } from "react-icons/f
 import { productAPI, categoryAPI } from "../services/api";
 import SectorCard from "../components/SectorCard";
 import FeaturedProducts from "../components/FeaturedProducts";
+import ContactForm from "../components/ContactForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/home.css";
 import { cncProductDetails } from "./productData";
@@ -18,7 +19,7 @@ const Home = () => {
     fetchCategories();
     loadFeaturedProducts();
   }, []);
-  
+
   const fetchCategories = async () => {
     try {
       const response = await categoryAPI.getAll();
@@ -34,7 +35,7 @@ const Home = () => {
       setLoadingCategories(false);
     }
   };
-  
+
   // Fonction pour charger un produit de chaque catégorie
   const loadFeaturedProducts = () => {
     // Liste des produits qui existent DANS productData.js
@@ -46,7 +47,7 @@ const Home = () => {
       cncProductDetails['DT-M002 – Mesure des Positions'],
       cncProductDetails['PTL908-2H – High Voltage Safety Test Lead 10kV']
     ].filter(product => product !== null && product !== undefined);
-    
+
     console.log("Produits vedettes chargés:", featured);
     setFeaturedProducts(featured);
   };
@@ -73,7 +74,7 @@ const Home = () => {
       {/* Navigation */}
       <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
         <div className="container-fluid px-5">
-          <button 
+          <button
             className="navbar-brand fw-bold text-primary"
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
             style={{ background: "none", border: "none", cursor: "pointer" }}
@@ -106,7 +107,7 @@ const Home = () => {
                 </a>
               </li>
             </ul>
-            <button 
+            <button
               className="btn btn-primary ms-4"
               onClick={() => navigate("/dashboard")}
             >
@@ -144,7 +145,7 @@ const Home = () => {
 
       {/* Produits Vedettes */}
       <section id="produits-vedettes">
-        <FeaturedProducts 
+        <FeaturedProducts
           products={featuredProducts}
           title="Nos Produits Iconiques"
           subtitle="Une sélection de nos équipements les plus populaires"
@@ -169,8 +170,8 @@ const Home = () => {
             <div className="row g-4">
               {categories.map((category, index) => (
                 <div key={category._id} className="col-md-6 col-lg-3">
-                  <SectorCard 
-                    category={category} 
+                  <SectorCard
+                    category={category}
                     index={index}
                     onClick={() => handleSectorClick(category._id, category.name)}
                   />
@@ -196,8 +197,72 @@ const Home = () => {
         </div>
       </section>
 
+      {/* Contact Section */}
+      <section id="contact" className="py-5 bg-light">
+        <div className="container-fluid px-5">
+          <div className="row justify-content-center mb-5">
+            <div className="col-lg-8 text-center">
+              <h2 className="display-5 fw-bold mb-3">Contactez-nous</h2>
+              <p className="lead text-muted">
+                Notre équipe est à votre disposition pour répondre à toutes vos questions.
+              </p>
+            </div>
+          </div>
+
+          <div className="row g-5 align-items-center">
+            {/* Contact Info Column */}
+            <div className="col-lg-5">
+              <div className="pe-lg-5">
+                <h3 className="fw-bold mb-4 text-primary">Nos Coordonnées</h3>
+                <p className="mb-5 text-muted">
+                  N'hésitez pas à nous contacter pour toute demande d'information,
+                  d'assistance technique ou de partenariat.
+                </p>
+
+                <div className="d-flex align-items-start mb-4">
+                  <div className="icon-square bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
+                    <FaMapMarkerAlt size={24} />
+                  </div>
+                  <div>
+                    <h5 className="fw-bold mb-1">Notre Adresse</h5>
+                    <p className="text-muted mb-0">123 Rue de l'Innovation, Tunis, Tunisie</p>
+                  </div>
+                </div>
+
+                <div className="d-flex align-items-start mb-4">
+                  <div className="icon-square bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
+                    <FaPhone size={24} />
+                  </div>
+                  <div>
+                    <h5 className="fw-bold mb-1">Téléphone</h5>
+                    <p className="text-muted mb-0">+216 71 123 456</p>
+                    <small className="text-muted">Lun - Ven, 8h - 18h</small>
+                  </div>
+                </div>
+
+                <div className="d-flex align-items-start mb-4">
+                  <div className="icon-square bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
+                    <FaEnvelope size={24} />
+                  </div>
+                  <div>
+                    <h5 className="fw-bold mb-1">Email</h5>
+                    <p className="text-muted mb-0">contact@univertechno.tn</p>
+                    <p className="text-muted mb-0">support@univertechno.tn</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Form Column */}
+            <div className="col-lg-7">
+              <ContactForm />
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
-      <footer id="contact" className="bg-dark text-light py-5">
+      <footer className="bg-dark text-light py-5">
         <div className="container-fluid px-5">
           <div className="row g-5 mb-5">
             <div className="col-md-6 col-lg-3">
@@ -227,7 +292,7 @@ const Home = () => {
               </ul>
             </div>
             <div className="col-md-6 col-lg-3">
-              <h5 className="fw-bold mb-4">Contact</h5>
+              <h5 className="fw-bold mb-4">Retrouvez-nous</h5>
               <ul className="list-unstyled">
                 <li className="mb-2">
                   <FaMapMarkerAlt className="me-2" />
@@ -246,7 +311,7 @@ const Home = () => {
           </div>
 
           <hr className="bg-light opacity-25" />
-          
+
           <div className="row align-items-center">
             <div className="col-md-6">
               <p className="mb-0 text-light-emphasis">

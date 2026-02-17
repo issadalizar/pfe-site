@@ -20,12 +20,17 @@ export const categoryAPI = {
   getByParent: (parentId) => api.get(`/categories/parent/${parentId}`),
 };
 
+export const contactAPI = {
+  create: (data) => api.post('/contact', data),
+  getAll: () => api.get('/contact'),
+};
+
 // Produits
 export const productAPI = {
   getAll: () => api.get('/products'),
   getByCategory: (categoryId) => api.get(`/products/category/${categoryId}`),
   getById: (id) => api.get(`/products/${id}`),
-    // Méthodes CRUD
+  // Méthodes CRUD
   create: (data) => api.post('/products', data),
   update: (id, data) => api.put(`/products/${id}`, data),
   delete: (id) => api.delete(`/products/${id}`),

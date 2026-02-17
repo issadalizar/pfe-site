@@ -6,6 +6,7 @@ import userRoutes from './routes/userRoutes.js';
 // Import des nouvelles routes
 import categoryRoutes from './routes/categories.js';
 import productRoutes from './routes/products.js';
+import contactRoutes from './routes/contactRoutes.js';
 import mongoose from 'mongoose';
 
 // Charger les variables d'environnement
@@ -33,7 +34,7 @@ connectDB().catch((err) => {
 
 // Route racine (mise à jour avec les nouvelles routes)
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
     message: 'API Backend PFE - CNC Education',
     version: '2.0.0',
     endpoints: {
@@ -78,12 +79,12 @@ app.get('/api/health', (req, res) => {
     2: 'connexion en cours',
     3: 'déconnexion en cours'
   };
-  
+
   const dbState = mongoose.connection.readyState;
   const dbStatus = states[dbState] || 'inconnu';
-  
-  res.json({ 
-    status: 'OK', 
+
+  res.json({
+    status: 'OK',
     message: 'Serveur backend opérationnel',
     database: `MongoDB ${dbStatus}`,
     mongodbState: dbState,
@@ -95,10 +96,11 @@ app.get('/api/health', (req, res) => {
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/contact', contactRoutes);
 
 // Gestion des erreurs 404 (doit être après toutes les routes)
 app.use((req, res) => {
-  res.status(404).json({ 
+  res.status(404).json({
     success: false,
     error: 'Route non trouvée',
     path: req.originalUrl,

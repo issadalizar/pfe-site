@@ -74,8 +74,13 @@ export default function CategoryForm({
     }
   };
 
+  // Filtrer les parents disponibles selon le niveau sélectionné
+  // Niveau 2 -> besoin de parents niveau 1
+  // Niveau 3 -> besoin de parents niveau 2
+  const targetParentLevel = parseInt(formData.level) - 1;
+  
   const availableParents = categories.filter(cat => 
-    cat.level < 3 && 
+    cat.level === targetParentLevel && 
     cat._id !== (editingCategory?._id) // Ne pas s'inclure soi-même
   );
 

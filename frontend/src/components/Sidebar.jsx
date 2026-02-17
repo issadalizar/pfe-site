@@ -1,9 +1,9 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { 
-  FaHome, 
-  FaUsers, 
-  FaChartLine, 
+import {
+  FaHome,
+  FaUsers,
+  FaChartLine,
   FaSignOutAlt,
   FaBuilding,
   FaUserCircle,
@@ -20,32 +20,37 @@ export default function Sidebar() {
     location.pathname === path ? "active" : "";
 
   const menuItems = [
-    { 
-      path: "/dashboard", 
-      icon: <FaHome className="me-2" style={{ color: "#4dc0ff" }} />, 
-      label: "Dashboard" 
+    {
+      path: "/dashboard",
+      icon: <FaHome className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: "Dashboard"
     },
-    { 
-      path: "/categories", 
-      icon: <FaTags className="me-2" style={{ color: "#4dc0ff" }} />, 
-      label: "Categories" 
+    {
+      path: "/categories",
+      icon: <FaTags className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: "Categories"
     },
-    { 
-      path: "/products", 
-      icon: <FaBox className="me-2" style={{ color: "#4dc0ff" }} />, 
-      label: "Products" 
+    {
+      path: "/products",
+      icon: <FaBox className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: "Products"
     },
-    { 
-      path: "/users", 
-      icon: <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />, 
-      label: " Accounts " 
+    {
+      path: "/users",
+      icon: <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: " Accounts "
+    },
+    {
+      path: "/messages",
+      icon: <FaBell className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: "Messages"
     },
   ];
 
   return (
     <aside
       className="d-flex flex-column vh-100 position-fixed start-0 top-0 shadow"
-      style={{ 
+      style={{
         width: "250px",
         zIndex: 1000,
         background: "linear-gradient(180deg, #1e3c72 0%, #2a5298 100%)"
@@ -59,7 +64,7 @@ export default function Sidebar() {
             <span style={{ color: "#4dc0ff" }}>Administration  </span>
             <span style={{ color: "#ffffff" }}>Space</span>
           </h4>
-          
+
         </div>
       </div>
 
@@ -70,14 +75,14 @@ export default function Sidebar() {
             key={item.path}
             to={item.path}
             className={`nav-link d-flex align-items-center ${isActive(item.path)}`}
-            style={{ 
+            style={{
               borderRadius: "8px",
               transition: "all 0.3s",
-              backgroundColor: location.pathname === item.path 
-                ? "rgba(77, 192, 255, 0.2)" 
+              backgroundColor: location.pathname === item.path
+                ? "rgba(77, 192, 255, 0.2)"
                 : "transparent",
-              border: location.pathname === item.path 
-                ? "1px solid #4dc0ff" 
+              border: location.pathname === item.path
+                ? "1px solid #4dc0ff"
                 : "1px solid transparent",
               color: location.pathname === item.path ? "white" : "#e9ecef"
             }}
@@ -105,7 +110,7 @@ export default function Sidebar() {
         <Link
           to="/home"
           className="nav-link d-flex align-items-center"
-          style={{ 
+          style={{
             color: "#4dc0ff",
             borderRadius: "8px",
             transition: "all 0.3s"

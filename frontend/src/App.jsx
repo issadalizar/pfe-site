@@ -11,6 +11,7 @@ import StockAlertsPage from "./pages/StockAlertsPage";
 import Home from './pages/Home';
 import ProductDetails from './pages/ProductDetails';
 import PublicCategoryPage from "./pages/PublicCategoryPage";
+import AdminMessages from './pages/AdminMessages';
 
 function App() {
   return (
@@ -18,18 +19,18 @@ function App() {
       {/* ROUTES PUBLIQUES - SANS SIDEBAR */}
       <Route path="/home" element={<Home />} />
       <Route path="/product/:productName" element={<ProductDetails />} />
-      <Route path="/category/:categoryId" element={<PublicCategoryPage />} /> {/* ✅ DÉPLACÉ ICI */}
-      
+      <Route path="/category/:categoryId" element={<PublicCategoryPage />} />
+
       {/* ROUTES ADMIN - AVEC SIDEBAR */}
       <Route
         path="/*"
         element={
           <div className="d-flex vh-100 bg-light">
             <Sidebar />
-            <div 
+            <div
               className="flex-grow-1 d-flex flex-column"
-              style={{ 
-                marginLeft: "250px", 
+              style={{
+                marginLeft: "250px",
                 width: "calc(100% - 250px)",
                 transition: "margin-left 0.3s ease"
               }}
@@ -43,12 +44,10 @@ function App() {
                     <Route path="/categories" element={<Categories />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/products/category/:categoryId" element={<Products />} />
-                    <Route path="/users" element={<UsersPage />} /> 
+                    <Route path="/users" element={<UsersPage />} />
                     <Route path="/stock-alerts" element={<StockAlertsPage />} />
-                    
-                    {/* ❌ SUPPRIMEZ LA ROUTE D'ICI MAINTENANT */}
-                    {/* <Route path="/category/:categoryId" element={<PublicCategoryPage />} /> */}
-                    
+                    <Route path="/messages" element={<AdminMessages />} />
+
                     <Route path="*" element={
                       <div className="card">
                         <div className="card-body text-center py-5">

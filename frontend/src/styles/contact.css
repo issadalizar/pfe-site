@@ -1,0 +1,67 @@
+/* src/styles/contact.css */
+
+.contact-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.card-header-gradient {
+    background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+    padding: 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.card-header-gradient::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 20px;
+    height: 20px;
+    background: #0a58ca;
+    z-index: 1;
+}
+
+.btn-gradient {
+    background: linear-gradient(90deg, #0d6efd 0%, #0dcaf0 100%);
+    border: none;
+    color: white;
+}
+
+.btn-gradient:hover {
+    background: linear-gradient(90deg, #0b5ed7 0%, #0aa2c0 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(13, 202, 240, 0.3);
+    color: white;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+.form-floating>label {
+    padding-left: 1.5rem;
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
