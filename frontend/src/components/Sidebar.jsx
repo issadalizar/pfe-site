@@ -26,6 +26,11 @@ export default function Sidebar() {
       label: "Dashboard"
     },
     {
+      path: "/users",
+      icon: <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: " Accounts "
+    },
+    {
       path: "/categories",
       icon: <FaTags className="me-2" style={{ color: "#4dc0ff" }} />,
       label: "Categories"
@@ -34,11 +39,6 @@ export default function Sidebar() {
       path: "/products",
       icon: <FaBox className="me-2" style={{ color: "#4dc0ff" }} />,
       label: "Products"
-    },
-    {
-      path: "/users",
-      icon: <FaBuilding className="me-2" style={{ color: "#4dc0ff" }} />,
-      label: " Accounts "
     },
     {
       path: "/messages",

@@ -13,6 +13,8 @@ import ProductDetails from './pages/ProductDetails';
 import PublicCategoryPage from "./pages/PublicCategoryPage";
 import AdminMessages from './pages/AdminMessages';
 import ContactPage from './pages/ContactPage';
+import SectorPage from "./pages/SectorPage";
+
 
 function App() {
   return (
@@ -22,6 +24,7 @@ function App() {
       <Route path="/product/:productName" element={<ProductDetails />} />
       <Route path="/category/:categoryId" element={<PublicCategoryPage />} />
       <Route path="/contact" element={<ContactPage />} />
+       <Route path="/sector/:sectorId" element={<SectorPage />} />
 
       {/* ROUTES ADMIN - AVEC SIDEBAR */}
       <Route
@@ -49,7 +52,6 @@ function App() {
                     <Route path="/users" element={<UsersPage />} />
                     <Route path="/stock-alerts" element={<StockAlertsPage />} />
                     <Route path="/messages" element={<AdminMessages />} />
-
                     <Route path="*" element={
                       <div className="card">
                         <div className="card-body text-center py-5">

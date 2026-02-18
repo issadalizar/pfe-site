@@ -4,10 +4,16 @@ import {
   FaShoppingCart, FaUser, FaSearch, FaArrowRight, FaMapMarkerAlt, 
   FaPhone, FaEnvelope, FaLeaf, FaGem, FaHeart, FaTruck,
   FaStore, FaBars, FaCogs, FaCar, FaFlask, FaTimes,
-  FaChevronRight, FaStar, FaStarHalf, FaRegStar
+  FaChevronRight, FaStar, FaStarHalf, FaRegStar, FaRobot,
+  FaMicrochip, FaIndustry, FaGraduationCap, FaChartLine,
+  FaShieldAlt, FaHeadset, FaRocket, FaAward, FaCheckCircle,
+  FaQuoteRight, FaFacebook, FaLinkedin, FaTwitter, FaYoutube,
+  FaInstagram, FaAngleRight, FaPlay, FaRegClock, FaRegCalendar,
+  FaRegLightbulb, FaRegHandshake, FaRegPaperPlane, FaRegBell,
+  FaMapMarkedAlt
 } from "react-icons/fa";
 import { productAPI, categoryAPI } from "../services/api";
-import SectorCard from "../components/SectorCard";
+
 import FeaturedProducts from "../components/FeaturedProducts";
 import ContactForm from "../components/ContactForm";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -25,6 +31,9 @@ const Home = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState("");
 
   // Catégories principales pour le filtrage du catalogue
   const mainCategories = [
@@ -38,41 +47,115 @@ const Home = () => {
     "EDUCATION EQUIPMENT"
   ];
 
-  // Secteurs d'expertise
+  // Secteurs d'expertise enrichis
   const expertiseSectors = [
     {
       id: "cnc-education",
       name: "CNC for Education",
       displayName: "CNC for Education",
-      icon: <FaCogs size={24} />,
+      icon: <FaCogs size={28} />,
       color: "#4361ee",
+      gradient: "linear-gradient(135deg, #4361ee, #3a0ca3)",
       description: "Machines CNC pour l'enseignement et la formation professionnelle",
-      path: "/sector/cnc-education"
+      path: "/sector/cnc-education",
+      features: ["Formation pratique", "Simulation 3D", "Support pédagogique"],
+      stats: { projects: 150, clients: 45 }
     },
     {
       id: "voiture",
       name: "Voiture",
-      displayName: "Voiture",
-      icon: <FaCar size={24} />,
+      displayName: "Automotive",
+      icon: <FaCar size={28} />,
       color: "#f72585",
-      description: "Équipements didactiques pour l'automobile",
-      path: "/sector/voiture"
+      gradient: "linear-gradient(135deg, #f72585, #b5179e)",
+      description: "Équipements didactiques pour l'automobile et diagnostic",
+      path: "/sector/voiture",
+      features: ["Diagnostic avancé", "Simulation moteur", "Systèmes embarqués"],
+      stats: { projects: 98, clients: 32 }
     },
     {
       id: "mcp-lab",
       name: "MCP lab electronics",
-      displayName: "MCP lab electronics",
-      icon: <FaFlask size={24} />,
+      displayName: "Electronics Lab",
+      icon: <FaFlask size={28} />,
       color: "#4cc9f0",
-      description: "Matériel de laboratoire pour l'électronique",
-      path: "/sector/mcp-lab"
+      gradient: "linear-gradient(135deg, #4cc9f0, #4895ef)",
+      description: "Matériel de laboratoire pour l'électronique et l'instrumentation",
+      path: "/sector/mcp-lab",
+      features: ["Mesure précise", "Oscilloscopes", "Composants SMD"],
+      stats: { projects: 210, clients: 67 }
     }
+  ];
+
+  // Témoignages clients
+  const testimonials = [
+    {
+      id: 1,
+      name: "Dr. Ahmed Ben Mahmoud",
+      position: "Directeur, Institut Supérieur des Études Technologiques",
+      content: "UniverTechno+ a équipé nos laboratoires avec des machines CNC de dernière génération. La qualité des équipements et le support technique sont exceptionnels.",
+      rating: 5,
+      image: "https://randomuser.me/api/portraits/men/32.jpg"
+    },
+    {
+      id: 2,
+      name: "Sarra Khelifi",
+      position: "Responsable R&D, Tunisie Automotive",
+      content: "Les solutions de diagnostic automobile nous ont permis d'optimiser nos processus de contrôle qualité. Un partenaire fiable et innovant.",
+      rating: 5,
+      image: "https://randomuser.me/api/portraits/women/44.jpg"
+    },
+    {
+      id: 3,
+      name: "Mohamed Ali Bouaziz",
+      position: "Chef de projet, ENIT",
+      content: "La plateforme de simulation électronique a révolutionné notre façon d'enseigner. Les étudiants peuvent maintenant expérimenter en toute sécurité.",
+      rating: 4.5,
+      image: "https://randomuser.me/api/portraits/men/75.jpg"
+    }
+  ];
+
+  // Statistiques clés
+  const keyStats = [
+    { icon: <FaIndustry />, value: "500+", label: "Équipements installés" },
+    { icon: <FaGraduationCap />, value: "120+", label: "Institutions partenaires" },
+    { icon: <FaAward />, value: "15+", label: "Années d'expertise" },
+    { icon: <FaHeadset />, value: "24/7", label: "Support technique" }
   ];
 
   useEffect(() => {
     fetchCategories();
     loadAllProducts();
+    loadAllCategoriesForDebug();
+    
+    // Scroll to top button visibility
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 500);
+    };
+    window.addEventListener('scroll', handleScroll);
+    
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fonction pour charger toutes les catégories et afficher leurs IDs (pour debug)
+  const loadAllCategoriesForDebug = async () => {
+    try {
+      const response = await categoryAPI.getAll();
+      const cats = response.data.data || response.data || [];
+      console.log("📋 Toutes les catégories disponibles:");
+      console.log("======================================");
+      cats.forEach(cat => {
+        console.log(`- Nom: ${cat.name}`);
+        console.log(`  ID: ${cat._id}`);
+        console.log(`  Parent: ${cat.parent?.name || cat.parent || 'Aucun'}`);
+        console.log(`  Niveau: ${cat.level || 'Non spécifié'}`);
+        console.log("---");
+      });
+      console.log("======================================");
+    } catch (error) {
+      console.error("Erreur lors du chargement des catégories:", error);
+    }
+  };
 
   const fetchCategories = async () => {
     try {
@@ -91,11 +174,6 @@ const Home = () => {
 
   const loadAllProducts = () => {
     const products = Object.values(cncProductDetails);
-    console.log("📦 Tous les produits chargés:", products.length);
-    
-    const categories = [...new Set(products.map(p => p.mainCategory))];
-    console.log("📊 Catégories disponibles:", categories);
-    
     setAllProducts(products);
     
     const featured = [
@@ -111,6 +189,7 @@ const Home = () => {
   };
 
   const handleSectorClick = (sector) => {
+    console.log("🔍 Clic sur le secteur:", sector);
     navigate(sector.path);
   };
 
@@ -124,6 +203,16 @@ const Home = () => {
 
   const handleLoginClick = () => {
     navigate("/dashboard");
+  };
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleNewsletterSubmit = (e) => {
+    e.preventDefault();
+    alert("Merci de votre inscription à notre newsletter !");
+    setNewsletterEmail("");
   };
 
   const handleImageError = (productId) => {
@@ -207,12 +296,44 @@ const Home = () => {
     return text.substring(0, maxLength) + '...';
   };
 
+  const handleContactClick = () => {
+    navigate("/contact");
+  };
+
+  const handleLocationClick = () => {
+    window.open("https://www.google.com/maps/place/Univertechno/@35.6724336,10.1037157,17z/data=!3m1!4b1!4m6!3m5!1s0x12fdc50cb1c7e3d5:0xfd3f37fd908fff33!8m2!3d35.6724336!4d10.1037157!16s%2Fg%2F11tsd7jgzb?entry=ttu&g_ep=EgoyMDI2MDIxMS4wIKXMDSoASAFQAw%3D%3D", "_blank");
+  };
+
   return (
     <div className="home-page">
-      {/* Header - Style moderne et épuré */}
+      {/* Scroll to top button */}
+      {showScrollTop && (
+        <button
+          onClick={scrollToTop}
+          className="btn btn-primary rounded-circle position-fixed"
+          style={{
+            bottom: '30px',
+            right: '30px',
+            width: '50px',
+            height: '50px',
+            zIndex: 1050,
+            boxShadow: '0 4px 20px rgba(67, 97, 238, 0.4)',
+            border: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <FaArrowRight style={{ transform: 'rotate(-90deg)' }} />
+        </button>
+      )}
+
+      {/* Header */}
       <header className="py-3 sticky-top" style={{ 
-        backgroundColor: '#ffffff', 
-        boxShadow: '0 2px 20px rgba(0,0,0,0.05)',
+        backgroundColor: 'rgba(255,255,255,0.95)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 4px 30px rgba(0,0,0,0.03)',
+        borderBottom: '1px solid rgba(67, 97, 238, 0.1)',
         zIndex: 1030 
       }}>
         <div className="container">
@@ -220,158 +341,255 @@ const Home = () => {
             {/* Logo */}
             <div className="d-flex align-items-center">
               <div 
-                className="me-2 d-flex align-items-center justify-content-center"
+                className="me-3 d-flex align-items-center justify-content-center"
                 style={{ 
-                  width: '45px', 
-                  height: '45px', 
-                  background: 'linear-gradient(135deg, #4361ee, #3a0ca3)',
-                  borderRadius: '12px',
+                  width: '48px', 
+                  height: '48px', 
+                  background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                  borderRadius: '14px',
                   color: 'white',
-                  fontSize: '24px',
+                  fontSize: '26px',
                   cursor: 'pointer',
-                  transform: 'rotate(0deg)',
-                  transition: 'transform 0.3s ease'
+                  transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  boxShadow: '0 8px 20px rgba(67, 97, 238, 0.3)'
                 }}
-                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'rotate(5deg)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'rotate(0deg)'}
+                onClick={scrollToTop}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'rotate(5deg) scale(1.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'rotate(0deg) scale(1)';
+                }}
               >
                 <FaStore />
               </div>
               <div>
                 <h1 className="fw-bold mb-0" style={{ 
-                  fontSize: '1.5rem', 
-                  background: 'linear-gradient(135deg, #4361ee, #3a0ca3)',
+                  fontSize: '1.6rem', 
+                  background: 'linear-gradient(145deg, #1e293b, #0f172a)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  cursor: 'pointer' 
-                }} onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-                  UniverTechno+
+                  cursor: 'pointer',
+                  letterSpacing: '-0.5px'
+                }} onClick={scrollToTop}>
+                  UniVer<span style={{ color: '#4361ee', WebkitTextFillColor: '#4361ee' }}>Techno</span>+
                 </h1>
               </div>
             </div>
 
-            {/* Navigation - Centrée */}
+            {/* Navigation */}
             <div className="d-none d-lg-block">
-              <ul className="nav">
-                <li className="nav-item">
-                  <a className="nav-link fw-medium" href="#home" style={{ color: '#2b2d42' }}>Home</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link fw-medium" href="#products" style={{ color: '#2b2d42' }}>Products</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link fw-medium" href="#services" style={{ color: '#2b2d42' }}>Services</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link fw-medium" href="#about" style={{ color: '#2b2d42' }}>About</a>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link fw-medium" to="/contact" style={{ color: '#2b2d42' }}>Contact</Link>
-                </li>
+              <ul className="nav gap-2">
+                {[
+                  { name: 'Accueil', href: '#home' },
+                  { name: 'Produits', href: '#products' },
+                  { name: 'Expertise', href: '#services' },
+                  { name: 'À propos', href: '#about' },
+                  { name: 'Contact', href: '/contact' }
+                ].map((item, index) => (
+                  <li className="nav-item" key={index}>
+                    {item.href.startsWith('/') ? (
+                      <Link 
+                        className="nav-link fw-medium px-4 py-2 rounded-pill"
+                        to={item.href}
+                        style={{ color: '#334155', transition: 'all 0.3s ease' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
+                          e.currentTarget.style.color = '#4361ee';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#334155';
+                        }}
+                      >
+                        {item.name}
+                      </Link>
+                    ) : (
+                      <a 
+                        className="nav-link fw-medium px-4 py-2 rounded-pill"
+                        href={item.href}
+                        style={{ color: '#334155', transition: 'all 0.3s ease' }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
+                          e.currentTarget.style.color = '#4361ee';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.color = '#334155';
+                        }}
+                      >
+                        {item.name}
+                      </a>
+                    )}
+                  </li>
+                ))}
               </ul>
             </div>
 
-            {/* Search et Actions */}
+            {/* Actions */}
             <div className="d-flex align-items-center gap-3">
-              {/* Barre de recherche */}
+              {/* Recherche */}
               <div className="position-relative d-none d-md-block">
                 <input 
                   type="text" 
-                  className="form-control rounded-pill border-0 bg-light" 
-                  placeholder="Search..."
+                  className="form-control rounded-pill border-0 bg-light"
+                  placeholder="Rechercher un produit..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{ 
-                    width: "200px", 
-                    padding: '0.5rem 1rem 0.5rem 2.5rem',
-                    fontSize: '0.9rem'
+                    width: "240px", 
+                    padding: '0.6rem 1rem 0.6rem 2.8rem',
+                    fontSize: '0.95rem',
+                    backgroundColor: '#f8fafc',
+                    transition: 'all 0.3s ease',
+                    border: '1px solid transparent'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.backgroundColor = 'white';
+                    e.target.style.borderColor = '#4361ee';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(67, 97, 238, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.backgroundColor = '#f8fafc';
+                    e.target.style.borderColor = 'transparent';
+                    e.target.style.boxShadow = 'none';
                   }}
                 />
-                <FaSearch className="position-absolute" style={{ left: "15px", top: "12px", color: "#8d99ae", fontSize: '14px' }} />
+                <FaSearch className="position-absolute" style={{ 
+                  left: "18px", 
+                  top: "12px", 
+                  color: "#94a3b8", 
+                  fontSize: '16px',
+                  pointerEvents: 'none'
+                }} />
               </div>
 
-              {/* Icônes utilisateur et panier */}
-              <div 
-                className="rounded-circle d-flex align-items-center justify-content-center"
-                style={{ 
-                  backgroundColor: '#f8f9fa', 
-                  width: '40px', 
-                  height: '40px', 
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease'
-                }}
-                onClick={handleLoginClick}
-                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
-                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
-              >
-                <FaUser style={{ color: '#4361ee' }} />
-              </div>
-
-              <div className="position-relative">
+              {/* Icônes */}
+              <div className="d-flex align-items-center gap-2">
                 <div 
                   className="rounded-circle d-flex align-items-center justify-content-center"
                   style={{ 
-                    backgroundColor: '#f8f9fa', 
-                    width: '40px', 
-                    height: '40px', 
+                    backgroundColor: '#f8fafc', 
+                    width: '44px', 
+                    height: '44px', 
                     cursor: 'pointer',
-                    transition: 'all 0.3s ease'
+                    transition: 'all 0.3s ease',
+                    border: '1px solid transparent'
                   }}
-                  onClick={() => navigate("/cart")}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                  onClick={handleLoginClick}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#eef2ff';
+                    e.currentTarget.style.borderColor = '#4361ee';
+                    e.currentTarget.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#f8fafc';
+                    e.currentTarget.style.borderColor = 'transparent';
+                    e.currentTarget.style.transform = 'scale(1)';
+                  }}
                 >
-                  <FaShoppingCart style={{ color: '#4361ee' }} />
+                  <FaUser style={{ color: '#4361ee', fontSize: '18px' }} />
                 </div>
-                <span 
-                  className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-                  style={{ 
-                    backgroundColor: '#f72585', 
-                    fontSize: '10px',
-                    border: '2px solid white'
-                  }}
-                >
-                  3
-                </span>
+
+                <div className="position-relative">
+                  <div 
+                    className="rounded-circle d-flex align-items-center justify-content-center"
+                    style={{ 
+                      backgroundColor: '#f8fafc', 
+                      width: '44px', 
+                      height: '44px', 
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      border: '1px solid transparent'
+                    }}
+                    onClick={() => navigate("/cart")}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.backgroundColor = '#eef2ff';
+                      e.currentTarget.style.borderColor = '#4361ee';
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.backgroundColor = '#f8fafc';
+                      e.currentTarget.style.borderColor = 'transparent';
+                      e.currentTarget.style.transform = 'scale(1)';
+                    }}
+                  >
+                    <FaShoppingCart style={{ color: '#4361ee', fontSize: '18px' }} />
+                  </div>
+                  <span 
+                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+                    style={{ 
+                      backgroundColor: '#f72585', 
+                      fontSize: '11px',
+                      padding: '4px 6px',
+                      border: '2px solid white',
+                      fontWeight: '600'
+                    }}
+                  >
+                    3
+                  </span>
+                </div>
               </div>
 
               {/* Menu mobile */}
               <button 
                 className="btn d-lg-none p-0"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                style={{ color: '#4361ee' }}
+                style={{ 
+                  color: '#4361ee',
+                  width: '44px',
+                  height: '44px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#f8fafc',
+                  borderRadius: '50%'
+                }}
               >
-                {mobileMenuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+                {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
               </button>
             </div>
           </div>
 
-          {/* Menu mobile déroulant */}
+          {/* Menu mobile */}
           {mobileMenuOpen && (
-            <div className="d-lg-none mt-3 pb-2">
+            <div className="d-lg-none mt-3 pb-2" style={{ animation: 'slideDown 0.3s ease' }}>
               <ul className="nav flex-column">
-                <li className="nav-item">
-                  <a className="nav-link" href="#home" style={{ color: '#2b2d42' }}>Home</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#products" style={{ color: '#2b2d42' }}>Products</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#services" style={{ color: '#2b2d42' }}>Services</a>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" href="#about" style={{ color: '#2b2d42' }}>About</a>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" to="/contact" style={{ color: '#2b2d42' }}>Contact</Link>
-                </li>
+                {[
+                  { name: 'Accueil', href: '#home' },
+                  { name: 'Produits', href: '#products' },
+                  { name: 'Expertise', href: '#services' },
+                  { name: 'À propos', href: '#about' },
+                  { name: 'Contact', href: '/contact' }
+                ].map((item, index) => (
+                  <li className="nav-item" key={index}>
+                    {item.href.startsWith('/') ? (
+                      <Link 
+                        className="nav-link py-3"
+                        to={item.href}
+                        style={{ color: '#334155', borderBottom: '1px solid #e2e8f0' }}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    ) : (
+                      <a 
+                        className="nav-link py-3"
+                        href={item.href}
+                        style={{ color: '#334155', borderBottom: '1px solid #e2e8f0' }}
+                        onClick={() => setMobileMenuOpen(false)}
+                      >
+                        {item.name}
+                      </a>
+                    )}
+                  </li>
+                ))}
               </ul>
               <div className="mt-3">
                 <input 
                   type="text" 
-                  className="form-control rounded-pill bg-light border-0" 
-                  placeholder="Search..."
+                  className="form-control rounded-pill bg-light border-0 py-3"
+                  placeholder="Rechercher..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -381,202 +599,248 @@ const Home = () => {
         </div>
       </header>
 
-      {/* Hero Section - Design épuré avec image à droite */}
-      <section id="home" className="py-5" style={{ 
-        background: 'linear-gradient(120deg, #3a8dde 0%, #4361ee 50%, #3a0ca3 100%)',
-        minHeight: '600px',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-        color: '#fff'
+      {/* Hero Section */}
+      <section id="home" className="position-relative overflow-hidden" style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(145deg, #0b1120 0%, #1a237e 50%, #283593 100%)',
       }}>
-        <div className="container">
-          <div className="row align-items-center">
-            <div className="col-lg-6">
-              <div className="hero-content">
-                <span className="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-4" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 600 }}>
-                  Bienvenue chez UniverTechno+
+        <div className="position-absolute w-100 h-100" style={{
+          background: 'radial-gradient(circle at 30% 50%, rgba(67, 97, 238, 0.15) 0%, transparent 50%)',
+          animation: 'pulse 8s infinite'
+        }}></div>
+        <div className="position-absolute w-100 h-100" style={{
+          background: 'radial-gradient(circle at 70% 30%, rgba(247, 37, 133, 0.1) 0%, transparent 50%)',
+          animation: 'pulse 12s infinite reverse'
+        }}></div>
+
+        <div className="container h-100 position-relative" style={{ zIndex: 2 }}>
+          <div className="row align-items-center min-vh-100">
+            <div className="col-lg-12 text-white text-center" style={{ animation: 'fadeInUp 1s ease' }}>
+              <div className="mb-4">
+                <span className="badge px-4 py-2 rounded-pill" style={{
+                  background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                  boxShadow: '0 10px 30px rgba(67, 97, 238, 0.3)',
+                  fontSize: '0.9rem',
+                  fontWeight: '500',
+                  letterSpacing: '0.5px',
+                  border: '1px solid rgba(255,255,255,0.1)'
+                }}>
+                  <FaRocket className="me-2" style={{ fontSize: '14px' }} />
+                  INNOVATION TECHNOLOGIQUE
                 </span>
-                <h1 className="display-3 fw-bold mb-4" style={{ 
-                  fontSize: '3.5rem', 
-                  lineHeight: '1.2',
-                  background: 'linear-gradient(90deg, #fff 60%, #b3cfff 100%)',
+              </div>
+              
+              <h1 className="display-3 fw-bold mb-4" style={{
+                lineHeight: '1.2',
+                textShadow: '0 4px 30px rgba(0,0,0,0.3)'
+              }}>
+                Façonnez l'avenir avec{' '}
+                <span style={{
+                  background: 'linear-gradient(120deg, #64b5f6, #c084fc, #f72585)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
-                  color: '#fff',
-                  textShadow: '0 2px 8px rgba(58,12,163,0.10)'
+                  backgroundSize: '200% auto',
+                  animation: 'gradient 3s linear infinite'
                 }}>
-                  Découvrez l'excellence technologique<br />au service de l'éducation et de l'industrie
-                </h1>
-                <p className="lead mb-4" style={{ fontSize: '1.15rem', color: '#e0e7ff', maxWidth: '500px', textShadow: '0 1px 4px rgba(67,97,238,0.10)' }}>
-                  Solutions innovantes, équipements de pointe et accompagnement sur-mesure pour vos projets pédagogiques et industriels.
-                </p>
-                <div className="d-flex gap-3">
-                  <button 
-                    className="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-medium shadow"
-                    style={{ 
-                      background: 'linear-gradient(120deg, #3a8dde, #4361ee 60%, #3a0ca3)',
-                      border: 'none',
-                      color: '#fff',
-                      boxShadow: '0 10px 30px rgba(67, 97, 238, 0.25)'
-                    }}
-                  >
-                    Contactez-nous
-                  </button>
-                  <button 
-                    className="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-medium"
-                    style={{ borderColor: '#fff', color: '#fff', background: 'rgba(255,255,255,0.08)' }}
-                  >
-                    Découvrir
-                  </button>
-                </div>
-              </div>
-            </div>
-            <div className="col-lg-6">
-              <div className="position-relative" style={{
-                perspective: '1000px'
+                  l'excellence
+                </span>
+                <br />technologique
+              </h1>
+              
+              <p className="lead mb-5" style={{
+                fontSize: '1.25rem',
+                color: 'rgba(255,255,255,0.9)',
+                maxWidth: '700px',
+                margin: '0 auto',
+                lineHeight: '1.6'
               }}>
-                {/* Image principale */}
-                <div style={{
-                  position: 'relative',
-                  width: '100%',
-                  height: '500px',
-                  borderRadius: '30px',
-                  overflow: 'hidden',
-                  boxShadow: '0 10px 40px rgba(58,12,163,0.10), 0 2px 20px rgba(67,97,238,0.10)'
-                }}>
-                  <img 
-                    src="/image.png" 
-                    alt="UniverTechno+" 
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      display: 'block',
-                      filter: 'brightness(0.95) saturate(1.1)'
-                    }}
-                  />
-                  {/* Overlay dégradé bleu */}
-                  <div style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    background: 'linear-gradient(120deg, rgba(67,97,238,0.25) 0%, rgba(58,12,163,0.18) 100%)',
-                    pointerEvents: 'none'
-                  }}></div>
-                </div>
+                Équipements de pointe pour l'éducation et l'industrie. 
+                Solutions sur-mesure, support expert et innovation continue.
+              </p>
+              
+              <div className="d-flex flex-wrap gap-4 justify-content-center">
+                <button 
+                  className="btn btn-lg px-5 py-3 rounded-pill"
+                  onClick={handleContactClick}
+                  style={{
+                    background: 'linear-gradient(120deg, #4361ee, #3a0ca3)',
+                    border: 'none',
+                    color: 'white',
+                    fontWeight: '600',
+                    boxShadow: '0 20px 40px rgba(67, 97, 238, 0.3)',
+                    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
+                    e.currentTarget.style.boxShadow = '0 30px 50px rgba(67, 97, 238, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(67, 97, 238, 0.3)';
+                  }}
+                >
+                  Contactez-nous
+                </button>
                 
-                {/* Éléments décoratifs */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-30px',
-                  right: '-30px',
-                  width: '180px',
-                  height: '180px',
-                  background: 'linear-gradient(135deg, #3a8dde33 0%, #4361ee22 100%)',
-                  borderRadius: '50%',
-                  zIndex: -1
-                }}></div>
-                <div style={{
-                  position: 'absolute',
-                  bottom: '-40px',
-                  left: '-40px',
-                  width: '220px',
-                  height: '220px',
-                  background: 'linear-gradient(135deg, #3a0ca322 0%, #4361ee11 100%)',
-                  borderRadius: '50%',
-                  zIndex: -1
-                }}></div>
+                <button 
+                  className="btn btn-lg px-5 py-3 rounded-pill"
+                  onClick={handleLocationClick}
+                  style={{
+                    background: 'rgba(255,255,255,0.1)',
+                    backdropFilter: 'blur(10px)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    color: 'white',
+                    fontWeight: '600',
+                    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
+                    e.currentTarget.style.transform = 'translateY(-3px) scale(1.02)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.1)';
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                  }}
+                >
+                  <FaMapMarkedAlt className="me-2" style={{ fontSize: '14px' }} />
+                  Localisation
+                </button>
               </div>
             </div>
           </div>
         </div>
+
+        <style jsx>{`
+          @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+          }
+          @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+          }
+          @keyframes pulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+          }
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+        `}</style>
       </section>
 
-      {/* Nos Secteurs Section - Design en cartes modernes */}
-      <section id="services" className="py-5 position-relative" style={{ background: 'linear-gradient(120deg, #e7f0ff 0%, #f8faff 100%)' }}>
-        {/* Section divider */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '40px',
-          background: 'linear-gradient(180deg, #4361ee22 0%, transparent 100%)',
-          zIndex: 1
-        }} />
+      {/* Secteurs d'expertise */}
+      <section id="services" className="py-6" style={{
+        background: 'linear-gradient(145deg, #f8fafc 0%, #f1f5f9 100%)'
+      }}>
         <div className="container">
           <div className="text-center mb-5">
-            <h2 className="display-5 fw-bold mb-3" style={{ color: '#2b2d42' }}>Nos Secteurs d'Expertise</h2>
-            <p className="text-muted" style={{ maxWidth: '600px', margin: '0 auto' }}>
-              Des solutions complètes pour chaque domaine d'expertise
+            <span className="badge px-4 py-2 rounded-pill mb-3" style={{
+              background: 'linear-gradient(145deg, #4361ee20, #3a0ca320)',
+              color: '#4361ee',
+              fontWeight: '600'
+            }}>
+              NOTRE EXPERTISE
+            </span>
+            <h2 className="display-4 fw-bold mb-3" style={{ color: '#0f172a' }}>
+              Solutions par secteur
+            </h2>
+            <p className="text-muted" style={{ maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
+              Des solutions complètes et adaptées à chaque domaine d'application
             </p>
           </div>
 
           <div className="row g-4">
             {expertiseSectors.map((sector, index) => (
-              <div key={index} className="col-md-4">
+              <div key={index} className="col-lg-4">
                 <div 
-                  className="card h-100 border-0 rounded-4 overflow-hidden glass-card"
-                  style={{ 
+                  className="card h-100 border-0 rounded-4 overflow-hidden"
+                  style={{
+                    background: 'white',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.02)',
+                    transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
                     cursor: 'pointer',
-                    boxShadow: '0 10px 40px 0 #4361ee22',
-                    background: 'rgba(255,255,255,0.75)',
-                    backdropFilter: 'blur(8px)',
-                    border: '1.5px solid #e7f0ff',
-                    transition: 'all 0.3s cubic-bezier(.4,2,.3,1)',
+                    border: '1px solid rgba(67, 97, 238, 0.1)'
                   }}
                   onClick={() => handleSectorClick(sector)}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-10px) scale(1.03)';
-                    e.currentTarget.style.boxShadow = '0 24px 60px #4361ee33';
+                    e.currentTarget.style.transform = 'translateY(-10px)';
+                    e.currentTarget.style.boxShadow = '0 40px 80px rgba(67, 97, 238, 0.15)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                    e.currentTarget.style.boxShadow = '0 10px 40px 0 #4361ee22';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(0,0,0,0.02)';
                   }}
                 >
+                  <div style={{
+                    height: '6px',
+                    background: sector.gradient,
+                    width: '100%'
+                  }}></div>
+                  
                   <div className="card-body p-4">
                     <div className="d-flex align-items-center gap-3 mb-4">
-                      <div 
-                        className="icon-container rounded-3 d-flex align-items-center justify-content-center"
-                        style={{ 
-                          background: `linear-gradient(135deg, ${sector.color}20, ${sector.color}10)`,
-                          width: '60px',
-                          height: '60px',
-                          color: sector.color
-                        }}
-                      >
+                      <div style={{
+                        width: '70px',
+                        height: '70px',
+                        background: `${sector.color}15`,
+                        borderRadius: '18px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: sector.color,
+                        fontSize: '30px'
+                      }}>
                         {sector.icon}
                       </div>
-                      <h5 className="fw-bold mb-0 animated-gradient-text" style={{
-                        background: `linear-gradient(90deg, ${sector.color}, #3a8dde 80%)`,
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                        color: sector.color,
-                        letterSpacing: '0.5px',
-                        fontWeight: 700
-                      }}>{sector.displayName}</h5>
+                      <div>
+                        <h4 className="fw-bold mb-1" style={{ color: '#0f172a' }}>
+                          {sector.displayName}
+                        </h4>
+                        <div className="d-flex gap-3">
+                          <small style={{ color: '#64748b' }}>
+                            <FaChartLine className="me-1" />
+                            {sector.stats.projects} projets
+                          </small>
+                          <small style={{ color: '#64748b' }}>
+                            <FaHeadset className="me-1" />
+                            {sector.stats.clients} clients
+                          </small>
+                        </div>
+                      </div>
                     </div>
-                    <p className="text-muted mb-4" style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>
+
+                    <p className="text-muted mb-4" style={{ lineHeight: '1.6' }}>
                       {sector.description}
                     </p>
+
+                    <div className="mb-4">
+                      {sector.features.map((feature, idx) => (
+                        <div key={idx} className="d-flex align-items-center gap-2 mb-2">
+                          <FaCheckCircle style={{ color: sector.color, fontSize: '14px' }} />
+                          <small style={{ color: '#334155' }}>{feature}</small>
+                        </div>
+                      ))}
+                    </div>
+
                     <div className="d-flex justify-content-between align-items-center">
-                      <span className="fw-medium" style={{ color: '#2b2d42' }}>Découvrir</span>
-                      <div 
-                        className="rounded-circle d-flex align-items-center justify-content-center"
-                        style={{ 
-                          width: '35px', 
-                          height: '35px',
-                          backgroundColor: `${sector.color}15`,
-                          color: sector.color,
-                          transition: 'all 0.3s ease'
-                        }}
-                      >
-                        <FaChevronRight size={14} />
+                      <span className="fw-medium" style={{ color: sector.color }}>
+                        Explorer le secteur
+                      </span>
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        background: `${sector.color}15`,
+                        borderRadius: '12px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        color: sector.color,
+                        transition: 'all 0.3s ease'
+                      }}>
+                        <FaArrowRight size={14} />
                       </div>
                     </div>
                   </div>
@@ -587,45 +851,50 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Catalogue Section - Avec grille de produits */}
-      <section id="products" className="py-5 position-relative" style={{ background: 'linear-gradient(120deg, #f8faff 0%, #e7f0ff 100%)' }}>
-        {/* Section divider */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '40px',
-          background: 'linear-gradient(180deg, #3a8dde22 0%, transparent 100%)',
-          zIndex: 1
-        }} />
+      {/* Catalogue produits */}
+      <section id="products" className="py-6">
         <div className="container">
           <div className="text-center mb-5">
-            <h2 className="display-5 fw-bold mb-3" style={{ color: '#2b2d42' }}>Catalogue Complet</h2>
-            <p className="text-muted" style={{ maxWidth: '600px', margin: '0 auto' }}>
-              Découvrez notre gamme complète d'équipements professionnels
+            <span className="badge px-4 py-2 rounded-pill mb-3" style={{
+              background: 'linear-gradient(145deg, #f7258520, #b5179e20)',
+              color: '#f72585',
+              fontWeight: '600'
+            }}>
+              CATALOGUE
+            </span>
+            <h2 className="display-4 fw-bold mb-3" style={{ color: '#0f172a' }}>
+              Équipements professionnels
+            </h2>
+            <p className="text-muted" style={{ maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
+              Découvrez notre gamme complète de solutions technologiques
             </p>
           </div>
-          
-          <div className="row">
-            {/* Filtres à gauche */}
-            <div className="col-lg-3 mb-4">
-              <div className="bg-white p-4 rounded-4 border-0" style={{ boxShadow: '0 10px 30px rgba(0,0,0,0.03)' }}>
+
+          {/* Filtres */}
+          <div className="row mb-5">
+            <div className="col-lg-3 mb-4 mb-lg-0">
+              <div className="bg-white p-4 rounded-4 border" style={{
+                borderColor: 'rgba(67, 97, 238, 0.1) !important',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.02)'
+              }}>
                 <div className="mb-4">
                   <div 
-                    className="d-flex align-items-center justify-content-between p-3 rounded-3 cursor-pointer"
+                    className="d-flex align-items-center justify-content-between p-3 rounded-3"
                     style={{ 
-                      cursor: 'pointer', 
-                      backgroundColor: selectedCategory === "All products" ? '#4361ee' : '#f8f9fa',
-                      color: selectedCategory === "All products" ? 'white' : '#2b2d42',
-                      transition: 'all 0.3s ease'
+                      cursor: 'pointer',
+                      background: selectedCategory === "All products" ? 'linear-gradient(145deg, #4361ee, #3a0ca3)' : '#f8fafc',
+                      color: selectedCategory === "All products" ? 'white' : '#334155',
+                      transition: 'all 0.3s ease',
+                      border: selectedCategory === "All products" ? 'none' : '1px solid #e2e8f0'
                     }}
                     onClick={() => handleCategoryFilter("All products")}
                   >
                     <span className="fw-medium">Tous les produits</span>
                     <span className="badge" style={{ 
-                      backgroundColor: selectedCategory === "All products" ? 'rgba(255,255,255,0.2)' : '#e9ecef',
-                      color: selectedCategory === "All products" ? 'white' : '#2b2d42'
+                      background: selectedCategory === "All products" ? 'rgba(255,255,255,0.2)' : '#e9ecef',
+                      color: selectedCategory === "All products" ? 'white' : '#334155',
+                      padding: '6px 10px',
+                      borderRadius: '8px'
                     }}>
                       {allProducts.length}
                     </span>
@@ -633,7 +902,7 @@ const Home = () => {
                 </div>
 
                 <div>
-                  <h6 className="fw-bold mb-3" style={{ color: '#2b2d42' }}>Catégories</h6>
+                  <h6 className="fw-bold mb-3" style={{ color: '#0f172a' }}>Catégories</h6>
                   <div className="d-flex flex-column gap-2">
                     {mainCategories.map((cat, index) => {
                       if (cat === "All products") return null;
@@ -644,14 +913,18 @@ const Home = () => {
                           href="#" 
                           className="text-decoration-none d-flex align-items-center justify-content-between p-3 rounded-3"
                           style={{ 
-                            color: selectedCategory === cat ? '#4361ee' : '#6c757d',
-                            backgroundColor: selectedCategory === cat ? '#e7f0ff' : 'transparent',
-                            transition: 'all 0.3s ease'
+                            color: selectedCategory === cat ? '#4361ee' : '#64748b',
+                            background: selectedCategory === cat ? '#eef2ff' : 'transparent',
+                            transition: 'all 0.3s ease',
+                            border: '1px solid',
+                            borderColor: selectedCategory === cat ? '#4361ee' : 'transparent'
                           }}
                           onClick={(e) => { e.preventDefault(); handleCategoryFilter(cat); }}
                         >
-                          <span className="small">{cat}</span>
-                          <small className="text-muted">({count})</small>
+                          <span className="small fw-medium">{cat}</span>
+                          <small style={{ color: selectedCategory === cat ? '#4361ee' : '#94a3b8' }}>
+                            ({count})
+                          </small>
                         </a>
                       );
                     })}
@@ -660,67 +933,121 @@ const Home = () => {
               </div>
             </div>
 
-            {/* Grille de produits à droite */}
+            {/* Grille de produits */}
             <div className="col-lg-9">
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                  <h4 className="fw-bold mb-1" style={{ color: '#2b2d42' }}>
+                  <h4 className="fw-bold mb-1" style={{ color: '#0f172a' }}>
                     {selectedCategory === "All products" ? "Tous les produits" : selectedCategory}
                   </h4>
+                  <small className="text-muted">
+                    {filteredProducts.length} produits disponibles
+                  </small>
                 </div>
-                <span className="small text-muted">
-                  {filteredProducts.length} produits trouvés
-                </span>
+                <select className="form-select w-auto rounded-pill" style={{
+                  borderColor: '#e2e8f0',
+                  padding: '0.6rem 2rem 0.6rem 1rem',
+                  fontSize: '0.95rem'
+                }}>
+                  <option>Trier par : Popularité</option>
+                  <option>Prix croissant</option>
+                  <option>Prix décroissant</option>
+                  <option>Nouveautés</option>
+                </select>
               </div>
 
               <div className="row g-4">
                 {filteredProducts.slice(0, 12).map((product, index) => (
-                  <div key={index} className="col-md-6 col-lg-4">
+                  <div key={index} className="col-md-6 col-xl-4">
                     <div 
-                      className="card h-100 border-0 rounded-4 overflow-hidden glass-card"
+                      className="card h-100 border-0 rounded-4 overflow-hidden"
                       onClick={() => handleProductClick(product)}
                       style={{ 
                         cursor: "pointer",
-                        boxShadow: '0 8px 32px #3a8dde22',
-                        background: 'rgba(255,255,255,0.82)',
-                        backdropFilter: 'blur(6px)',
-                        border: '1.5px solid #e7f0ff',
-                        transition: 'all 0.3s cubic-bezier(.4,2,.3,1)'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.025)';
-                        e.currentTarget.style.boxShadow = '0 24px 60px #3a8dde33';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                        e.currentTarget.style.boxShadow = '0 8px 32px #3a8dde22';
+                        background: 'white',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.02)',
+                        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                        border: '1px solid rgba(67, 97, 238, 0.1)'
                       }}
                     >
-                      <div className="product-image p-3 text-center bg-light">
-                        <img 
-                          src={product.images?.[0] || "/images/placeholder.png"}
-                          alt={product.title}
-                          className="img-fluid"
-                          style={{ height: "150px", objectFit: "contain" }}
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = `https://via.placeholder.com/150/e9ecef/4361ee?text=${encodeURIComponent(product.title.substring(0, 20))}`;
-                          }}
-                        />
+                      <div className="position-relative">
+                        <div className="product-image p-4 text-center" style={{
+                          background: 'linear-gradient(145deg, #f8fafc, #f1f5f9)',
+                          height: '200px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}>
+                          <img 
+                            src={product.images?.[0] || "/images/placeholder.png"}
+                            alt={product.title}
+                            className="img-fluid"
+                            style={{ 
+                              height: "150px", 
+                              objectFit: "contain",
+                              transition: 'transform 0.3s ease'
+                            }}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = `https://via.placeholder.com/150/e9ecef/4361ee?text=${encodeURIComponent(product.title.substring(0, 20))}`;
+                            }}
+                          />
+                        </div>
+                        
+                        {index < 2 && (
+                          <span className="position-absolute top-0 end-0 m-3 badge rounded-pill" style={{
+                            background: 'linear-gradient(145deg, #f72585, #b5179e)',
+                            padding: '6px 12px',
+                            fontSize: '11px',
+                            fontWeight: '600'
+                          }}>
+                            NOUVEAU
+                          </span>
+                        )}
                       </div>
-                      <div className="card-body p-3">
-                        <h6 className="fw-bold mb-2" title={product.title} style={{ color: '#2b2d42' }}>
-                          {truncateText(product.title, 30)}
+
+                      <div className="card-body p-4">
+                        <h6 className="fw-bold mb-2" title={product.title} style={{ 
+                          color: '#0f172a',
+                          fontSize: '1rem',
+                          lineHeight: '1.4'
+                        }}>
+                          {truncateText(product.title, 35)}
                         </h6>
-                        <p className="small text-muted mb-2 text-truncate">
+                        
+                        <p className="small text-muted mb-3" style={{
+                          display: '-webkit-box',
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: 'vertical',
+                          overflow: 'hidden'
+                        }}>
                           {product.description || product.category || product.mainCategory}
                         </p>
-                        {renderStars()}
-                        <div className="mt-3 d-flex justify-content-between align-items-center">
-                          <span className="fw-bold" style={{ color: '#4361ee' }}>
-                            {formatPrice(product.price)}
-                          </span>
-                          <span className="small text-muted">/ unit</span>
+                        
+                        <div className="mb-3">
+                          {renderStars()}
+                        </div>
+                        
+                        <div className="d-flex justify-content-between align-items-center">
+                          <div>
+                            <span className="fw-bold h5 mb-0" style={{ color: '#4361ee' }}>
+                              {formatPrice(product.price)}
+                            </span>
+                            <small className="text-muted ms-1">TTC</small>
+                          </div>
+                          <button className="btn btn-sm rounded-circle" style={{
+                            width: '40px',
+                            height: '40px',
+                            background: '#eef2ff',
+                            color: '#4361ee',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            border: 'none',
+                            transition: 'all 0.3s ease'
+                          }}>
+                            <FaShoppingCart size={14} />
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -733,159 +1060,281 @@ const Home = () => {
                   <p className="text-muted">Aucun produit trouvé</p>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      </section>
 
-              {filteredProducts.length > 12 && (
-                <div className="text-center mt-5">
-                  <button 
-                    className="btn btn-outline-primary rounded-pill px-5 py-2"
-                    style={{ borderColor: '#4361ee', color: '#4361ee' }}
-                  >
-                    Voir plus de produits
-                  </button>
+      {/* Témoignages clients */}
+      <section className="py-6" style={{
+        background: 'linear-gradient(145deg, #0f172a, #1e293b)',
+        color: 'white'
+      }}>
+        <div className="container">
+          <div className="text-center mb-5">
+            <span className="badge px-4 py-2 rounded-pill mb-3" style={{
+              background: 'rgba(255,255,255,0.15)',
+              color: 'white',
+              fontWeight: '600'
+            }}>
+              TÉMOIGNAGES
+            </span>
+            <h2 className="display-4 fw-bold mb-3 text-white">
+              Ce qu'ils disent de nous
+            </h2>
+            <p className="text-white-50" style={{ maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
+              La confiance de nos partenaires, notre plus grande fierté
+            </p>
+          </div>
+
+          <div className="row g-4">
+            {testimonials.map((testimonial, index) => (
+              <div key={index} className="col-md-4">
+                <div className="card h-100 border-0 rounded-4" style={{
+                  background: 'rgba(255,255,255,0.05)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.1)',
+                  transition: 'all 0.3s ease'
+                }}>
+                  <div className="card-body p-4">
+                    <FaQuoteRight style={{
+                      color: 'rgba(255,255,255,0.2)',
+                      fontSize: '40px',
+                      marginBottom: '20px'
+                    }} />
+                    
+                    <p className="mb-4" style={{
+                      color: 'rgba(255,255,255,0.9)',
+                      lineHeight: '1.6',
+                      fontStyle: 'italic'
+                    }}>
+                      "{testimonial.content}"
+                    </p>
+
+                    <div className="d-flex align-items-center gap-3">
+                      <img 
+                        src={testimonial.image}
+                        alt={testimonial.name}
+                        className="rounded-circle"
+                        style={{
+                          width: '60px',
+                          height: '60px',
+                          objectFit: 'cover',
+                          border: '3px solid rgba(255,255,255,0.2)'
+                        }}
+                      />
+                      <div>
+                        <h6 className="fw-bold mb-1 text-white">{testimonial.name}</h6>
+                        <small style={{ color: 'rgba(255,255,255,0.6)' }}>{testimonial.position}</small>
+                        <div className="mt-2">
+                          {renderStars(testimonial.rating)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Section Newsletter */}
+      <section className="py-6" style={{
+        background: 'linear-gradient(145deg, #4361ee, #3a0ca3)'
+      }}>
+        <div className="container">
+          <div className="row justify-content-center">
+            <div className="col-lg-8 text-center text-white">
+              <h2 className="display-5 fw-bold mb-4">
+                Restez informé des dernières innovations
+              </h2>
+              <p className="mb-5" style={{ fontSize: '1.1rem', opacity: 0.9 }}>
+                Recevez nos actualités, offres exclusives et nouveautés produits
+              </p>
+              
+              <form onSubmit={handleNewsletterSubmit} className="d-flex flex-wrap gap-3 justify-content-center">
+                <div className="flex-grow-1" style={{ maxWidth: '400px' }}>
+                  <input
+                    type="email"
+                    className="form-control form-control-lg rounded-pill border-0"
+                    placeholder="Votre adresse email"
+                    value={newsletterEmail}
+                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    required
+                    style={{
+                      padding: '1rem 1.5rem',
+                      fontSize: '1rem'
+                    }}
+                  />
+                </div>
+                <button
+                  type="submit"
+                  className="btn btn-lg rounded-pill px-5"
+                  style={{
+                    background: 'white',
+                    color: '#4361ee',
+                    fontWeight: '600',
+                    border: 'none',
+                    padding: '1rem 2rem'
+                  }}
+                >
+                  <FaRegPaperPlane className="me-2" />
+                  S'inscrire
+                </button>
+              </form>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-5 position-relative" style={{ background: 'linear-gradient(120deg, #3a0ca3 0%, #4361ee 100%)', color: '#e0e7ff' }}>
-        {/* Section divider */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '40px',
-          background: 'linear-gradient(180deg, #fff2 0%, transparent 100%)',
-          zIndex: 1
-        }} />
+      <footer className="py-6" style={{
+        background: '#0f172a',
+        color: '#94a3b8'
+      }}>
         <div className="container">
-          <div className="row g-5 mb-5">
-            <div className="col-md-6 col-lg-3">
-              <div className="d-flex align-items-center mb-4">
-                <div 
-                  className="me-2 d-flex align-items-center justify-content-center"
-                  style={{ 
-                    width: '40px', 
-                    height: '40px', 
-                    background: 'linear-gradient(135deg, #4361ee, #3a0ca3)',
-                    borderRadius: '10px',
-                    color: 'white',
-                    fontSize: '20px'
-                  }}
-                >
+          <div className="row g-5">
+            <div className="col-lg-4">
+              <div className="d-flex align-items-center gap-3 mb-4">
+                <div style={{
+                  width: '50px',
+                  height: '50px',
+                  background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                  borderRadius: '14px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  color: 'white',
+                  fontSize: '24px'
+                }}>
                   <FaStore />
                 </div>
-                <h5 className="fw-bold mb-0 text-white">UniverTechno+</h5>
+                <h4 className="fw-bold text-white mb-0">UniverTechno+</h4>
               </div>
-              <p className="small" style={{ color: '#a3a5c2' }}>
-                Votre partenaire en équipement industriel et pédagogique depuis 2020.
+              <p className="mb-4">
+                Leader dans la fourniture d'équipements technologiques pour l'éducation et l'industrie.
               </p>
+              <div className="d-flex gap-3">
+                {[FaFacebook, FaLinkedin, FaTwitter, FaYoutube, FaInstagram].map((Icon, index) => (
+                  <a
+                    key={index}
+                    href="#"
+                    className="d-flex align-items-center justify-content-center rounded-circle"
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      background: 'rgba(255,255,255,0.05)',
+                      color: '#94a3b8',
+                      transition: 'all 0.3s ease',
+                      textDecoration: 'none'
+                    }}
+                  >
+                    <Icon size={18} />
+                  </a>
+                ))}
+              </div>
             </div>
-            <div className="col-md-6 col-lg-3">
-              <h5 className="fw-bold mb-4 text-white">Services</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2"><a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Consultation</a></li>
-                <li className="mb-2"><a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Implémentation</a></li>
-                <li className="mb-2"><a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Support</a></li>
-                <li className="mb-2"><a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Formation</a></li>
-              </ul>
-            </div>
-            <div className="col-md-6 col-lg-3">
-              <h5 className="fw-bold mb-4 text-white">À Propos</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2"><a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Qui sommes-nous</a></li>
-                <li className="mb-2"><a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Notre histoire</a></li>
-                <li className="mb-2"><a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Carrières</a></li>
-                <li className="mb-2"><a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Blog</a></li>
-              </ul>
-            </div>
-            <div className="col-md-6 col-lg-3">
-              <h5 className="fw-bold mb-4 text-white">Retrouvez-nous</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2 d-flex align-items-center gap-2">
-                  <FaMapMarkerAlt size={14} style={{ color: '#4361ee' }} />
-                  <span style={{ color: '#a3a5c2' }}>123 Rue de l'Innovation, Tunis</span>
-                </li>
-                <li className="mb-2 d-flex align-items-center gap-2">
-                  <FaPhone size={14} style={{ color: '#4361ee' }} />
-                  <span style={{ color: '#a3a5c2' }}>+216 71 123 456</span>
-                </li>
-                <li className="mb-2 d-flex align-items-center gap-2">
-                  <FaEnvelope size={14} style={{ color: '#4361ee' }} />
-                  <span style={{ color: '#a3a5c2' }}>contact@univertechno.tn</span>
-                </li>
-              </ul>
+
+            <div className="col-lg-8">
+              <div className="row g-4">
+                <div className="col-md-4">
+                  <h5 className="fw-bold text-white mb-4">Liens rapides</h5>
+                  <ul className="list-unstyled">
+                    {['Accueil', 'Produits', 'Services', 'À propos', 'Contact'].map((item, index) => (
+                      <li className="mb-3" key={index}>
+                        <a href="#" className="text-decoration-none" style={{ color: '#94a3b8' }}>
+                          <FaAngleRight className="me-2" style={{ fontSize: '12px', color: '#4361ee' }} />
+                          {item}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="col-md-4">
+                  <h5 className="fw-bold text-white mb-4">Contact</h5>
+                  <ul className="list-unstyled">
+                    <li className="mb-3 d-flex align-items-center gap-3">
+                      <FaMapMarkerAlt style={{ color: '#4361ee', fontSize: '18px' }} />
+                      <span style={{ color: '#94a3b8' }}>123 Rue de l'Innovation, Tunis</span>
+                    </li>
+                    <li className="mb-3 d-flex align-items-center gap-3">
+                      <FaPhone style={{ color: '#4361ee', fontSize: '18px' }} />
+                      <span style={{ color: '#94a3b8' }}>+216 71 123 456</span>
+                    </li>
+                    <li className="mb-3 d-flex align-items-center gap-3">
+                      <FaEnvelope style={{ color: '#4361ee', fontSize: '18px' }} />
+                      <span style={{ color: '#94a3b8' }}>contact@univertechno.tn</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
 
-          <hr className="opacity-25" style={{ borderColor: '#a3a5c2' }} />
-          
+          <hr className="my-5" style={{ borderColor: 'rgba(255,255,255,0.1)' }} />
+
           <div className="row align-items-center">
             <div className="col-md-6">
-              <p className="mb-0 small" style={{ color: '#a3a5c2' }}>
+              <p className="mb-0 small">
                 © 2024 UniverTechno+. Tous droits réservés.
               </p>
-            </div>
-            <div className="col-md-6 text-md-end">
-              <div className="d-flex justify-content-md-end gap-4">
-                <a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Facebook</a>
-                <a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>LinkedIn</a>
-                <a href="#" className="text-decoration-none" style={{ color: '#a3a5c2' }}>Twitter</a>
-              </div>
             </div>
           </div>
         </div>
       </footer>
 
+      {/* Styles globaux */}
       <style jsx>{`
+        .py-6 {
+          padding-top: 5rem;
+          padding-bottom: 5rem;
+        }
+        
         .nav-link {
-          transition: color 0.3s ease;
-          font-size: 0.95rem;
+          transition: all 0.3s ease;
+          font-weight: 500;
         }
-        .nav-link:hover {
-          color: #4361ee !important;
-        }
+        
         .card {
-          transition: all 0.3s ease;
-          border: 1px solid rgba(0,0,0,0.02);
+          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .icon-container {
-          transition: all 0.3s ease;
+        
+        .btn {
+          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        .card:hover .icon-container {
-          transform: scale(1.1);
-        }
-        .btn-primary {
-          background: linear-gradient(135deg, #4361ee, #3a0ca3);
-          border: none;
-          transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 15px 30px rgba(67, 97, 238, 0.3) !important;
-        }
-        .btn-outline-primary {
-          transition: all 0.3s ease;
-        }
-        .btn-outline-primary:hover {
-          background: linear-gradient(135deg, #4361ee, #3a0ca3);
-          border-color: transparent;
-          transform: translateY(-2px);
-          box-shadow: 0 15px 30px rgba(67, 97, 238, 0.2);
-        }
+        
         .sticky-top {
           position: sticky;
           top: 0;
           z-index: 1020;
         }
-        .badge.bg-primary.bg-opacity-10 {
-          color: #4361ee !important;
-        }
+        
         .cursor-pointer {
           cursor: pointer;
+        }
+        
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+          background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+          background: #4361ee;
+          border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+          background: #3a0ca3;
+        }
+        
+        ::selection {
+          background: #4361ee;
+          color: white;
         }
       `}</style>
     </div>

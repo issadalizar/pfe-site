@@ -17,28 +17,39 @@ const CategoryProducts = ({
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchProducts();
+    if (categoryId) {
+      fetchProducts();
+    }
   }, [categoryId]);
 
   const fetchProducts = async () => {
-  try {
-    setLoading(true);
-    console.log("🔍 Fetching products for category ID:", categoryId);
-    
-    const response = await productAPI.getByCategory(categoryId);
-    console.log("📦 Réponse API produits:", response);
-    
-    const productsData = response.data.data || response.data || [];
-    console.log("✅ Produits trouvés:", productsData.length);
-    
-    setProducts(productsData);
-  } catch (err) {
-    console.error("❌ Erreur lors du chargement des produits:", err);
-    setError("Impossible de charger les produits");
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+      console.log("🔍 Fetching products for category ID:", categoryId);
+      console.log("📋 Category name:", categoryName);
+      
+      const response = await productAPI.getByCategory(categoryId);
+      console.log("📦 Réponse API produits:", response);
+      
+      const productsData = response.data.data || response.data || [];
+      console.log("✅ Produits trouvés:", productsData.length);
+      
+      if (productsData.length > 0) {
+        productsData.forEach((product, index) => {
+          console.log(`   ${index + 1}. ${product.name || product.title} (${product._id})`);
+        });
+      } else {
+        console.log("⚠️ Aucun produit trouvé pour cette catégorie");
+      }
+      
+      setProducts(productsData);
+    } catch (err) {
+      console.error("❌ Erreur lors du chargement des produits:", err);
+      setError("Impossible de charger les produits");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (loading) {
     return (
@@ -90,6 +101,10 @@ const CategoryProducts = ({
         {categoryDescription && (
           <p className="text-muted mb-4">{categoryDescription}</p>
         )}
+        
+        <p className="text-muted small">
+          {products.length} produit(s) trouvé(s)
+        </p>
       </div>
 
       {/* Liste des produits */}

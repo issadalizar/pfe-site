@@ -1,273 +1,229 @@
-// src/components/CategoryForm.jsx
-import React, { useState, useEffect } from "react";
-import { FaSave, FaTimes, FaPlus } from "react-icons/fa";
+import React, { useState } from 'react';
+import { FaPaperPlane, FaUser, FaEnvelope, FaTag, FaCommentAlt, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import { contactAPI } from '../services/api';
 
-export default function CategoryForm({ 
-  editingCategory, 
-  onSave, 
-  onCancel,
-  categories 
-}) {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    parent: "",
-    level: 1,
-    icon: "📁",
-    isActive: true,
-  });
+const ContactForm = () => {
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+    });
+    const [status, setStatus] = useState('idle');
+    const [errorMessage, setErrorMessage] = useState('');
 
-  const [errors, setErrors] = useState({});
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
 
-  useEffect(() => {
-    if (editingCategory) {
-      setFormData({
-        name: editingCategory.name || "",
-        description: editingCategory.description || "",
-        parent: editingCategory.parent?._id || "",
-        level: editingCategory.level || 1,
-        icon: editingCategory.icon || "📁",
-        isActive: editingCategory.isActive !== undefined ? editingCategory.isActive : true,
-      });
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setStatus('submitting');
+        setErrorMessage('');
+
+        try {
+            await contactAPI.create(formData);
+            setStatus('success');
+            setFormData({ name: '', email: '', subject: '', message: '' });
+            setTimeout(() => setStatus('idle'), 5000);
+        } catch (error) {
+            console.error('Error sending message:', error);
+            setStatus('error');
+            setErrorMessage(error.response?.data?.error || 'Une erreur est survenue, veuillez réessayer.');
+        }
+    };
+
+    if (status === 'success') {
+        return (
+            <div className="text-center py-5" style={{ background: 'transparent' }}>
+                <div className="mb-4">
+                    <FaCheckCircle style={{ color: '#FFA500', fontSize: '4rem' }} /> {/* Orange */}
+                </div>
+                <h4 className="fw-bold mb-3" style={{ color: '#ffffff' }}>Message Envoyé !</h4>
+                <p style={{ color: '#ffffff', opacity: 0.9 }}>
+                    Nous avons bien reçu votre demande et nous vous répondrons dans les plus brefs délais.
+                </p>
+                <button
+                    className="btn px-4 py-2 mt-3"
+                    onClick={() => setStatus('idle')}
+                    style={{ 
+                        background: 'transparent',
+                        border: '2px solid #FFA500',
+                        color: '#FFA500',
+                        fontWeight: 'bold',
+                        borderRadius: '5px'
+                    }}
+                >
+                    Envoyer un autre message
+                </button>
+            </div>
+        );
     }
-  }, [editingCategory]);
 
-  const validateForm = () => {
-    const newErrors = {};
-    
-    if (!formData.name.trim()) {
-      newErrors.name = "Le nom est requis";
-    }
-    
-    if (formData.level < 1 || formData.level > 3) {
-      newErrors.level = "Le niveau doit être entre 1 et 3";
-    }
-    
-    // Si c'est un niveau 2 ou 3, un parent est requis
-    if (formData.level > 1 && !formData.parent) {
-      newErrors.parent = "Une catégorie parente est requise pour ce niveau";
-    }
-    
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    return (
+        <div style={{ 
+            background: 'transparent', // Fond transparent
+            padding: '2rem',
+            borderRadius: '0'
+        }}>
+            <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
+                {status === 'error' && (
+                    <div className="alert alert-danger d-flex align-items-center mb-4" role="alert" style={{ background: 'rgba(220, 53, 69, 0.1)', border: '1px solid #dc3545', color: '#ffffff' }}>
+                        <FaExclamationCircle className="me-2" style={{ color: '#dc3545' }} />
+                        <div>{errorMessage}</div>
+                    </div>
+                )}
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    
-    if (validateForm()) {
-      onSave(formData);
-    }
-  };
+                {/* Nom complet */}
+                <div className="mb-4">
+                    <label htmlFor="name" className="form-label fw-bold mb-2" style={{ color: '#ffffff' }}>
+                        <FaUser style={{ color: '#FFA500', marginRight: '8px' }} />
+                        Nom complet
+                    </label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="name"
+                        name="name"
+                        placeholder="Votre nom"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        disabled={status === 'submitting'}
+                        style={{ 
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: '2px solid #FFA500',
+                            borderRadius: '0',
+                            color: '#ffffff',
+                            padding: '10px 0',
+                            fontSize: '1.1rem'
+                        }}
+                    />
+                </div>
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : value
-    }));
-    
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: null }));
-    }
-  };
+                {/* Email */}
+                <div className="mb-4">
+                    <label htmlFor="email" className="form-label fw-bold mb-2" style={{ color: '#ffffff' }}>
+                        <FaEnvelope style={{ color: '#FFA500', marginRight: '8px' }} />
+                        Adresse email
+                    </label>
+                    <input
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        name="email"
+                        placeholder="name@example.com"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        disabled={status === 'submitting'}
+                        style={{ 
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: '2px solid #FFA500',
+                            borderRadius: '0',
+                            color: '#ffffff',
+                            padding: '10px 0',
+                            fontSize: '1.1rem'
+                        }}
+                    />
+                </div>
 
-  // Filtrer les parents disponibles selon le niveau sélectionné
-  // Niveau 2 -> besoin de parents niveau 1
-  // Niveau 3 -> besoin de parents niveau 2
-  const targetParentLevel = parseInt(formData.level) - 1;
-  
-  const availableParents = categories.filter(cat => 
-    cat.level === targetParentLevel && 
-    cat._id !== (editingCategory?._id) // Ne pas s'inclure soi-même
-  );
+                {/* Sujet */}
+                <div className="mb-4">
+                    <label htmlFor="subject" className="form-label fw-bold mb-2" style={{ color: '#ffffff' }}>
+                        <FaTag style={{ color: '#FFA500', marginRight: '8px' }} />
+                        Sujet
+                    </label>
+                    <select
+                        className="form-select"
+                        id="subject"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        required
+                        disabled={status === 'submitting'}
+                        style={{ 
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: '2px solid #FFA500',
+                            borderRadius: '0',
+                            color: '#ffffff',
+                            padding: '10px 0',
+                            fontSize: '1.1rem',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <option value="" disabled style={{ background: '#e6f0fa', color: '#000' }}>Sélectionnez un sujet</option>
+                        <option value="assistance" style={{ background: '#e6f0fa', color: '#000' }}>Assistance Technique</option>
+                        <option value="commercial" style={{ background: '#e6f0fa', color: '#000' }}>Service Commercial</option>
+                        <option value="reclamation" style={{ background: '#e6f0fa', color: '#000' }}>Réclamation</option>
+                        <option value="autre" style={{ background: '#e6f0fa', color: '#000' }}>Autre demande</option>
+                    </select>
+                </div>
 
-  const iconOptions = [
-    { value: "📁", label: "Dossier" },
-    { value: "📚", label: "Livres" },
-    { value: "🧮", label: "Mathématiques" },
-    { value: "🔬", label: "Science" },
-    { value: "💻", label: "Informatique" },
-    { value: "🎨", label: "Art" },
-    { value: "🎵", label: "Musique" },
-    { value: "🏀", label: "Sport" },
-    { value: "🌍", label: "Géographie" },
-    { value: "📖", label: "Lecture" },
-  ];
+                {/* Message */}
+                <div className="mb-5">
+                    <label htmlFor="message" className="form-label fw-bold mb-2" style={{ color: '#ffffff' }}>
+                        <FaCommentAlt style={{ color: '#FFA500', marginRight: '8px' }} />
+                        Message
+                    </label>
+                    <textarea
+                        className="form-control"
+                        id="message"
+                        name="message"
+                        placeholder="Votre message"
+                        rows="4"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                        disabled={status === 'submitting'}
+                        style={{ 
+                            background: 'transparent',
+                            border: 'none',
+                            borderBottom: '2px solid #FFA500',
+                            borderRadius: '0',
+                            color: '#ffffff',
+                            padding: '10px 0',
+                            fontSize: '1.1rem',
+                            resize: 'none'
+                        }}
+                    ></textarea>
+                </div>
 
-  return (
-    <form onSubmit={handleSubmit} className="needs-validation" noValidate>
-      <div className="mb-3">
-        <label htmlFor="name" className="form-label">
-          Nom de la catégorie *
-        </label>
-        <input
-          type="text"
-          className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-          id="name"
-          name="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          placeholder="Ex: Mathématiques"
-        />
-        {errors.name && (
-          <div className="invalid-feedback">{errors.name}</div>
-        )}
-      </div>
-
-      <div className="mb-3">
-        <label htmlFor="description" className="form-label">
-          Description
-        </label>
-        <textarea
-          className="form-control"
-          id="description"
-          name="description"
-          rows="2"
-          value={formData.description}
-          onChange={handleChange}
-          placeholder="Description de la catégorie..."
-        />
-      </div>
-
-      <div className="row">
-        <div className="col-md-6 mb-3">
-          <label htmlFor="level" className="form-label">
-            Niveau *
-          </label>
-          <select
-            className={`form-select ${errors.level ? 'is-invalid' : ''}`}
-            id="level"
-            name="level"
-            value={formData.level}
-            onChange={handleChange}
-            required
-          >
-            <option value="1">Niveau 1 - Catégorie principale</option>
-            <option value="2">Niveau 2 - Sous-catégorie</option>
-            <option value="3">Niveau 3 - Sous-sous-catégorie</option>
-          </select>
-          {errors.level && (
-            <div className="invalid-feedback">{errors.level}</div>
-          )}
+                {/* Bouton Submit */}
+                <button
+                    type="submit"
+                    className="btn w-100 py-3 fw-bold transition-all"
+                    disabled={status === 'submitting'}
+                    style={{ 
+                        background: '#FFA500',
+                        border: 'none',
+                        color: '#ffffff',
+                        fontSize: '1.2rem',
+                        borderRadius: '5px',
+                        opacity: status === 'submitting' ? 0.7 : 1
+                    }}
+                >
+                    {status === 'submitting' ? (
+                        <span>
+                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                            Envoi en cours...
+                        </span>
+                    ) : (
+                        <span>
+                            Envoyer le message <FaPaperPlane className="ms-2" />
+                        </span>
+                    )}
+                </button>
+            </form>
         </div>
+    );
+};
 
-        <div className="col-md-6 mb-3">
-          <label htmlFor="parent" className="form-label">
-            Catégorie parente
-          </label>
-          <select
-            className={`form-select ${errors.parent ? 'is-invalid' : ''}`}
-            id="parent"
-            name="parent"
-            value={formData.parent}
-            onChange={handleChange}
-            disabled={formData.level === 1}
-          >
-            <option value="">Aucun parent</option>
-            {availableParents.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.icon} {category.name}
-              </option>
-            ))}
-          </select>
-          {errors.parent && (
-            <div className="invalid-feedback">{errors.parent}</div>
-          )}
-          {formData.level === 1 && (
-            <small className="text-muted">Les catégories de niveau 1 n'ont pas de parent</small>
-          )}
-        </div>
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label">Icone</label>
-        <div className="d-flex align-items-center gap-2 mb-2">
-          <div 
-            className="border rounded d-flex align-items-center justify-content-center"
-            style={{ 
-              width: "40px", 
-              height: "40px", 
-              fontSize: "24px",
-              backgroundColor: "#f8f9fa"
-            }}
-          >
-            {formData.icon}
-          </div>
-          <select
-            className="form-select"
-            name="icon"
-            value={formData.icon}
-            onChange={handleChange}
-          >
-            {iconOptions.map((icon) => (
-              <option key={icon.value} value={icon.value}>
-                {icon.value} {icon.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <input
-          type="text"
-          className="form-control"
-          name="icon"
-          value={formData.icon}
-          onChange={handleChange}
-          placeholder="Entrez un emoji personnalisé"
-        />
-        <small className="text-muted">
-          Utilisez un emoji pour représenter votre catégorie
-        </small>
-      </div>
-
-      <div className="mb-4">
-        <div className="form-check form-switch">
-          <input
-            className="form-check-input"
-            type="checkbox"
-            id="isActive"
-            name="isActive"
-            checked={formData.isActive}
-            onChange={handleChange}
-          />
-          <label className="form-check-label" htmlFor="isActive">
-            Catégorie active
-          </label>
-        </div>
-        <small className="text-muted d-block">
-          Les catégories inactives ne seront pas visibles dans le catalogue
-        </small>
-      </div>
-
-      <div className="d-flex justify-content-end gap-2">
-        <button
-          type="button"
-          className="btn btn-secondary d-flex align-items-center gap-2"
-          onClick={onCancel}
-        >
-          <FaTimes />
-          Annuler
-        </button>
-        <button
-          type="submit"
-          className="btn btn-primary d-flex align-items-center gap-2"
-        >
-          {editingCategory ? (
-            <>
-              <FaSave />
-              Modifier
-            </>
-          ) : (
-            <>
-              <FaPlus />
-              Créer
-            </>
-          )}
-        </button>
-      </div>
-    </form>
-  );
-}
+export default ContactForm;
