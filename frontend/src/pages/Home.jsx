@@ -383,46 +383,52 @@ const Home = () => {
 
       {/* Hero Section - Design épuré avec image à droite */}
       <section id="home" className="py-5" style={{ 
-        background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
+        background: 'linear-gradient(120deg, #3a8dde 0%, #4361ee 50%, #3a0ca3 100%)',
         minHeight: '600px',
         display: 'flex',
         alignItems: 'center',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        color: '#fff'
       }}>
         <div className="container">
           <div className="row align-items-center">
             <div className="col-lg-6">
               <div className="hero-content">
-                <span className="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-4" style={{ color: '#4361ee !important' }}>
-                  UI/UX DESIGN
+                <span className="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill mb-4" style={{ background: 'rgba(255,255,255,0.15)', color: '#fff', fontWeight: 600 }}>
+                  Bienvenue chez UniverTechno+
                 </span>
                 <h1 className="display-3 fw-bold mb-4" style={{ 
                   fontSize: '3.5rem', 
                   lineHeight: '1.2',
-                  color: '#2b2d42'
+                  background: 'linear-gradient(90deg, #fff 60%, #b3cfff 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  color: '#fff',
+                  textShadow: '0 2px 8px rgba(58,12,163,0.10)'
                 }}>
-                  Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                  Découvrez l'excellence technologique<br />au service de l'éducation et de l'industrie
                 </h1>
-                <p className="lead mb-4" style={{ fontSize: '1.1rem', color: '#8d99ae', maxWidth: '500px' }}>
-                  Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when known printer took a galley.
+                <p className="lead mb-4" style={{ fontSize: '1.15rem', color: '#e0e7ff', maxWidth: '500px', textShadow: '0 1px 4px rgba(67,97,238,0.10)' }}>
+                  Solutions innovantes, équipements de pointe et accompagnement sur-mesure pour vos projets pédagogiques et industriels.
                 </p>
                 <div className="d-flex gap-3">
                   <button 
-                    className="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-medium"
+                    className="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-medium shadow"
                     style={{ 
-                      background: 'linear-gradient(135deg, #4361ee, #3a0ca3)',
+                      background: 'linear-gradient(120deg, #3a8dde, #4361ee 60%, #3a0ca3)',
                       border: 'none',
-                      boxShadow: '0 10px 20px rgba(67, 97, 238, 0.2)'
+                      color: '#fff',
+                      boxShadow: '0 10px 30px rgba(67, 97, 238, 0.25)'
                     }}
                   >
-                    Contact
+                    Contactez-nous
                   </button>
                   <button 
-                    className="btn btn-outline-primary btn-lg px-5 py-3 rounded-pill fw-medium"
-                    style={{ borderColor: '#4361ee', color: '#4361ee' }}
+                    className="btn btn-outline-light btn-lg px-5 py-3 rounded-pill fw-medium"
+                    style={{ borderColor: '#fff', color: '#fff', background: 'rgba(255,255,255,0.08)' }}
                   >
-                    READ MORE
+                    Découvrir
                   </button>
                 </div>
               </div>
@@ -436,37 +442,29 @@ const Home = () => {
                   position: 'relative',
                   width: '100%',
                   height: '500px',
-                  transform: 'rotateY(-5deg) rotateX(2deg)',
-                  transformStyle: 'preserve-3d',
-                  transition: 'transform 0.5s ease',
-                  boxShadow: '20px 20px 40px rgba(0,0,0,0.1), -10px -10px 30px rgba(255,255,255,0.8)',
                   borderRadius: '30px',
-                  overflow: 'hidden'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'rotateY(-3deg) rotateX(1deg) translateZ(20px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'rotateY(-5deg) rotateX(2deg)';
+                  overflow: 'hidden',
+                  boxShadow: '0 10px 40px rgba(58,12,163,0.10), 0 2px 20px rgba(67,97,238,0.10)'
                 }}>
                   <img 
-                    src="/image2.png" 
+                    src="/image.png" 
                     alt="UniverTechno+" 
                     style={{
                       width: '100%',
                       height: '100%',
                       objectFit: 'cover',
-                      display: 'block'
+                      display: 'block',
+                      filter: 'brightness(0.95) saturate(1.1)'
                     }}
                   />
-                  {/* Overlay dégradé */}
+                  {/* Overlay dégradé bleu */}
                   <div style={{
                     position: 'absolute',
                     top: 0,
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    background: 'linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(58, 12, 163, 0.1) 100%)',
+                    background: 'linear-gradient(120deg, rgba(67,97,238,0.25) 0%, rgba(58,12,163,0.18) 100%)',
                     pointerEvents: 'none'
                   }}></div>
                 </div>
@@ -474,21 +472,21 @@ const Home = () => {
                 {/* Éléments décoratifs */}
                 <div style={{
                   position: 'absolute',
-                  top: '-20px',
-                  right: '-20px',
-                  width: '150px',
-                  height: '150px',
-                  background: 'rgba(67, 97, 238, 0.05)',
+                  top: '-30px',
+                  right: '-30px',
+                  width: '180px',
+                  height: '180px',
+                  background: 'linear-gradient(135deg, #3a8dde33 0%, #4361ee22 100%)',
                   borderRadius: '50%',
                   zIndex: -1
                 }}></div>
                 <div style={{
                   position: 'absolute',
-                  bottom: '-30px',
-                  left: '-30px',
-                  width: '200px',
-                  height: '200px',
-                  background: 'rgba(247, 37, 133, 0.05)',
+                  bottom: '-40px',
+                  left: '-40px',
+                  width: '220px',
+                  height: '220px',
+                  background: 'linear-gradient(135deg, #3a0ca322 0%, #4361ee11 100%)',
                   borderRadius: '50%',
                   zIndex: -1
                 }}></div>
@@ -499,7 +497,17 @@ const Home = () => {
       </section>
 
       {/* Nos Secteurs Section - Design en cartes modernes */}
-      <section id="services" className="py-5" style={{ backgroundColor: '#ffffff' }}>
+      <section id="services" className="py-5 position-relative" style={{ background: 'linear-gradient(120deg, #e7f0ff 0%, #f8faff 100%)' }}>
+        {/* Section divider */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '40px',
+          background: 'linear-gradient(180deg, #4361ee22 0%, transparent 100%)',
+          zIndex: 1
+        }} />
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="display-5 fw-bold mb-3" style={{ color: '#2b2d42' }}>Nos Secteurs d'Expertise</h2>
@@ -512,20 +520,23 @@ const Home = () => {
             {expertiseSectors.map((sector, index) => (
               <div key={index} className="col-md-4">
                 <div 
-                  className="card h-100 border-0 rounded-4 overflow-hidden"
+                  className="card h-100 border-0 rounded-4 overflow-hidden glass-card"
                   style={{ 
                     cursor: 'pointer',
-                    boxShadow: '0 10px 30px rgba(0,0,0,0.05)',
-                    transition: 'all 0.3s ease'
+                    boxShadow: '0 10px 40px 0 #4361ee22',
+                    background: 'rgba(255,255,255,0.75)',
+                    backdropFilter: 'blur(8px)',
+                    border: '1.5px solid #e7f0ff',
+                    transition: 'all 0.3s cubic-bezier(.4,2,.3,1)',
                   }}
                   onClick={() => handleSectorClick(sector)}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-10px)';
-                    e.currentTarget.style.boxShadow = '0 20px 40px rgba(67, 97, 238, 0.1)';
+                    e.currentTarget.style.transform = 'translateY(-10px) scale(1.03)';
+                    e.currentTarget.style.boxShadow = '0 24px 60px #4361ee33';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 10px 30px rgba(0,0,0,0.05)';
+                    e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                    e.currentTarget.style.boxShadow = '0 10px 40px 0 #4361ee22';
                   }}
                 >
                   <div className="card-body p-4">
@@ -541,7 +552,14 @@ const Home = () => {
                       >
                         {sector.icon}
                       </div>
-                      <h5 className="fw-bold mb-0" style={{ color: sector.color }}>{sector.displayName}</h5>
+                      <h5 className="fw-bold mb-0 animated-gradient-text" style={{
+                        background: `linear-gradient(90deg, ${sector.color}, #3a8dde 80%)`,
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        color: sector.color,
+                        letterSpacing: '0.5px',
+                        fontWeight: 700
+                      }}>{sector.displayName}</h5>
                     </div>
                     <p className="text-muted mb-4" style={{ fontSize: '0.95rem', lineHeight: '1.6' }}>
                       {sector.description}
@@ -570,7 +588,17 @@ const Home = () => {
       </section>
 
       {/* Catalogue Section - Avec grille de produits */}
-      <section id="products" className="py-5" style={{ backgroundColor: '#f8f9fa' }}>
+      <section id="products" className="py-5 position-relative" style={{ background: 'linear-gradient(120deg, #f8faff 0%, #e7f0ff 100%)' }}>
+        {/* Section divider */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '40px',
+          background: 'linear-gradient(180deg, #3a8dde22 0%, transparent 100%)',
+          zIndex: 1
+        }} />
         <div className="container">
           <div className="text-center mb-5">
             <h2 className="display-5 fw-bold mb-3" style={{ color: '#2b2d42' }}>Catalogue Complet</h2>
@@ -649,20 +677,23 @@ const Home = () => {
                 {filteredProducts.slice(0, 12).map((product, index) => (
                   <div key={index} className="col-md-6 col-lg-4">
                     <div 
-                      className="card h-100 border-0 rounded-4 overflow-hidden"
+                      className="card h-100 border-0 rounded-4 overflow-hidden glass-card"
                       onClick={() => handleProductClick(product)}
                       style={{ 
                         cursor: "pointer",
-                        boxShadow: '0 5px 20px rgba(0,0,0,0.02)',
-                        transition: 'all 0.3s ease'
+                        boxShadow: '0 8px 32px #3a8dde22',
+                        background: 'rgba(255,255,255,0.82)',
+                        backdropFilter: 'blur(6px)',
+                        border: '1.5px solid #e7f0ff',
+                        transition: 'all 0.3s cubic-bezier(.4,2,.3,1)'
                       }}
                       onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-5px)';
-                        e.currentTarget.style.boxShadow = '0 15px 30px rgba(67, 97, 238, 0.1)';
+                        e.currentTarget.style.transform = 'translateY(-8px) scale(1.025)';
+                        e.currentTarget.style.boxShadow = '0 24px 60px #3a8dde33';
                       }}
                       onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 5px 20px rgba(0,0,0,0.02)';
+                        e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                        e.currentTarget.style.boxShadow = '0 8px 32px #3a8dde22';
                       }}
                     >
                       <div className="product-image p-3 text-center bg-light">
@@ -719,7 +750,17 @@ const Home = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-5" style={{ backgroundColor: '#1a1a2e', color: '#a3a5c2' }}>
+      <footer className="py-5 position-relative" style={{ background: 'linear-gradient(120deg, #3a0ca3 0%, #4361ee 100%)', color: '#e0e7ff' }}>
+        {/* Section divider */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '40px',
+          background: 'linear-gradient(180deg, #fff2 0%, transparent 100%)',
+          zIndex: 1
+        }} />
         <div className="container">
           <div className="row g-5 mb-5">
             <div className="col-md-6 col-lg-3">
