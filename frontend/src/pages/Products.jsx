@@ -25,6 +25,7 @@ export default function Products() {
   // State for filtering and sorting
   const [filters, setFilters] = useState({
     search: "",
+    niveau: "", // Filtre par niveau (étape 1)
     category: categoryId || "",
     subCategory: "", // Ajout du filtre par sous-catégorie
     status: "all",
@@ -492,6 +493,11 @@ export default function Products() {
         setAllSubCategories([]);
         navigate('/products');
       }
+    } else if (key === 'niveau') {
+      // Quand on change le niveau, réinitialiser la catégorie sélectionnée
+      setFilters(prev => ({ ...prev, niveau: value, category: "", subCategory: "" }));
+      setSubCategories([]);
+      setAllSubCategories([]);
     } else {
       setFilters(prev => ({ ...prev, [key]: value }));
     }
@@ -500,6 +506,7 @@ export default function Products() {
   const handleResetFilters = () => {
     setFilters({
       search: "",
+      niveau: "",
       category: "",
       subCategory: "",
       status: "all",
@@ -722,6 +729,70 @@ export default function Products() {
             </div>
           </div>
         </div>
+          {/* Statistiques - Modern Design */}
+          <div className="row g-4 mb-4">
+            <div className="col-md-3">
+              <div className="card border-0 shadow-sm h-100 bg-gradient-primary rounded-4">
+                <div className="card-body d-flex align-items-center">
+                  <div className="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                    <i className="bi bi-box-seam fs-2 text-primary"></i>
+                  </div>
+                  <div>
+                    <h6 className="text-muted mb-1">Total Produits</h6>
+                    <h2 className="fw-bold mb-0 text-primary">{categoryStats?.total || products.length}</h2>
+                    <small className="text-muted">
+                      {categoryStats 
+                        ? `${categoryStats.active} actifs • ${categoryStats.total - categoryStats.active} inactifs`
+                        : `${activeProductsCount} actifs • ${products.length - activeProductsCount} inactifs`
+                      }
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="card border-0 shadow-sm h-100 rounded-4">
+                <div className="card-body d-flex align-items-center">
+                  <div className="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                    <i className="bi bi-cash-stack fs-2 text-success"></i>
+                  </div>
+                  <div>
+                    <h6 className="text-muted mb-1">Valeur du stock</h6>
+                    <h2 className="fw-bold text-success mb-0">{totalValue.toFixed(2)}€</h2>
+                    <small className="text-muted">{products.length > 0 ? (totalValue / products.length).toFixed(2) : 0}€/produit</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="card border-0 shadow-sm h-100 rounded-4">
+                <div className="card-body d-flex align-items-center">
+                  <div className="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                    <i className="bi bi-exclamation-triangle fs-2 text-warning"></i>
+                  </div>
+                  <div>
+                    <h6 className="text-muted mb-1">Alertes Stock</h6>
+                    <h2 className="fw-bold text-warning mb-0">{alertCount}</h2>
+                    <small className="text-muted">{outOfStockCount} rupture • {lowStockCount} faible</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-3">
+              <div className="card border-0 shadow-sm h-100 rounded-4">
+                <div className="card-body d-flex align-items-center">
+                  <div className="rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                    <i className="bi bi-check-circle fs-2 text-info"></i>
+                  </div>
+                  <div>
+                    <h6 className="text-muted mb-1">Produits Actifs</h6>
+                    <h2 className="fw-bold text-info mb-0">{activeProductsCount}</h2>
+                    <small className="text-muted">{products.length > 0 ? ((activeProductsCount / products.length) * 100).toFixed(1) : 0}% actifs</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         
         <div className="col-md-3 mb-3">
           <div className="card border-start-success border-start-3 border-0 shadow-sm h-100">
@@ -845,14 +916,31 @@ export default function Products() {
               </div>
             </div>
             
-            <div className="col-md-4">
+            {/* Filtre par Niveau */}
+            <div className="col-md-3">
+              <select
+                className="form-select"
+                value={filters.niveau}
+                onChange={(e) => handleFilterChange('niveau', e.target.value)}
+              >
+                <option value="">Tous les niveaux</option>
+                <option value="1">Niveau 1</option>
+                <option value="2">Niveau 2 (Sous-catégorie)</option>
+                <option value="3">Niveau 3 (Sous-sous-catégorie)</option>
+              </select>
+            </div>
+
+            {/* Filtre par Catégorie (filtré par niveau) */}
+            <div className="col-md-2">
               <select
                 className="form-select"
                 value={filters.category}
                 onChange={(e) => handleFilterChange('category', e.target.value)}
               >
                 <option value="">Toutes les catégories</option>
-                {categories.map((category) => (
+                {categories
+                  .filter(category => !filters.niveau || category.level === parseInt(filters.niveau))
+                  .map((category) => (
                   <option key={category._id} value={category._id}>
                     {category.icon} {category.name}
                   </option>
@@ -860,13 +948,13 @@ export default function Products() {
               </select>
             </div>
 
-            <div className="col-md-2 d-flex align-items-center">
+            <div className="col-md-1 d-flex align-items-center">
               <button
                 className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"
                 onClick={handleResetFilters}
               >
-                <FaFilter className="me-2" />
-                Réinitialiser
+                <FaFilter className="me-1" size={14} />
+                <span className="d-none d-sm-inline">Réinitialiser</span>
               </button>
             </div>
           </div>

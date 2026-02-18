@@ -12,6 +12,7 @@ import Home from './pages/Home';
 import ProductDetails from './pages/ProductDetails';
 import PublicCategoryPage from "./pages/PublicCategoryPage";
 import AdminMessages from './pages/AdminMessages';
+import ContactPage from './pages/ContactPage';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <Route path="/home" element={<Home />} />
       <Route path="/product/:productName" element={<ProductDetails />} />
       <Route path="/category/:categoryId" element={<PublicCategoryPage />} />
+      <Route path="/contact" element={<ContactPage />} />
 
       {/* ROUTES ADMIN - AVEC SIDEBAR */}
       <Route

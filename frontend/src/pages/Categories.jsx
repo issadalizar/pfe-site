@@ -132,43 +132,62 @@ export default function Categories() {
         </button>
       </div>
 
-      {/* Stats */}
-      <div className="row mb-4">
-        <div className="col-md-3 mb-3">
-          <div className="card border-primary">
-            <div className="card-body">
-              <h6 className="card-subtitle mb-2 text-muted">Total</h6>
-              <h2 className="card-title text-primary">{categories.length}</h2>
+      {/* Stats - Modern Design */}
+      <div className="row g-4 mb-4">
+        <div className="col-md-3">
+          <div className="card border-0 shadow-sm h-100 bg-gradient-primary rounded-4">
+            <div className="card-body d-flex align-items-center">
+              <div className="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                <i className="bi bi-folder fs-2 text-primary"></i>
+              </div>
+              <div>
+                <h6 className="text-muted mb-1">Total</h6>
+                <h2 className="fw-bold mb-0 text-primary">{categories.length}</h2>
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-md-3 mb-3">
-          <div className="card border-success">
-            <div className="card-body">
-              <h6 className="card-subtitle mb-2 text-muted">Actives</h6>
-              <h2 className="card-title text-success">
-                {categories.filter(c => c.isActive).length}
-              </h2>
+        <div className="col-md-3">
+          <div className="card border-0 shadow-sm h-100 rounded-4">
+            <div className="card-body d-flex align-items-center">
+              <div className="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                <i className="bi bi-check-circle fs-2 text-success"></i>
+              </div>
+              <div>
+                <h6 className="text-muted mb-1">Actives</h6>
+                <h2 className="fw-bold text-success mb-0">{categories.filter(c => c.isActive).length}</h2>
+                {categories.length > 0 && (
+                  <small className="text-muted">
+                    {((categories.filter(c => c.isActive).length / categories.length) * 100).toFixed(1)}% du total
+                  </small>
+                )}
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-md-3 mb-3">
-          <div className="card border-info">
-            <div className="card-body">
-              <h6 className="card-subtitle mb-2 text-muted">Niveau 1</h6>
-              <h2 className="card-title text-info">
-                {categories.filter(c => c.level === 1).length}
-              </h2>
+        <div className="col-md-3">
+          <div className="card border-0 shadow-sm h-100 rounded-4">
+            <div className="card-body d-flex align-items-center">
+              <div className="rounded-circle bg-info bg-opacity-10 p-3 me-3">
+                <i className="bi bi-layers fs-2 text-info"></i>
+              </div>
+              <div>
+                <h6 className="text-muted mb-1">Niveau 1</h6>
+                <h2 className="fw-bold text-info mb-0">{categories.filter(c => c.level === 1).length}</h2>
+              </div>
             </div>
           </div>
         </div>
-        <div className="col-md-3 mb-3">
-          <div className="card border-warning">
-            <div className="card-body">
-              <h6 className="card-subtitle mb-2 text-muted">Sous-catégories</h6>
-              <h2 className="card-title text-warning">
-                {categories.filter(c => c.level > 1).length}
-              </h2>
+        <div className="col-md-3">
+          <div className="card border-0 shadow-sm h-100 rounded-4">
+            <div className="card-body d-flex align-items-center">
+              <div className="rounded-circle bg-warning bg-opacity-10 p-3 me-3">
+                <i className="bi bi-diagram-3 fs-2 text-warning"></i>
+              </div>
+              <div>
+                <h6 className="text-muted mb-1">Sous-catégories</h6>
+                <h2 className="fw-bold text-warning mb-0">{categories.filter(c => c.level > 1).length}</h2>
+              </div>
             </div>
           </div>
         </div>

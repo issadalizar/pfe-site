@@ -763,22 +763,12 @@ export default function ProductList({
                   </div>
                 </td>
                 <td>
-                  <div className="d-flex align-items-center">
-                    <span className="me-2 fw-bold">
-                      {product.stock || 0}
-                    </span>
-                    <span className={`badge bg-${stockStatus.badge}`}>
-                      {stockStatus.icon}
-                      {stockStatus.text}
-                    </span>
-                  </div>
+                  <span className="fw-bold">
+                    {product.stock || 0}
+                  </span>
                 </td>
                 <td>
-                  <span 
-                    className={`badge ${product.isActive ? 'bg-success' : 'bg-secondary'}`}
-                  >
-                    {product.isActive ? 'Actif' : 'Inactif'}
-                  </span>
+                  <span className={`badge bg-${stockStatus.badge}`}>{stockStatus.text}</span>
                 </td>
                 <td>
                   <div className="btn-group btn-group-sm">

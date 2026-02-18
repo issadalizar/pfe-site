@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { 
   FaShoppingCart, FaUser, FaSearch, FaArrowRight, FaMapMarkerAlt, 
   FaPhone, FaEnvelope, FaLeaf, FaGem, FaHeart, FaTruck,
@@ -319,7 +319,7 @@ const Home = () => {
                 <a className="nav-link" href="#catalog" style={{ color: '#4a4a4a' }}>Catalogue</a>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="#contact" style={{ color: '#4a4a4a' }}>Contact</a>
+                <Link className="nav-link" to="/contact" style={{ color: '#4a4a4a' }}>Contact</Link>
               </li>
             </ul>
           </div>
@@ -629,84 +629,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-5 text-white" style={{ backgroundColor: '#0066cc' }}>
-        <div className="container text-center">
-          <h2 className="display-5 fw-bold mb-4">
-            Commencez Votre Transformation Numérique
-          </h2>
-          <p className="lead mb-4">
-            Contactez nos experts pour une consultation gratuite
-          </p>
-          <button className="btn btn-light btn-lg px-5 fw-bold rounded-pill">
-            Planifier une Démonstration
-          </button>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-5 bg-light">
-        <div className="container">
-          <div className="row justify-content-center mb-5">
-            <div className="col-lg-8 text-center">
-              <h2 className="display-5 fw-bold mb-3" style={{ color: '#0066cc' }}>Contactez-nous</h2>
-              <p className="lead text-muted">
-                Notre équipe est à votre disposition pour répondre à toutes vos questions.
-              </p>
-            </div>
-          </div>
-
-          <div className="row g-5 align-items-center">
-            {/* Contact Info Column */}
-            <div className="col-lg-5">
-              <div className="pe-lg-5">
-                <h3 className="fw-bold mb-4 text-primary">Nos Coordonnées</h3>
-                <p className="mb-5 text-muted">
-                  N'hésitez pas à nous contacter pour toute demande d'information,
-                  d'assistance technique ou de partenariat.
-                </p>
-
-                <div className="d-flex align-items-start mb-4">
-                  <div className="icon-square bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
-                    <FaMapMarkerAlt size={24} />
-                  </div>
-                  <div>
-                    <h5 className="fw-bold mb-1">Notre Adresse</h5>
-                    <p className="text-muted mb-0">123 Rue de l'Innovation, Tunis, Tunisie</p>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-start mb-4">
-                  <div className="icon-square bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
-                    <FaPhone size={24} />
-                  </div>
-                  <div>
-                    <h5 className="fw-bold mb-1">Téléphone</h5>
-                    <p className="text-muted mb-0">+216 71 123 456</p>
-                    <small className="text-muted">Lun - Ven, 8h - 18h</small>
-                  </div>
-                </div>
-
-                <div className="d-flex align-items-start mb-4">
-                  <div className="icon-square bg-primary bg-opacity-10 text-primary p-3 rounded-3 me-3">
-                    <FaEnvelope size={24} />
-                  </div>
-                  <div>
-                    <h5 className="fw-bold mb-1">Email</h5>
-                    <p className="text-muted mb-0">contact@univertechno.tn</p>
-                    <p className="text-muted mb-0">support@univertechno.tn</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Contact Form Column */}
-            <div className="col-lg-7">
-              <ContactForm />
-            </div>
-          </div>
-        </div>
-      </section>
+   
 
       {/* Footer */}
       <footer className="bg-dark text-light py-5">
