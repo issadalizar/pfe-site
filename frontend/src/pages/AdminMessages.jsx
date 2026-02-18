@@ -61,10 +61,24 @@ const AdminMessages = () => {
         <div className="container-fluid">
             <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
-                    <h2 className="fw-bold mb-1">Messages Reçus</h2>
-                    <p className="text-muted">Gérez les demandes de contact et réclamations.</p>
+                    <h1 className="fw-bold text-primary mb-1" style={{ fontSize: '2.5rem' }}>
+                        <i className="bi bi-envelope me-2"></i>
+                        Messages Reçus
+                    </h1>
+                    <p className="text-muted" style={{ fontSize: '1.1rem' }}>
+                        Gérez les demandes de contact et réclamations.
+                    </p>
                 </div>
                 <div className="d-flex gap-2">
+                                        <span className="badge bg-light text-dark p-3 shadow-sm">
+                                            <i className="bi bi-calendar me-2"></i>
+                                            {new Date().toLocaleDateString('fr-FR', {
+                                                weekday: 'long',
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </span>
                     <span className="badge bg-primary fs-6 rounded-pill px-3 py-2">
                         Total: {messages.length}
                     </span>

@@ -115,11 +115,25 @@ export default function Categories() {
 
   return (
     <div>
+              <div className="d-none d-md-flex align-items-center gap-3">
+                <span className="badge bg-light text-dark p-3 shadow-sm">
+                  <i className="bi bi-calendar me-2"></i>
+                  {new Date().toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </span>
+              </div>
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h1 className="h3 mb-2 text-dark">Gestion des Catégories</h1>
-          <p className="text-muted mb-0">
+          <h1 className="fw-bold text-primary mb-1" style={{ fontSize: '2.5rem' }}>
+            <i className="bi bi-folder me-2"></i>
+            Gestion des Catégories
+          </h1>
+          <p className="text-muted mb-0" style={{ fontSize: '1.1rem' }}>
             Organisez vos produits par catégories et sous-catégories
           </p>
         </div>

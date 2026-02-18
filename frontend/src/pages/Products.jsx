@@ -551,58 +551,25 @@ export default function Products() {
 
   return (
     <div>
+              <div className="d-none d-md-flex align-items-center gap-3">
+                <span className="badge bg-light text-dark p-3 shadow-sm">
+                  <i className="bi bi-calendar me-2"></i>
+                  {new Date().toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </span>
+              </div>
       {/* Header avec icône de notification */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h1 className="h3 mb-2 text-dark">
-            {categoryId ? (
-              <>
-                <div className="d-flex align-items-center">
-                  <button
-                    className="btn btn-outline-secondary btn-sm me-3"
-                    onClick={() => {
-                      navigate('/products');
-                      handleResetFilters();
-                    }}
-                    title="Retour à tous les produits"
-                  >
-                    <FaArrowLeft />
-                  </button>
-                  <div>
-                    <div className="d-flex align-items-center">
-                      <FaLayerGroup className="text-primary me-2" />
-                      <span>
-                        {viewDirectProductsOnly ? "Produits de la catégorie" : "Produits de la catégorie et sous-catégories"}
-                        <span className="text-primary ms-2">
-                          {currentCategory?.name || categories.find(c => c._id === categoryId)?.name || ""}
-                        </span>
-                      </span>
-                    </div>
-                    {viewDirectProductsOnly && (
-                      <div className="mt-1">
-                        <small className="text-info">
-                          <FaEye className="me-1" size={12} />
-                          Mode: Produits directs seulement
-                        </small>
-                      </div>
-                    )}
-                    {!viewDirectProductsOnly && allSubCategories.length > 0 && (
-                      <div className="mt-1">
-                        <small className="text-muted">
-                          <FaLayerGroup className="me-1" size={12} />
-                          Inclut {allSubCategories.length} sous-catégorie(s) et leurs produits
-                        </small>
-                      </div>
-                    )}
-                    {/* Description de la catégorie masquée conformément à la demande */}
-                  </div>
-                </div>
-              </>
-            ) : (
-              "Gestion des Produits"
-            )}
+          <h1 className="fw-bold text-primary mb-1" style={{ fontSize: '2.5rem' }}>
+            <i className="bi bi-box-seam me-2"></i>
+            Gestion des Produits
           </h1>
-          <p className="text-muted mb-0">
+          <p className="text-muted mb-0" style={{ fontSize: '1.1rem' }}>
             {categoryId 
               ? viewDirectProductsOnly 
                 ? "Uniquement les produits directs de cette catégorie" 

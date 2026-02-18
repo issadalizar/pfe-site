@@ -188,7 +188,7 @@ export default function UserList() {
       {/* En-tête de page amélioré */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h1 className="display-6 fw-bold text-primary mb-1">Gestion des Comptes Clients</h1>
+          <h1 className="display-6 fw-bold text-primary mb-1">👥Gestion des Comptes Clients</h1>
           <p className="text-muted lead fs-6">
             <i className="bi bi-people-fill me-2"></i>
             Gérez les comptes des clients et leurs droits d'administration
