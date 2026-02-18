@@ -202,7 +202,7 @@ const Home = () => {
   };
 
   const handleLoginClick = () => {
-    navigate("/dashboard");
+    navigate("/login");
   };
 
   const scrollToTop = () => {

@@ -4,7 +4,7 @@ import ContactForm from "../components/ContactForm";
 export default function ContactPage() {
   return (
     <div style={{ 
-      background: '#e6f0fa', // Bleu clair
+      background: '#003399', // Bleu roi
       minHeight: '100vh',
       display: 'flex',
       alignItems: 'center'

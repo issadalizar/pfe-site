@@ -14,6 +14,7 @@ import PublicCategoryPage from "./pages/PublicCategoryPage";
 import AdminMessages from './pages/AdminMessages';
 import ContactPage from './pages/ContactPage';
 import SectorPage from "./pages/SectorPage";
+import Login from "./pages/Login";
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
       <Route path="/category/:categoryId" element={<PublicCategoryPage />} />
       <Route path="/contact" element={<ContactPage />} />
        <Route path="/sector/:sectorId" element={<SectorPage />} />
+       <Route path="/login" element={<Login />} />
 
       {/* ROUTES ADMIN - AVEC SIDEBAR */}
       <Route
