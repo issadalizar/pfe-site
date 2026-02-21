@@ -1,4 +1,4 @@
-// src/components/SubCategoryList.jsx
+//composnat li kayaffichi les sous categories dyal wa7ed category
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { FaFolder, FaChevronRight, FaBox } from "react-icons/fa";
@@ -8,55 +8,26 @@ const SubCategoryList = ({ categoryId, categoryName, onBack, onSelectSubCategory
   const [subCategories, setSubCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [allCategories, setAllCategories] = useState([]);
 
   useEffect(() => {
-    if (categoryId) {
-      fetchSubCategories();
-    }
+    fetchSubCategories();
   }, [categoryId]);
 
   const fetchSubCategories = async () => {
     try {
       setLoading(true);
-      console.log("🔍 Recherche des sous-catégories pour categoryId:", categoryId);
-      
       const response = await categoryAPI.getAll();
       const allCategories = response.data.data || response.data || [];
-      setAllCategories(allCategories);
-      
-      console.log("📋 Toutes les catégories reçues:", allCategories.length);
-      
-      // Afficher toutes les catégories avec leurs parents
-      allCategories.forEach(cat => {
-        console.log(`- ${cat.name} (${cat._id}) - Parent: ${cat.parent?.name || cat.parent || 'Aucun'}`);
-      });
       
       // Filtrer les sous-catégories qui ont categoryId comme parent
-      const subs = allCategories.filter(cat => {
-        const parentId = cat.parent?._id || cat.parent;
-        return parentId === categoryId;
-      });
-      
-      console.log(`✅ Sous-catégories trouvées pour ${categoryName}:`, subs.length);
-      subs.forEach(sub => console.log(`   → ${sub.name} (${sub._id})`));
-      
+      const subs = allCategories.filter(cat => cat.parent?._id === categoryId || cat.parent === categoryId);
       setSubCategories(subs);
     } catch (err) {
-      console.error("❌ Erreur lors du chargement des sous-catégories:", err);
+      console.error("Erreur lors du chargement des sous-catégories:", err);
       setError("Impossible de charger les sous-catégories");
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleViewDirectProducts = () => {
-    console.log("🔄 Redirection vers les produits directs avec categoryId:", categoryId);
-    onSelectSubCategory({ 
-      _id: categoryId, 
-      name: categoryName,
-      description: "Produits directs"
-    });
   };
 
   if (loading) {
@@ -95,24 +66,20 @@ const SubCategoryList = ({ categoryId, categoryName, onBack, onSelectSubCategory
           </p>
           <button 
             className="btn btn-primary"
-            onClick={handleViewDirectProducts}
+            onClick={() => onSelectSubCategory({ 
+              _id: categoryId, 
+              name: categoryName,
+              description: "Produits directs"
+            })}
           >
             Voir les produits directs
           </button>
         </div>
       ) : (
         <>
-          <div className="d-flex justify-content-between align-items-center mb-4">
-            <p className="text-muted mb-0">
-              {subCategories.length} sous-catégorie(s) disponible(s)
-            </p>
-            <button 
-              className="btn btn-outline-primary btn-sm"
-              onClick={handleViewDirectProducts}
-            >
-              Voir tous les produits
-            </button>
-          </div>
+          <p className="text-muted mb-4">
+            {subCategories.length} sous-catégorie(s) disponible(s)
+          </p>
           
           <div className="row g-4">
             {subCategories.map((subCat) => (
@@ -121,14 +88,6 @@ const SubCategoryList = ({ categoryId, categoryName, onBack, onSelectSubCategory
                   className="card h-100 border-0 shadow-sm hover-shadow"
                   style={{ cursor: 'pointer', transition: 'all 0.3s ease' }}
                   onClick={() => onSelectSubCategory(subCat)}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-5px)';
-                    e.currentTarget.style.boxShadow = '0 10px 30px rgba(67, 97, 238, 0.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 0.125rem 0.25rem rgba(0,0,0,0.075)';
-                  }}
                 >
                   <div className="card-body">
                     <div className="d-flex align-items-center mb-3">
@@ -154,10 +113,10 @@ const SubCategoryList = ({ categoryId, categoryName, onBack, onSelectSubCategory
                     </p>
                     
                     <div className="d-flex align-items-center justify-content-between">
-                      <span className="text-primary small fw-medium">
+                      <span className="text-primary small">
                         Voir les produits
                       </span>
-                      <FaChevronRight className="text-primary" size={12} />
+                      <FaChevronRight className="text-primary" />
                     </div>
                   </div>
                 </div>

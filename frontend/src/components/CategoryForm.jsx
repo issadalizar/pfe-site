@@ -1,175 +1,273 @@
-import React, { useState } from 'react';
-import { FaPaperPlane, FaUser, FaEnvelope, FaTag, FaCommentAlt, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
-import { contactAPI } from '../services/api';
-import '../styles/contact.css';
+// src/components/CategoryForm.jsx
+import React, { useState, useEffect } from "react";
+import { FaSave, FaTimes, FaPlus } from "react-icons/fa";
 
-const ContactForm = () => {
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-    });
-    const [status, setStatus] = useState('idle'); // idle, submitting, success, error
-    const [errorMessage, setErrorMessage] = useState('');
+export default function CategoryForm({ 
+  editingCategory, 
+  onSave, 
+  onCancel,
+  categories 
+}) {
+  const [formData, setFormData] = useState({
+    name: "",
+    description: "",
+    parent: "",
+    level: 1,
+    icon: "📁",
+    isActive: true,
+  });
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+  const [errors, setErrors] = useState({});
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setStatus('submitting');
-        setErrorMessage('');
+  useEffect(() => {
+    if (editingCategory) {
+      setFormData({
+        name: editingCategory.name || "",
+        description: editingCategory.description || "",
+        parent: editingCategory.parent?._id || "",
+        level: editingCategory.level || 1,
+        icon: editingCategory.icon || "📁",
+        isActive: editingCategory.isActive !== undefined ? editingCategory.isActive : true,
+      });
+    }
+  }, [editingCategory]);
 
-        try {
-            await contactAPI.create(formData);
-            setStatus('success');
-            setFormData({ name: '', email: '', subject: '', message: '' });
-            setTimeout(() => setStatus('idle'), 5000);
-        } catch (error) {
-            console.error('Error sending message:', error);
-            setStatus('error');
-            setErrorMessage(error.response?.data?.error || 'Une erreur est survenue, veuillez réessayer.');
-        }
-    };
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.name.trim()) {
+      newErrors.name = "Le nom est requis";
+    }
+    
+    if (formData.level < 1 || formData.level > 3) {
+      newErrors.level = "Le niveau doit être entre 1 et 3";
+    }
+    
+    // Si c'est un niveau 2 ou 3, un parent est requis
+    if (formData.level > 1 && !formData.parent) {
+      newErrors.parent = "Une catégorie parente est requise pour ce niveau";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
-    return (
-        <div className="contact-form-wrapper">
-            <div className="contact-card">
-                <div className="card-header-gradient">
-                    <h3 className="fw-bold text-white mb-2">
-                        Envoyez-nous un message
-                    </h3>
-                    <p className="text-white-50 mb-0">
-                        Une question ou une réclamation ? Notre équipe est là pour vous aider.
-                    </p>
-                </div>
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    
+    if (validateForm()) {
+      onSave(formData);
+    }
+  };
 
-                <div className="card-body p-4 p-md-5">
-                    {status === 'success' ? (
-                        <div className="text-center py-5 fade-in">
-                            <div className="success-icon mb-4">
-                                <FaCheckCircle className="text-success display-1" />
-                            </div>
-                            <h4 className="fw-bold text-success mb-3">Message Envoyé !</h4>
-                            <p className="text-muted mb-4">
-                                Nous avons bien reçu votre demande et nous vous répondrons dans les plus brefs délais.
-                            </p>
-                            <button
-                                className="btn btn-outline-primary rounded-pill px-4"
-                                onClick={() => setStatus('idle')}
-                            >
-                                Envoyer un autre message
-                            </button>
-                        </div>
-                    ) : (
-                        <form onSubmit={handleSubmit} className={status === 'submitting' ? 'opacity-50' : ''}>
-                            {status === 'error' && (
-                                <div className="alert alert-danger d-flex align-items-center mb-4" role="alert">
-                                    <FaExclamationCircle className="me-2" />
-                                    <div>{errorMessage}</div>
-                                </div>
-                            )}
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: null }));
+    }
+  };
 
-                            <div className="form-floating mb-3">
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="name"
-                                    name="name"
-                                    placeholder="Votre nom"
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={status === 'submitting'}
-                                />
-                                <label htmlFor="name">
-                                    <FaUser className="me-2 text-primary" /> Nom complet
-                                </label>
-                            </div>
+  // Filtrer les parents disponibles selon le niveau sélectionné
+  // Niveau 2 -> besoin de parents niveau 1
+  // Niveau 3 -> besoin de parents niveau 2
+  const targetParentLevel = parseInt(formData.level) - 1;
+  
+  const availableParents = categories.filter(cat => 
+    cat.level === targetParentLevel && 
+    cat._id !== (editingCategory?._id) // Ne pas s'inclure soi-même
+  );
 
-                            <div className="form-floating mb-3">
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    id="email"
-                                    name="email"
-                                    placeholder="name@example.com"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={status === 'submitting'}
-                                />
-                                <label htmlFor="email">
-                                    <FaEnvelope className="me-2 text-primary" /> Adresse email
-                                </label>
-                            </div>
+  const iconOptions = [
+    { value: "📁", label: "Dossier" },
+    { value: "📚", label: "Livres" },
+    { value: "🧮", label: "Mathématiques" },
+    { value: "🔬", label: "Science" },
+    { value: "💻", label: "Informatique" },
+    { value: "🎨", label: "Art" },
+    { value: "🎵", label: "Musique" },
+    { value: "🏀", label: "Sport" },
+    { value: "🌍", label: "Géographie" },
+    { value: "📖", label: "Lecture" },
+  ];
 
-                            <div className="form-floating mb-3">
-                                <select
-                                    className="form-select"
-                                    id="subject"
-                                    name="subject"
-                                    value={formData.subject}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={status === 'submitting'}
-                                >
-                                    <option value="" disabled>Sélectionnez un sujet</option>
-                                    <option value="assistance">Assistance Technique</option>
-                                    <option value="commercial">Service Commercial</option>
-                                    <option value="reclamation">Réclamation</option>
-                                    <option value="autre">Autre demande</option>
-                                </select>
-                                <label htmlFor="subject">
-                                    <FaTag className="me-2 text-primary" /> Sujet
-                                </label>
-                            </div>
+  return (
+    <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+      <div className="mb-3">
+        <label htmlFor="name" className="form-label">
+          Nom de la catégorie *
+        </label>
+        <input
+          type="text"
+          className={`form-control ${errors.name ? 'is-invalid' : ''}`}
+          id="name"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          placeholder="Ex: Mathématiques"
+        />
+        {errors.name && (
+          <div className="invalid-feedback">{errors.name}</div>
+        )}
+      </div>
 
-                            <div className="form-floating mb-4">
-                                <textarea
-                                    className="form-control"
-                                    id="message"
-                                    name="message"
-                                    placeholder="Votre message"
-                                    style={{ height: '150px' }}
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    required
-                                    disabled={status === 'submitting'}
-                                ></textarea>
-                                <label htmlFor="message">
-                                    <FaCommentAlt className="me-2 text-primary" /> Message
-                                </label>
-                            </div>
+      <div className="mb-3">
+        <label htmlFor="description" className="form-label">
+          Description
+        </label>
+        <textarea
+          className="form-control"
+          id="description"
+          name="description"
+          rows="2"
+          value={formData.description}
+          onChange={handleChange}
+          placeholder="Description de la catégorie..."
+        />
+      </div>
 
-                            <button
-                                type="submit"
-                                className="btn btn-gradient w-100 py-3 fw-bold rounded-3 shadow-sm transition-all"
-                                disabled={status === 'submitting'}
-                            >
-                                {status === 'submitting' ? (
-                                    <span>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        Envoi en cours...
-                                    </span>
-                                ) : (
-                                    <span>
-                                        Envoyer le message <FaPaperPlane className="ms-2" />
-                                    </span>
-                                )}
-                            </button>
-                        </form>
-                    )}
-                </div>
-            </div>
+      <div className="row">
+        <div className="col-md-6 mb-3">
+          <label htmlFor="level" className="form-label">
+            Niveau *
+          </label>
+          <select
+            className={`form-select ${errors.level ? 'is-invalid' : ''}`}
+            id="level"
+            name="level"
+            value={formData.level}
+            onChange={handleChange}
+            required
+          >
+            <option value="1">Niveau 1 - Catégorie principale</option>
+            <option value="2">Niveau 2 - Sous-catégorie</option>
+            <option value="3">Niveau 3 - Sous-sous-catégorie</option>
+          </select>
+          {errors.level && (
+            <div className="invalid-feedback">{errors.level}</div>
+          )}
         </div>
-    );
-};
 
-export default ContactForm;
+        <div className="col-md-6 mb-3">
+          <label htmlFor="parent" className="form-label">
+            Catégorie parente
+          </label>
+          <select
+            className={`form-select ${errors.parent ? 'is-invalid' : ''}`}
+            id="parent"
+            name="parent"
+            value={formData.parent}
+            onChange={handleChange}
+            disabled={formData.level === 1}
+          >
+            <option value="">Aucun parent</option>
+            {availableParents.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category.icon} {category.name}
+              </option>
+            ))}
+          </select>
+          {errors.parent && (
+            <div className="invalid-feedback">{errors.parent}</div>
+          )}
+          {formData.level === 1 && (
+            <small className="text-muted">Les catégories de niveau 1 n'ont pas de parent</small>
+          )}
+        </div>
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label">Icone</label>
+        <div className="d-flex align-items-center gap-2 mb-2">
+          <div 
+            className="border rounded d-flex align-items-center justify-content-center"
+            style={{ 
+              width: "40px", 
+              height: "40px", 
+              fontSize: "24px",
+              backgroundColor: "#f8f9fa"
+            }}
+          >
+            {formData.icon}
+          </div>
+          <select
+            className="form-select"
+            name="icon"
+            value={formData.icon}
+            onChange={handleChange}
+          >
+            {iconOptions.map((icon) => (
+              <option key={icon.value} value={icon.value}>
+                {icon.value} {icon.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <input
+          type="text"
+          className="form-control"
+          name="icon"
+          value={formData.icon}
+          onChange={handleChange}
+          placeholder="Entrez un emoji personnalisé"
+        />
+        <small className="text-muted">
+          Utilisez un emoji pour représenter votre catégorie
+        </small>
+      </div>
+
+      <div className="mb-4">
+        <div className="form-check form-switch">
+          <input
+            className="form-check-input"
+            type="checkbox"
+            id="isActive"
+            name="isActive"
+            checked={formData.isActive}
+            onChange={handleChange}
+          />
+          <label className="form-check-label" htmlFor="isActive">
+            Catégorie active
+          </label>
+        </div>
+        <small className="text-muted d-block">
+          Les catégories inactives ne seront pas visibles dans le catalogue
+        </small>
+      </div>
+
+      <div className="d-flex justify-content-end gap-2">
+        <button
+          type="button"
+          className="btn btn-secondary d-flex align-items-center gap-2"
+          onClick={onCancel}
+        >
+          <FaTimes />
+          Annuler
+        </button>
+        <button
+          type="submit"
+          className="btn btn-primary d-flex align-items-center gap-2"
+        >
+          {editingCategory ? (
+            <>
+              <FaSave />
+              Modifier
+            </>
+          ) : (
+            <>
+              <FaPlus />
+              Créer
+            </>
+          )}
+        </button>
+      </div>
+    </form>
+  );
+}
