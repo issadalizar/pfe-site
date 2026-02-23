@@ -10,7 +10,7 @@ import {
   FaQuoteRight, FaFacebook, FaLinkedin, FaTwitter, FaYoutube,
   FaInstagram, FaAngleRight, FaPlay, FaRegClock, FaRegCalendar,
   FaRegLightbulb, FaRegHandshake, FaRegPaperPlane, FaRegBell,
-  FaMapMarkedAlt
+  FaMapMarkedAlt, FaGlobe
 } from "react-icons/fa";
 import { productAPI, categoryAPI } from "../services/api";
 
@@ -34,6 +34,167 @@ const Home = () => {
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
+  const [language, setLanguage] = useState("fr"); // 'fr' for French, 'en' for English
+
+  // Translations
+  const translations = {
+    fr: {
+      // Navigation
+      home: "Accueil",
+      products: "Produits",
+      expertise: "Expertise",
+      about: "À propos",
+      contact: "Contact",
+      searchPlaceholder: "Rechercher un produit...",
+      
+      // Hero Section
+      innovationBadge: "INNOVATION TECHNOLOGIQUE",
+      heroTitle1: "Façonnez l'avenir avec",
+      heroTitle2: "l'excellence",
+      heroTitle3: "technologique",
+      heroDescription: "Équipements de pointe pour l'éducation et l'industrie. Solutions sur-mesure, support expert et innovation continue.",
+      contactUs: "Contactez-nous",
+      location: "Localisation",
+      
+      // Expertise Section
+      expertiseBadge: "NOTRE EXPERTISE",
+      expertiseTitle: "Solutions par secteur",
+      expertiseDescription: "Des solutions complètes et adaptées à chaque domaine d'application",
+      projects: "projets",
+      clients: "clients",
+      exploreSector: "Explorer le secteur",
+      
+      // Products Section
+      catalogBadge: "CATALOGUE",
+      catalogTitle: "Équipements professionnels",
+      catalogDescription: "Découvrez notre gamme complète de solutions technologiques",
+      allProducts: "Tous les produits",
+      categories: "Catégories",
+      productsAvailable: "produits disponibles",
+      sortBy: "Trier par : Popularité",
+      sortPriceAsc: "Prix croissant",
+      sortPriceDesc: "Prix décroissant",
+      sortNewest: "Nouveautés",
+      new: "NOUVEAU",
+      noProducts: "Aucun produit trouvé",
+      
+      // Testimonials Section
+      testimonialsBadge: "TÉMOIGNAGES",
+      testimonialsTitle: "Ce qu'ils disent de nous",
+      testimonialsDescription: "La confiance de nos partenaires, notre plus grande fierté",
+      
+      // Newsletter Section
+      newsletterTitle: "Restez informé des dernières innovations",
+      newsletterDescription: "Recevez nos actualités, offres exclusives et nouveautés produits",
+      newsletterPlaceholder: "Votre adresse email",
+      newsletterButton: "S'inscrire",
+      
+      // Footer
+      footerDescription: "Leader dans la fourniture d'équipements technologiques pour l'éducation et l'industrie.",
+      quickLinks: "Liens rapides",
+      contact: "Contact",
+      allRightsReserved: "Tous droits réservés.",
+      
+      // Sector names
+      cncEducation: "CNC for Education",
+      automotive: "Automotive",
+      electronicsLab: "Electronics Lab",
+      
+      // Category names
+      cncTurning: "CNC Turing Machine",
+      cncMilling: "CNC Milling Machine",
+      sensors: "CAPTEURS ET ACTIONNEURS",
+      electricity: "ÉLECTRICITÉ",
+      multiplex: "RÉSEAUX MULTIPLEXÉS",
+      accessories: "Accessoires",
+      education: "EDUCATION EQUIPMENT",
+      
+      // Product related
+      ttc: "TTC",
+      
+      // Messages
+      newsletterSuccess: "Merci de votre inscription à notre newsletter !",
+    },
+    en: {
+      // Navigation
+      home: "Home",
+      products: "Products",
+      expertise: "Expertise",
+      about: "About",
+      contact: "Contact",
+      searchPlaceholder: "Search for a product...",
+      
+      // Hero Section
+      innovationBadge: "TECHNOLOGICAL INNOVATION",
+      heroTitle1: "Shape the future with",
+      heroTitle2: "technological",
+      heroTitle3: "excellence",
+      heroDescription: "Cutting-edge equipment for education and industry. Custom solutions, expert support, and continuous innovation.",
+      contactUs: "Contact Us",
+      location: "Location",
+      
+      // Expertise Section
+      expertiseBadge: "OUR EXPERTISE",
+      expertiseTitle: "Solutions by sector",
+      expertiseDescription: "Complete solutions adapted to each application domain",
+      projects: "projects",
+      clients: "clients",
+      exploreSector: "Explore sector",
+      
+      // Products Section
+      catalogBadge: "CATALOG",
+      catalogTitle: "Professional equipment",
+      catalogDescription: "Discover our complete range of technological solutions",
+      allProducts: "All products",
+      categories: "Categories",
+      productsAvailable: "products available",
+      sortBy: "Sort by: Popularity",
+      sortPriceAsc: "Price ascending",
+      sortPriceDesc: "Price descending",
+      sortNewest: "Newest",
+      new: "NEW",
+      noProducts: "No products found",
+      
+      // Testimonials Section
+      testimonialsBadge: "TESTIMONIALS",
+      testimonialsTitle: "What they say about us",
+      testimonialsDescription: "The trust of our partners, our greatest pride",
+      
+      // Newsletter Section
+      newsletterTitle: "Stay informed about the latest innovations",
+      newsletterDescription: "Receive our news, exclusive offers, and new products",
+      newsletterPlaceholder: "Your email address",
+      newsletterButton: "Subscribe",
+      
+      // Footer
+      footerDescription: "Leader in providing technological equipment for education and industry.",
+      quickLinks: "Quick links",
+      contact: "Contact",
+      allRightsReserved: "All rights reserved.",
+      
+      // Sector names
+      cncEducation: "CNC for Education",
+      automotive: "Automotive",
+      electronicsLab: "Electronics Lab",
+      
+      // Category names
+      cncTurning: "CNC Turing Machine",
+      cncMilling: "CNC Milling Machine",
+      sensors: "SENSORS AND ACTUATORS",
+      electricity: "ELECTRICITY",
+      multiplex: "MULTIPLEXED NETWORKS",
+      accessories: "Accessories",
+      education: "EDUCATION EQUIPMENT",
+      
+      // Product related
+      ttc: "incl. tax",
+      
+      // Messages
+      newsletterSuccess: "Thank you for subscribing to our newsletter!",
+    }
+  };
+
+  const t = translations[language];
 
   // Catégories principales pour le filtrage du catalogue
   const mainCategories = [
@@ -52,37 +213,46 @@ const Home = () => {
     {
       id: "cnc-education",
       name: "CNC for Education",
-      displayName: "CNC for Education",
+      displayNameFr: "CNC for Education",
+      displayNameEn: "CNC for Education",
       icon: <FaCogs size={28} />,
       color: "#4361ee",
       gradient: "linear-gradient(135deg, #4361ee, #3a0ca3)",
-      description: "Machines CNC pour l'enseignement et la formation professionnelle",
+      descriptionFr: "Machines CNC pour l'enseignement et la formation professionnelle",
+      descriptionEn: "CNC machines for education and vocational training",
       path: "/sector/cnc-education",
-      features: ["Formation pratique", "Simulation 3D", "Support pédagogique"],
+      featuresFr: ["Formation pratique", "Simulation 3D", "Support pédagogique"],
+      featuresEn: ["Hands-on training", "3D simulation", "Educational support"],
       stats: { projects: 150, clients: 45 }
     },
     {
       id: "voiture",
       name: "Voiture",
-      displayName: "Automotive",
+      displayNameFr: "Automotive",
+      displayNameEn: "Automotive",
       icon: <FaCar size={28} />,
       color: "#f72585",
       gradient: "linear-gradient(135deg, #f72585, #b5179e)",
-      description: "Équipements didactiques pour l'automobile et diagnostic",
+      descriptionFr: "Équipements didactiques pour l'automobile et diagnostic",
+      descriptionEn: "Educational equipment for automotive and diagnostics",
       path: "/sector/voiture",
-      features: ["Diagnostic avancé", "Simulation moteur", "Systèmes embarqués"],
+      featuresFr: ["Diagnostic avancé", "Simulation moteur", "Systèmes embarqués"],
+      featuresEn: ["Advanced diagnostics", "Engine simulation", "Embedded systems"],
       stats: { projects: 98, clients: 32 }
     },
     {
       id: "mcp-lab",
       name: "MCP lab electronics",
-      displayName: "Electronics Lab",
+      displayNameFr: "Electronics Lab",
+      displayNameEn: "Electronics Lab",
       icon: <FaFlask size={28} />,
       color: "#4cc9f0",
       gradient: "linear-gradient(135deg, #4cc9f0, #4895ef)",
-      description: "Matériel de laboratoire pour l'électronique et l'instrumentation",
+      descriptionFr: "Matériel de laboratoire pour l'électronique et l'instrumentation",
+      descriptionEn: "Laboratory equipment for electronics and instrumentation",
       path: "/sector/mcp-lab",
-      features: ["Mesure précise", "Oscilloscopes", "Composants SMD"],
+      featuresFr: ["Mesure précise", "Oscilloscopes", "Composants SMD"],
+      featuresEn: ["Precise measurement", "Oscilloscopes", "SMD components"],
       stats: { projects: 210, clients: 67 }
     }
   ];
@@ -92,24 +262,30 @@ const Home = () => {
     {
       id: 1,
       name: "Dr. Ahmed Ben Mahmoud",
-      position: "Directeur, Institut Supérieur des Études Technologiques",
-      content: "UniverTechno+ a équipé nos laboratoires avec des machines CNC de dernière génération. La qualité des équipements et le support technique sont exceptionnels.",
+      positionFr: "Directeur, Institut Supérieur des Études Technologiques",
+      positionEn: "Director, Higher Institute of Technological Studies",
+      contentFr: "UniverTechno+ a équipé nos laboratoires avec des machines CNC de dernière génération. La qualité des équipements et le support technique sont exceptionnels.",
+      contentEn: "UniverTechno+ equipped our laboratories with state-of-the-art CNC machines. The quality of the equipment and technical support are exceptional.",
       rating: 5,
       image: "https://randomuser.me/api/portraits/men/32.jpg"
     },
     {
       id: 2,
       name: "Sarra Khelifi",
-      position: "Responsable R&D, Tunisie Automotive",
-      content: "Les solutions de diagnostic automobile nous ont permis d'optimiser nos processus de contrôle qualité. Un partenaire fiable et innovant.",
+      positionFr: "Responsable R&D, Tunisie Automotive",
+      positionEn: "R&D Manager, Tunisia Automotive",
+      contentFr: "Les solutions de diagnostic automobile nous ont permis d'optimiser nos processus de contrôle qualité. Un partenaire fiable et innovant.",
+      contentEn: "The automotive diagnostic solutions allowed us to optimize our quality control processes. A reliable and innovative partner.",
       rating: 5,
       image: "https://randomuser.me/api/portraits/women/44.jpg"
     },
     {
       id: 3,
       name: "Mohamed Ali Bouaziz",
-      position: "Chef de projet, ENIT",
-      content: "La plateforme de simulation électronique a révolutionné notre façon d'enseigner. Les étudiants peuvent maintenant expérimenter en toute sécurité.",
+      positionFr: "Chef de projet, ENIT",
+      positionEn: "Project Manager, ENIT",
+      contentFr: "La plateforme de simulation électronique a révolutionné notre façon d'enseigner. Les étudiants peuvent maintenant expérimenter en toute sécurité.",
+      contentEn: "The electronic simulation platform revolutionized our teaching methods. Students can now experiment safely.",
       rating: 4.5,
       image: "https://randomuser.me/api/portraits/men/75.jpg"
     }
@@ -117,10 +293,10 @@ const Home = () => {
 
   // Statistiques clés
   const keyStats = [
-    { icon: <FaIndustry />, value: "500+", label: "Équipements installés" },
-    { icon: <FaGraduationCap />, value: "120+", label: "Institutions partenaires" },
-    { icon: <FaAward />, value: "15+", label: "Années d'expertise" },
-    { icon: <FaHeadset />, value: "24/7", label: "Support technique" }
+    { icon: <FaIndustry />, value: "500+", labelFr: "Équipements installés", labelEn: "Equipment installed" },
+    { icon: <FaGraduationCap />, value: "120+", labelFr: "Institutions partenaires", labelEn: "Partner institutions" },
+    { icon: <FaAward />, value: "15+", labelFr: "Années d'expertise", labelEn: "Years of expertise" },
+    { icon: <FaHeadset />, value: "24/7", labelFr: "Support technique", labelEn: "Technical support" }
   ];
 
   useEffect(() => {
@@ -211,8 +387,12 @@ const Home = () => {
 
   const handleNewsletterSubmit = (e) => {
     e.preventDefault();
-    alert("Merci de votre inscription à notre newsletter !");
+    alert(t.newsletterSuccess);
     setNewsletterEmail("");
+  };
+
+  const toggleLanguage = () => {
+    setLanguage(prev => prev === "fr" ? "en" : "fr");
   };
 
   const handleImageError = (productId) => {
@@ -284,11 +464,11 @@ const Home = () => {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('fr-TN', {
+    return new Intl.NumberFormat(language === 'fr' ? 'fr-TN' : 'en-TN', {
       style: 'currency',
       currency: 'TND',
       minimumFractionDigits: 2
-    }).format(price).replace('TND', 'DT');
+    }).format(price).replace('TND', language === 'fr' ? 'DT' : 'TND');
   };
 
   const truncateText = (text, maxLength = 25) => {
@@ -381,11 +561,11 @@ const Home = () => {
             <div className="d-none d-lg-block">
               <ul className="nav gap-2">
                 {[
-                  { name: 'Accueil', href: '#home' },
-                  { name: 'Produits', href: '#products' },
-                  { name: 'Expertise', href: '#services' },
-                  { name: 'À propos', href: '#about' },
-                  { name: 'Contact', href: '/contact' }
+                  { name: t.home, href: '#home' },
+                  { name: t.products, href: '#products' },
+                  { name: t.expertise, href: '#services' },
+                  { name: t.about, href: '#about' },
+                  { name: t.contact, href: '/contact' }
                 ].map((item, index) => (
                   <li className="nav-item" key={index}>
                     {item.href.startsWith('/') ? (
@@ -428,12 +608,35 @@ const Home = () => {
 
             {/* Actions */}
             <div className="d-flex align-items-center gap-3">
+              {/* Language Switcher */}
+              <button
+                onClick={toggleLanguage}
+                className="btn d-flex align-items-center gap-2 rounded-pill px-3 py-2"
+                style={{
+                  backgroundColor: '#f8fafc',
+                  border: '1px solid #e2e8f0',
+                  color: '#334155',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#eef2ff';
+                  e.currentTarget.style.borderColor = '#4361ee';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f8fafc';
+                  e.currentTarget.style.borderColor = '#e2e8f0';
+                }}
+              >
+                <FaGlobe style={{ color: '#4361ee' }} />
+                <span className="fw-medium">{language === 'fr' ? 'FR' : 'EN'}</span>
+              </button>
+
               {/* Recherche */}
               <div className="position-relative d-none d-md-block">
                 <input 
                   type="text" 
                   className="form-control rounded-pill border-0 bg-light"
-                  placeholder="Rechercher un produit..."
+                  placeholder={t.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{ 
@@ -556,11 +759,11 @@ const Home = () => {
             <div className="d-lg-none mt-3 pb-2" style={{ animation: 'slideDown 0.3s ease' }}>
               <ul className="nav flex-column">
                 {[
-                  { name: 'Accueil', href: '#home' },
-                  { name: 'Produits', href: '#products' },
-                  { name: 'Expertise', href: '#services' },
-                  { name: 'À propos', href: '#about' },
-                  { name: 'Contact', href: '/contact' }
+                  { name: t.home, href: '#home' },
+                  { name: t.products, href: '#products' },
+                  { name: t.expertise, href: '#services' },
+                  { name: t.about, href: '#about' },
+                  { name: t.contact, href: '/contact' }
                 ].map((item, index) => (
                   <li className="nav-item" key={index}>
                     {item.href.startsWith('/') ? (
@@ -589,7 +792,7 @@ const Home = () => {
                 <input 
                   type="text" 
                   className="form-control rounded-pill bg-light border-0 py-3"
-                  placeholder="Rechercher..."
+                  placeholder={t.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -626,7 +829,7 @@ const Home = () => {
                   border: '1px solid rgba(255,255,255,0.1)'
                 }}>
                   <FaRocket className="me-2" style={{ fontSize: '14px' }} />
-                  INNOVATION TECHNOLOGIQUE
+                  {t.innovationBadge}
                 </span>
               </div>
               
@@ -634,7 +837,7 @@ const Home = () => {
                 lineHeight: '1.2',
                 textShadow: '0 4px 30px rgba(0,0,0,0.3)'
               }}>
-                Façonnez l'avenir avec{' '}
+                {t.heroTitle1}{' '}
                 <span style={{
                   background: 'linear-gradient(120deg, #64b5f6, #c084fc, #f72585)',
                   WebkitBackgroundClip: 'text',
@@ -642,9 +845,9 @@ const Home = () => {
                   backgroundSize: '200% auto',
                   animation: 'gradient 3s linear infinite'
                 }}>
-                  l'excellence
+                  {t.heroTitle2}
                 </span>
-                <br />technologique
+                <br />{t.heroTitle3}
               </h1>
               
               <p className="lead mb-5" style={{
@@ -654,8 +857,7 @@ const Home = () => {
                 margin: '0 auto',
                 lineHeight: '1.6'
               }}>
-                Équipements de pointe pour l'éducation et l'industrie. 
-                Solutions sur-mesure, support expert et innovation continue.
+                {t.heroDescription}
               </p>
               
               <div className="d-flex flex-wrap gap-4 justify-content-center">
@@ -679,7 +881,7 @@ const Home = () => {
                     e.currentTarget.style.boxShadow = '0 20px 40px rgba(67, 97, 238, 0.3)';
                   }}
                 >
-                  Contactez-nous
+                  {t.contactUs}
                 </button>
                 
                 <button 
@@ -703,7 +905,7 @@ const Home = () => {
                   }}
                 >
                   <FaMapMarkedAlt className="me-2" style={{ fontSize: '14px' }} />
-                  Localisation
+                  {t.location}
                 </button>
               </div>
             </div>
@@ -742,13 +944,13 @@ const Home = () => {
               color: '#4361ee',
               fontWeight: '600'
             }}>
-              NOTRE EXPERTISE
+              {t.expertiseBadge}
             </span>
             <h2 className="display-4 fw-bold mb-3" style={{ color: '#0f172a' }}>
-              Solutions par secteur
+              {t.expertiseTitle}
             </h2>
             <p className="text-muted" style={{ maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
-              Des solutions complètes et adaptées à chaque domaine d'application
+              {t.expertiseDescription}
             </p>
           </div>
 
@@ -797,27 +999,27 @@ const Home = () => {
                       </div>
                       <div>
                         <h4 className="fw-bold mb-1" style={{ color: '#0f172a' }}>
-                          {sector.displayName}
+                          {language === 'fr' ? sector.displayNameFr : sector.displayNameEn}
                         </h4>
                         <div className="d-flex gap-3">
                           <small style={{ color: '#64748b' }}>
                             <FaChartLine className="me-1" />
-                            {sector.stats.projects} projets
+                            {sector.stats.projects} {t.projects}
                           </small>
                           <small style={{ color: '#64748b' }}>
                             <FaHeadset className="me-1" />
-                            {sector.stats.clients} clients
+                            {sector.stats.clients} {t.clients}
                           </small>
                         </div>
                       </div>
                     </div>
 
                     <p className="text-muted mb-4" style={{ lineHeight: '1.6' }}>
-                      {sector.description}
+                      {language === 'fr' ? sector.descriptionFr : sector.descriptionEn}
                     </p>
 
                     <div className="mb-4">
-                      {sector.features.map((feature, idx) => (
+                      {(language === 'fr' ? sector.featuresFr : sector.featuresEn).map((feature, idx) => (
                         <div key={idx} className="d-flex align-items-center gap-2 mb-2">
                           <FaCheckCircle style={{ color: sector.color, fontSize: '14px' }} />
                           <small style={{ color: '#334155' }}>{feature}</small>
@@ -827,7 +1029,7 @@ const Home = () => {
 
                     <div className="d-flex justify-content-between align-items-center">
                       <span className="fw-medium" style={{ color: sector.color }}>
-                        Explorer le secteur
+                        {t.exploreSector}
                       </span>
                       <div style={{
                         width: '40px',
@@ -860,13 +1062,13 @@ const Home = () => {
               color: '#f72585',
               fontWeight: '600'
             }}>
-              CATALOGUE
+              {t.catalogBadge}
             </span>
             <h2 className="display-4 fw-bold mb-3" style={{ color: '#0f172a' }}>
-              Équipements professionnels
+              {t.catalogTitle}
             </h2>
             <p className="text-muted" style={{ maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
-              Découvrez notre gamme complète de solutions technologiques
+              {t.catalogDescription}
             </p>
           </div>
 
@@ -889,7 +1091,7 @@ const Home = () => {
                     }}
                     onClick={() => handleCategoryFilter("All products")}
                   >
-                    <span className="fw-medium">Tous les produits</span>
+                    <span className="fw-medium">{t.allProducts}</span>
                     <span className="badge" style={{ 
                       background: selectedCategory === "All products" ? 'rgba(255,255,255,0.2)' : '#e9ecef',
                       color: selectedCategory === "All products" ? 'white' : '#334155',
@@ -902,11 +1104,25 @@ const Home = () => {
                 </div>
 
                 <div>
-                  <h6 className="fw-bold mb-3" style={{ color: '#0f172a' }}>Catégories</h6>
+                  <h6 className="fw-bold mb-3" style={{ color: '#0f172a' }}>{t.categories}</h6>
                   <div className="d-flex flex-column gap-2">
                     {mainCategories.map((cat, index) => {
                       if (cat === "All products") return null;
                       const count = getCategoryProductCount(cat);
+                      // Translate category names for display
+                      let displayCat = cat;
+                      if (language === 'en') {
+                        const catMap = {
+                          "CNC Turing Machine": "CNC Turing Machine",
+                          "CNC Milling Machine": "CNC Milling Machine",
+                          "CAPTEURS ET ACTIONNEURS": "SENSORS AND ACTUATORS",
+                          "ÉLECTRICITÉ": "ELECTRICITY",
+                          "RÉSEAUX MULTIPLEXÉS": "MULTIPLEXED NETWORKS",
+                          "Accessoires": "Accessories",
+                          "EDUCATION EQUIPMENT": "EDUCATION EQUIPMENT"
+                        };
+                        displayCat = catMap[cat] || cat;
+                      }
                       return (
                         <a 
                           key={index}
@@ -921,7 +1137,7 @@ const Home = () => {
                           }}
                           onClick={(e) => { e.preventDefault(); handleCategoryFilter(cat); }}
                         >
-                          <span className="small fw-medium">{cat}</span>
+                          <span className="small fw-medium">{displayCat}</span>
                           <small style={{ color: selectedCategory === cat ? '#4361ee' : '#94a3b8' }}>
                             ({count})
                           </small>
@@ -938,10 +1154,17 @@ const Home = () => {
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
                   <h4 className="fw-bold mb-1" style={{ color: '#0f172a' }}>
-                    {selectedCategory === "All products" ? "Tous les produits" : selectedCategory}
+                    {selectedCategory === "All products" ? t.allProducts : 
+                     (language === 'en' && mainCategories.includes(selectedCategory) ? 
+                      (selectedCategory === "CAPTEURS ET ACTIONNEURS" ? "SENSORS AND ACTUATORS" :
+                       selectedCategory === "ÉLECTRICITÉ" ? "ELECTRICITY" :
+                       selectedCategory === "RÉSEAUX MULTIPLEXÉS" ? "MULTIPLEXED NETWORKS" :
+                       selectedCategory === "Accessoires" ? "Accessories" :
+                       selectedCategory === "EDUCATION EQUIPMENT" ? "EDUCATION EQUIPMENT" :
+                       selectedCategory) : selectedCategory)}
                   </h4>
                   <small className="text-muted">
-                    {filteredProducts.length} produits disponibles
+                    {filteredProducts.length} {t.productsAvailable}
                   </small>
                 </div>
                 <select className="form-select w-auto rounded-pill" style={{
@@ -949,10 +1172,10 @@ const Home = () => {
                   padding: '0.6rem 2rem 0.6rem 1rem',
                   fontSize: '0.95rem'
                 }}>
-                  <option>Trier par : Popularité</option>
-                  <option>Prix croissant</option>
-                  <option>Prix décroissant</option>
-                  <option>Nouveautés</option>
+                  <option>{t.sortBy}</option>
+                  <option>{t.sortPriceAsc}</option>
+                  <option>{t.sortPriceDesc}</option>
+                  <option>{t.sortNewest}</option>
                 </select>
               </div>
 
@@ -1001,7 +1224,7 @@ const Home = () => {
                             fontSize: '11px',
                             fontWeight: '600'
                           }}>
-                            NOUVEAU
+                            {t.new}
                           </span>
                         )}
                       </div>
@@ -1033,7 +1256,7 @@ const Home = () => {
                             <span className="fw-bold h5 mb-0" style={{ color: '#4361ee' }}>
                               {formatPrice(product.price)}
                             </span>
-                            <small className="text-muted ms-1">TTC</small>
+                            <small className="text-muted ms-1">{t.ttc}</small>
                           </div>
                           <button className="btn btn-sm rounded-circle" style={{
                             width: '40px',
@@ -1057,7 +1280,7 @@ const Home = () => {
 
               {filteredProducts.length === 0 && (
                 <div className="text-center py-5">
-                  <p className="text-muted">Aucun produit trouvé</p>
+                  <p className="text-muted">{t.noProducts}</p>
                 </div>
               )}
             </div>
@@ -1077,13 +1300,13 @@ const Home = () => {
               color: 'white',
               fontWeight: '600'
             }}>
-              TÉMOIGNAGES
+              {t.testimonialsBadge}
             </span>
             <h2 className="display-4 fw-bold mb-3 text-white">
-              Ce qu'ils disent de nous
+              {t.testimonialsTitle}
             </h2>
             <p className="text-white-50" style={{ maxWidth: '600px', margin: '0 auto', fontSize: '1.1rem' }}>
-              La confiance de nos partenaires, notre plus grande fierté
+              {t.testimonialsDescription}
             </p>
           </div>
 
@@ -1108,7 +1331,7 @@ const Home = () => {
                       lineHeight: '1.6',
                       fontStyle: 'italic'
                     }}>
-                      "{testimonial.content}"
+                      "{language === 'fr' ? testimonial.contentFr : testimonial.contentEn}"
                     </p>
 
                     <div className="d-flex align-items-center gap-3">
@@ -1125,7 +1348,9 @@ const Home = () => {
                       />
                       <div>
                         <h6 className="fw-bold mb-1 text-white">{testimonial.name}</h6>
-                        <small style={{ color: 'rgba(255,255,255,0.6)' }}>{testimonial.position}</small>
+                        <small style={{ color: 'rgba(255,255,255,0.6)' }}>
+                          {language === 'fr' ? testimonial.positionFr : testimonial.positionEn}
+                        </small>
                         <div className="mt-2">
                           {renderStars(testimonial.rating)}
                         </div>
@@ -1147,10 +1372,10 @@ const Home = () => {
           <div className="row justify-content-center">
             <div className="col-lg-8 text-center text-white">
               <h2 className="display-5 fw-bold mb-4">
-                Restez informé des dernières innovations
+                {t.newsletterTitle}
               </h2>
               <p className="mb-5" style={{ fontSize: '1.1rem', opacity: 0.9 }}>
-                Recevez nos actualités, offres exclusives et nouveautés produits
+                {t.newsletterDescription}
               </p>
               
               <form onSubmit={handleNewsletterSubmit} className="d-flex flex-wrap gap-3 justify-content-center">
@@ -1158,7 +1383,7 @@ const Home = () => {
                   <input
                     type="email"
                     className="form-control form-control-lg rounded-pill border-0"
-                    placeholder="Votre adresse email"
+                    placeholder={t.newsletterPlaceholder}
                     value={newsletterEmail}
                     onChange={(e) => setNewsletterEmail(e.target.value)}
                     required
@@ -1180,7 +1405,7 @@ const Home = () => {
                   }}
                 >
                   <FaRegPaperPlane className="me-2" />
-                  S'inscrire
+                  {t.newsletterButton}
                 </button>
               </form>
             </div>
@@ -1213,7 +1438,7 @@ const Home = () => {
                 <h4 className="fw-bold text-white mb-0">UniverTechno+</h4>
               </div>
               <p className="mb-4">
-                Leader dans la fourniture d'équipements technologiques pour l'éducation et l'industrie.
+                {t.footerDescription}
               </p>
               <div className="d-flex gap-3">
                 {[FaFacebook, FaLinkedin, FaTwitter, FaYoutube, FaInstagram].map((Icon, index) => (
@@ -1239,9 +1464,9 @@ const Home = () => {
             <div className="col-lg-8">
               <div className="row g-4">
                 <div className="col-md-4">
-                  <h5 className="fw-bold text-white mb-4">Liens rapides</h5>
+                  <h5 className="fw-bold text-white mb-4">{t.quickLinks}</h5>
                   <ul className="list-unstyled">
-                    {['Accueil', 'Produits', 'Services', 'À propos', 'Contact'].map((item, index) => (
+                    {[t.home, t.products, t.expertise, t.about, t.contact].map((item, index) => (
                       <li className="mb-3" key={index}>
                         <a href="#" className="text-decoration-none" style={{ color: '#94a3b8' }}>
                           <FaAngleRight className="me-2" style={{ fontSize: '12px', color: '#4361ee' }} />
@@ -1253,7 +1478,7 @@ const Home = () => {
                 </div>
 
                 <div className="col-md-4">
-                  <h5 className="fw-bold text-white mb-4">Contact</h5>
+                  <h5 className="fw-bold text-white mb-4">{t.contact}</h5>
                   <ul className="list-unstyled">
                     <li className="mb-3 d-flex align-items-center gap-3">
                       <FaMapMarkerAlt style={{ color: '#4361ee', fontSize: '18px' }} />
@@ -1278,7 +1503,7 @@ const Home = () => {
           <div className="row align-items-center">
             <div className="col-md-6">
               <p className="mb-0 small">
-                © 2024 UniverTechno+. Tous droits réservés.
+                © 2024 UniverTechno+. {t.allRightsReserved}
               </p>
             </div>
           </div>
