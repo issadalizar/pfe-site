@@ -13,7 +13,6 @@ export default function CategoryForm({
     description: "",
     parent: "",
     level: 1,
-    icon: "📁",
     isActive: true,
   });
 
@@ -26,7 +25,6 @@ export default function CategoryForm({
         description: editingCategory.description || "",
         parent: editingCategory.parent?._id || "",
         level: editingCategory.level || 1,
-        icon: editingCategory.icon || "📁",
         isActive: editingCategory.isActive !== undefined ? editingCategory.isActive : true,
       });
     }
@@ -83,19 +81,6 @@ export default function CategoryForm({
     cat.level === targetParentLevel && 
     cat._id !== (editingCategory?._id) // Ne pas s'inclure soi-même
   );
-
-  const iconOptions = [
-    { value: "📁", label: "Dossier" },
-    { value: "📚", label: "Livres" },
-    { value: "🧮", label: "Mathématiques" },
-    { value: "🔬", label: "Science" },
-    { value: "💻", label: "Informatique" },
-    { value: "🎨", label: "Art" },
-    { value: "🎵", label: "Musique" },
-    { value: "🏀", label: "Sport" },
-    { value: "🌍", label: "Géographie" },
-    { value: "📖", label: "Lecture" },
-  ];
 
   return (
     <form onSubmit={handleSubmit} className="needs-validation" noValidate>
@@ -183,45 +168,7 @@ export default function CategoryForm({
         </div>
       </div>
 
-      <div className="mb-3">
-        <label className="form-label">Icone</label>
-        <div className="d-flex align-items-center gap-2 mb-2">
-          <div 
-            className="border rounded d-flex align-items-center justify-content-center"
-            style={{ 
-              width: "40px", 
-              height: "40px", 
-              fontSize: "24px",
-              backgroundColor: "#f8f9fa"
-            }}
-          >
-            {formData.icon}
-          </div>
-          <select
-            className="form-select"
-            name="icon"
-            value={formData.icon}
-            onChange={handleChange}
-          >
-            {iconOptions.map((icon) => (
-              <option key={icon.value} value={icon.value}>
-                {icon.value} {icon.label}
-              </option>
-            ))}
-          </select>
-        </div>
-        <input
-          type="text"
-          className="form-control"
-          name="icon"
-          value={formData.icon}
-          onChange={handleChange}
-          placeholder="Entrez un emoji personnalisé"
-        />
-        <small className="text-muted">
-          Utilisez un emoji pour représenter votre catégorie
-        </small>
-      </div>
+      
 
       <div className="mb-4">
         <div className="form-check form-switch">
