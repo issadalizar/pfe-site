@@ -7,14 +7,14 @@ export const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find().populate('parent');
     
-    console.log(`✅ ${categories.length} catégories récupérées`);
+    console.log(`${categories.length} catégories récupérées`);
     res.json({
       success: true,
       count: categories.length,
       data: categories
     });
   } catch (error) {
-    console.error('❌ Erreur dans getAllCategories:', error);
+    console.error(' Erreur dans getAllCategories:', error);
     res.status(500).json({ 
       success: false,
       error: 'Erreur serveur lors de la récupération des catégories',
@@ -83,7 +83,7 @@ export const createCategory = async (req, res) => {
       data: category
     });
   } catch (error) {
-    console.error('❌ Erreur dans createCategory:', error);
+    console.error(' Erreur dans createCategory:', error);
     
     // Gestion des erreurs de duplication
     if (error.code === 11000) {
@@ -128,14 +128,14 @@ export const updateCategory = async (req, res) => {
     Object.assign(category, updates);
     await category.save();
     
-    console.log(`✅ Catégorie mise à jour: ${category.name}`);
+    console.log(` Catégorie mise à jour: ${category.name}`);
     res.json({
       success: true,
       message: 'Catégorie mise à jour avec succès',
       data: category
     });
   } catch (error) {
-    console.error('❌ Erreur dans updateCategory:', error);
+    console.error(' Erreur dans updateCategory:', error);
     res.status(500).json({ 
       success: false,
       error: 'Erreur serveur lors de la mise à jour',
@@ -160,13 +160,13 @@ export const deleteCategory = async (req, res) => {
     
     await category.deleteOne();
     
-    console.log(`✅ Catégorie supprimée: ${category.name}`);
+    console.log(` Catégorie supprimée: ${category.name}`);
     res.json({
       success: true,
       message: 'Catégorie supprimée avec succès'
     });
   } catch (error) {
-    console.error('❌ Erreur dans deleteCategory:', error);
+    console.error(' Erreur dans deleteCategory:', error);
     res.status(500).json({ 
       success: false,
       error: 'Erreur serveur lors de la suppression',

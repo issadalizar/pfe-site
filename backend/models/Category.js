@@ -5,13 +5,9 @@ const categorySchema = new mongoose.Schema({
     type: String, 
     required: true,
     trim: true,
-    unique: true
+    unique: true  // Le name devient ton identifiant unique
   },
-  slug: { 
-    type: String, 
-    unique: true,
-    lowercase: true
-  },
+  // slug a été supprimé 👈
   description: {
     type: String,
     default: ''
@@ -49,26 +45,15 @@ const categorySchema = new mongoose.Schema({
   }
 });
 
-// Middleware pour mettre à jour updatedAt avant la sauvegarde
+// Middleware simplifié (plus de slug)
 categorySchema.pre('save', function(next) {
   this.updatedAt = Date.now();
-  
-  // Créer le slug si non existant
-  if (!this.slug && this.name) {
-    this.slug = this.name
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^\w\s-]/g, '')
-      .replace(/\s+/g, '-');
-  }
-  
   next();
 });
 
-// Index pour améliorer les performances
+// Index (supprimer l'index sur slug)
 categorySchema.index({ parent: 1, level: 1 });
-categorySchema.index({ slug: 1 });
+// categorySchema.index({ slug: 1 });  ← À SUPPRIMER
 
 const Category = mongoose.model('Category', categorySchema);
 
