@@ -23,7 +23,8 @@ import {
   FaFilePdf,
   FaImage,
   FaEye,
-  FaChartBar
+  FaChartBar,
+  FaArrowRight
 } from 'react-icons/fa';
 import { getProductDetails } from './productData';
 
@@ -37,6 +38,8 @@ const ProductDetails = () => {
   const [imageErrors, setImageErrors] = useState({});
   const [showSpecsModal, setShowSpecsModal] = useState(false);
   const [useFallbackImages, setUseFallbackImages] = useState({});
+  // Nouvel état pour la page de spécifications textuelles
+  const [showTextSpecsPage, setShowTextSpecsPage] = useState(false);
   
   // Formulaire de devis
   const [quoteForm, setQuoteForm] = useState({
@@ -274,14 +277,14 @@ const ProductDetails = () => {
     document.body.style.overflow = 'auto';
   };
 
-  // Fonctions pour la modale des spécifications
-  const handleOpenSpecsModal = () => {
-    setShowSpecsModal(true);
+  // MODIFICATION: Remplacer l'ancienne fonction d'ouverture de modale par la nouvelle page
+  const handleOpenSpecsPage = () => {
+    setShowTextSpecsPage(true);
     document.body.style.overflow = 'hidden';
   };
 
-  const handleCloseSpecsModal = () => {
-    setShowSpecsModal(false);
+  const handleCloseSpecsPage = () => {
+    setShowTextSpecsPage(false);
     document.body.style.overflow = 'auto';
   };
 
@@ -323,7 +326,7 @@ const ProductDetails = () => {
     alert(`Génération du PDF pour ${productDetails.title}\n\nCette fonctionnalité sera bientôt disponible.`);
   };
 
-  // Fonction pour obtenir l'icône selon le type de spécification
+  // Fonction pour obtenir l'icône selon le type de spécification (gardée pour utilisation future)
   const getSpecIcon = (specKey) => {
     if (specKey.includes('Moteur') || specKey.includes('broche') || specKey.includes('Vitesse')) 
       return <FaTachometerAlt className="text-primary me-2" />;
@@ -570,7 +573,7 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Description détaillée avec bouton Voir spécifications */}
+        {/* Description détaillée avec bouton Voir spécifications - MODIFIÉ */}
         <div className="row mt-5">
           <div className="col-12">
             <div className="description-section bg-white p-4 rounded-3 border">
@@ -578,7 +581,7 @@ const ProductDetails = () => {
                 <h4 className="fw-bold mb-0">Description détaillée</h4>
                 <button 
                   className="btn btn-primary"
-                  onClick={handleOpenSpecsModal}
+                  onClick={handleOpenSpecsPage}  
                 >
                   <FaEye className="me-2" />
                   Voir spécifications techniques
@@ -657,15 +660,15 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* MODAL DES SPÉCIFICATIONS TECHNIQUES */}
-      {showSpecsModal && (
-        <div className="specs-modal-overlay" onClick={handleCloseSpecsModal}>
-          <div className="specs-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="specs-modal-close" onClick={handleCloseSpecsModal}>
+      {/* NOUVELLE PAGE DE SPÉCIFICATIONS TEXTUELLES - UNIQUEMENT LA DESCRIPTION, SANS IMAGES NI BOUTONS */}
+      {showTextSpecsPage && (
+        <div className="specs-page-overlay" onClick={handleCloseSpecsPage}>
+          <div className="specs-page" onClick={(e) => e.stopPropagation()}>
+            <button className="specs-page-close" onClick={handleCloseSpecsPage}>
               <FaTimes />
             </button>
             
-            <div className="specs-modal-header">
+            <div className="specs-page-header">
               <h2>
                 <FaChartBar className="me-2" />
                 Spécifications techniques
@@ -673,55 +676,58 @@ const ProductDetails = () => {
               <p className="text-muted">{productDetails.title}</p>
             </div>
             
-            <div className="specs-modal-body">
-              {/* Spécifications générales */}
+            <div className="specs-page-body">
+              {/* SECTION 1: Spécifications générales */}
               {productDetails.specifications && Object.keys(productDetails.specifications).length > 0 && (
-                <div className="specs-section mb-4">
-                  <h5 className="fw-bold mb-3 pb-2 border-bottom">Spécifications générales</h5>
-                  <div className="specs-grid">
+                <div className="specs-text-section mb-4">
+                  <h4 className="fw-bold text-primary mb-3">
+                    <FaArrowRight className="me-2" size={18} />
+                    Spécifications générales
+                  </h4>
+                  <div className="specs-text-content p-3 bg-light rounded-3">
                     {Object.entries(productDetails.specifications).map(([key, value], index) => (
-                      <div key={index} className="specs-item">
-                        <div className="specs-key">
-                          {getSpecIcon(key)}
-                          <span>{key}</span>
-                        </div>
-                        <div className="specs-value">{value}</div>
+                      <div key={index} className="mb-2 pb-2 border-bottom border-secondary border-opacity-10">
+                        <strong>{key} :</strong> {value}
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              
-              {/* Spécifications techniques avancées */}
+
+              {/* SECTION 2: Spécifications techniques avancées */}
               {productDetails.technicalSpecs && Object.keys(productDetails.technicalSpecs).length > 0 && (
-                <div className="specs-section mb-4">
-                  <h5 className="fw-bold mb-3 pb-2 border-bottom">Spécifications techniques avancées</h5>
-                  <div className="specs-grid">
+                <div className="specs-text-section mb-4">
+                  <h4 className="fw-bold text-primary mb-3">
+                    <FaArrowRight className="me-2" size={18} />
+                    Spécifications techniques avancées
+                  </h4>
+                  <div className="specs-text-content p-3 bg-light rounded-3">
                     {Object.entries(productDetails.technicalSpecs).map(([key, value], index) => (
-                      <div key={index} className="specs-item">
-                        <div className="specs-key">
-                          {getSpecIcon(key)}
-                          <span>{key}</span>
-                        </div>
-                        <div className="specs-value">{value}</div>
+                      <div key={index} className="mb-2 pb-2 border-bottom border-secondary border-opacity-10">
+                        <strong>{key} :</strong> {value}
                       </div>
                     ))}
                   </div>
                 </div>
               )}
-              
-              {/* Caractéristiques principales */}
+
+              {/* SECTION 3: Caractéristiques principales */}
               {productDetails.features && productDetails.features.length > 0 && (
-                <div className="specs-section">
-                  <h5 className="fw-bold mb-3 pb-2 border-bottom">Caractéristiques principales</h5>
-                  <ul className="specs-features-list">
-                    {productDetails.features.map((feature, index) => (
-                      <li key={index}>
-                        <FaCheck className="text-success me-2" size={14} />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
+                <div className="specs-text-section mb-4">
+                  <h4 className="fw-bold text-primary mb-3">
+                    <FaArrowRight className="me-2" size={18} />
+                    Caractéristiques principales
+                  </h4>
+                  <div className="specs-text-content p-3 bg-light rounded-3">
+                    <ul className="mb-0">
+                      {productDetails.features.map((feature, index) => (
+                        <li key={index} className="mb-2">
+                          <FaCheck className="text-success me-2" size={14} />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
               )}
             </div>
@@ -886,7 +892,7 @@ const ProductDetails = () => {
         </div>
       )}
 
-      {/* CSS additionnel */}
+      {/* CSS additionnel - STYLES MIS À JOUR */}
       <style jsx>{`
         .product-details-page .breadcrumb {
           background: transparent;
@@ -899,8 +905,8 @@ const ProductDetails = () => {
           transform: scale(1.05);
         }
         
-        /* Styles pour la modale de spécifications */
-        .specs-modal-overlay {
+        /* NOUVEAUX STYLES POUR LA PAGE DE SPÉCIFICATIONS TEXTUELLES */
+        .specs-page-overlay {
           position: fixed;
           top: 0;
           left: 0;
@@ -914,19 +920,19 @@ const ProductDetails = () => {
           padding: 20px;
         }
         
-        .specs-modal {
+        .specs-page {
           background: white;
           border-radius: 12px;
           width: 100%;
           max-width: 900px;
-          max-height: 85vh;
+          max-height: 90vh;
           overflow-y: auto;
           position: relative;
           padding: 30px;
           box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
         
-        .specs-modal-close {
+        .specs-page-close {
           position: absolute;
           top: 15px;
           right: 15px;
@@ -941,18 +947,18 @@ const ProductDetails = () => {
           z-index: 1;
         }
         
-        .specs-modal-close:hover {
+        .specs-page-close:hover {
           color: #dc3545;
         }
         
-        .specs-modal-header {
+        .specs-page-header {
           margin-bottom: 25px;
           padding-right: 30px;
           border-bottom: 2px solid #f1f1f1;
           padding-bottom: 15px;
         }
         
-        .specs-modal-header h2 {
+        .specs-page-header h2 {
           font-size: 24px;
           font-weight: 700;
           color: #212529;
@@ -961,86 +967,24 @@ const ProductDetails = () => {
           align-items: center;
         }
         
-        .specs-modal-body {
+        .specs-page-body {
           padding: 10px 0;
         }
         
-        .specs-section {
+        .specs-text-section {
+          margin-bottom: 25px;
+        }
+        
+        .specs-text-section h4 {
+          font-size: 18px;
+          display: flex;
+          align-items: center;
+        }
+        
+        .specs-text-content {
           background: #f8f9fa;
-          padding: 20px;
           border-radius: 8px;
-          margin-bottom: 20px;
-        }
-        
-        .specs-section h5 {
-          color: #0d6efd;
-        }
-        
-        .specs-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 15px;
-        }
-        
-        .specs-item {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 10px 15px;
-          background: white;
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .specs-key {
-          display: flex;
-          align-items: center;
-          color: #495057;
-          font-weight: 500;
-          flex: 1;
-        }
-        
-        .specs-key span {
-          margin-left: 8px;
-        }
-        
-        .specs-value {
-          font-weight: 600;
-          color: #212529;
-          text-align: right;
-        }
-        
-        .specs-features-list {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: 10px;
-        }
-        
-        .specs-features-list li {
-          background: white;
-          padding: 10px 15px;
-          border-radius: 8px;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-          display: flex;
-          align-items: center;
-          font-size: 14px;
-        }
-        
-        .specs-modal-footer {
-          margin-top: 25px;
-          padding-top: 20px;
-          border-top: 1px solid #dee2e6;
-          display: flex;
-          justify-content: flex-end;
-          gap: 10px;
-        }
-        
-        .specs-modal-footer .btn {
-          padding: 10px 25px;
-          border-radius: 8px;
+          line-height: 1.6;
         }
         
         /* Styles pour le modal de devis */
@@ -1156,20 +1100,8 @@ const ProductDetails = () => {
         }
         
         @media (max-width: 768px) {
-          .specs-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .specs-features-list {
-            grid-template-columns: 1fr;
-          }
-          
-          .specs-modal-footer {
-            flex-direction: column;
-          }
-          
-          .specs-modal-footer .btn {
-            width: 100%;
+          .specs-page {
+            padding: 20px;
           }
           
           .quote-modal {
