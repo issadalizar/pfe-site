@@ -104,10 +104,10 @@ export default function CategoryList({
           </td>
           <td>
             <div className="btn-group btn-group-sm">
-              <Link
-                to={`/category/${category._id}`} // ← Ceci va vers la page publique
+             <Link
+               to={`/categories/${category._id}/products`}
                 className="btn btn-outline-primary"
-                title="Voir la catégorie sur le site public" >
+                title="Voir les produits de cette catégorie" >
                 <FaEye />
               </Link>
               <button

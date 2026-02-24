@@ -4,7 +4,7 @@
 export const cncProductDetails = {
   'De2-Ultra Mini CNC Turning Center': {
     title: 'De2-Ultra Mini CNC Turning Center',
-    category: 'CNC Turing Machine', 
+    category: 'CNC Turning Machine', // CHANGÉ: "Turing" -> "Turning"
     mainCategory: 'CNC for Education',
     price: 8990,
     features: [
@@ -22,9 +22,9 @@ export const cncProductDetails = {
       'Application': 'Enseignement et formation CNC'
     },
     images: [
-      '/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center.png', // CORRIGÉ
-      '/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center-2.png', // CORRIGÉ
-      '/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center-3.jpg' // CORRIGÉ
+      '/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center.png',
+      '/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center-2.png',
+      '/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center-3.jpg'
     ],
     technicalSpecs: {
       'Course axe X': '120 mm',
@@ -37,7 +37,7 @@ export const cncProductDetails = {
   
   'PC1 Baby CNC Lathe-Mach': {
     title: 'PC1 Baby CNC Lathe-Mach',
-    category: 'CNC Turing Machine', 
+    category: 'CNC Turning Machine', // CHANGÉ: "Turing" -> "Turning"
     mainCategory: 'CNC for Education',
     price: 5490,
     features: [
@@ -65,7 +65,7 @@ export const cncProductDetails = {
   
   'De4-Eco (KC4S) Bench CNC Lathe': {
     title: 'De4-Eco (KC4S) Bench CNC Lathe',
-    category: 'CNC Turing Machine', 
+    category: 'CNC Turning Machine', // CHANGÉ: "Turing" -> "Turning"
     mainCategory: 'CNC for Education',
     price: 7490,
     features: [
@@ -91,7 +91,7 @@ export const cncProductDetails = {
   
   'De6 (iKC6S) CNC Turning Machine': {
     title: 'De6 (iKC6S) CNC Turning Machine',
-    category: 'CNC Turing Machine', 
+    category: 'CNC Turning Machine', // CHANGÉ: "Turing" -> "Turning"
     mainCategory: 'CNC for Education',
     price: 12990,
     features: [
@@ -115,7 +115,7 @@ export const cncProductDetails = {
   
   'De4-Pro (iKC4) Bench CNC Lathe': {
     title: 'De4-Pro (iKC4) Bench CNC Lathe',
-    category: 'CNC Turing Machine', 
+    category: 'CNC Turning Machine', // CHANGÉ: "Turing" -> "Turning"
     mainCategory: 'CNC for Education',
     price: 10990,
     features: [
@@ -136,10 +136,9 @@ export const cncProductDetails = {
     ]
   },
   
-  
   'De8 (iKC8) CNC Turning Machine': {
     title: 'De8 (iKC8) CNC Turning Machine',
-    category: 'CNC Turing Machine', 
+    category: 'CNC Turning Machine', // CHANGÉ: "Turing" -> "Turning"
     mainCategory: 'CNC for Education',
     price: 18990,
     features: [
@@ -164,7 +163,7 @@ export const cncProductDetails = {
     ]
   },
 
-  // CNC Milling Machines 
+  // CNC Milling Machines
   'Fa2-Ultra Mini CNC Milling Center': {
     title: 'Fa2-Ultra Mini CNC Milling Center',
     category: 'CNC Milling Machine',
@@ -303,7 +302,7 @@ export const cncProductDetails = {
     'Alimentation': '12V DC'
   },
   images: [
-    '/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-M001 – Mesure d\'Angle de Volant.png',
+    '/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png',
   ],
   technicalSpecs: {
     'Précision': '±0.5°',
@@ -444,38 +443,6 @@ export const cncProductDetails = {
   }
 },
 
-'MI2505 – Contrôleur Charge-Démarrage 12V/500A': {
-  title: 'MI2505 – Contrôleur Charge-Démarrage 12V/500A',
-  category: 'ÉLECTRICITÉ',
-  mainCategory: 'Voitures',
-  price: 2890,
-  features: [
-    'Système complet de charge et démarrage',
-    'Alternateur 12V/120A',
-    'Démarreur 12V/1.4kW',
-    'Batterie automobile avec points de test',
-    'Simulation de pannes pour diagnostic'
-  ],
-  fullDescription: 'Le MI2505 est un système didactique complet pour l\'étude des circuits de charge et de démarrage automobile. Il reproduit fidèlement le fonctionnement d\'un véhicule réel, permettant aux étudiants de comprendre le rôle de l\'alternateur, du démarreur, de la batterie, et leurs interactions.',
-  specifications: {
-    'Alternateur': '12V, 120A, régulateur intégré',
-    'Démarreur': '12V, 1.4kW, solénoïde',
-    'Batterie': '12V, 70Ah, technologie AGM',
-    'Courant de démarrage': '500A max',
-    'Protections': 'Fusibles, relais thermiques'
-  },
-  images: [
-    '/images/products/voitures/ÉLECTRICITÉ/MI2505 – Contrôleur Charge-Démarrage 12V:500A.png',
-  ],
-  technicalSpecs: {
-    'Points de test': '24',
-    'Simulations de pannes': '12 modes',
-    'Interface diagnostic': 'OBD-II',
-    'Alimentation secteur': '230V AC',
-    'Dimensions': '800 x 600 x 400 mm'
-  }
-},
-
 'MT-4002V – Maquette de Charge Démarrage 12V': {
   title: 'MT-4002V – Maquette de Charge Démarrage 12V',
   category: 'ÉLECTRICITÉ',
@@ -562,7 +529,7 @@ export const cncProductDetails = {
     'Communication': 'CAN, K-Line'
   },
   images: [
-    '/images/products/voitures/RÉSEAUX MULTIPLEXÉS/MT-E5000 – Maquette d\'Injection Essence Séquentielle.png',
+    '/images/products/voitures/RÉSEAUX MULTIPLEXÉS/produit1.png',
   ],
   technicalSpecs: {
     'Plage injection': '1-20 ms',
@@ -594,7 +561,7 @@ export const cncProductDetails = {
     'Capteurs': 'Pression rampe, température, régime'
   },
   images: [
-    '/images/products/voitures/RÉSEAUX MULTIPLEXÉS/MT-H9000 – Maquette d\'Injection Diesel Common Rail.png',
+    '/images/products/voitures/RÉSEAUX MULTIPLEXÉS/produit2.png',
   ],
   technicalSpecs: {
     'Sécurités': 'Détection fuites, surpression',

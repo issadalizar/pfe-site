@@ -369,9 +369,8 @@ export default function ProductList({
           const voituresProducts = {
             // Produits CAPTEURS ET ACTIONNEURS
             'CAPTEURS ET ACTIONNEURS': {
-              'DT-M003 – Mesure de Vitesse de Roue': 'DT-M003 – Mesure de Vitesse de Roue.png',
               'DT-M002 – Mesure des Positions': 'DT-M002 – Mesure des Positions.png',
-              'DT-M001 – Mesure d\'Angle de Volant': 'DT-M001 – Mesure d\'Angle de Volant.png',
+              'DT-M001 – Mesure d\'Angle de Volant': 'produit2.png',
               'DT-E001 – Unité de Contrôle Électronique': 'DT-E001 – Unité de Contrôle Électronique.png'
             },
             // Produits ÉLECTRICITÉ
@@ -385,8 +384,8 @@ export default function ProductList({
             // Produits RÉSEAUX MULTIPLEXÉS
             'RÉSEAUX MULTIPLEXÉS': {
               'MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur': 'MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur.png',
-              'MT-E5000 – Maquette d\'Injection Essence Séquentielle': 'MT-E5000 – Maquette d\'Injection Essence Séquentielle.png',
-              'MT-H9000 – Maquette d\'Injection Diesel Common Rail': 'MT-H9000 – Maquette d\'Injection Diesel Common Rail.png'
+              'MT-E5000 – Maquette d\'Injection Essence Séquentielle': 'produit1.png',
+              'MT-H9000 – Maquette d\'Injection Diesel Common Rail': 'produit2.png'
             }
           };
           

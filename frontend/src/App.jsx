@@ -15,6 +15,7 @@ import AdminMessages from './pages/AdminMessages';
 import ContactPage from './pages/ContactPage';
 import SectorPage from "./pages/SectorPage";
 import Login from "./pages/Login";
+import CategoryProductsView from './components/CategoryProductsViewAdmin';
 
 
 function App() {
@@ -54,6 +55,7 @@ function App() {
                     <Route path="/users" element={<UsersPage />} />
                     <Route path="/stock-alerts" element={<StockAlertsPage />} />
                     <Route path="/messages" element={<AdminMessages />} />
+                    <Route path="/categories/:categoryId/products" element={<CategoryProductsView />} />
                     <Route path="*" element={
                       <div className="card">
                         <div className="card-body text-center py-5">
