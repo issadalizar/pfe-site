@@ -13,7 +13,6 @@ import {
   FaMapMarkedAlt, FaGlobe
 } from "react-icons/fa";
 import { productAPI, categoryAPI } from "../services/api";
-
 import FeaturedProducts from "../components/FeaturedProducts";
 import ContactForm from "../components/ContactForm";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -199,7 +198,7 @@ const Home = () => {
   // Catégories principales pour le filtrage du catalogue
   const mainCategories = [
     "All products",
-    "CNC Turing Machine",
+    "CNC Turning Machine",
     "CNC Milling Machine",
     "CAPTEURS ET ACTIONNEURS",
     "ÉLECTRICITÉ",
@@ -228,8 +227,8 @@ const Home = () => {
     {
       id: "voiture",
       name: "Voiture",
-      displayNameFr: "Automotive",
-      displayNameEn: "Automotive",
+      displayNameFr: "Automobile",
+      displayNameEn: "Automobile",
       icon: <FaCar size={28} />,
       color: "#f72585",
       gradient: "linear-gradient(135deg, #f72585, #b5179e)",

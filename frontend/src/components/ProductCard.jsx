@@ -61,7 +61,6 @@ const ProductCard = ({ product, onView }) => {
           
           // TOUS les produits CNC EDUCATION avec leurs noms de fichier exacts
           const cncProducts = {
-            'DTS-011 à DTS-016 – Electrical Training System': 'DTS-011 à DTS-016 – Electrical Training System.png',
             'De8 (iKC8) CNC Turning Machine': 'De8 (iKC8) CNC Turning Machine.png',
             'De4-Pro (iKC4) Bench CNC Lathe': 'De4-Pro (iKC4) Bench CNC Lathe.png',
             'De6 (iKC6S) CNC Turning Machine': 'De6 (iKC6S) CNC Turning Machine.png',
@@ -70,7 +69,9 @@ const ProductCard = ({ product, onView }) => {
             'De2-Ultra Mini CNC Turning Center': 'De2-Ultra Mini CNC Turning Center.png',
             'Fa4-Eco (KX1S) CNC Milling Machine': 'Fa4-Eco (KX1S) CNC Milling Machine.png',
             'PX1 Baby CNC Milling Machine': 'PX1 Baby CNC Milling Machine.png',
-            'Fa2-Ultra Mini CNC Milling Center': 'Fa2-Ultra Mini CNC Milling Center.png'
+            'Fa2-Ultra Mini CNC Milling Center': 'Fa2-Ultra Mini CNC Milling Center.png',
+            'PC1 Baby CNC Lathe-Mach': 'PC2 Baby CNC Lathe-Mach.png',
+            'PC1 Baby CNC Lathe-Mach': 'PC2 Baby CNC Lathe-Mach-2.png',
           };
           
           for (const [prodName, fileName] of Object.entries(cncProducts)) {
@@ -250,9 +251,8 @@ const ProductCard = ({ product, onView }) => {
           
           const voituresProducts = {
             'CAPTEURS ET ACTIONNEURS': {
-              'DT-M003 – Mesure de Vitesse de Roue': 'DT-M003 – Mesure de Vitesse de Roue.png',
               'DT-M002 – Mesure des Positions': 'DT-M002 – Mesure des Positions.png',
-              'DT-M001 – Mesure d\'Angle de Volant': 'DT-M001 – Mesure d\'Angle de Volant.png',
+              'DT-M001 – Mesure d\'Angle de Volant': 'produit2.png',
               'DT-E001 – Unité de Contrôle Électronique': 'DT-E001 – Unité de Contrôle Électronique.png'
             },
             'ÉLECTRICITÉ': {
@@ -264,8 +264,8 @@ const ProductCard = ({ product, onView }) => {
             },
             'RÉSEAUX MULTIPLEXÉS': {
               'MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur': 'MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur.png',
-              'MT-E5000 – Maquette d\'Injection Essence Séquentielle': 'MT-E5000 – Maquette d\'Injection Essence Séquentielle.png',
-              'MT-H9000 – Maquette d\'Injection Diesel Common Rail': 'MT-H9000 – Maquette d\'Injection Diesel Common Rail.png'
+              'MT-E5000 – Maquette d\'Injection Essence Séquentielle': 'produit1.png',
+              'MT-H9000 – Maquette d\'Injection Diesel Common Rail': 'produit2.png'
             }
           };
           

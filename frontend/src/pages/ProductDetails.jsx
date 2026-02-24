@@ -22,8 +22,8 @@ import {
   FaUser,
   FaFilePdf,
   FaImage,
-  FaEye, // Ajout de l'icône pour voir spécifications
-  FaChartBar // Ajout de l'icône pour spécifications
+  FaEye,
+  FaChartBar
 } from 'react-icons/fa';
 import { getProductDetails } from './productData';
 
@@ -35,8 +35,8 @@ const ProductDetails = () => {
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
-  // Nouvel état pour la modale des spécifications
   const [showSpecsModal, setShowSpecsModal] = useState(false);
+  const [useFallbackImages, setUseFallbackImages] = useState({});
   
   // Formulaire de devis
   const [quoteForm, setQuoteForm] = useState({
@@ -55,18 +55,181 @@ const ProductDetails = () => {
   // Récupérer les détails du produit
   const productDetails = getProductDetails(decodedProductName);
   
+  // Fonction pour corriger le chemin d'image
+  const fixImagePath = (originalPath) => {
+    if (!originalPath) return '';
+    
+    // Si c'est déjà une image valide ou qu'on a déjà essayé de la corriger
+    if (useFallbackImages[originalPath]) {
+      return useFallbackImages[originalPath];
+    }
+    
+    let correctedPath = originalPath;
+    
+    // CORRECTION 1: Remplacer "CNC Turing Machine" par "CNC Turning Machine" (orthographe correcte)
+    if (correctedPath.includes('CNC Turing Machine')) {
+      correctedPath = correctedPath.replace(/CNC Turing Machine/g, 'CNC Turning Machine');
+    }
+    
+    // CORRECTION 2: Remplacer "CNC Turning Machine" par "CNC Turning" (si le dossier s'appelle différemment)
+    if (correctedPath.includes('CNC Turning Machine')) {
+      correctedPath = correctedPath.replace(/CNC Turning Machine/g, 'CNC Turning');
+    }
+    
+    // CORRECTION 3: Normaliser les noms de fichiers pour les produits CNC
+    const cncProducts = {
+      'De2-Ultra Mini CNC Turning Center': 'De2-Ultra Mini CNC Turning Center',
+      'PC1 Baby CNC Lathe-Mach': 'PC1 Baby CNC Lathe-Mach',
+      'De4-Eco (KC4S) Bench CNC Lathe': 'De4-Eco (KC4S) Bench CNC Lathe',
+      'De6 (iKC6S) CNC Turning Machine': 'De6 (iKC6S) CNC Turning Machine',
+      'De4-Pro (iKC4) Bench CNC Lathe': 'De4-Pro (iKC4) Bench CNC Lathe',
+      'De8 (iKC8) CNC Turning Machine': 'De8 (iKC8) CNC Turning Machine',
+      'Fa2-Ultra Mini CNC Milling Center': 'Fa2-Ultra Mini CNC Milling Center',
+      'PX1 Baby CNC Milling Machine': 'PX1 Baby CNC Milling Machine',
+      'Fa4-Eco (KX1S) CNC Milling Machine': 'Fa4-Eco (KX1S) CNC Milling Machine'
+    };
+    
+    // Pour les produits CNC, extraire le nom du fichier du chemin
+    for (const [productKey, fileName] of Object.entries(cncProducts)) {
+      if (originalPath.includes(fileName)) {
+        // Essayer différentes extensions et formats
+        const baseName = fileName;
+        const possiblePaths = [
+          `/images/products/CNC EDUCATION/CNC Turning/${baseName}.png`,
+          `/images/products/CNC EDUCATION/CNC Turning/${baseName}.jpg`,
+          `/images/products/CNC EDUCATION/CNC Turning Machine/${baseName}.png`,
+          `/images/products/CNC EDUCATION/CNC Turing Machine/${baseName}.png`,
+          `/images/products/CNC EDUCATION/CNC Milling Machine/${baseName}.png`,
+        ];
+        
+        // Pour les images avec suffixes (-2, -3, etc.)
+        if (originalPath.includes('-2') || originalPath.includes('-3') || originalPath.includes('.jpg')) {
+          const match = originalPath.match(/(.+)(-\d+)?\.(png|jpg)/);
+          if (match) {
+            const mainName = match[1];
+            const suffix = match[2] || '';
+            const ext = match[3];
+            
+            return `/images/products/CNC EDUCATION/CNC Turning/${mainName}${suffix}.${ext}`;
+          }
+        }
+        
+        // Retourner le premier chemin possible pour ce produit
+        return possiblePaths[0];
+      }
+    }
+    
+    // CORRECTION 4: Pour les produits Voitures avec des placeholders (produit1.png, produit2.png)
+    if (originalPath.includes('produit1.png') || originalPath.includes('produit2.png')) {
+      // Extraire le nom du produit du chemin ou utiliser le titre
+      const productTitle = productDetails?.title || '';
+      
+      // Créer un nom de fichier à partir du titre du produit
+      const fileName = productTitle
+        .replace(/[^\w\s-]/g, '') // Enlever les caractères spéciaux
+        .replace(/\s+/g, ' ') // Normaliser les espaces
+        .trim()
+        .replace(/\s+/g, '-'); // Remplacer espaces par tirets
+      
+      return `/images/products/voitures/${fileName}.png`;
+    }
+    
+    // CORRECTION 5: Pour les produits MCP lab electronics
+    if (originalPath.includes('MCP lab electronics')) {
+      // Extraire la référence du produit (ex: PTL908-2H)
+      const refMatch = productDetails?.title?.match(/([A-Z]{2,4}\d{3,4}-[A-Z0-9]+)/);
+      if (refMatch) {
+        const reference = refMatch[0];
+        const category = originalPath.includes('Accessoires') ? 'Accessoires' : 'EDUCATION EQUIPMENT';
+        return `/images/products/MCP lab electronics/${category}/${reference}.png`;
+      }
+    }
+    
+    return correctedPath;
+  };
+
+  // Fonction pour obtenir une image de remplacement
+  const getFallbackImage = (originalPath) => {
+    // Si on a déjà un fallback pour ce chemin, l'utiliser
+    if (useFallbackImages[originalPath]) {
+      return useFallbackImages[originalPath];
+    }
+    
+    // Essayer de corriger le chemin
+    const correctedPath = fixImagePath(originalPath);
+    
+    // Stocker le chemin corrigé pour les futures tentatives
+    if (correctedPath !== originalPath) {
+      setUseFallbackImages(prev => ({
+        ...prev,
+        [originalPath]: correctedPath
+      }));
+      return correctedPath;
+    }
+    
+    return originalPath;
+  };
+
   // Fonction pour gérer les erreurs de chargement d'images
   const handleImageError = (imagePath) => {
     console.log(`Erreur de chargement: ${imagePath}`);
+    
+    // Marquer cette image comme en erreur
     setImageErrors(prev => ({
       ...prev,
       [imagePath]: true
     }));
+    
+    // Si on n'a pas encore essayé de fallback pour cette image
+    if (!useFallbackImages[imagePath]) {
+      const fallbackPath = getFallbackImage(imagePath);
+      
+      // Si on a trouvé un chemin de fallback différent
+      if (fallbackPath !== imagePath) {
+        console.log(`Tentative avec chemin corrigé: ${fallbackPath}`);
+        
+        // Utiliser le chemin corrigé pour cette image
+        setUseFallbackImages(prev => ({
+          ...prev,
+          [imagePath]: fallbackPath
+        }));
+        
+        // Réinitialiser l'erreur pour ce chemin
+        setImageErrors(prev => {
+          const newErrors = {...prev};
+          delete newErrors[imagePath];
+          return newErrors;
+        });
+        
+        // Si c'est l'image sélectionnée, mettre à jour la sélection
+        if (selectedImage === imagePath) {
+          setSelectedImage(fallbackPath);
+        }
+      }
+    }
   };
 
   // Vérifier si une image est valide
   const isValidImage = (imagePath) => {
-    return imagePath && !imageErrors[imagePath];
+    if (!imagePath) return false;
+    
+    // Vérifier si on a un fallback pour ce chemin
+    const pathToCheck = useFallbackImages[imagePath] || imagePath;
+    
+    // Vérifier si ce chemin n'est pas en erreur
+    return !imageErrors[pathToCheck] && !imageErrors[imagePath];
+  };
+
+  // Obtenir le chemin d'image à afficher
+  const getImagePath = (originalPath) => {
+    if (!originalPath) return '';
+    
+    // Si on a un fallback, l'utiliser
+    if (useFallbackImages[originalPath]) {
+      return useFallbackImages[originalPath];
+    }
+    
+    return originalPath;
   };
 
   useEffect(() => {
@@ -74,11 +237,21 @@ const ProductDetails = () => {
       // Réinitialiser les erreurs d'images pour ce produit
       setImageErrors({});
       
-      // Trouver la première image valide
-      const firstValidImage = productDetails.images?.find(img => !imageErrors[img]);
-      setSelectedImage(firstValidImage || productDetails.images?.[0] || '');
+      // Préparer les images avec corrections si nécessaire
+      const processedImages = (productDetails.images || []).map(img => getImagePath(img));
       
+      // Trouver la première image valide
+      let firstValidImage = '';
+      for (const img of processedImages) {
+        if (!imageErrors[img]) {
+          firstValidImage = img;
+          break;
+        }
+      }
+      
+      setSelectedImage(firstValidImage || processedImages[0] || '');
       setLoading(false);
+      
       // Pré-remplir le formulaire avec le titre du produit
       setQuoteForm(prev => ({
         ...prev,
@@ -252,9 +425,9 @@ const ProductDetails = () => {
               {/* Image principale */}
               <div className="main-image-container bg-light rounded-3 mb-3 d-flex align-items-center justify-content-center" 
                    style={{ height: '400px', border: '1px solid #dee2e6' }}>
-                {isValidImage(selectedImage) ? (
+                {selectedImage && isValidImage(selectedImage) ? (
                   <img 
-                    src={selectedImage} 
+                    src={getImagePath(selectedImage)}
                     alt={productDetails.title}
                     style={{ 
                       maxWidth: '100%', 
@@ -263,6 +436,7 @@ const ProductDetails = () => {
                       padding: '20px'
                     }}
                     onError={() => handleImageError(selectedImage)}
+                    key={selectedImage} // Forcer le re-rendu quand l'image change
                   />
                 ) : (
                   <div className="text-center p-4">
@@ -276,31 +450,36 @@ const ProductDetails = () => {
               {/* Miniatures */}
               {productDetails.images && productDetails.images.length > 0 && (
                 <div className="thumbnail-row d-flex gap-2 overflow-auto pb-2">
-                  {productDetails.images.map((img, index) => (
-                    <div 
-                      key={index}
-                      className={`thumbnail-item border rounded-3 d-flex align-items-center justify-content-center ${selectedImage === img && isValidImage(img) ? 'border-primary border-2' : ''}`}
-                      style={{ 
-                        width: '100px', 
-                        height: '100px', 
-                        cursor: isValidImage(img) ? 'pointer' : 'default',
-                        background: '#f8f9fa',
-                        opacity: isValidImage(img) ? 1 : 0.5
-                      }}
-                      onClick={() => isValidImage(img) && setSelectedImage(img)}
-                    >
-                      {isValidImage(img) ? (
-                        <img 
-                          src={img} 
-                          alt={`${productDetails.title} - ${index + 1}`}
-                          style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }}
-                          onError={() => handleImageError(img)}
-                        />
-                      ) : (
-                        <FaImage size={30} className="text-muted" />
-                      )}
-                    </div>
-                  ))}
+                  {productDetails.images.map((img, index) => {
+                    const imagePath = getImagePath(img);
+                    const isValid = isValidImage(img);
+                    
+                    return (
+                      <div 
+                        key={index}
+                        className={`thumbnail-item border rounded-3 d-flex align-items-center justify-content-center ${selectedImage === img && isValid ? 'border-primary border-2' : ''}`}
+                        style={{ 
+                          width: '100px', 
+                          height: '100px', 
+                          cursor: isValid ? 'pointer' : 'default',
+                          background: '#f8f9fa',
+                          opacity: isValid ? 1 : 0.5
+                        }}
+                        onClick={() => isValid && setSelectedImage(img)}
+                      >
+                        {isValid ? (
+                          <img 
+                            src={imagePath}
+                            alt={`${productDetails.title} - ${index + 1}`}
+                            style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }}
+                            onError={() => handleImageError(img)}
+                          />
+                        ) : (
+                          <FaImage size={30} className="text-muted" />
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -428,7 +607,7 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Section des produits similaires (conservée) */}
+        {/* Section des produits similaires */}
         <div className="row mt-5">
           <div className="col-12">
             <h3 className="fw-bold mb-4">Produits similaires</h3>
@@ -546,8 +725,6 @@ const ProductDetails = () => {
                 </div>
               )}
             </div>
-            
-           
           </div>
         </div>
       )}
@@ -866,7 +1043,7 @@ const ProductDetails = () => {
           border-radius: 8px;
         }
         
-        /* Styles pour le modal de devis (inchangé) */
+        /* Styles pour le modal de devis */
         .quote-modal-overlay {
           position: fixed;
           top: 0;
