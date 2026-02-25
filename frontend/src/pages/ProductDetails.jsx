@@ -1,4 +1,4 @@
-// ProductDetails.jsx
+// ProductDetails.jsx (version simplifiée)
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { 
@@ -27,30 +27,17 @@ import {
   FaArrowRight
 } from 'react-icons/fa';
 import { getProductDetails } from './productData';
-
+import DevisModal from '../components/DevisModal';
 const ProductDetails = () => {
   const { productName } = useParams();
   const navigate = useNavigate();
   const [selectedImage, setSelectedImage] = useState('');
   const [loading, setLoading] = useState(true);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
-  const [quoteSubmitted, setQuoteSubmitted] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [showSpecsModal, setShowSpecsModal] = useState(false);
   const [useFallbackImages, setUseFallbackImages] = useState({});
-  // Nouvel état pour la page de spécifications textuelles
   const [showTextSpecsPage, setShowTextSpecsPage] = useState(false);
-  
-  // Formulaire de devis
-  const [quoteForm, setQuoteForm] = useState({
-    company: '',
-    name: '',
-    email: '',
-    phone: '',
-    quantity: 1,
-    message: '',
-    productTitle: ''
-  });
 
   // Décoder le nom du produit depuis l'URL
   const decodedProductName = decodeURIComponent(productName);
@@ -62,24 +49,20 @@ const ProductDetails = () => {
   const fixImagePath = (originalPath) => {
     if (!originalPath) return '';
     
-    // Si c'est déjà une image valide ou qu'on a déjà essayé de la corriger
     if (useFallbackImages[originalPath]) {
       return useFallbackImages[originalPath];
     }
     
     let correctedPath = originalPath;
     
-    // CORRECTION 1: Remplacer "CNC Turing Machine" par "CNC Turning Machine" (orthographe correcte)
     if (correctedPath.includes('CNC Turing Machine')) {
       correctedPath = correctedPath.replace(/CNC Turing Machine/g, 'CNC Turning Machine');
     }
     
-    // CORRECTION 2: Remplacer "CNC Turning Machine" par "CNC Turning" (si le dossier s'appelle différemment)
     if (correctedPath.includes('CNC Turning Machine')) {
       correctedPath = correctedPath.replace(/CNC Turning Machine/g, 'CNC Turning');
     }
     
-    // CORRECTION 3: Normaliser les noms de fichiers pour les produits CNC
     const cncProducts = {
       'De2-Ultra Mini CNC Turning Center': 'De2-Ultra Mini CNC Turning Center',
       'PC1 Baby CNC Lathe-Mach': 'PC1 Baby CNC Lathe-Mach',
@@ -92,10 +75,8 @@ const ProductDetails = () => {
       'Fa4-Eco (KX1S) CNC Milling Machine': 'Fa4-Eco (KX1S) CNC Milling Machine'
     };
     
-    // Pour les produits CNC, extraire le nom du fichier du chemin
     for (const [productKey, fileName] of Object.entries(cncProducts)) {
       if (originalPath.includes(fileName)) {
-        // Essayer différentes extensions et formats
         const baseName = fileName;
         const possiblePaths = [
           `/images/products/CNC EDUCATION/CNC Turning/${baseName}.png`,
@@ -105,7 +86,6 @@ const ProductDetails = () => {
           `/images/products/CNC EDUCATION/CNC Milling Machine/${baseName}.png`,
         ];
         
-        // Pour les images avec suffixes (-2, -3, etc.)
         if (originalPath.includes('-2') || originalPath.includes('-3') || originalPath.includes('.jpg')) {
           const match = originalPath.match(/(.+)(-\d+)?\.(png|jpg)/);
           if (match) {
@@ -117,29 +97,23 @@ const ProductDetails = () => {
           }
         }
         
-        // Retourner le premier chemin possible pour ce produit
         return possiblePaths[0];
       }
     }
     
-    // CORRECTION 4: Pour les produits Voitures avec des placeholders (produit1.png, produit2.png)
     if (originalPath.includes('produit1.png') || originalPath.includes('produit2.png')) {
-      // Extraire le nom du produit du chemin ou utiliser le titre
       const productTitle = productDetails?.title || '';
       
-      // Créer un nom de fichier à partir du titre du produit
       const fileName = productTitle
-        .replace(/[^\w\s-]/g, '') // Enlever les caractères spéciaux
-        .replace(/\s+/g, ' ') // Normaliser les espaces
+        .replace(/[^\w\s-]/g, '')
+        .replace(/\s+/g, ' ')
         .trim()
-        .replace(/\s+/g, '-'); // Remplacer espaces par tirets
+        .replace(/\s+/g, '-');
       
       return `/images/products/voitures/${fileName}.png`;
     }
     
-    // CORRECTION 5: Pour les produits MCP lab electronics
     if (originalPath.includes('MCP lab electronics')) {
-      // Extraire la référence du produit (ex: PTL908-2H)
       const refMatch = productDetails?.title?.match(/([A-Z]{2,4}\d{3,4}-[A-Z0-9]+)/);
       if (refMatch) {
         const reference = refMatch[0];
@@ -151,17 +125,13 @@ const ProductDetails = () => {
     return correctedPath;
   };
 
-  // Fonction pour obtenir une image de remplacement
   const getFallbackImage = (originalPath) => {
-    // Si on a déjà un fallback pour ce chemin, l'utiliser
     if (useFallbackImages[originalPath]) {
       return useFallbackImages[originalPath];
     }
     
-    // Essayer de corriger le chemin
     const correctedPath = fixImagePath(originalPath);
     
-    // Stocker le chemin corrigé pour les futures tentatives
     if (correctedPath !== originalPath) {
       setUseFallbackImages(prev => ({
         ...prev,
@@ -173,38 +143,31 @@ const ProductDetails = () => {
     return originalPath;
   };
 
-  // Fonction pour gérer les erreurs de chargement d'images
   const handleImageError = (imagePath) => {
     console.log(`Erreur de chargement: ${imagePath}`);
     
-    // Marquer cette image comme en erreur
     setImageErrors(prev => ({
       ...prev,
       [imagePath]: true
     }));
     
-    // Si on n'a pas encore essayé de fallback pour cette image
     if (!useFallbackImages[imagePath]) {
       const fallbackPath = getFallbackImage(imagePath);
       
-      // Si on a trouvé un chemin de fallback différent
       if (fallbackPath !== imagePath) {
         console.log(`Tentative avec chemin corrigé: ${fallbackPath}`);
         
-        // Utiliser le chemin corrigé pour cette image
         setUseFallbackImages(prev => ({
           ...prev,
           [imagePath]: fallbackPath
         }));
         
-        // Réinitialiser l'erreur pour ce chemin
         setImageErrors(prev => {
           const newErrors = {...prev};
           delete newErrors[imagePath];
           return newErrors;
         });
         
-        // Si c'est l'image sélectionnée, mettre à jour la sélection
         if (selectedImage === imagePath) {
           setSelectedImage(fallbackPath);
         }
@@ -212,22 +175,17 @@ const ProductDetails = () => {
     }
   };
 
-  // Vérifier si une image est valide
   const isValidImage = (imagePath) => {
     if (!imagePath) return false;
     
-    // Vérifier si on a un fallback pour ce chemin
     const pathToCheck = useFallbackImages[imagePath] || imagePath;
     
-    // Vérifier si ce chemin n'est pas en erreur
     return !imageErrors[pathToCheck] && !imageErrors[imagePath];
   };
 
-  // Obtenir le chemin d'image à afficher
   const getImagePath = (originalPath) => {
     if (!originalPath) return '';
     
-    // Si on a un fallback, l'utiliser
     if (useFallbackImages[originalPath]) {
       return useFallbackImages[originalPath];
     }
@@ -237,13 +195,10 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (productDetails) {
-      // Réinitialiser les erreurs d'images pour ce produit
       setImageErrors({});
       
-      // Préparer les images avec corrections si nécessaire
       const processedImages = (productDetails.images || []).map(img => getImagePath(img));
       
-      // Trouver la première image valide
       let firstValidImage = '';
       for (const img of processedImages) {
         if (!imageErrors[img]) {
@@ -254,30 +209,21 @@ const ProductDetails = () => {
       
       setSelectedImage(firstValidImage || processedImages[0] || '');
       setLoading(false);
-      
-      // Pré-remplir le formulaire avec le titre du produit
-      setQuoteForm(prev => ({
-        ...prev,
-        productTitle: productDetails.title
-      }));
     } else {
       setLoading(false);
     }
   }, [productDetails]);
 
-  // Fonction pour gérer l'ouverture du formulaire de devis
   const handleRequestQuote = () => {
     setShowQuoteForm(true);
     document.body.style.overflow = 'hidden';
   };
 
-  // Fonction pour fermer le formulaire de devis
   const handleCloseQuoteForm = () => {
     setShowQuoteForm(false);
     document.body.style.overflow = 'auto';
   };
 
-  // MODIFICATION: Remplacer l'ancienne fonction d'ouverture de modale par la nouvelle page
   const handleOpenSpecsPage = () => {
     setShowTextSpecsPage(true);
     document.body.style.overflow = 'hidden';
@@ -288,45 +234,10 @@ const ProductDetails = () => {
     document.body.style.overflow = 'auto';
   };
 
-  // Fonction pour gérer les changements dans le formulaire
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setQuoteForm(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  // Fonction pour soumettre la demande de devis
-  const handleSubmitQuote = (e) => {
-    e.preventDefault();
-    
-    console.log('Demande de devis envoyée:', quoteForm);
-    
-    setQuoteSubmitted(true);
-    
-    setTimeout(() => {
-      setShowQuoteForm(false);
-      setQuoteSubmitted(false);
-      document.body.style.overflow = 'auto';
-      setQuoteForm(prev => ({
-        ...prev,
-        company: '',
-        name: '',
-        email: '',
-        phone: '',
-        quantity: 1,
-        message: ''
-      }));
-    }, 3000);
-  };
-
-  // Fonction pour générer un PDF (simulation)
   const handleGeneratePDF = () => {
     alert(`Génération du PDF pour ${productDetails.title}\n\nCette fonctionnalité sera bientôt disponible.`);
   };
 
-  // Fonction pour obtenir l'icône selon le type de spécification (gardée pour utilisation future)
   const getSpecIcon = (specKey) => {
     if (specKey.includes('Moteur') || specKey.includes('broche') || specKey.includes('Vitesse')) 
       return <FaTachometerAlt className="text-primary me-2" />;
@@ -439,7 +350,7 @@ const ProductDetails = () => {
                       padding: '20px'
                     }}
                     onError={() => handleImageError(selectedImage)}
-                    key={selectedImage} // Forcer le re-rendu quand l'image change
+                    key={selectedImage}
                   />
                 ) : (
                   <div className="text-center p-4">
@@ -573,7 +484,7 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Description détaillée avec bouton Voir spécifications - MODIFIÉ */}
+        {/* Description détaillée avec bouton Voir spécifications */}
         <div className="row mt-5">
           <div className="col-12">
             <div className="description-section bg-white p-4 rounded-3 border">
@@ -660,7 +571,7 @@ const ProductDetails = () => {
         </div>
       </div>
 
-      {/* NOUVELLE PAGE DE SPÉCIFICATIONS TEXTUELLES - UNIQUEMENT LA DESCRIPTION, SANS IMAGES NI BOUTONS */}
+      {/* PAGE DE SPÉCIFICATIONS TEXTUELLES */}
       {showTextSpecsPage && (
         <div className="specs-page-overlay" onClick={handleCloseSpecsPage}>
           <div className="specs-page" onClick={(e) => e.stopPropagation()}>
@@ -735,164 +646,14 @@ const ProductDetails = () => {
         </div>
       )}
 
-      {/* MODAL DE DEMANDE DE DEVIS */}
-      {showQuoteForm && (
-        <div className="quote-modal-overlay">
-          <div className="quote-modal">
-            <button className="quote-modal-close" onClick={handleCloseQuoteForm}>
-              <FaTimes />
-            </button>
-            
-            {quoteSubmitted ? (
-              <div className="quote-modal-success">
-                <div className="success-icon">
-                  <FaCheck size={48} />
-                </div>
-                <h3>Demande envoyée avec succès !</h3>
-                <p>Votre demande de devis pour <strong>{productDetails.title}</strong> a bien été reçue.</p>
-                <p className="text-muted">Notre équipe commerciale vous contactera sous 24h ouvrées.</p>
-              </div>
-            ) : (
-              <>
-                <div className="quote-modal-header">
-                  <h2>Demande de devis personnalisé</h2>
-                  <p className="text-muted">Pour : <strong>{productDetails.title}</strong></p>
-                </div>
-                
-                <form onSubmit={handleSubmitQuote} className="quote-modal-form">
-                  <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label">
-                        <FaBuilding className="me-2" />
-                        Entreprise *
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="company"
-                        value={quoteForm.company}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Nom de votre entreprise"
-                      />
-                    </div>
-                    
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label">
-                        <FaUser className="me-2" />
-                        Nom complet *
-                      </label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        name="name"
-                        value={quoteForm.name}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Votre nom et prénom"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label">
-                        <FaEnvelope className="me-2" />
-                        Email professionnel *
-                      </label>
-                      <input
-                        type="email"
-                        className="form-control"
-                        name="email"
-                        value={quoteForm.email}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="votre@email.com"
-                      />
-                    </div>
-                    
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label">
-                        <FaPhone className="me-2" />
-                        Téléphone *
-                      </label>
-                      <input
-                        type="tel"
-                        className="form-control"
-                        name="phone"
-                        value={quoteForm.phone}
-                        onChange={handleInputChange}
-                        required
-                        placeholder="Votre numéro de téléphone"
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="row">
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label">Quantité souhaitée *</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        name="quantity"
-                        value={quoteForm.quantity}
-                        onChange={handleInputChange}
-                        min="1"
-                        max="100"
-                        required
-                      />
-                    </div>
-                    
-                    <div className="col-md-6 mb-3">
-                      <label className="form-label">Prix unitaire</label>
-                      <input
-                        type="text"
-                        className="form-control bg-light"
-                        value={`${productDetails.price || 'Sur devis'}€`}
-                        disabled
-                        readOnly
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="mb-4">
-                    <label className="form-label">Message / Besoins spécifiques</label>
-                    <textarea
-                      className="form-control"
-                      name="message"
-                      value={quoteForm.message}
-                      onChange={handleInputChange}
-                      rows="4"
-                      placeholder="Précisez vos besoins : options, accessoires, délais, financement, etc."
-                    ></textarea>
-                  </div>
-                  
-                  <div className="quote-modal-footer">
-                    <div className="quote-modal-info">
-                      <FaShieldAlt className="text-primary me-2" />
-                      <small>Votre demande sera traitée par notre service commercial dans les plus brefs délais.</small>
-                    </div>
-                    <div className="quote-modal-actions">
-                      <button 
-                        type="button" 
-                        className="btn btn-outline-secondary me-2"
-                        onClick={handleCloseQuoteForm}
-                      >
-                        Annuler
-                      </button>
-                      <button type="submit" className="btn btn-primary">
-                        Envoyer la demande
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      {/* MODAL DE DEMANDE DE DEVIS - Utilisation du nouveau composant */}
+      <DevisModal 
+        product={productDetails}
+        isOpen={showQuoteForm}
+        onClose={handleCloseQuoteForm}
+      />
 
-      {/* CSS additionnel - STYLES MIS À JOUR */}
+      {/* CSS additionnel */}
       <style jsx>{`
         .product-details-page .breadcrumb {
           background: transparent;
@@ -905,7 +666,7 @@ const ProductDetails = () => {
           transform: scale(1.05);
         }
         
-        /* NOUVEAUX STYLES POUR LA PAGE DE SPÉCIFICATIONS TEXTUELLES */
+        /* STYLES POUR LA PAGE DE SPÉCIFICATIONS TEXTUELLES */
         .specs-page-overlay {
           position: fixed;
           top: 0;
@@ -987,7 +748,7 @@ const ProductDetails = () => {
           line-height: 1.6;
         }
         
-        /* Styles pour le modal de devis */
+        /* Styles pour le modal de devis - déplacés dans DevisModal.css ou conservés ici si nécessaire */
         .quote-modal-overlay {
           position: fixed;
           top: 0;

@@ -8,7 +8,7 @@ import categoryRoutes from './routes/categories.js';
 import productRoutes from './routes/products.js';
 import contactRoutes from './routes/contactRoutes.js';
 import mongoose from 'mongoose';
-
+import devisRoutes from './routes/devisRoutes.js';
 // Charger les variables d'environnement
 dotenv.config();
 
@@ -19,6 +19,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 // Middleware de logging pour le débogage
 app.use((req, res, next) => {
@@ -97,6 +98,8 @@ app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/devis', devisRoutes);
+
 
 // Gestion des erreurs 404 (doit être après toutes les routes)
 app.use((req, res) => {
