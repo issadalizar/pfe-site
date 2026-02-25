@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaArrowLeft, FaHome, FaChevronRight } from "react-icons/fa";
-import { categoryAPI } from "../services/api";
+import { categoryAPI } from "../services/CategorieProduct";
 import SubCategoryList from "../components/SubCategoryList";
 import CategoryProducts from "../components/CategoryProducts";
 import "bootstrap/dist/css/bootstrap.min.css";

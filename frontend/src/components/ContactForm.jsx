@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaPaperPlane, FaUser, FaEnvelope, FaTag, FaCommentAlt, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { contactAPI } from '../services/api';
+import { contactAPI } from '../services/contactAPI'; // Changement de l'import
 import '../styles/contact.css';
 
 const ContactForm = () => {

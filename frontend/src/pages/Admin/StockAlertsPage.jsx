@@ -1,6 +1,6 @@
 // src/pages/StockAlertsPage.jsx
 import React, { useState, useEffect } from "react";
-import { productAPI } from "../../services/api";
+import { productAPI } from "../../services/CategorieProduct";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FaExclamationTriangle,

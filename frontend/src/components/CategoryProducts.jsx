@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { FaBox, FaChevronLeft } from "react-icons/fa";
-import { productAPI } from "../services/api";
+import { productAPI } from "../services/CategorieProduct";
 import ProductCard from "./ProductCard";
 
 const CategoryProducts = ({ 

@@ -2,7 +2,7 @@
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 import { FaFolder, FaChevronRight, FaBox } from "react-icons/fa";
-import { categoryAPI } from "../services/api";
+import { categoryAPI } from "../services/CategorieProduct";
 
 const SubCategoryList = ({ categoryId, categoryName, onBack, onSelectSubCategory }) => {
   const [subCategories, setSubCategories] = useState([]);

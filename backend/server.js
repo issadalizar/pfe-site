@@ -29,8 +29,8 @@ app.use((req, res, next) => {
 
 // Connexion à MongoDB (ne bloque pas le démarrage du serveur)
 connectDB().catch((err) => {
-  console.error('⚠️  Erreur lors de la connexion MongoDB:', err.message);
-  console.log('💡 Le serveur continue de fonctionner, mais les routes nécessitent MongoDB');
+  console.error(' Erreur lors de la connexion MongoDB:', err.message);
+  console.log(' Le serveur continue de fonctionner, mais les routes nécessitent MongoDB');
 });
 
 // Route racine (mise à jour avec les nouvelles routes)
@@ -66,6 +66,20 @@ app.get('/', (req, res) => {
         toggle: 'PATCH /api/users/:id/toggle',
         update: 'PUT /api/users/:id',
         delete: 'DELETE /api/users/:id'
+      },
+      // ✅ AJOUT : Routes contact
+      contact: {
+        create: 'POST /api/contact',
+        getAll: 'GET /api/contact'
+      },
+      // ✅ AJOUT : Routes devis
+      devis: {
+        list: 'GET /api/devis',
+        create: 'POST /api/devis',
+        getById: 'GET /api/devis/:id',
+        updateStatus: 'PATCH /api/devis/:id/status',
+        delete: 'DELETE /api/devis/:id',
+        stats: 'GET /api/devis/stats'
       }
     }
   });
@@ -131,7 +145,17 @@ app.use((req, res) => {
       'GET /api/users/:id',
       'PATCH /api/users/:id/toggle',
       'PUT /api/users/:id',
-      'DELETE /api/users/:id'
+      'DELETE /api/users/:id',
+      // ✅ AJOUT : Routes contact
+      'POST /api/contact',
+      'GET /api/contact',
+      // ✅ AJOUT : Routes devis
+      'GET /api/devis',
+      'POST /api/devis',
+      'GET /api/devis/:id',
+      'PATCH /api/devis/:id/status',
+      'DELETE /api/devis/:id',
+      'GET /api/devis/stats'
     ]
   });
 });
@@ -147,14 +171,17 @@ app.use((err, req, res, next) => {
 
 // Démarrage du serveur
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur backend démarré sur le port ${PORT}`);
-  console.log(`📍 URL: http://localhost:${PORT}`);
-  console.log(`📋 Test: http://localhost:${PORT}/api/health`);
-  console.log(`📂 API Categories: http://localhost:${PORT}/api/categories`);
-  console.log(`📦 API Products: http://localhost:${PORT}/api/products`);
-  console.log(`📊 API Stock Stats: http://localhost:${PORT}/api/products/stock-stats`);
-  console.log(`🚨 API Rupture stock: http://localhost:${PORT}/api/products/out-of-stock`);
-  console.log(`⚠️  API Stock faible: http://localhost:${PORT}/api/products/low-stock`);
+  console.log(` Serveur backend démarré sur le port ${PORT}`);
+  console.log(` URL: http://localhost:${PORT}`);
+  console.log(` Test: http://localhost:${PORT}/api/health`);
+  console.log(` API Categories: http://localhost:${PORT}/api/categories`);
+  console.log(` API Products: http://localhost:${PORT}/api/products`);
+  console.log(` API Stock Stats: http://localhost:${PORT}/api/products/stock-stats`);
+  console.log(` API Rupture stock: http://localhost:${PORT}/api/products/out-of-stock`);
+  console.log(`  API Stock faible: http://localhost:${PORT}/api/products/low-stock`);
+  // ✅ AJOUT : Logs pour les nouvelles routes
+  console.log(` API Contact: http://localhost:${PORT}/api/contact`);
+  console.log(` API Devis: http://localhost:${PORT}/api/devis`);
 });
 
 export default app;

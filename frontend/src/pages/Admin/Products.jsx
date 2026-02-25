@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ProductForm from "../../components/Admin/ProductForm";
 import ProductList from "../../components/Admin/ProductList";
-import { productAPI, categoryAPI } from "../../services/api";
+import { productAPI, categoryAPI } from "../../services/CategorieProduct";
 import {
   FaPlus,
   FaSearch,

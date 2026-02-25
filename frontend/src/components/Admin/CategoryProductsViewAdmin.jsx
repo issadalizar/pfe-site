@@ -17,7 +17,7 @@ import {
   FaFolderOpen
 } from 'react-icons/fa';
 import { cncProductDetails } from '../../pages/productData';
-import { categoryAPI } from '../../services/api';
+import { categoryAPI } from '../../services/CategorieProduct';
 const ProductImage = ({ product, className, style }) => {
   const [imageSrc, setImageSrc] = useState(null);
   const [error, setError] = useState(false);

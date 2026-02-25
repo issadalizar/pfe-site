@@ -1,7 +1,6 @@
 import User from '../models/User.js';
 
-// POST - Créer un nouvel utilisateur
-//req contient les données envoyées par le client (dans le corps de la requête)
+//req contient les données envoyées par le client 
 //res est utilisé pour envoyer une réponse au client
 export const createUser = async (req, res) => {
   try {
@@ -34,13 +33,13 @@ export const createUser = async (req, res) => {
 
     // Créer le nouvel utilisateur
     const newUser = new User({
-      client_code: client_code.toUpperCase(),    // Mise en majuscules automatique
+      client_code: client_code.toUpperCase(),    
       client_name: client_name,
       email: email || '',
       adresse: adresse || '',
       telephone: telephone || '',
-      isAdmin: isAdmin !== undefined ? isAdmin : false, // Valeur par défaut false
-      actif: actif !== undefined ? actif : true, // Valeur par défaut true
+      isAdmin: isAdmin !== undefined ? isAdmin : false, 
+      actif: actif !== undefined ? actif : true, 
     });
     
     // Enregistrer dans la base de données
@@ -82,14 +81,15 @@ export const bulkCreateUsers = async (req, res) => {
       }
     }
 
-    // Mise en majuscules des codes clients
+    // fonction pour traiter chaque utilisateur avant de les insérer dans la base de données
     const processedUsers = users.map(user => ({
+      //map pour transformer chaque utilisateur du tableau
       ...user,
       client_code: user.client_code?.toUpperCase(),
       email: user.email || '',
       adresse: user.adresse || '',
       telephone: user.telephone || '',
-      isAdmin: user.isAdmin !== undefined ? user.isAdmin : false, // Remplacé 'role'
+      isAdmin: user.isAdmin !== undefined ? user.isAdmin : false,
       actif: user.actif !== undefined ? user.actif : true
     }));
 
@@ -153,7 +153,7 @@ export const updateUser = async (req, res) => {
       email,
       adresse,
       telephone,
-      isAdmin,           // Remplacé 'role' par 'isAdmin'
+      isAdmin,           
       actif
     } = req.body;
     
@@ -179,7 +179,7 @@ export const updateUser = async (req, res) => {
     if (email !== undefined) user.email = email;
     if (adresse !== undefined) user.adresse = adresse;
     if (telephone !== undefined) user.telephone = telephone;
-    if (isAdmin !== undefined) user.isAdmin = isAdmin; // Remplacé 'role'
+    if (isAdmin !== undefined) user.isAdmin = isAdmin; 
     if (actif !== undefined) user.actif = actif;
 
     const updatedUser = await user.save();

@@ -12,7 +12,7 @@ import {
   FaRegLightbulb, FaRegHandshake, FaRegPaperPlane, FaRegBell,
   FaMapMarkedAlt, FaGlobe
 } from "react-icons/fa";
-import { productAPI, categoryAPI } from "../services/api";
+import { productAPI, categoryAPI } from "../services/CategorieProduct";
 import FeaturedProducts from "../components/FeaturedProducts";
 import ContactForm from "../components/ContactForm";
 import "bootstrap/dist/css/bootstrap.min.css";
