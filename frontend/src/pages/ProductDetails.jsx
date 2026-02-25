@@ -28,6 +28,7 @@ import {
 } from 'react-icons/fa';
 import { getProductDetails } from './productData';
 import DevisModal from '../components/DevisModal';
+
 const ProductDetails = () => {
   const { productName } = useParams();
   const navigate = useNavigate();
@@ -36,7 +37,6 @@ const ProductDetails = () => {
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [showSpecsModal, setShowSpecsModal] = useState(false);
-  const [useFallbackImages, setUseFallbackImages] = useState({});
   const [showTextSpecsPage, setShowTextSpecsPage] = useState(false);
 
   // Décoder le nom du produit depuis l'URL
@@ -45,169 +45,24 @@ const ProductDetails = () => {
   // Récupérer les détails du produit
   const productDetails = getProductDetails(decodedProductName);
   
-  // Fonction pour corriger le chemin d'image
-  const fixImagePath = (originalPath) => {
-    if (!originalPath) return '';
-    
-    if (useFallbackImages[originalPath]) {
-      return useFallbackImages[originalPath];
-    }
-    
-    let correctedPath = originalPath;
-    
-    if (correctedPath.includes('CNC Turing Machine')) {
-      correctedPath = correctedPath.replace(/CNC Turing Machine/g, 'CNC Turning Machine');
-    }
-    
-    if (correctedPath.includes('CNC Turning Machine')) {
-      correctedPath = correctedPath.replace(/CNC Turning Machine/g, 'CNC Turning');
-    }
-    
-    const cncProducts = {
-      'De2-Ultra Mini CNC Turning Center': 'De2-Ultra Mini CNC Turning Center',
-      'PC1 Baby CNC Lathe-Mach': 'PC1 Baby CNC Lathe-Mach',
-      'De4-Eco (KC4S) Bench CNC Lathe': 'De4-Eco (KC4S) Bench CNC Lathe',
-      'De6 (iKC6S) CNC Turning Machine': 'De6 (iKC6S) CNC Turning Machine',
-      'De4-Pro (iKC4) Bench CNC Lathe': 'De4-Pro (iKC4) Bench CNC Lathe',
-      'De8 (iKC8) CNC Turning Machine': 'De8 (iKC8) CNC Turning Machine',
-      'Fa2-Ultra Mini CNC Milling Center': 'Fa2-Ultra Mini CNC Milling Center',
-      'PX1 Baby CNC Milling Machine': 'PX1 Baby CNC Milling Machine',
-      'Fa4-Eco (KX1S) CNC Milling Machine': 'Fa4-Eco (KX1S) CNC Milling Machine'
-    };
-    
-    for (const [productKey, fileName] of Object.entries(cncProducts)) {
-      if (originalPath.includes(fileName)) {
-        const baseName = fileName;
-        const possiblePaths = [
-          `/images/products/CNC EDUCATION/CNC Turning/${baseName}.png`,
-          `/images/products/CNC EDUCATION/CNC Turning/${baseName}.jpg`,
-          `/images/products/CNC EDUCATION/CNC Turning Machine/${baseName}.png`,
-          `/images/products/CNC EDUCATION/CNC Turing Machine/${baseName}.png`,
-          `/images/products/CNC EDUCATION/CNC Milling Machine/${baseName}.png`,
-        ];
-        
-        if (originalPath.includes('-2') || originalPath.includes('-3') || originalPath.includes('.jpg')) {
-          const match = originalPath.match(/(.+)(-\d+)?\.(png|jpg)/);
-          if (match) {
-            const mainName = match[1];
-            const suffix = match[2] || '';
-            const ext = match[3];
-            
-            return `/images/products/CNC EDUCATION/CNC Turning/${mainName}${suffix}.${ext}`;
-          }
-        }
-        
-        return possiblePaths[0];
-      }
-    }
-    
-    if (originalPath.includes('produit1.png') || originalPath.includes('produit2.png')) {
-      const productTitle = productDetails?.title || '';
-      
-      const fileName = productTitle
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .replace(/\s+/g, '-');
-      
-      return `/images/products/voitures/${fileName}.png`;
-    }
-    
-    if (originalPath.includes('MCP lab electronics')) {
-      const refMatch = productDetails?.title?.match(/([A-Z]{2,4}\d{3,4}-[A-Z0-9]+)/);
-      if (refMatch) {
-        const reference = refMatch[0];
-        const category = originalPath.includes('Accessoires') ? 'Accessoires' : 'EDUCATION EQUIPMENT';
-        return `/images/products/MCP lab electronics/${category}/${reference}.png`;
-      }
-    }
-    
-    return correctedPath;
-  };
-
-  const getFallbackImage = (originalPath) => {
-    if (useFallbackImages[originalPath]) {
-      return useFallbackImages[originalPath];
-    }
-    
-    const correctedPath = fixImagePath(originalPath);
-    
-    if (correctedPath !== originalPath) {
-      setUseFallbackImages(prev => ({
-        ...prev,
-        [originalPath]: correctedPath
-      }));
-      return correctedPath;
-    }
-    
-    return originalPath;
-  };
-
+  // Gestionnaire d'erreur d'image simplifié
   const handleImageError = (imagePath) => {
     console.log(`Erreur de chargement: ${imagePath}`);
-    
     setImageErrors(prev => ({
       ...prev,
       [imagePath]: true
     }));
-    
-    if (!useFallbackImages[imagePath]) {
-      const fallbackPath = getFallbackImage(imagePath);
-      
-      if (fallbackPath !== imagePath) {
-        console.log(`Tentative avec chemin corrigé: ${fallbackPath}`);
-        
-        setUseFallbackImages(prev => ({
-          ...prev,
-          [imagePath]: fallbackPath
-        }));
-        
-        setImageErrors(prev => {
-          const newErrors = {...prev};
-          delete newErrors[imagePath];
-          return newErrors;
-        });
-        
-        if (selectedImage === imagePath) {
-          setSelectedImage(fallbackPath);
-        }
-      }
-    }
   };
 
   const isValidImage = (imagePath) => {
     if (!imagePath) return false;
-    
-    const pathToCheck = useFallbackImages[imagePath] || imagePath;
-    
-    return !imageErrors[pathToCheck] && !imageErrors[imagePath];
-  };
-
-  const getImagePath = (originalPath) => {
-    if (!originalPath) return '';
-    
-    if (useFallbackImages[originalPath]) {
-      return useFallbackImages[originalPath];
-    }
-    
-    return originalPath;
+    return !imageErrors[imagePath];
   };
 
   useEffect(() => {
     if (productDetails) {
       setImageErrors({});
-      
-      const processedImages = (productDetails.images || []).map(img => getImagePath(img));
-      
-      let firstValidImage = '';
-      for (const img of processedImages) {
-        if (!imageErrors[img]) {
-          firstValidImage = img;
-          break;
-        }
-      }
-      
-      setSelectedImage(firstValidImage || processedImages[0] || '');
+      setSelectedImage(productDetails.images?.[0] || '');
       setLoading(false);
     } else {
       setLoading(false);
@@ -341,7 +196,7 @@ const ProductDetails = () => {
                    style={{ height: '400px', border: '1px solid #dee2e6' }}>
                 {selectedImage && isValidImage(selectedImage) ? (
                   <img 
-                    src={getImagePath(selectedImage)}
+                    src={selectedImage}
                     alt={productDetails.title}
                     style={{ 
                       maxWidth: '100%', 
@@ -350,7 +205,6 @@ const ProductDetails = () => {
                       padding: '20px'
                     }}
                     onError={() => handleImageError(selectedImage)}
-                    key={selectedImage}
                   />
                 ) : (
                   <div className="text-center p-4">
@@ -365,7 +219,6 @@ const ProductDetails = () => {
               {productDetails.images && productDetails.images.length > 0 && (
                 <div className="thumbnail-row d-flex gap-2 overflow-auto pb-2">
                   {productDetails.images.map((img, index) => {
-                    const imagePath = getImagePath(img);
                     const isValid = isValidImage(img);
                     
                     return (
@@ -383,7 +236,7 @@ const ProductDetails = () => {
                       >
                         {isValid ? (
                           <img 
-                            src={imagePath}
+                            src={img}
                             alt={`${productDetails.title} - ${index + 1}`}
                             style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }}
                             onError={() => handleImageError(img)}
@@ -646,7 +499,7 @@ const ProductDetails = () => {
         </div>
       )}
 
-      {/* MODAL DE DEMANDE DE DEVIS - Utilisation du nouveau composant */}
+      {/* MODAL DE DEMANDE DE DEVIS */}
       <DevisModal 
         product={productDetails}
         isOpen={showQuoteForm}
@@ -748,7 +601,7 @@ const ProductDetails = () => {
           line-height: 1.6;
         }
         
-        /* Styles pour le modal de devis - déplacés dans DevisModal.css ou conservés ici si nécessaire */
+        /* Styles pour le modal de devis */
         .quote-modal-overlay {
           position: fixed;
           top: 0;

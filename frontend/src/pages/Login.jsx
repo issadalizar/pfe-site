@@ -60,7 +60,7 @@ const Login = () => {
     // Simulation de connexion client
     console.log("Connexion client:", loginData);
     // Rediriger vers la page d'accueil ou tableau de bord client
-    navigate("/");
+    navigate("/home");
   };
 
   const handleClientRegister = (e) => {
@@ -81,10 +81,15 @@ const Login = () => {
     // Vérification simple pour l'admin
     if (adminData.email === "admin@univertechno.tn" && adminData.password === "Admin123!") {
       console.log("Connexion admin réussie");
-      navigate("/dashboard");
+      navigate("/home");
     } else {
       alert("Email ou mot de passe admin incorrect");
     }
+  };
+
+  // Fonction de retour à l'accueil
+  const handleBackToHome = () => {
+    navigate("/home");
   };
 
   return (
@@ -114,7 +119,7 @@ const Login = () => {
                   transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   boxShadow: '0 8px 20px rgba(67, 97, 238, 0.3)'
                 }}
-                onClick={() => navigate("/")}
+                onClick={handleBackToHome}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'rotate(5deg) scale(1.1)';
                 }}
@@ -132,14 +137,14 @@ const Login = () => {
                   WebkitTextFillColor: 'transparent',
                   cursor: 'pointer',
                   letterSpacing: '-0.5px'
-                }} onClick={() => navigate("/")}>
+                }} onClick={handleBackToHome}>
                   UniVer<span style={{ color: '#4361ee', WebkitTextFillColor: '#4361ee' }}>Techno</span>+
                 </h1>
               </div>
             </div>
             <button 
               className="btn btn-outline-primary rounded-pill px-4"
-              onClick={() => navigate("/")}
+              onClick={handleBackToHome}
             >
               <FaArrowLeft className="me-2" />
               Retour à l'accueil

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FaPaperPlane, FaUser, FaEnvelope, FaTag, FaCommentAlt, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 import { contactAPI } from '../services/api';
 import '../styles/contact.css';
 
@@ -42,12 +43,20 @@ const ContactForm = () => {
         <div className="contact-form-wrapper">
             <div className="contact-card">
                 <div className="card-header-gradient">
-                    <h3 className="fw-bold text-white mb-2">
-                        Envoyez-nous un message
-                    </h3>
-                    <p className="text-white-50 mb-0">
-                        Une question ou une réclamation ? Notre équipe est là pour vous aider.
-                    </p>
+                    <div className="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h1 className="fw-bold text-white mb-3 display-5">CONTACT US</h1>
+                            <h3 className="fw-bold text-white mb-2">
+                                Envoyez-nous un message
+                            </h3>
+                            <p className="text-white-50 mb-0">
+                                Une question ou une réclamation ? Notre équipe est là pour vous aider.
+                            </p>
+                        </div>
+                        <Link to="/home" className="text-white-50 text-decoration-none">
+                            ← Accueil
+                        </Link>
+                    </div>
                 </div>
 
                 <div className="card-body p-4 p-md-5">
@@ -60,12 +69,17 @@ const ContactForm = () => {
                             <p className="text-muted mb-4">
                                 Nous avons bien reçu votre demande et nous vous répondrons dans les plus brefs délais.
                             </p>
-                            <button
-                                className="btn btn-outline-primary rounded-pill px-4"
-                                onClick={() => setStatus('idle')}
-                            >
-                                Envoyer un autre message
-                            </button>
+                            <div className="d-flex gap-3 justify-content-center">
+                                <button
+                                    className="btn btn-outline-primary rounded-pill px-4"
+                                    onClick={() => setStatus('idle')}
+                                >
+                                    Envoyer un autre message
+                                </button>
+                                <Link to="/home" className="btn btn-primary rounded-pill px-4">
+                                    Retour à l'accueil
+                                </Link>
+                            </div>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className={status === 'submitting' ? 'opacity-50' : ''}>
@@ -148,22 +162,27 @@ const ContactForm = () => {
                                 </label>
                             </div>
 
-                            <button
-                                type="submit"
-                                className="btn btn-gradient w-100 py-3 fw-bold rounded-3 shadow-sm transition-all"
-                                disabled={status === 'submitting'}
-                            >
-                                {status === 'submitting' ? (
-                                    <span>
-                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                        Envoi en cours...
-                                    </span>
-                                ) : (
-                                    <span>
-                                        Envoyer le message <FaPaperPlane className="ms-2" />
-                                    </span>
-                                )}
-                            </button>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <Link to="/home" className="text-white text-decoration-none fw-bold">
+                                    Accueil
+                                </Link>
+                                <button
+                                    type="submit"
+                                    className="btn btn-gradient py-3 fw-bold rounded-3 shadow-sm transition-all px-5"
+                                    disabled={status === 'submitting'}
+                                >
+                                    {status === 'submitting' ? (
+                                        <span>
+                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                            Envoi en cours...
+                                        </span>
+                                    ) : (
+                                        <span>
+                                            Envoyer le message <FaPaperPlane className="ms-2" />
+                                        </span>
+                                    )}
+                                </button>
+                            </div>
                         </form>
                     )}
                 </div>

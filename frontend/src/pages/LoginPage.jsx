@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/login.css";
+import Login from "./Login";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -133,7 +134,7 @@ const LoginPage = () => {
     setTimeout(() => {
       setLoading(false);
       // Redirection vers l'espace client
-      navigate("/dashboard/client");
+      navigate("/home");
     }, 1500);
   };
 
@@ -171,7 +172,7 @@ const LoginPage = () => {
       setLoading(false);
       if (adminData.email === 'admin@univertechno.tn' && adminData.password === 'admin123') {
         // Redirection vers le dashboard admin
-        navigate("/dashboard/admin");
+        navigate("/home");
       } else {
         setErrors({ general: "Identifiants administrateur incorrects" });
       }
@@ -180,7 +181,7 @@ const LoginPage = () => {
 
   // Retour à l'accueil
   const handleBackToHome = () => {
-    navigate("/");
+    navigate("/home");
   };
 
   return (
