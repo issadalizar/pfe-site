@@ -16,10 +16,8 @@ import {
   FaFolder,
   FaFolderOpen
 } from 'react-icons/fa';
-import { cncProductDetails } from '../pages/productData';
-import { categoryAPI } from '../services/api';
-
-// === COMPOSANT D'IMAGE SIMPLE QUI UTILISE LES CHEMINS DE productData.js ===
+import { cncProductDetails } from '../../pages/productData';
+import { categoryAPI } from '../../services/api';
 const ProductImage = ({ product, className, style }) => {
   const [imageSrc, setImageSrc] = useState(null);
   const [error, setError] = useState(false);

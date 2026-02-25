@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { contactAPI } from '../services/api';
+import { contactAPI } from '../../services/api';
 import { FaEnvelope, FaClock, FaUser, FaTag, FaSearch, FaFilter, FaFileInvoice, FaCommentDots } from 'react-icons/fa';
-import { devisAPI } from '../services/devisAPI';
+import { devisAPI } from '../../services/devisAPI';
 
 const AdminMessages = () => {
     const [messages, setMessages] = useState([]);

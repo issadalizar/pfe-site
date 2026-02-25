@@ -1,5 +1,5 @@
 import { useState } from "react";
-import UserList from "../components/UserList";
+import UserList from "../../components/Admin/UserList";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function UsersPage() {

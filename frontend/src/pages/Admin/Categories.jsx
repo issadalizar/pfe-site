@@ -1,8 +1,8 @@
 // src/pages/Categories.jsx
 import React, { useState, useEffect } from "react";
-import CategoryForm from "../components/CategoryForm";
-import CategoryList from "../components/CategoryList";
-import { categoryAPI } from "../services/api";
+import CategoryForm from "../../components/Admin/CategoryForm";
+import CategoryList from "../../components/Admin/CategoryList";
+import { categoryAPI } from "../../services/api";
 import { FaPlus, FaSearch, FaFilter, FaThLarge, FaList } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
 

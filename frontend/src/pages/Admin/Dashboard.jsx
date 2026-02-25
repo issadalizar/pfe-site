@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
+import Header from "../../components/Header";
+import Sidebar from "../../components/Sidebar";
 import {
   FaUsers,
   FaUserCheck,
@@ -9,7 +9,7 @@ import {
   FaArrowUp,
   FaArrowDown
 } from "react-icons/fa";
-import { getAllUsers } from "../services/userService";
+import { getAllUsers } from "../../services/userService";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function Dashboard() {

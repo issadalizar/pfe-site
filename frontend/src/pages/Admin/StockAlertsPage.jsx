@@ -1,9 +1,9 @@
 // src/pages/StockAlertsPage.jsx
 import React, { useState, useEffect } from "react";
-import { productAPI } from "../services/api";
+import { productAPI } from "../../services/api";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  FaExclamationTriangle, 
+import {
+  FaExclamationTriangle,
   FaArrowLeft,
   FaRedo,
   FaBoxOpen,
@@ -16,17 +16,20 @@ import {
   FaEdit,
   FaEye,
   FaBox,
-  FaEuroSign
+  FaEuroSign,
 } from "react-icons/fa";
-import ProductList from "../components/ProductList";
+import ProductList from "../../components/Admin/ProductList";
 
 export default function StockAlertsPage() {
   const [outOfStock, setOutOfStock] = useState([]);
   const [lowStock, setLowStock] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState('outOfStock');
-  const [sortConfig, setSortConfig] = useState({ key: 'name', direction: 'asc' });
+  const [activeTab, setActiveTab] = useState("outOfStock");
+  const [sortConfig, setSortConfig] = useState({
+    key: "name",
+    direction: "asc",
+  });
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
   const navigate = useNavigate();
@@ -39,7 +42,7 @@ export default function StockAlertsPage() {
 
   useEffect(() => {
     fetchAlerts();
-    
+
     // Actualiser toutes les minutes
     const interval = setInterval(fetchAlerts, 60000);
     return () => clearInterval(interval);
@@ -49,88 +52,97 @@ export default function StockAlertsPage() {
     try {
       setLoading(true);
       console.log("🔄 Début du chargement des alertes...");
-      
+
       // Même logique que dans Products.jsx pour garantir la cohérence
       try {
         // Essayez d'abord l'API spécifique
         const [outOfStockRes, lowStockRes] = await Promise.all([
           productAPI.getOutOfStock(),
-          productAPI.getLowStock()
+          productAPI.getLowStock(),
         ]);
-        
+
         console.log("✅ API spécifique réussie");
-        console.log("Produits en rupture:", outOfStockRes.data.data?.length || 0);
-        console.log("Produits à faible stock:", lowStockRes.data.data?.length || 0);
-        
+        console.log(
+          "Produits en rupture:",
+          outOfStockRes.data.data?.length || 0,
+        );
+        console.log(
+          "Produits à faible stock:",
+          lowStockRes.data.data?.length || 0,
+        );
+
         const outOfStockProducts = outOfStockRes.data.data || [];
         const lowStockProducts = lowStockRes.data.data || [];
-        
+
         setOutOfStock(outOfStockProducts);
         setLowStock(lowStockProducts);
-        
+
         // Calculer les stats
         const allProductsRes = await productAPI.getAll();
         const totalProducts = allProductsRes.data.data?.length || 0;
-        const normalStockCount = totalProducts - (outOfStockProducts.length + lowStockProducts.length);
-        
+        const normalStockCount =
+          totalProducts - (outOfStockProducts.length + lowStockProducts.length);
+
         setStats({
           outOfStockCount: outOfStockProducts.length,
           lowStockCount: lowStockProducts.length,
           normalStockCount: normalStockCount,
           totalProducts: totalProducts,
-          outOfStockPercentage: totalProducts > 0 ? 
-            ((outOfStockProducts.length / totalProducts) * 100).toFixed(1) : 0
+          outOfStockPercentage:
+            totalProducts > 0
+              ? ((outOfStockProducts.length / totalProducts) * 100).toFixed(1)
+              : 0,
         });
-        
       } catch (apiError) {
         console.log("⚠️ API spécifique échouée, utilisation alternative...");
-        
+
         // Récupérer tous les produits
         const allProductsRes = await productAPI.getAll();
         const products = allProductsRes.data.data || [];
         setAllProducts(products);
-        
+
         console.log(`📦 Total produits récupérés: ${products.length}`);
-        
+
         // Même calcul que dans Products.jsx
-        const outOfStockProducts = products.filter(p => {
+        const outOfStockProducts = products.filter((p) => {
           const stock = Number(p.stock);
           return isNaN(stock) || stock === 0;
         });
-        
-        const lowStockProducts = products.filter(p => {
+
+        const lowStockProducts = products.filter((p) => {
           const stock = Number(p.stock);
           return stock > 0 && stock < 5;
         });
-        
+
         console.log(`🔴 Produits en rupture: ${outOfStockProducts.length}`);
         console.log(`🟡 Produits à faible stock: ${lowStockProducts.length}`);
-        
+
         // Afficher les détails
-        outOfStockProducts.forEach(p => {
+        outOfStockProducts.forEach((p) => {
           console.log(`  - ${p.name} (ID: ${p._id}, Stock: ${p.stock})`);
         });
-        
+
         setOutOfStock(outOfStockProducts);
         setLowStock(lowStockProducts);
-        
+
         // Calculer les stats localement
         const totalProducts = products.length;
-        const normalStockCount = products.filter(p => {
+        const normalStockCount = products.filter((p) => {
           const stock = Number(p.stock);
           return stock >= 5;
         }).length;
-        
+
         setStats({
           outOfStockCount: outOfStockProducts.length,
           lowStockCount: lowStockProducts.length,
           normalStockCount: normalStockCount,
           totalProducts: totalProducts,
-          outOfStockPercentage: totalProducts > 0 ? 
-            ((outOfStockProducts.length / totalProducts) * 100).toFixed(1) : 0
+          outOfStockPercentage:
+            totalProducts > 0
+              ? ((outOfStockProducts.length / totalProducts) * 100).toFixed(1)
+              : 0,
         });
       }
-      
     } catch (error) {
       console.error("❌ Erreur lors du chargement des alertes:", error);
     } finally {
@@ -148,7 +160,9 @@ export default function StockAlertsPage() {
       const res = await productAPI.getById(product._id);
       const p = res.data.data;
       setStockModalProduct(p);
-      setStockValue(p.stock !== undefined && p.stock !== null ? String(p.stock) : "");
+      setStockValue(
+        p.stock !== undefined && p.stock !== null ? String(p.stock) : "",
+      );
       setShowStockModal(true);
     } catch (error) {
       console.error("Erreur chargement produit:", error);
@@ -156,7 +170,7 @@ export default function StockAlertsPage() {
     } finally {
       setStockSaving(false);
     }
-  }; 
+  };
 
   const handleViewProduct = (product) => {
     navigate(`/products/${product._id}`);
@@ -165,26 +179,29 @@ export default function StockAlertsPage() {
   const handleDeleteProduct = (productId) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
       console.log("Suppression du produit:", productId);
-      productAPI.delete(productId).then(() => {
-        refreshAlerts();
-      }).catch(error => {
-        console.error("Erreur lors de la suppression:", error);
-      });
+      productAPI
+        .delete(productId)
+        .then(() => {
+          refreshAlerts();
+        })
+        .catch((error) => {
+          console.error("Erreur lors de la suppression:", error);
+        });
     }
   };
 
   const handleSort = (key) => {
-    let direction = 'asc';
-    if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
     }
     setSortConfig({ key, direction });
   };
 
   const handleSelectProduct = (productId) => {
-    setSelectedProducts(prev => {
+    setSelectedProducts((prev) => {
       if (prev.includes(productId)) {
-        return prev.filter(id => id !== productId);
+        return prev.filter((id) => id !== productId);
       } else {
         return [...prev, productId];
       }
@@ -192,11 +209,11 @@ export default function StockAlertsPage() {
   };
 
   const handleSelectAll = () => {
-    const currentProducts = activeTab === 'outOfStock' ? outOfStock : lowStock;
+    const currentProducts = activeTab === "outOfStock" ? outOfStock : lowStock;
     if (selectedProducts.length === currentProducts.length) {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(currentProducts.map(p => p._id));
+      setSelectedProducts(currentProducts.map((p) => p._id));
     }
   };
 
@@ -205,27 +222,27 @@ export default function StockAlertsPage() {
       alert("Sélectionnez au moins un produit");
       return;
     }
-    navigate(`/products/bulk-edit?ids=${selectedProducts.join(',')}`);
+    navigate(`/products/bulk-edit?ids=${selectedProducts.join(",")}`);
   };
 
   // Fonction pour trier les produits
   const getSortedProducts = (products) => {
     if (!sortConfig.key) return products;
-    
+
     return [...products].sort((a, b) => {
       let aValue = a[sortConfig.key];
       let bValue = b[sortConfig.key];
-      
-      if (sortConfig.key === 'category') {
-        aValue = a.category?.name || '';
-        bValue = b.category?.name || '';
+
+      if (sortConfig.key === "category") {
+        aValue = a.category?.name || "";
+        bValue = b.category?.name || "";
       }
-      
+
       if (aValue < bValue) {
-        return sortConfig.direction === 'asc' ? -1 : 1;
+        return sortConfig.direction === "asc" ? -1 : 1;
       }
       if (aValue > bValue) {
-        return sortConfig.direction === 'asc' ? 1 : -1;
+        return sortConfig.direction === "asc" ? 1 : -1;
       }
       return 0;
     });
@@ -255,7 +272,7 @@ export default function StockAlertsPage() {
         </div>
         <div className="d-flex gap-2">
           {selectedProducts.length > 0 && (
-            <button 
+            <button
               className="btn btn-primary d-flex align-items-center"
               onClick={handleBulkRestock}
             >
@@ -263,7 +280,7 @@ export default function StockAlertsPage() {
               Réapprovisionner ({selectedProducts.length})
             </button>
           )}
-          <button 
+          <button
             className="btn btn-outline-primary d-flex align-items-center"
             onClick={refreshAlerts}
             disabled={loading}
@@ -294,13 +311,13 @@ export default function StockAlertsPage() {
               </div>
               <div className="mt-2">
                 <small className="text-muted">
-                  {stats?.outOfStockPercentage || '0'}% du stock total
+                  {stats?.outOfStockPercentage || "0"}% du stock total
                 </small>
               </div>
             </div>
           </div>
         </div>
-        
+
         <div className="col-xl-3 col-md-6 mb-3">
           <div className="card border-warning border-start-3 border-0 shadow-sm h-100">
             <div className="card-body">
@@ -318,14 +335,12 @@ export default function StockAlertsPage() {
                 </div>
               </div>
               <div className="mt-2">
-                <small className="text-muted">
-                  Moins de 5 unités
-                </small>
+                <small className="text-muted">Moins de 5 unités</small>
               </div>
             </div>
           </div>
         </div>
-        
+
         <div className="col-xl-3 col-md-6 mb-3">
           <div className="card border-success border-start-3 border-0 shadow-sm h-100">
             <div className="card-body">
@@ -343,14 +358,12 @@ export default function StockAlertsPage() {
                 </div>
               </div>
               <div className="mt-2">
-                <small className="text-muted">
-                  5 unités ou plus
-                </small>
+                <small className="text-muted">5 unités ou plus</small>
               </div>
             </div>
           </div>
         </div>
-        
+
         <div className="col-xl-3 col-md-6 mb-3">
           <div className="card border-info border-start-3 border-0 shadow-sm h-100">
             <div className="card-body">
@@ -368,9 +381,7 @@ export default function StockAlertsPage() {
                 </div>
               </div>
               <div className="mt-2">
-                <small className="text-muted">
-                  Tous statuts confondus
-                </small>
+                <small className="text-muted">Tous statuts confondus</small>
               </div>
             </div>
           </div>
@@ -382,10 +393,10 @@ export default function StockAlertsPage() {
         <div className="col">
           <ul className="nav nav-tabs">
             <li className="nav-item">
-              <button 
-                className={`nav-link ${activeTab === 'outOfStock' ? 'active text-danger' : ''}`}
+              <button
+                className={`nav-link ${activeTab === "outOfStock" ? "active text-danger" : ""}`}
                 onClick={() => {
-                  setActiveTab('outOfStock');
+                  setActiveTab("outOfStock");
                   setSelectedProducts([]);
                 }}
               >
@@ -397,18 +408,16 @@ export default function StockAlertsPage() {
               </button>
             </li>
             <li className="nav-item">
-              <button 
-                className={`nav-link ${activeTab === 'lowStock' ? 'active text-warning' : ''}`}
+              <button
+                className={`nav-link ${activeTab === "lowStock" ? "active text-warning" : ""}`}
                 onClick={() => {
-                  setActiveTab('lowStock');
+                  setActiveTab("lowStock");
                   setSelectedProducts([]);
                 }}
               >
                 <FaExclamationTriangle className="me-2" />
                 Stock faible
-                <span className="badge bg-warning ms-2">
-                  {lowStock.length}
-                </span>
+                <span className="badge bg-warning ms-2">{lowStock.length}</span>
               </button>
             </li>
           </ul>
@@ -418,18 +427,20 @@ export default function StockAlertsPage() {
       {/* Contenu des onglets */}
       <div className="row">
         <div className="col">
-          {activeTab === 'outOfStock' ? (
+          {activeTab === "outOfStock" ? (
             <div className="card border-danger shadow-sm">
               <div className="card-header bg-danger text-white d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
                   <FaExclamationCircle className="me-2" />
-                  <h6 className="mb-0">Produits en rupture de stock (stock = 0)</h6>
+                  <h6 className="mb-0">
+                    Produits en rupture de stock (stock = 0)
+                  </h6>
                 </div>
                 <div className="d-flex align-items-center">
                   <span className="me-3">
                     {selectedProducts.length} sélectionné(s)
                   </span>
-                  <button 
+                  <button
                     className="btn btn-sm btn-light"
                     onClick={refreshAlerts}
                     disabled={loading}
@@ -439,19 +450,23 @@ export default function StockAlertsPage() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="card-body p-0">
                 {loading ? (
                   <div className="text-center p-5">
                     <div className="spinner-border text-danger" role="status">
                       <span className="visually-hidden">Chargement...</span>
                     </div>
-                    <p className="mt-3 text-muted">Chargement des produits en rupture...</p>
+                    <p className="mt-3 text-muted">
+                      Chargement des produits en rupture...
+                    </p>
                   </div>
                 ) : outOfStock.length === 0 ? (
                   <div className="text-center p-5 text-muted">
                     <FaCheckCircle size={48} className="mb-3 text-success" />
-                    <h5 className="text-success">Aucun produit en rupture de stock</h5>
+                    <h5 className="text-success">
+                      Aucun produit en rupture de stock
+                    </h5>
                     <p className="mb-0">Tout est sous contrôle !</p>
                   </div>
                 ) : (
@@ -474,13 +489,15 @@ export default function StockAlertsPage() {
               <div className="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
                   <FaExclamationTriangle className="me-2" />
-                  <h6 className="mb-0">Produits à faible stock (stock &lt; 5)</h6>
+                  <h6 className="mb-0">
+                    Produits à faible stock (stock &lt; 5)
+                  </h6>
                 </div>
                 <div className="d-flex align-items-center">
                   <span className="me-3">
                     {selectedProducts.length} sélectionné(s)
                   </span>
-                  <button 
+                  <button
                     className="btn btn-sm btn-light"
                     onClick={refreshAlerts}
                     disabled={loading}
@@ -490,19 +507,23 @@ export default function StockAlertsPage() {
                   </button>
                 </div>
               </div>
-              
+
               <div className="card-body p-0">
                 {loading ? (
                   <div className="text-center p-5">
                     <div className="spinner-border text-warning" role="status">
                       <span className="visually-hidden">Chargement...</span>
                     </div>
-                    <p className="mt-3 text-muted">Chargement des produits à faible stock...</p>
+                    <p className="mt-3 text-muted">
+                      Chargement des produits à faible stock...
+                    </p>
                   </div>
                 ) : lowStock.length === 0 ? (
                   <div className="text-center p-5 text-muted">
                     <FaCheckCircle size={48} className="mb-3 text-success" />
-                    <h5 className="text-success">Aucun produit à faible stock</h5>
+                    <h5 className="text-success">
+                      Aucun produit à faible stock
+                    </h5>
                     <p className="mb-0">Tous les stocks sont suffisants !</p>
                   </div>
                 ) : (
@@ -531,17 +552,18 @@ export default function StockAlertsPage() {
             <div className="card border-primary shadow-sm">
               <div className="card-body">
                 <h6 className="mb-3">
-                  Actions groupées ({selectedProducts.length} produits sélectionnés)
+                  Actions groupées ({selectedProducts.length} produits
+                  sélectionnés)
                 </h6>
                 <div className="d-flex gap-2">
-                  <button 
+                  <button
                     className="btn btn-primary"
                     onClick={handleBulkRestock}
                   >
                     <FaEdit className="me-2" />
                     Réapprovisionner en masse
                   </button>
-                  <button 
+                  <button
                     className="btn btn-outline-secondary"
                     onClick={() => setSelectedProducts([])}
                   >
@@ -561,37 +583,77 @@ export default function StockAlertsPage() {
             <div className="modal-dialog modal-dialog-centered" role="document">
               <div className="modal-content">
                 <div className="modal-header">
-                  <h5 className="modal-title">Modifier le stock{stockModalProduct && ` - ${stockModalProduct.name}`}</h5>
-                  <button type="button" className="btn-close" aria-label="Close" onClick={() => setShowStockModal(false)}></button>
+                  <h5 className="modal-title">
+                    Modifier le stock
+                    {stockModalProduct && ` - ${stockModalProduct.name}`}
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    aria-label="Close"
+                    onClick={() => setShowStockModal(false)}
+                  ></button>
                 </div>
-                <form onSubmit={async (e) => {
-                  e.preventDefault();
-                  if (stockValue === "" || isNaN(Number(stockValue)) || Number(stockValue) < 0 || !Number.isInteger(Number(stockValue))) {
-                    window.alert("Le stock doit être un entier >= 0");
-                    return;
-                  }
-                  try {
-                    setStockSaving(true);
-                    await productAPI.update(stockModalProduct._id, { stock: Number(stockValue) });
-                    window.alert("Stock mis à jour.");
-                    setShowStockModal(false);
-                    fetchAlerts();
-                  } catch (err) {
-                    console.error(err);
-                    window.alert("Erreur lors de la mise à jour du stock");
-                  } finally {
-                    setStockSaving(false);
-                  }
-                }}>
+                <form
+                  onSubmit={async (e) => {
+                    e.preventDefault();
+                    if (
+                      stockValue === "" ||
+                      isNaN(Number(stockValue)) ||
+                      Number(stockValue) < 0 ||
+                      !Number.isInteger(Number(stockValue))
+                    ) {
+                      window.alert("Le stock doit être un entier >= 0");
+                      return;
+                    }
+                    try {
+                      setStockSaving(true);
+                      await productAPI.update(stockModalProduct._id, {
+                        stock: Number(stockValue),
+                      });
+                      window.alert("Stock mis à jour.");
+                      setShowStockModal(false);
+                      fetchAlerts();
+                    } catch (err) {
+                      console.error(err);
+                      window.alert("Erreur lors de la mise à jour du stock");
+                    } finally {
+                      setStockSaving(false);
+                    }
+                  }}
+                >
                   <div className="modal-body">
                     <div className="mb-3">
-                      <label htmlFor="stockInput" className="form-label">Stock</label>
-                      <input id="stockInput" className="form-control" type="number" min="0" step="1" value={stockValue} onChange={(e) => setStockValue(e.target.value)} />
+                      <label htmlFor="stockInput" className="form-label">
+                        Stock
+                      </label>
+                      <input
+                        id="stockInput"
+                        className="form-control"
+                        type="number"
+                        min="0"
+                        step="1"
+                        value={stockValue}
+                        onChange={(e) => setStockValue(e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="modal-footer">
-                    <button type="button" className="btn btn-secondary" onClick={() => setShowStockModal(false)} disabled={stockSaving}>Annuler</button>
-                    <button type="submit" className="btn btn-primary" disabled={stockSaving}>{stockSaving ? 'En cours...' : 'Enregistrer'}</button>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={() => setShowStockModal(false)}
+                      disabled={stockSaving}
+                    >
+                      Annuler
+                    </button>
+                    <button
+                      type="submit"
+                      className="btn btn-primary"
+                      disabled={stockSaving}
+                    >
+                      {stockSaving ? "En cours..." : "Enregistrer"}
+                    </button>
                   </div>
                 </form>
               </div>
@@ -600,7 +662,6 @@ export default function StockAlertsPage() {
           <div className="modal-backdrop show"></div>
         </>
       )}
-
     </div>
   );
 }
