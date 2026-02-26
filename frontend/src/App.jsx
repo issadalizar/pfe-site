@@ -15,6 +15,7 @@ import AdminMessages from "./pages/Admin/AdminMessages";
 import ContactPage from "./pages/ContactPage";
 import SectorPage from "./pages/SectorPage";
 import Login from "./pages/Login";
+import CartPage from "./pages/CartPage";
 import CategoryProductsView from "./components/Admin/CategoryProductsViewAdmin";
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/sector/:sectorId" element={<SectorPage />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/cart" element={<CartPage />} />
 
       {/* ROUTES ADMIN - AVEC SIDEBAR */}
       <Route

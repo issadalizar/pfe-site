@@ -1,10 +1,10 @@
 /* Glassmorphism effect for cards */
 .glass-card {
-  background: rgba(255,255,255,0.75) !important;
+  background: rgba(255, 255, 255, 0.75) !important;
   backdrop-filter: blur(8px) !important;
   border: 1.5px solid #e7f0ff !important;
   box-shadow: 0 10px 40px 0 #4361ee22 !important;
-  transition: all 0.3s cubic-bezier(.4,2,.3,1) !important;
+  transition: all 0.3s cubic-bezier(.4, 2, .3, 1) !important;
 }
 
 /* Animated gradient text */
@@ -22,6 +22,7 @@
   0% {
     background-position: 0% 50%;
   }
+
   100% {
     background-position: 200% 50%;
   }
@@ -37,6 +38,7 @@
   left: 0;
   z-index: 1;
 }
+
 /* Home Page Styles */
 
 .home-page {
@@ -95,6 +97,7 @@
     height: 300px;
     padding: 18px;
   }
+
   .hero-media .hero-image {
     border-radius: 8px;
   }
@@ -104,10 +107,12 @@
 .hero-image-placeholder .hero-card-description {
   padding: 18px 24px;
 }
+
 .hero-image-placeholder .hero-card-description .lead {
   color: #6c757d;
   font-size: 1.05rem;
 }
+
 .hero-image-placeholder .hero-card-description .small {
   color: #98a2ad;
 }
@@ -118,7 +123,7 @@
 @media (min-width: 992px) {
   .hero-section {
     position: relative;
-    background-image: linear-gradient(135deg, rgba(245,247,250,0.95) 0%, rgba(233,236,239,0.95) 100%);
+    background-image: linear-gradient(135deg, rgba(245, 247, 250, 0.95) 0%, rgba(233, 236, 239, 0.95) 100%);
   }
 
   /* show the hero image inside the white card on large screens
@@ -129,7 +134,8 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    padding: 0; /* let image occupy full card area visually */
+    padding: 0;
+    /* let image occupy full card area visually */
     height: 420px;
     display: flex;
     align-items: center;
@@ -138,7 +144,7 @@
 
   /* keep the descriptive text readable on top of the image */
   .hero-image-placeholder .hero-card-description {
-    background: rgba(255,255,255,0.92);
+    background: rgba(255, 255, 255, 0.92);
     padding: 28px 36px;
     border-radius: 10px;
     box-shadow: none;
@@ -158,15 +164,19 @@
   .hero-section {
     background-image: none;
   }
+
   .hero-image-placeholder .hero-media {
     display: flex;
   }
 }
 
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-20px);
   }
@@ -268,23 +278,27 @@
   border: none;
   color: #fff;
 }
+
 .btn-primary:hover {
   background: linear-gradient(120deg, #4361ee, #3a0ca3 80%);
   border: none;
   color: #fff;
   transform: translateY(-2px);
 }
+
 .btn-outline-primary {
   color: #4361ee;
   border-color: #4361ee;
   background: transparent;
 }
+
 .btn-outline-primary:hover {
   background: linear-gradient(120deg, #3a8dde, #4361ee 60%, #3a0ca3);
   color: #fff;
   border: none;
   transform: translateY(-2px);
 }
+
 .navbar {
   z-index: 1000;
   transition: all 0.3s ease;
@@ -334,9 +348,11 @@ footer {
   background: linear-gradient(120deg, #3a0ca3 0%, #4361ee 100%);
   color: #e0e7ff;
 }
+
 footer a {
   color: #e0e7ff;
 }
+
 footer a:hover {
   color: #b3cfff !important;
 }
@@ -375,6 +391,7 @@ footer a:hover {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -404,4 +421,17 @@ section:nth-child(even) {
 /* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
+}
+
+/* Cart notification animation */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }

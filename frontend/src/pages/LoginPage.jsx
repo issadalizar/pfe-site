@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { 
-  FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock, 
+import { useNavigate, Link, useSearchParams } from "react-router-dom";
+import {
+  FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock,
   FaUserShield, FaArrowLeft, FaStore, FaEye, FaEyeSlash,
   FaGoogle, FaFacebook, FaLinkedin, FaCheckCircle
 } from "react-icons/fa";
@@ -11,16 +11,18 @@ import Login from "./Login";
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect') || '/home';
+
   // États pour la gestion des vues
   const [view, setView] = useState('login'); // 'login', 'signup', 'admin'
-  
+
   // États pour les formulaires
   const [loginData, setLoginData] = useState({
     email: '',
     password: ''
   });
-  
+
   const [signupData, setSignupData] = useState({
     nom: '',
     email: '',
@@ -29,12 +31,12 @@ const LoginPage = () => {
     password: '',
     confirmPassword: ''
   });
-  
+
   const [adminData, setAdminData] = useState({
     email: 'admin@univertechno.tn',
     password: 'admin123'
   });
-  
+
   // États pour la validation
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
@@ -128,13 +130,14 @@ const LoginPage = () => {
       setErrors(newErrors);
       return;
     }
-    
+
     setLoading(true);
     // Simulation de connexion
     setTimeout(() => {
       setLoading(false);
-      // Redirection vers l'espace client
-      navigate("/home");
+      localStorage.setItem('isLoggedIn', 'true');
+      // Redirection vers la page précédente ou l'accueil
+      navigate(redirectTo);
     }, 1500);
   };
 
@@ -145,11 +148,12 @@ const LoginPage = () => {
       setErrors(newErrors);
       return;
     }
-    
+
     setLoading(true);
     // Simulation d'inscription
     setTimeout(() => {
       setLoading(false);
+      localStorage.setItem('isLoggedIn', 'true');
       setSignupSuccess(true);
       setTimeout(() => {
         setView('login');
@@ -165,7 +169,7 @@ const LoginPage = () => {
       setErrors(newErrors);
       return;
     }
-    
+
     setLoading(true);
     // Vérification des identifiants admin
     setTimeout(() => {
@@ -205,14 +209,14 @@ const LoginPage = () => {
             {/* Logo et retour */}
             <div className="text-center mb-4">
               <div className="d-inline-flex align-items-center gap-3 mb-4">
-                <div 
+                <div
                   className="d-flex align-items-center justify-content-center rounded-3 bg-white bg-opacity-10 p-3"
                   style={{ cursor: 'pointer' }}
                   onClick={handleBackToHome}
                 >
                   <FaArrowLeft style={{ color: 'white', fontSize: '20px' }} />
                 </div>
-                <div 
+                <div
                   className="d-flex align-items-center justify-content-center"
                   style={{
                     width: '60px',
@@ -257,7 +261,7 @@ const LoginPage = () => {
               boxShadow: '0 30px 60px rgba(0,0,0,0.3)'
             }}>
               <div className="card-body p-5">
-                
+
                 {/* FORMULAIRE DE CONNEXION CLIENT */}
                 {view === 'login' && (
                   <form onSubmit={handleLoginSubmit}>
@@ -276,9 +280,8 @@ const LoginPage = () => {
                         <input
                           type="email"
                           name="email"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.email ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.email ? 'is-invalid' : ''
+                            }`}
                           placeholder="votre@email.com"
                           value={loginData.email}
                           onChange={handleLoginChange}
@@ -308,9 +311,8 @@ const LoginPage = () => {
                         <input
                           type={showPassword ? "text" : "password"}
                           name="password"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.password ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.password ? 'is-invalid' : ''
+                            }`}
                           placeholder="••••••••"
                           value={loginData.password}
                           onChange={handleLoginChange}
@@ -419,9 +421,8 @@ const LoginPage = () => {
                         <input
                           type="text"
                           name="nom"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.nom ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.nom ? 'is-invalid' : ''
+                            }`}
                           placeholder="Jean Dupont"
                           value={signupData.nom}
                           onChange={handleSignupChange}
@@ -448,9 +449,8 @@ const LoginPage = () => {
                         <input
                           type="email"
                           name="email"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.email ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.email ? 'is-invalid' : ''
+                            }`}
                           placeholder="jean@email.com"
                           value={signupData.email}
                           onChange={handleSignupChange}
@@ -477,9 +477,8 @@ const LoginPage = () => {
                         <input
                           type="tel"
                           name="telephone"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.telephone ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.telephone ? 'is-invalid' : ''
+                            }`}
                           placeholder="71 123 456"
                           value={signupData.telephone}
                           onChange={handleSignupChange}
@@ -506,9 +505,8 @@ const LoginPage = () => {
                         <input
                           type="text"
                           name="adresse"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.adresse ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.adresse ? 'is-invalid' : ''
+                            }`}
                           placeholder="123 Rue de l'Innovation, Tunis"
                           value={signupData.adresse}
                           onChange={handleSignupChange}
@@ -535,9 +533,8 @@ const LoginPage = () => {
                         <input
                           type={showSignupPassword ? "text" : "password"}
                           name="password"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.password ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.password ? 'is-invalid' : ''
+                            }`}
                           placeholder="••••••••"
                           value={signupData.password}
                           onChange={handleSignupChange}
@@ -572,9 +569,8 @@ const LoginPage = () => {
                         <input
                           type={showConfirmPassword ? "text" : "password"}
                           name="confirmPassword"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.confirmPassword ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.confirmPassword ? 'is-invalid' : ''
+                            }`}
                           placeholder="••••••••"
                           value={signupData.confirmPassword}
                           onChange={handleSignupChange}
@@ -666,9 +662,8 @@ const LoginPage = () => {
                         <input
                           type="email"
                           name="email"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.email ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.email ? 'is-invalid' : ''
+                            }`}
                           placeholder="admin@univertechno.tn"
                           value={adminData.email}
                           onChange={handleAdminChange}
@@ -695,9 +690,8 @@ const LoginPage = () => {
                         <input
                           type={showAdminPassword ? "text" : "password"}
                           name="password"
-                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${
-                            errors.password ? 'is-invalid' : ''
-                          }`}
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.password ? 'is-invalid' : ''
+                            }`}
                           placeholder="••••••••"
                           value={adminData.password}
                           onChange={handleAdminChange}

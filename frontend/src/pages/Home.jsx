@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { 
-  FaShoppingCart, FaUser, FaSearch, FaArrowRight, FaMapMarkerAlt, 
+import {
+  FaShoppingCart, FaUser, FaSearch, FaArrowRight, FaMapMarkerAlt,
   FaPhone, FaEnvelope, FaLeaf, FaGem, FaHeart, FaTruck,
   FaStore, FaBars, FaCogs, FaCar, FaFlask, FaTimes,
   FaChevronRight, FaStar, FaStarHalf, FaRegStar, FaRobot,
@@ -18,9 +18,11 @@ import ContactForm from "../components/ContactForm";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/home.css";
 import { cncProductDetails } from "./productData";
+import { useCart } from "../context/CartContext";
 
 const Home = () => {
   const navigate = useNavigate();
+  const { addToCart, getCartCount, notification } = useCart();
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -45,7 +47,7 @@ const Home = () => {
       about: "À propos",
       contact: "Contact",
       searchPlaceholder: "Rechercher un produit...",
-      
+
       // Hero Section
       innovationBadge: "INNOVATION TECHNOLOGIQUE",
       heroTitle1: "Façonnez l'avenir avec",
@@ -54,7 +56,7 @@ const Home = () => {
       heroDescription: "Équipements de pointe pour l'éducation et l'industrie. Solutions sur-mesure, support expert et innovation continue.",
       contactUs: "Contactez-nous",
       location: "Localisation",
-      
+
       // Expertise Section
       expertiseBadge: "NOTRE EXPERTISE",
       expertiseTitle: "Solutions par secteur",
@@ -62,7 +64,7 @@ const Home = () => {
       projects: "projets",
       clients: "clients",
       exploreSector: "Explorer le secteur",
-      
+
       // Products Section
       catalogBadge: "CATALOGUE",
       catalogTitle: "Équipements professionnels",
@@ -76,29 +78,29 @@ const Home = () => {
       sortNewest: "Nouveautés",
       new: "NOUVEAU",
       noProducts: "Aucun produit trouvé",
-      
+
       // Testimonials Section
       testimonialsBadge: "TÉMOIGNAGES",
       testimonialsTitle: "Ce qu'ils disent de nous",
       testimonialsDescription: "La confiance de nos partenaires, notre plus grande fierté",
-      
+
       // Newsletter Section
       newsletterTitle: "Restez informé des dernières innovations",
       newsletterDescription: "Recevez nos actualités, offres exclusives et nouveautés produits",
       newsletterPlaceholder: "Votre adresse email",
       newsletterButton: "S'inscrire",
-      
+
       // Footer
       footerDescription: "Leader dans la fourniture d'équipements technologiques pour l'éducation et l'industrie.",
       quickLinks: "Liens rapides",
       contact: "Contact",
       allRightsReserved: "Tous droits réservés.",
-      
+
       // Sector names
       cncEducation: "CNC for Education",
       automotive: "Automotive",
       electronicsLab: "Electronics Lab",
-      
+
       // Category names
       cncTurning: "CNC Turing Machine",
       cncMilling: "CNC Milling Machine",
@@ -107,10 +109,10 @@ const Home = () => {
       multiplex: "RÉSEAUX MULTIPLEXÉS",
       accessories: "Accessoires",
       education: "EDUCATION EQUIPMENT",
-      
+
       // Product related
       ttc: "TTC",
-      
+
       // Messages
       newsletterSuccess: "Merci de votre inscription à notre newsletter !",
     },
@@ -122,7 +124,7 @@ const Home = () => {
       about: "About",
       contact: "Contact",
       searchPlaceholder: "Search for a product...",
-      
+
       // Hero Section
       innovationBadge: "TECHNOLOGICAL INNOVATION",
       heroTitle1: "Shape the future with",
@@ -131,7 +133,7 @@ const Home = () => {
       heroDescription: "Cutting-edge equipment for education and industry. Custom solutions, expert support, and continuous innovation.",
       contactUs: "Contact Us",
       location: "Location",
-      
+
       // Expertise Section
       expertiseBadge: "OUR EXPERTISE",
       expertiseTitle: "Solutions by sector",
@@ -139,7 +141,7 @@ const Home = () => {
       projects: "projects",
       clients: "clients",
       exploreSector: "Explore sector",
-      
+
       // Products Section
       catalogBadge: "CATALOG",
       catalogTitle: "Professional equipment",
@@ -153,29 +155,29 @@ const Home = () => {
       sortNewest: "Newest",
       new: "NEW",
       noProducts: "No products found",
-      
+
       // Testimonials Section
       testimonialsBadge: "TESTIMONIALS",
       testimonialsTitle: "What they say about us",
       testimonialsDescription: "The trust of our partners, our greatest pride",
-      
+
       // Newsletter Section
       newsletterTitle: "Stay informed about the latest innovations",
       newsletterDescription: "Receive our news, exclusive offers, and new products",
       newsletterPlaceholder: "Your email address",
       newsletterButton: "Subscribe",
-      
+
       // Footer
       footerDescription: "Leader in providing technological equipment for education and industry.",
       quickLinks: "Quick links",
       contact: "Contact",
       allRightsReserved: "All rights reserved.",
-      
+
       // Sector names
       cncEducation: "CNC for Education",
       automotive: "Automotive",
       electronicsLab: "Electronics Lab",
-      
+
       // Category names
       cncTurning: "CNC Turing Machine",
       cncMilling: "CNC Milling Machine",
@@ -184,10 +186,10 @@ const Home = () => {
       multiplex: "MULTIPLEXED NETWORKS",
       accessories: "Accessories",
       education: "EDUCATION EQUIPMENT",
-      
+
       // Product related
       ttc: "incl. tax",
-      
+
       // Messages
       newsletterSuccess: "Thank you for subscribing to our newsletter!",
     }
@@ -302,13 +304,13 @@ const Home = () => {
     fetchCategories();
     loadAllProducts();
     loadAllCategoriesForDebug();
-    
+
     // Scroll to top button visibility
     const handleScroll = () => {
       setShowScrollTop(window.scrollY > 500);
     };
     window.addEventListener('scroll', handleScroll);
-    
+
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -350,7 +352,7 @@ const Home = () => {
   const loadAllProducts = () => {
     const products = Object.values(cncProductDetails);
     setAllProducts(products);
-    
+
     const featured = [
       cncProductDetails['De2-Ultra Mini CNC Turning Center'],
       cncProductDetails['Fa2-Ultra Mini CNC Milling Center'],
@@ -359,7 +361,7 @@ const Home = () => {
       cncProductDetails['DT-M002 – Mesure des Positions'],
       cncProductDetails['PTL908-2H – High Voltage Safety Test Lead 10kV']
     ].filter(product => product !== null && product !== undefined);
-    
+
     setFeaturedProducts(featured.length > 0 ? featured : products.slice(0, 6));
   };
 
@@ -412,8 +414,8 @@ const Home = () => {
     let filtered = [...allProducts];
 
     if (selectedCategory && selectedCategory !== "All products") {
-      filtered = filtered.filter(p => 
-        p.mainCategory === selectedCategory || 
+      filtered = filtered.filter(p =>
+        p.mainCategory === selectedCategory ||
         p.category === selectedCategory ||
         p.category?.includes(selectedCategory) ||
         p.mainCategory?.includes(selectedCategory)
@@ -421,7 +423,7 @@ const Home = () => {
     }
 
     if (searchQuery) {
-      filtered = filtered.filter(p => 
+      filtered = filtered.filter(p =>
         p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.category?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -432,8 +434,8 @@ const Home = () => {
   };
 
   const getCategoryProductCount = (cat) => {
-    return allProducts.filter(p => 
-      p.mainCategory === cat || 
+    return allProducts.filter(p =>
+      p.mainCategory === cat ||
       p.category === cat ||
       p.category?.includes(cat) ||
       p.mainCategory?.includes(cat)
@@ -445,7 +447,7 @@ const Home = () => {
   const renderStars = (rating = 4.5) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
-    
+
     return (
       <div className="d-flex align-items-center gap-1">
         {[...Array(5)].map((_, i) => {
@@ -485,6 +487,23 @@ const Home = () => {
 
   return (
     <div className="home-page">
+      {/* Cart notification toast */}
+      {notification && (
+        <div style={{
+          position: 'fixed', top: '90px', right: '30px', zIndex: 9999,
+          animation: 'slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+        }}>
+          <div className="alert" style={{
+            background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+            color: 'white', border: 'none', borderRadius: '16px',
+            padding: '14px 24px', boxShadow: '0 10px 40px rgba(67, 97, 238, 0.4)',
+            fontWeight: 500, display: 'flex', alignItems: 'center', gap: '10px'
+          }}>
+            <FaCheckCircle size={16} />
+            {notification}
+          </div>
+        </div>
+      )}
       {/* Scroll to top button */}
       {showScrollTop && (
         <button
@@ -508,22 +527,22 @@ const Home = () => {
       )}
 
       {/* Header */}
-      <header className="py-3 sticky-top" style={{ 
+      <header className="py-3 sticky-top" style={{
         backgroundColor: 'rgba(255,255,255,0.95)',
         backdropFilter: 'blur(10px)',
         boxShadow: '0 4px 30px rgba(0,0,0,0.03)',
         borderBottom: '1px solid rgba(67, 97, 238, 0.1)',
-        zIndex: 1030 
+        zIndex: 1030
       }}>
         <div className="container">
           <div className="d-flex align-items-center justify-content-between">
             {/* Logo */}
             <div className="d-flex align-items-center">
-              <div 
+              <div
                 className="me-3 d-flex align-items-center justify-content-center"
-                style={{ 
-                  width: '48px', 
-                  height: '48px', 
+                style={{
+                  width: '48px',
+                  height: '48px',
                   background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                   borderRadius: '14px',
                   color: 'white',
@@ -543,8 +562,8 @@ const Home = () => {
                 <FaStore />
               </div>
               <div>
-                <h1 className="fw-bold mb-0" style={{ 
-                  fontSize: '1.6rem', 
+                <h1 className="fw-bold mb-0" style={{
+                  fontSize: '1.6rem',
                   background: 'linear-gradient(145deg, #1e293b, #0f172a)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
@@ -568,7 +587,7 @@ const Home = () => {
                 ].map((item, index) => (
                   <li className="nav-item" key={index}>
                     {item.href.startsWith('/') ? (
-                      <Link 
+                      <Link
                         className="nav-link fw-medium px-4 py-2 rounded-pill"
                         to={item.href}
                         style={{ color: '#334155', transition: 'all 0.3s ease' }}
@@ -584,7 +603,7 @@ const Home = () => {
                         {item.name}
                       </Link>
                     ) : (
-                      <a 
+                      <a
                         className="nav-link fw-medium px-4 py-2 rounded-pill"
                         href={item.href}
                         style={{ color: '#334155', transition: 'all 0.3s ease' }}
@@ -632,14 +651,14 @@ const Home = () => {
 
               {/* Recherche */}
               <div className="position-relative d-none d-md-block">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="form-control rounded-pill border-0 bg-light"
                   placeholder={t.searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{ 
-                    width: "240px", 
+                  style={{
+                    width: "240px",
                     padding: '0.6rem 1rem 0.6rem 2.8rem',
                     fontSize: '0.95rem',
                     backgroundColor: '#f8fafc',
@@ -657,10 +676,10 @@ const Home = () => {
                     e.target.style.boxShadow = 'none';
                   }}
                 />
-                <FaSearch className="position-absolute" style={{ 
-                  left: "18px", 
-                  top: "12px", 
-                  color: "#94a3b8", 
+                <FaSearch className="position-absolute" style={{
+                  left: "18px",
+                  top: "12px",
+                  color: "#94a3b8",
                   fontSize: '16px',
                   pointerEvents: 'none'
                 }} />
@@ -668,12 +687,12 @@ const Home = () => {
 
               {/* Icônes */}
               <div className="d-flex align-items-center gap-2">
-                <div 
+                <div
                   className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{ 
-                    backgroundColor: '#f8fafc', 
-                    width: '44px', 
-                    height: '44px', 
+                  style={{
+                    backgroundColor: '#f8fafc',
+                    width: '44px',
+                    height: '44px',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
                     border: '1px solid transparent'
@@ -694,12 +713,12 @@ const Home = () => {
                 </div>
 
                 <div className="position-relative">
-                  <div 
+                  <div
                     className="rounded-circle d-flex align-items-center justify-content-center"
-                    style={{ 
-                      backgroundColor: '#f8fafc', 
-                      width: '44px', 
-                      height: '44px', 
+                    style={{
+                      backgroundColor: '#f8fafc',
+                      width: '44px',
+                      height: '44px',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       border: '1px solid transparent'
@@ -718,26 +737,26 @@ const Home = () => {
                   >
                     <FaShoppingCart style={{ color: '#4361ee', fontSize: '18px' }} />
                   </div>
-                  <span 
+                  <span
                     className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-                    style={{ 
-                      backgroundColor: '#f72585', 
+                    style={{
+                      backgroundColor: '#f72585',
                       fontSize: '11px',
                       padding: '4px 6px',
                       border: '2px solid white',
                       fontWeight: '600'
                     }}
                   >
-                    3
+                    {getCartCount()}
                   </span>
                 </div>
               </div>
 
               {/* Menu mobile */}
-              <button 
+              <button
                 className="btn d-lg-none p-0"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                style={{ 
+                style={{
                   color: '#4361ee',
                   width: '44px',
                   height: '44px',
@@ -766,7 +785,7 @@ const Home = () => {
                 ].map((item, index) => (
                   <li className="nav-item" key={index}>
                     {item.href.startsWith('/') ? (
-                      <Link 
+                      <Link
                         className="nav-link py-3"
                         to={item.href}
                         style={{ color: '#334155', borderBottom: '1px solid #e2e8f0' }}
@@ -775,7 +794,7 @@ const Home = () => {
                         {item.name}
                       </Link>
                     ) : (
-                      <a 
+                      <a
                         className="nav-link py-3"
                         href={item.href}
                         style={{ color: '#334155', borderBottom: '1px solid #e2e8f0' }}
@@ -788,8 +807,8 @@ const Home = () => {
                 ))}
               </ul>
               <div className="mt-3">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   className="form-control rounded-pill bg-light border-0 py-3"
                   placeholder={t.searchPlaceholder}
                   value={searchQuery}
@@ -831,7 +850,7 @@ const Home = () => {
                   {t.innovationBadge}
                 </span>
               </div>
-              
+
               <h1 className="display-3 fw-bold mb-4" style={{
                 lineHeight: '1.2',
                 textShadow: '0 4px 30px rgba(0,0,0,0.3)'
@@ -848,7 +867,7 @@ const Home = () => {
                 </span>
                 <br />{t.heroTitle3}
               </h1>
-              
+
               <p className="lead mb-5" style={{
                 fontSize: '1.25rem',
                 color: 'rgba(255,255,255,0.9)',
@@ -858,9 +877,9 @@ const Home = () => {
               }}>
                 {t.heroDescription}
               </p>
-              
+
               <div className="d-flex flex-wrap gap-4 justify-content-center">
-                <button 
+                <button
                   className="btn btn-lg px-5 py-3 rounded-pill"
                   onClick={handleContactClick}
                   style={{
@@ -882,8 +901,8 @@ const Home = () => {
                 >
                   {t.contactUs}
                 </button>
-                
-                <button 
+
+                <button
                   className="btn btn-lg px-5 py-3 rounded-pill"
                   onClick={handleLocationClick}
                   style={{
@@ -956,7 +975,7 @@ const Home = () => {
           <div className="row g-4">
             {expertiseSectors.map((sector, index) => (
               <div key={index} className="col-lg-4">
-                <div 
+                <div
                   className="card h-100 border-0 rounded-4 overflow-hidden"
                   style={{
                     background: 'white',
@@ -980,7 +999,7 @@ const Home = () => {
                     background: sector.gradient,
                     width: '100%'
                   }}></div>
-                  
+
                   <div className="card-body p-4">
                     <div className="d-flex align-items-center gap-3 mb-4">
                       <div style={{
@@ -1079,9 +1098,9 @@ const Home = () => {
                 boxShadow: '0 10px 30px rgba(0,0,0,0.02)'
               }}>
                 <div className="mb-4">
-                  <div 
+                  <div
                     className="d-flex align-items-center justify-content-between p-3 rounded-3"
-                    style={{ 
+                    style={{
                       cursor: 'pointer',
                       background: selectedCategory === "All products" ? 'linear-gradient(145deg, #4361ee, #3a0ca3)' : '#f8fafc',
                       color: selectedCategory === "All products" ? 'white' : '#334155',
@@ -1091,7 +1110,7 @@ const Home = () => {
                     onClick={() => handleCategoryFilter("All products")}
                   >
                     <span className="fw-medium">{t.allProducts}</span>
-                    <span className="badge" style={{ 
+                    <span className="badge" style={{
                       background: selectedCategory === "All products" ? 'rgba(255,255,255,0.2)' : '#e9ecef',
                       color: selectedCategory === "All products" ? 'white' : '#334155',
                       padding: '6px 10px',
@@ -1123,11 +1142,11 @@ const Home = () => {
                         displayCat = catMap[cat] || cat;
                       }
                       return (
-                        <a 
+                        <a
                           key={index}
-                          href="#" 
+                          href="#"
                           className="text-decoration-none d-flex align-items-center justify-content-between p-3 rounded-3"
-                          style={{ 
+                          style={{
                             color: selectedCategory === cat ? '#4361ee' : '#64748b',
                             background: selectedCategory === cat ? '#eef2ff' : 'transparent',
                             transition: 'all 0.3s ease',
@@ -1153,14 +1172,14 @@ const Home = () => {
               <div className="d-flex justify-content-between align-items-center mb-4">
                 <div>
                   <h4 className="fw-bold mb-1" style={{ color: '#0f172a' }}>
-                    {selectedCategory === "All products" ? t.allProducts : 
-                     (language === 'en' && mainCategories.includes(selectedCategory) ? 
-                      (selectedCategory === "CAPTEURS ET ACTIONNEURS" ? "SENSORS AND ACTUATORS" :
-                       selectedCategory === "ÉLECTRICITÉ" ? "ELECTRICITY" :
-                       selectedCategory === "RÉSEAUX MULTIPLEXÉS" ? "MULTIPLEXED NETWORKS" :
-                       selectedCategory === "Accessoires" ? "Accessories" :
-                       selectedCategory === "EDUCATION EQUIPMENT" ? "EDUCATION EQUIPMENT" :
-                       selectedCategory) : selectedCategory)}
+                    {selectedCategory === "All products" ? t.allProducts :
+                      (language === 'en' && mainCategories.includes(selectedCategory) ?
+                        (selectedCategory === "CAPTEURS ET ACTIONNEURS" ? "SENSORS AND ACTUATORS" :
+                          selectedCategory === "ÉLECTRICITÉ" ? "ELECTRICITY" :
+                            selectedCategory === "RÉSEAUX MULTIPLEXÉS" ? "MULTIPLEXED NETWORKS" :
+                              selectedCategory === "Accessoires" ? "Accessories" :
+                                selectedCategory === "EDUCATION EQUIPMENT" ? "EDUCATION EQUIPMENT" :
+                                  selectedCategory) : selectedCategory)}
                   </h4>
                   <small className="text-muted">
                     {filteredProducts.length} {t.productsAvailable}
@@ -1181,10 +1200,10 @@ const Home = () => {
               <div className="row g-4">
                 {filteredProducts.slice(0, 12).map((product, index) => (
                   <div key={index} className="col-md-6 col-xl-4">
-                    <div 
+                    <div
                       className="card h-100 border-0 rounded-4 overflow-hidden"
                       onClick={() => handleProductClick(product)}
-                      style={{ 
+                      style={{
                         cursor: "pointer",
                         background: 'white',
                         boxShadow: '0 10px 30px rgba(0,0,0,0.02)',
@@ -1200,12 +1219,12 @@ const Home = () => {
                           alignItems: 'center',
                           justifyContent: 'center'
                         }}>
-                          <img 
+                          <img
                             src={product.images?.[0] || "/images/placeholder.png"}
                             alt={product.title}
                             className="img-fluid"
-                            style={{ 
-                              height: "150px", 
+                            style={{
+                              height: "150px",
                               objectFit: "contain",
                               transition: 'transform 0.3s ease'
                             }}
@@ -1215,7 +1234,7 @@ const Home = () => {
                             }}
                           />
                         </div>
-                        
+
                         {index < 2 && (
                           <span className="position-absolute top-0 end-0 m-3 badge rounded-pill" style={{
                             background: 'linear-gradient(145deg, #f72585, #b5179e)',
@@ -1229,14 +1248,14 @@ const Home = () => {
                       </div>
 
                       <div className="card-body p-4">
-                        <h6 className="fw-bold mb-2" title={product.title} style={{ 
+                        <h6 className="fw-bold mb-2" title={product.title} style={{
                           color: '#0f172a',
                           fontSize: '1rem',
                           lineHeight: '1.4'
                         }}>
                           {truncateText(product.title, 35)}
                         </h6>
-                        
+
                         <p className="small text-muted mb-3" style={{
                           display: '-webkit-box',
                           WebkitLineClamp: 2,
@@ -1245,11 +1264,11 @@ const Home = () => {
                         }}>
                           {product.description || product.category || product.mainCategory}
                         </p>
-                        
+
                         <div className="mb-3">
                           {renderStars()}
                         </div>
-                        
+
                         <div className="d-flex justify-content-between align-items-center">
                           <div>
                             <span className="fw-bold h5 mb-0" style={{ color: '#4361ee' }}>
@@ -1267,7 +1286,12 @@ const Home = () => {
                             justifyContent: 'center',
                             border: 'none',
                             transition: 'all 0.3s ease'
-                          }}>
+                          }}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addToCart(product);
+                            }}
+                          >
                             <FaShoppingCart size={14} />
                           </button>
                         </div>
@@ -1324,7 +1348,7 @@ const Home = () => {
                       fontSize: '40px',
                       marginBottom: '20px'
                     }} />
-                    
+
                     <p className="mb-4" style={{
                       color: 'rgba(255,255,255,0.9)',
                       lineHeight: '1.6',
@@ -1334,7 +1358,7 @@ const Home = () => {
                     </p>
 
                     <div className="d-flex align-items-center gap-3">
-                      <img 
+                      <img
                         src={testimonial.image}
                         alt={testimonial.name}
                         className="rounded-circle"
@@ -1376,7 +1400,7 @@ const Home = () => {
               <p className="mb-5" style={{ fontSize: '1.1rem', opacity: 0.9 }}>
                 {t.newsletterDescription}
               </p>
-              
+
               <form onSubmit={handleNewsletterSubmit} className="d-flex flex-wrap gap-3 justify-content-center">
                 <div className="flex-grow-1" style={{ maxWidth: '400px' }}>
                   <input

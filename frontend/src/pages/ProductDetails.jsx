@@ -1,14 +1,14 @@
 // ProductDetails.jsx (version simplifiée)
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { 
-  FaArrowLeft, 
-  FaStar, 
-  FaCheck, 
-  FaCog, 
-  FaCube, 
-  FaRuler, 
-  FaTachometerAlt, 
+import {
+  FaArrowLeft,
+  FaStar,
+  FaCheck,
+  FaCog,
+  FaCube,
+  FaRuler,
+  FaTachometerAlt,
   FaWrench,
   FaIndustry,
   FaShieldAlt,
@@ -24,14 +24,17 @@ import {
   FaImage,
   FaEye,
   FaChartBar,
-  FaArrowRight
+  FaArrowRight,
+  FaShoppingCart
 } from 'react-icons/fa';
 import { getProductDetails } from './productData';
 import DevisModal from '../components/DevisModal';
+import { useCart } from '../context/CartContext';
 
 const ProductDetails = () => {
   const { productName } = useParams();
   const navigate = useNavigate();
+  const { addToCart, notification } = useCart();
   const [selectedImage, setSelectedImage] = useState('');
   const [loading, setLoading] = useState(true);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
@@ -41,10 +44,10 @@ const ProductDetails = () => {
 
   // Décoder le nom du produit depuis l'URL
   const decodedProductName = decodeURIComponent(productName);
-  
+
   // Récupérer les détails du produit
   const productDetails = getProductDetails(decodedProductName);
-  
+
   // Gestionnaire d'erreur d'image simplifié
   const handleImageError = (imagePath) => {
     console.log(`Erreur de chargement: ${imagePath}`);
@@ -94,7 +97,7 @@ const ProductDetails = () => {
   };
 
   const getSpecIcon = (specKey) => {
-    if (specKey.includes('Moteur') || specKey.includes('broche') || specKey.includes('Vitesse')) 
+    if (specKey.includes('Moteur') || specKey.includes('broche') || specKey.includes('Vitesse'))
       return <FaTachometerAlt className="text-primary me-2" />;
     if (specKey.includes('Vis') || specKey.includes('Guide') || specKey.includes('Rail') || specKey.includes('Course'))
       return <FaRuler className="text-success me-2" />;
@@ -152,12 +155,29 @@ const ProductDetails = () => {
 
   return (
     <div className="product-details-page">
+      {/* Cart notification toast */}
+      {notification && (
+        <div style={{
+          position: 'fixed', top: '90px', right: '30px', zIndex: 9999,
+          animation: 'slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+        }}>
+          <div className="alert" style={{
+            background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+            color: 'white', border: 'none', borderRadius: '16px',
+            padding: '14px 24px', boxShadow: '0 10px 40px rgba(67, 97, 238, 0.4)',
+            fontWeight: 500, display: 'flex', alignItems: 'center', gap: '10px'
+          }}>
+            <FaCheck size={16} />
+            {notification}
+          </div>
+        </div>
+      )}
       {/* Navigation */}
       <div className="bg-light border-bottom">
         <div className="container py-3">
           <div className="d-flex align-items-center">
-            <button 
-              className="btn btn-link text-dark p-0 me-3" 
+            <button
+              className="btn btn-link text-dark p-0 me-3"
               onClick={() => navigate(-1)}
               style={{ textDecoration: 'none' }}
             >
@@ -192,15 +212,15 @@ const ProductDetails = () => {
           <div className="col-lg-6">
             <div className="product-gallery">
               {/* Image principale */}
-              <div className="main-image-container bg-light rounded-3 mb-3 d-flex align-items-center justify-content-center" 
-                   style={{ height: '400px', border: '1px solid #dee2e6' }}>
+              <div className="main-image-container bg-light rounded-3 mb-3 d-flex align-items-center justify-content-center"
+                style={{ height: '400px', border: '1px solid #dee2e6' }}>
                 {selectedImage && isValidImage(selectedImage) ? (
-                  <img 
+                  <img
                     src={selectedImage}
                     alt={productDetails.title}
-                    style={{ 
-                      maxWidth: '100%', 
-                      maxHeight: '100%', 
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%',
                       objectFit: 'contain',
                       padding: '20px'
                     }}
@@ -214,20 +234,20 @@ const ProductDetails = () => {
                   </div>
                 )}
               </div>
-              
+
               {/* Miniatures */}
               {productDetails.images && productDetails.images.length > 0 && (
                 <div className="thumbnail-row d-flex gap-2 overflow-auto pb-2">
                   {productDetails.images.map((img, index) => {
                     const isValid = isValidImage(img);
-                    
+
                     return (
-                      <div 
+                      <div
                         key={index}
                         className={`thumbnail-item border rounded-3 d-flex align-items-center justify-content-center ${selectedImage === img && isValid ? 'border-primary border-2' : ''}`}
-                        style={{ 
-                          width: '100px', 
-                          height: '100px', 
+                        style={{
+                          width: '100px',
+                          height: '100px',
                           cursor: isValid ? 'pointer' : 'default',
                           background: '#f8f9fa',
                           opacity: isValid ? 1 : 0.5
@@ -235,7 +255,7 @@ const ProductDetails = () => {
                         onClick={() => isValid && setSelectedImage(img)}
                       >
                         {isValid ? (
-                          <img 
+                          <img
                             src={img}
                             alt={`${productDetails.title} - ${index + 1}`}
                             style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }}
@@ -261,18 +281,18 @@ const ProductDetails = () => {
                 <span className="badge bg-secondary">{productDetails.mainCategory}</span>
                 <span className="badge bg-success">En stock</span>
               </div>
-              
+
               {/* Titre */}
               <h1 className="display-6 fw-bold mb-3">{productDetails.title}</h1>
-              
+
               {/* Évaluation */}
               {renderStars(4.8)}
-              
+
               {/* Description courte */}
               <p className="lead mb-4">
                 {productDetails.fullDescription}
               </p>
-              
+
               {/* Caractéristiques principales */}
               <div className="features-section bg-light p-4 rounded-3 mb-4">
                 <h5 className="fw-bold mb-3">
@@ -288,7 +308,7 @@ const ProductDetails = () => {
                   ))}
                 </ul>
               </div>
-              
+
               {/* Prix et actions */}
               <div className="pricing-section bg-white p-4 rounded-3 border mb-4">
                 <div className="d-flex justify-content-between align-items-center">
@@ -301,14 +321,15 @@ const ProductDetails = () => {
                     </span>
                   </div>
                   <div className="d-flex gap-2">
-                    <button 
+                    <button
                       className="btn btn-outline-primary"
                       onClick={handleGeneratePDF}
                       title="Télécharger la fiche technique PDF"
                     >
                       <FaFilePdf size={20} />
                     </button>
-                    <button 
+
+                    <button
                       className="btn btn-primary btn-lg px-5"
                       onClick={handleRequestQuote}
                     >
@@ -321,9 +342,9 @@ const ProductDetails = () => {
                   Garantie 2 ans • Livraison express • Support technique inclus
                 </p>
               </div>
-              
+
               {/* Documents techniques */}
-              <div className="d-flex gap-3">
+              <div className="d-flex gap-3 flex-wrap">
                 <button className="btn btn-outline-secondary">
                   <FaDownload className="me-2" />
                   Fiche technique
@@ -331,6 +352,13 @@ const ProductDetails = () => {
                 <button className="btn btn-outline-secondary">
                   <FaDownload className="me-2" />
                   Manuel d'utilisation
+                </button>
+                <button
+                  className="btn btn-outline-primary"
+                  onClick={() => addToCart(productDetails)}
+                >
+                  <FaShoppingCart className="me-2" />
+                  Ajout panier
                 </button>
               </div>
             </div>
@@ -343,18 +371,18 @@ const ProductDetails = () => {
             <div className="description-section bg-white p-4 rounded-3 border">
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h4 className="fw-bold mb-0">Description détaillée</h4>
-                <button 
+                <button
                   className="btn btn-primary"
-                  onClick={handleOpenSpecsPage}  
+                  onClick={handleOpenSpecsPage}
                 >
                   <FaEye className="me-2" />
                   Voir spécifications techniques
                 </button>
               </div>
-              
+
               <h6 className="fw-bold mb-2">À propos de {productDetails.title}</h6>
               <p className="mb-4">{productDetails.fullDescription}</p>
-              
+
               <h6 className="fw-bold mb-2">Applications pédagogiques</h6>
               <ul className="mb-4">
                 <li>Formation initiale aux techniques d'usinage CNC</li>
@@ -362,7 +390,7 @@ const ProductDetails = () => {
                 <li>Maintenance et dépannage des systèmes CNC</li>
                 <li>Projets de fabrication numérique et prototypage</li>
               </ul>
-              
+
               <h6 className="fw-bold mb-2">Avantages pour l'enseignement</h6>
               <ul className="mb-0">
                 <li>Interface intuitive adaptée aux étudiants</li>
@@ -431,7 +459,7 @@ const ProductDetails = () => {
             <button className="specs-page-close" onClick={handleCloseSpecsPage}>
               <FaTimes />
             </button>
-            
+
             <div className="specs-page-header">
               <h2>
                 <FaChartBar className="me-2" />
@@ -439,7 +467,7 @@ const ProductDetails = () => {
               </h2>
               <p className="text-muted">{productDetails.title}</p>
             </div>
-            
+
             <div className="specs-page-body">
               {/* SECTION 1: Spécifications générales */}
               {productDetails.specifications && Object.keys(productDetails.specifications).length > 0 && (
@@ -500,7 +528,7 @@ const ProductDetails = () => {
       )}
 
       {/* MODAL DE DEMANDE DE DEVIS */}
-      <DevisModal 
+      <DevisModal
         product={productDetails}
         isOpen={showQuoteForm}
         onClose={handleCloseQuoteForm}
