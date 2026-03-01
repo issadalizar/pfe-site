@@ -7,11 +7,13 @@ import {
     FaBox
 } from 'react-icons/fa';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 import '../styles/cart.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CartPage = () => {
     const navigate = useNavigate();
+    const { user } = useAuth();
     const {
         cart, notification, removeFromCart,
         updateQuantity, clearCart, getCartTotal, getCartCount
@@ -27,13 +29,10 @@ const CartPage = () => {
     };
 
     const handleCheckout = () => {
-        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-        if (!isLoggedIn) {
+        if (!user) {
             setShowLoginPrompt(true);
         } else {
-            alert('Commande passée avec succès ! Nous vous contacterons bientôt.');
-            clearCart();
-            navigate('/home');
+            navigate('/checkout');
         }
     };
 

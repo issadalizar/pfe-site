@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { 
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import {
   FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock,
   FaArrowLeft, FaStore, FaUserShield, FaEye, FaEyeSlash
 } from "react-icons/fa";
@@ -8,10 +9,25 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [isLogin, setIsLogin] = useState(true);
+  const { login, register, isAuthenticated, isAdmin } = useAuth();
+
+  const [isLoginMode, setIsLoginMode] = useState(true);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Si déjà connecté, rediriger automatiquement
+  if (isAuthenticated) {
+    if (isAdmin) {
+      navigate("/dashboard", { replace: true });
+    } else {
+      navigate("/client/dashboard", { replace: true });
+    }
+    return null;
+  }
+
   // États pour le formulaire de connexion client
   const [loginData, setLoginData] = useState({
     email: "",
@@ -20,79 +36,118 @@ const Login = () => {
 
   // États pour le formulaire d'inscription client
   const [registerData, setRegisterData] = useState({
-    name: "",
+    client_name: "",
     email: "",
-    phone: "",
-    address: "",
+    telephone: "",
+    adresse: "",
     password: "",
     confirmPassword: ""
   });
 
   // États pour le formulaire de connexion admin
   const [adminData, setAdminData] = useState({
-    email: "admin@univertechno.tn",
-    password: "Admin123!"
+    email: "",
+    password: ""
   });
 
   const handleLoginChange = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value
-    });
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
+    setError("");
   };
 
   const handleRegisterChange = (e) => {
-    setRegisterData({
-      ...registerData,
-      [e.target.name]: e.target.value
-    });
+    setRegisterData({ ...registerData, [e.target.name]: e.target.value });
+    setError("");
   };
 
   const handleAdminChange = (e) => {
-    setAdminData({
-      ...adminData,
-      [e.target.name]: e.target.value
-    });
+    setAdminData({ ...adminData, [e.target.name]: e.target.value });
+    setError("");
   };
 
-  const handleClientLogin = (e) => {
+  // Connexion client
+  const handleClientLogin = async (e) => {
     e.preventDefault();
-    // Simulation de connexion client
-    console.log("Connexion client:", loginData);
-    // Rediriger vers la page d'accueil ou tableau de bord client
-    navigate("/");
+    setError("");
+    setLoading(true);
+    try {
+      const result = await login(loginData.email, loginData.password);
+      if (result.success) {
+        if (result.user.isAdmin) {
+          navigate("/dashboard");
+        } else {
+          navigate("/client/dashboard");
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || "Erreur lors de la connexion.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleClientRegister = (e) => {
+  // Inscription client
+  const handleClientRegister = async (e) => {
     e.preventDefault();
-    // Vérifier que les mots de passe correspondent
+    setError("");
+
     if (registerData.password !== registerData.confirmPassword) {
-      alert("Les mots de passe ne correspondent pas");
+      setError("Les mots de passe ne correspondent pas.");
       return;
     }
-    // Simulation d'inscription
-    console.log("Inscription client:", registerData);
-    alert("Inscription réussie ! Vous pouvez maintenant vous connecter.");
-    setIsLogin(true);
+
+    if (registerData.password.length < 6) {
+      setError("Le mot de passe doit contenir au moins 6 caractères.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const result = await register({
+        client_name: registerData.client_name,
+        email: registerData.email,
+        password: registerData.password,
+        telephone: registerData.telephone,
+        adresse: registerData.adresse
+      });
+      if (result.success) {
+        setSuccessMessage("Inscription réussie ! Redirection...");
+        setTimeout(() => navigate("/client/dashboard"), 1500);
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || "Erreur lors de l'inscription.");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleAdminLogin = (e) => {
+  // Connexion admin
+  const handleAdminLogin = async (e) => {
     e.preventDefault();
-    // Vérification simple pour l'admin
-    if (adminData.email === "admin@univertechno.tn" && adminData.password === "Admin123!") {
-      console.log("Connexion admin réussie");
-      navigate("/dashboard");
-    } else {
-      alert("Email ou mot de passe admin incorrect");
+    setError("");
+    setLoading(true);
+    try {
+      const result = await login(adminData.email, adminData.password);
+      if (result.success) {
+        if (result.user.isAdmin) {
+          navigate("/dashboard");
+        } else {
+          setError("Ce compte n'a pas les droits administrateur.");
+        }
+      }
+    } catch (err) {
+      setError(err.response?.data?.error || "Email ou mot de passe incorrect.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-vh-100" style={{ 
+    <div className="min-vh-100" style={{
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
     }}>
       {/* Header */}
-      <header className="py-3 sticky-top" style={{ 
+      <header className="py-3 sticky-top" style={{
         backgroundColor: 'rgba(255,255,255,0.95)',
         backdropFilter: 'blur(10px)',
         boxShadow: '0 4px 30px rgba(0,0,0,0.03)',
@@ -101,11 +156,11 @@ const Login = () => {
         <div className="container">
           <div className="d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center">
-              <div 
+              <div
                 className="me-3 d-flex align-items-center justify-content-center"
-                style={{ 
-                  width: '48px', 
-                  height: '48px', 
+                style={{
+                  width: '48px',
+                  height: '48px',
                   background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                   borderRadius: '14px',
                   color: 'white',
@@ -114,7 +169,7 @@ const Login = () => {
                   transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
                   boxShadow: '0 8px 20px rgba(67, 97, 238, 0.3)'
                 }}
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/home")}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = 'rotate(5deg) scale(1.1)';
                 }}
@@ -125,21 +180,21 @@ const Login = () => {
                 <FaStore />
               </div>
               <div>
-                <h1 className="fw-bold mb-0" style={{ 
-                  fontSize: '1.6rem', 
+                <h1 className="fw-bold mb-0" style={{
+                  fontSize: '1.6rem',
                   background: 'linear-gradient(145deg, #1e293b, #0f172a)',
                   WebkitBackgroundClip: 'text',
                   WebkitTextFillColor: 'transparent',
                   cursor: 'pointer',
                   letterSpacing: '-0.5px'
-                }} onClick={() => navigate("/")}>
+                }} onClick={() => navigate("/home")}>
                   UniVer<span style={{ color: '#4361ee', WebkitTextFillColor: '#4361ee' }}>Techno</span>+
                 </h1>
               </div>
             </div>
-            <button 
+            <button
               className="btn btn-outline-primary rounded-pill px-4"
-              onClick={() => navigate("/")}
+              onClick={() => navigate("/home")}
             >
               <FaArrowLeft className="me-2" />
               Retour à l'accueil
@@ -158,7 +213,7 @@ const Login = () => {
                 height: '8px',
                 background: 'linear-gradient(90deg, #4361ee, #f72585, #4cc9f0)'
               }}></div>
-              
+
               <div className="card-body p-4 p-lg-5">
                 {/* Logo */}
                 <div className="text-center mb-4">
@@ -173,20 +228,33 @@ const Login = () => {
                     {showAdminLogin ? <FaUserShield size={40} /> : <FaUser size={40} />}
                   </div>
                   <h2 className="fw-bold" style={{ color: '#0f172a' }}>
-                    {showAdminLogin ? "Espace Administrateur" : (isLogin ? "Connexion" : "Créer un compte")}
+                    {showAdminLogin ? "Espace Administrateur" : (isLoginMode ? "Connexion" : "Créer un compte")}
                   </h2>
                   <p className="text-muted">
-                    {showAdminLogin 
-                      ? "Accès réservé aux administrateurs" 
-                      : (isLogin ? "Connectez-vous à votre compte" : "Rejoignez UniverTechno+")}
+                    {showAdminLogin
+                      ? "Accès réservé aux administrateurs"
+                      : (isLoginMode ? "Connectez-vous à votre compte" : "Rejoignez UniverTechno+")}
                   </p>
                 </div>
 
-                {/* Admin Login Link - visible seulement en mode client */}
+                {/* Messages d'erreur / succès */}
+                {error && (
+                  <div className="alert alert-danger py-2 rounded-3 d-flex align-items-center" role="alert">
+                    <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                    {error}
+                  </div>
+                )}
+                {successMessage && (
+                  <div className="alert alert-success py-2 rounded-3" role="alert">
+                    {successMessage}
+                  </div>
+                )}
+
+                {/* Admin Login Link */}
                 {!showAdminLogin && (
                   <div className="text-center mb-4">
                     <button
-                      onClick={() => setShowAdminLogin(true)}
+                      onClick={() => { setShowAdminLogin(true); setError(""); }}
                       className="btn btn-link text-decoration-none p-0"
                       style={{ color: '#f72585' }}
                     >
@@ -196,11 +264,11 @@ const Login = () => {
                   </div>
                 )}
 
-                {/* Back to Client Login - visible seulement en mode admin */}
+                {/* Back to Client Login */}
                 {showAdminLogin && (
                   <div className="text-center mb-4">
                     <button
-                      onClick={() => setShowAdminLogin(false)}
+                      onClick={() => { setShowAdminLogin(false); setError(""); }}
                       className="btn btn-link text-decoration-none p-0"
                       style={{ color: '#4361ee' }}
                     >
@@ -229,6 +297,7 @@ const Login = () => {
                           value={adminData.email}
                           onChange={handleAdminChange}
                           required
+                          disabled={loading}
                           style={{ padding: '0.75rem' }}
                         />
                       </div>
@@ -250,6 +319,7 @@ const Login = () => {
                           value={adminData.password}
                           onChange={handleAdminChange}
                           required
+                          disabled={loading}
                           style={{ padding: '0.75rem' }}
                         />
                         <button
@@ -260,22 +330,26 @@ const Login = () => {
                           {showPassword ? <FaEyeSlash /> : <FaEye />}
                         </button>
                       </div>
-                      <small className="text-muted mt-2 d-block">
-                        Identifiants par défaut: admin@univertechno.tn / Admin123!
-                      </small>
                     </div>
 
                     <button
                       type="submit"
                       className="btn w-100 py-3 rounded-pill mb-3"
+                      disabled={loading}
                       style={{
                         background: 'linear-gradient(145deg, #f72585, #b5179e)',
                         border: 'none',
                         color: 'white',
-                        fontWeight: '600'
+                        fontWeight: '600',
+                        opacity: loading ? 0.7 : 1
                       }}
                     >
-                      Connexion Admin
+                      {loading ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" />
+                          Connexion en cours...
+                        </>
+                      ) : "Connexion Admin"}
                     </button>
                   </form>
                 )}
@@ -284,7 +358,7 @@ const Login = () => {
                 {!showAdminLogin && (
                   <>
                     {/* Login Form */}
-                    {isLogin ? (
+                    {isLoginMode ? (
                       <form onSubmit={handleClientLogin}>
                         <div className="mb-4">
                           <label className="form-label fw-medium text-secondary">
@@ -302,6 +376,7 @@ const Login = () => {
                               value={loginData.email}
                               onChange={handleLoginChange}
                               required
+                              disabled={loading}
                               style={{ padding: '0.75rem' }}
                             />
                           </div>
@@ -323,6 +398,7 @@ const Login = () => {
                               value={loginData.password}
                               onChange={handleLoginChange}
                               required
+                              disabled={loading}
                               style={{ padding: '0.75rem' }}
                             />
                             <button
@@ -338,21 +414,28 @@ const Login = () => {
                         <button
                           type="submit"
                           className="btn w-100 py-3 rounded-pill mb-3"
+                          disabled={loading}
                           style={{
                             background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                             border: 'none',
                             color: 'white',
-                            fontWeight: '600'
+                            fontWeight: '600',
+                            opacity: loading ? 0.7 : 1
                           }}
                         >
-                          Se connecter
+                          {loading ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" />
+                              Connexion en cours...
+                            </>
+                          ) : "Se connecter"}
                         </button>
 
                         <p className="text-center mb-0">
                           <span className="text-muted">Pas encore de compte ? </span>
                           <button
                             type="button"
-                            onClick={() => setIsLogin(false)}
+                            onClick={() => { setIsLoginMode(false); setError(""); }}
                             className="btn btn-link p-0 text-decoration-none"
                             style={{ color: '#4361ee', fontWeight: '600' }}
                           >
@@ -373,12 +456,13 @@ const Login = () => {
                             </span>
                             <input
                               type="text"
-                              name="name"
+                              name="client_name"
                               className="form-control border-0 bg-light"
                               placeholder="Jean Dupont"
-                              value={registerData.name}
+                              value={registerData.client_name}
                               onChange={handleRegisterChange}
                               required
+                              disabled={loading}
                               style={{ padding: '0.75rem' }}
                             />
                           </div>
@@ -400,6 +484,7 @@ const Login = () => {
                               value={registerData.email}
                               onChange={handleRegisterChange}
                               required
+                              disabled={loading}
                               style={{ padding: '0.75rem' }}
                             />
                           </div>
@@ -415,12 +500,12 @@ const Login = () => {
                             </span>
                             <input
                               type="tel"
-                              name="phone"
+                              name="telephone"
                               className="form-control border-0 bg-light"
                               placeholder="+216 XX XXX XXX"
-                              value={registerData.phone}
+                              value={registerData.telephone}
                               onChange={handleRegisterChange}
-                              required
+                              disabled={loading}
                               style={{ padding: '0.75rem' }}
                             />
                           </div>
@@ -436,12 +521,12 @@ const Login = () => {
                             </span>
                             <input
                               type="text"
-                              name="address"
+                              name="adresse"
                               className="form-control border-0 bg-light"
                               placeholder="123 Rue de l'Innovation, Tunis"
-                              value={registerData.address}
+                              value={registerData.adresse}
                               onChange={handleRegisterChange}
-                              required
+                              disabled={loading}
                               style={{ padding: '0.75rem' }}
                             />
                           </div>
@@ -463,9 +548,11 @@ const Login = () => {
                               value={registerData.password}
                               onChange={handleRegisterChange}
                               required
+                              disabled={loading}
                               style={{ padding: '0.75rem' }}
                             />
                           </div>
+                          <small className="text-muted">Minimum 6 caractères</small>
                         </div>
 
                         <div className="mb-4">
@@ -484,6 +571,7 @@ const Login = () => {
                               value={registerData.confirmPassword}
                               onChange={handleRegisterChange}
                               required
+                              disabled={loading}
                               style={{ padding: '0.75rem' }}
                             />
                             <button
@@ -499,21 +587,28 @@ const Login = () => {
                         <button
                           type="submit"
                           className="btn w-100 py-3 rounded-pill mb-3"
+                          disabled={loading}
                           style={{
                             background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                             border: 'none',
                             color: 'white',
-                            fontWeight: '600'
+                            fontWeight: '600',
+                            opacity: loading ? 0.7 : 1
                           }}
                         >
-                          S'inscrire
+                          {loading ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" />
+                              Inscription en cours...
+                            </>
+                          ) : "S'inscrire"}
                         </button>
 
                         <p className="text-center mb-0">
                           <span className="text-muted">Déjà un compte ? </span>
                           <button
                             type="button"
-                            onClick={() => setIsLogin(true)}
+                            onClick={() => { setIsLoginMode(true); setError(""); }}
                             className="btn btn-link p-0 text-decoration-none"
                             style={{ color: '#4361ee', fontWeight: '600' }}
                           >

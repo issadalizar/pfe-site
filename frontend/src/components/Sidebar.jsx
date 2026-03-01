@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import {
   FaHome,
   FaUsers,
@@ -15,6 +16,8 @@ import {
 
 export default function Sidebar() {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { logout, user } = useAuth();
 
   const isActive = (path) =>
     location.pathname === path ? "active" : "";
@@ -39,6 +42,11 @@ export default function Sidebar() {
       path: "/products",
       icon: <FaBox className="me-2" style={{ color: "#4dc0ff" }} />,
       label: "Products"
+    },
+    {
+      path: "/orders",
+      icon: <FaChartBar className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: "Commandes"
     },
     {
       path: "/messages",
@@ -107,13 +115,25 @@ export default function Sidebar() {
 
       {/* Footer */}
       <div className="p-3 border-top" style={{ borderColor: "rgba(255,255,255,0.1) !important" }}>
-        <Link
-          to="/home"
-          className="nav-link d-flex align-items-center"
+        {user && (
+          <div className="mb-2 px-2">
+            <small className="text-white-50 d-block" style={{ fontSize: '0.75rem' }}>
+              Connecté en tant que
+            </small>
+            <small className="text-white fw-bold" style={{ fontSize: '0.85rem' }}>
+              {user.client_name}
+            </small>
+          </div>
+        )}
+        <button
+          onClick={() => { logout(); navigate('/login'); }}
+          className="nav-link d-flex align-items-center w-100 border-0"
           style={{
-            color: "#4dc0ff",
+            color: "#ff6b6b",
             borderRadius: "8px",
-            transition: "all 0.3s"
+            transition: "all 0.3s",
+            background: 'transparent',
+            cursor: 'pointer'
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.backgroundColor = "rgba(255, 107, 107, 0.1)";
@@ -126,7 +146,7 @@ export default function Sidebar() {
         >
           <FaSignOutAlt className="me-2" />
           Déconnexion
-        </Link>
+        </button>
       </div>
     </aside>
   );

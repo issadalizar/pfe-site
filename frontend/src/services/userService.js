@@ -1,10 +1,27 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/users'; // Ajustez l'URL selon votre configuration
+const API_URL = 'http://localhost:5000/api/users';
+
+// Créer une instance axios avec intercepteur pour le token JWT
+const userAPI = axios.create({
+  baseURL: API_URL,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
+
+// Intercepteur pour ajouter le token à chaque requête
+userAPI.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export const getAllUsers = async () => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await userAPI.get('/');
     return response.data;
   } catch (error) {
     console.error('Erreur getAllUsers:', error);
@@ -14,7 +31,7 @@ export const getAllUsers = async () => {
 
 export const toggleUserStatus = async (userId) => {
   try {
-    const response = await axios.patch(`${API_URL}/${userId}/toggle`);
+    const response = await userAPI.patch(`/${userId}/toggle`);
     return response.data;
   } catch (error) {
     console.error('Erreur toggleUserStatus:', error);
@@ -24,7 +41,7 @@ export const toggleUserStatus = async (userId) => {
 
 export const createUser = async (userData) => {
   try {
-    const response = await axios.post(API_URL, userData);
+    const response = await userAPI.post('/', userData);
     return response.data;
   } catch (error) {
     console.error('Erreur createUser:', error);
@@ -34,7 +51,7 @@ export const createUser = async (userData) => {
 
 export const updateUser = async (userId, userData) => {
   try {
-    const response = await axios.put(`${API_URL}/${userId}`, userData);
+    const response = await userAPI.put(`/${userId}`, userData);
     return response.data;
   } catch (error) {
     console.error('Erreur updateUser:', error);
@@ -44,7 +61,7 @@ export const updateUser = async (userId, userData) => {
 
 export const deleteUser = async (userId) => {
   try {
-    const response = await axios.delete(`${API_URL}/${userId}`);
+    const response = await userAPI.delete(`/${userId}`);
     return response.data;
   } catch (error) {
     console.error('Erreur deleteUser:', error);
@@ -54,7 +71,7 @@ export const deleteUser = async (userId) => {
 
 export const bulkCreateUsers = async (usersData) => {
   try {
-    const response = await axios.post(`${API_URL}/bulk`, usersData);
+    const response = await userAPI.post('/bulk', usersData);
     return response.data;
   } catch (error) {
     console.error('Erreur bulkCreateUsers:', error);

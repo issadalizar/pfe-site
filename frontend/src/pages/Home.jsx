@@ -19,10 +19,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/home.css";
 import { cncProductDetails } from "./productData";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
   const navigate = useNavigate();
   const { addToCart, getCartCount, notification } = useCart();
+  const { isAuthenticated, isAdmin } = useAuth();
   const [categories, setCategories] = useState([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -379,7 +381,11 @@ const Home = () => {
   };
 
   const handleLoginClick = () => {
-    navigate("/login");
+    if (isAuthenticated) {
+      navigate(isAdmin ? "/dashboard" : "/client/dashboard");
+    } else {
+      navigate("/login");
+    }
   };
 
   const scrollToTop = () => {

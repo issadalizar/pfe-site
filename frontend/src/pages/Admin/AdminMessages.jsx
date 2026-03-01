@@ -37,7 +37,7 @@ const AdminMessages = () => {
             setLoading(true);
             // Récupération depuis localStorage pour les tests locaux
             const localDevis = JSON.parse(localStorage.getItem('devis_list') || '[]');
-            
+
             if (localDevis.length > 0) {
                 console.log('Devis locaux trouvés:', localDevis);
                 setQuoteMessages(localDevis);
@@ -112,7 +112,7 @@ const AdminMessages = () => {
 
     const filteredMessages = (activeTab === 'contact' ? messages : quoteMessages).filter(msg => {
         const matchesFilter = filter === 'all' || msg.status === filter;
-        
+
         if (activeTab === 'contact') {
             const matchesSearch =
                 msg.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -164,7 +164,7 @@ const AdminMessages = () => {
                             <span className="badge bg-light text-dark ms-2">{quoteMessages.length}</span>
                         </button>
                     </div>
-                    
+
                     <span className="badge bg-light text-dark p-3 shadow-sm">
                         <i className="bi bi-calendar me-2"></i>
                         {new Date().toLocaleDateString('fr-FR', {
@@ -191,8 +191,8 @@ const AdminMessages = () => {
                                 <input
                                     type="text"
                                     className="form-control border-start-0 bg-light"
-                                    placeholder={activeTab === 'contact' 
-                                        ? "Rechercher par nom, email, sujet..." 
+                                    placeholder={activeTab === 'contact'
+                                        ? "Rechercher par nom, email, sujet..."
                                         : "Rechercher par nom, entreprise, produit..."}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
@@ -275,29 +275,23 @@ const AdminMessages = () => {
                                                 </td>
                                                 <td>{getStatusBadge(msg.status)}</td>
                                                 <td>
-                                                    <div className="dropdown">
-                                                        <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                            Actions
-                                                        </button>
-                                                        <ul className="dropdown-menu">
-                                                            <li>
-                                                                <button className="dropdown-item" onClick={() => updateMessageStatus(msg._id, 'read', 'contact')}>
-                                                                    Marquer comme lu
-                                                                </button>
-                                                            </li>
-                                                            <li>
-                                                                <button className="dropdown-item" onClick={() => updateMessageStatus(msg._id, 'archived', 'contact')}>
-                                                                    Archiver
-                                                                </button>
-                                                            </li>
-                                                            <li><hr className="dropdown-divider" /></li>
-                                                            <li>
-                                                                <button className="dropdown-item text-danger" onClick={() => deleteMessage(msg._id, 'contact')}>
-                                                                    Supprimer
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                                    <select
+                                                        className="form-select form-select-sm"
+                                                        value={msg.status || 'pending'}
+                                                        onChange={(e) => updateMessageStatus(msg._id, e.target.value, 'contact')}
+                                                        style={{
+                                                            width: '130px',
+                                                            fontSize: '0.8rem',
+                                                            fontWeight: 600,
+                                                            backgroundColor: msg.status === 'read' ? '#d1ecf1' : msg.status === 'archived' ? '#e2e3e5' : '#fff3cd',
+                                                            color: msg.status === 'read' ? '#0c5460' : msg.status === 'archived' ? '#383d41' : '#856404',
+                                                            border: 'none'
+                                                        }}
+                                                    >
+                                                        <option value="pending">En attente</option>
+                                                        <option value="read">Lu</option>
+                                                        <option value="archived">Archive</option>
+                                                    </select>
                                                 </td>
                                             </tr>
                                         ) : (
@@ -333,29 +327,23 @@ const AdminMessages = () => {
                                                 </td>
                                                 <td>{getStatusBadge(msg.status)}</td>
                                                 <td>
-                                                    <div className="dropdown">
-                                                        <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                            Actions
-                                                        </button>
-                                                        <ul className="dropdown-menu">
-                                                            <li>
-                                                                <button className="dropdown-item" onClick={() => updateMessageStatus(msg._id, 'read', 'devis')}>
-                                                                    Marquer comme lu
-                                                                </button>
-                                                            </li>
-                                                            <li>
-                                                                <button className="dropdown-item" onClick={() => updateMessageStatus(msg._id, 'archived', 'devis')}>
-                                                                    Archiver
-                                                                </button>
-                                                            </li>
-                                                            <li><hr className="dropdown-divider" /></li>
-                                                            <li>
-                                                                <button className="dropdown-item text-danger" onClick={() => deleteMessage(msg._id, 'devis')}>
-                                                                    Supprimer
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
+                                                    <select
+                                                        className="form-select form-select-sm"
+                                                        value={msg.status || 'pending'}
+                                                        onChange={(e) => updateMessageStatus(msg._id, e.target.value, 'devis')}
+                                                        style={{
+                                                            width: '130px',
+                                                            fontSize: '0.8rem',
+                                                            fontWeight: 600,
+                                                            backgroundColor: msg.status === 'read' ? '#d1ecf1' : msg.status === 'archived' ? '#e2e3e5' : '#fff3cd',
+                                                            color: msg.status === 'read' ? '#0c5460' : msg.status === 'archived' ? '#383d41' : '#856404',
+                                                            border: 'none'
+                                                        }}
+                                                    >
+                                                        <option value="pending">En attente</option>
+                                                        <option value="read">Lu</option>
+                                                        <option value="archived">Archive</option>
+                                                    </select>
                                                 </td>
                                             </tr>
                                         )

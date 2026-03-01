@@ -46,3 +46,48 @@ export const getContacts = async (req, res) => {
         });
     }
 };
+
+// @desc    Mettre a jour le statut d'un message
+// @route   PATCH /api/contact/:id/status
+// @access  Private (admin)
+export const updateContactStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const validStatuses = ['pending', 'read', 'archived'];
+
+        if (!validStatuses.includes(status)) {
+            return res.status(400).json({ success: false, error: 'Statut invalide.' });
+        }
+
+        const contact = await Contact.findByIdAndUpdate(
+            req.params.id,
+            { status },
+            { new: true }
+        );
+
+        if (!contact) {
+            return res.status(404).json({ success: false, error: 'Message non trouve.' });
+        }
+
+        res.json({ success: true, data: contact });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Erreur serveur' });
+    }
+};
+
+// @desc    Supprimer un message
+// @route   DELETE /api/contact/:id
+// @access  Private (admin)
+export const deleteContact = async (req, res) => {
+    try {
+        const contact = await Contact.findByIdAndDelete(req.params.id);
+
+        if (!contact) {
+            return res.status(404).json({ success: false, error: 'Message non trouve.' });
+        }
+
+        res.json({ success: true, data: {} });
+    } catch (error) {
+        res.status(500).json({ success: false, error: 'Erreur serveur' });
+    }
+};

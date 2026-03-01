@@ -9,6 +9,10 @@ import productRoutes from './routes/products.js';
 import contactRoutes from './routes/contactRoutes.js';
 import mongoose from 'mongoose';
 import devisRoutes from './routes/devisRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import orderRoutes from './routes/orderRoutes.js';
+import { protect, adminOnly } from './middleware/authMiddleware.js';
+import { handleStripeWebhook } from './controllers/orderController.js';
 // Charger les variables d'environnement
 dotenv.config();
 
@@ -16,7 +20,16 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Webhook Stripe (doit etre AVANT express.json car Stripe a besoin du raw body)
+app.post('/api/orders/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -107,12 +120,16 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Routes d'authentification (publiques)
+app.use('/api/auth', authRoutes);
+
 // Routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
-app.use('/api/users', userRoutes);
+app.use('/api/users', protect, adminOnly, userRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/devis', devisRoutes);
+app.use('/api/orders', orderRoutes);
 
 
 // Gestion des erreurs 404 (doit être après toutes les routes)
