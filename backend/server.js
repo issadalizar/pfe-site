@@ -13,6 +13,10 @@ import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import { protect, adminOnly } from './middleware/authMiddleware.js';
 import { handleStripeWebhook } from './controllers/orderController.js';
+
+// IMPORT CORRIGÉ - C'EST LA SEULE LIGNE À MODIFIER
+import specificationRoutes from './routes/specificationRoutes.js';
+
 // Charger les variables d'environnement
 dotenv.config();
 
@@ -130,6 +134,7 @@ app.use('/api/users', protect, adminOnly, userRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/devis', devisRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/specifications', specificationRoutes);
 
 
 // Gestion des erreurs 404 (doit être après toutes les routes)
@@ -199,6 +204,9 @@ app.listen(PORT, () => {
   // ✅ AJOUT : Logs pour les nouvelles routes
   console.log(` API Contact: http://localhost:${PORT}/api/contact`);
   console.log(` API Devis: http://localhost:${PORT}/api/devis`);
+  console.log(' API Auth: http://localhost:${PORT}/api/auth');
+  console.log(' API Orders: http://localhost:${PORT}/api/orders');
+  console.log(' API Specifications: http://localhost:${PORT}/api/specifications');
 });
 
 export default app;

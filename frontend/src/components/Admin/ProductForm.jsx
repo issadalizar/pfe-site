@@ -1,86 +1,124 @@
-// src/components/ProductForm.jsx
+// src/components/Admin/ProductForm.jsx
 import React, { useEffect, useState } from "react";
-import { FaSave, FaTimes, FaPlus, FaImage, FaLink } from "react-icons/fa";
+import { 
+  FaSave, 
+  FaTimes, 
+  FaPlus, 
+  FaImage, 
+  FaCog, 
+  FaWrench, 
+  FaTrash,
+  FaEdit 
+} from "react-icons/fa";
+import { specificationAPI } from "../../services/specificationAPI";
 
-export default function ProductForm({ editingProduct, onSave, onCancel, categories }) {
+export default function ProductForm({ editingProduct, onSave, onCancel, categories, initialCategoryId }) {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
     shortDescription: "",
-    price: "",     // ✅ string
-    category: "",
+    price: "",
+    category: initialCategoryId || "",
     model: "",
-    features: "",
-    images: "",
-    link: "",
+    features: [],
+    images: [],
     isActive: true,
-    isFeatured: false,
-    stock: "",     // ✅ string
+    stock: "",
+  });
+
+  const [specifications, setSpecifications] = useState({
+    general: [],
+    advanced: []
   });
 
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showSpecModal, setShowSpecModal] = useState(false);
+  const [specType, setSpecType] = useState('general');
+  const [currentSpec, setCurrentSpec] = useState({ key: "", value: "", id: null });
+  const [isEditingSpec, setIsEditingSpec] = useState(false);
 
-  // ✅ Pré-remplissage en mode edit (sans || 0)
+  // Charger les spécifications si on est en mode édition
+  useEffect(() => {
+    const loadSpecifications = async () => {
+      if (editingProduct && editingProduct._id) {
+        try {
+          // Utilisation de la nouvelle méthode groupée
+          const response = await specificationAPI.getGroupedByProductId(editingProduct._id);
+          if (response.data) {
+            setSpecifications({
+              general: response.data.general || [],
+              advanced: response.data.advanced || []
+            });
+          }
+        } catch (error) {
+          console.error("Erreur chargement spécifications:", error);
+          // Fallback à l'ancienne méthode
+          try {
+            const response = await specificationAPI.getByProductId(editingProduct._id);
+            const specs = response.data || [];
+            setSpecifications({
+              general: specs.filter(s => s.type === 'general'),
+              advanced: specs.filter(s => s.type === 'advanced')
+            });
+          } catch (fallbackError) {
+            console.error("Fallback aussi échoué:", fallbackError);
+          }
+        }
+      }
+    };
+
+    loadSpecifications();
+  }, [editingProduct]);
+
+  // Pré-remplissage en mode edit
   useEffect(() => {
     if (editingProduct) {
       setFormData({
         name: editingProduct.name ?? "",
         description: editingProduct.description ?? "",
         shortDescription: editingProduct.shortDescription ?? "",
-        price:
-          editingProduct.price !== undefined && editingProduct.price !== null
-            ? String(editingProduct.price)
-            : "",
-        category: editingProduct.category?._id ?? "",
+        price: editingProduct.price?.toString() ?? "",
+        category: editingProduct.category?._id ?? editingProduct.category ?? "",
         model: editingProduct.model ?? "",
-        features: Array.isArray(editingProduct.features) ? editingProduct.features.join(", ") : "",
-        images: Array.isArray(editingProduct.images) ? editingProduct.images.join(", ") : "",
-        link: editingProduct.link ?? "",
-        isActive: editingProduct.isActive !== undefined ? editingProduct.isActive : true,
-        isFeatured: !!editingProduct.isFeatured,
-        stock:
-          editingProduct.stock !== undefined && editingProduct.stock !== null
-            ? String(editingProduct.stock)
-            : "",
+        features: editingProduct.features || [],
+        images: editingProduct.images || [],
+        isActive: editingProduct.isActive ?? true,
+        stock: editingProduct.stock?.toString() ?? "",
       });
     } else {
-      // ✅ Reset si on n’édite pas
       setFormData({
         name: "",
         description: "",
         shortDescription: "",
         price: "",
-        category: "",
+        category: initialCategoryId || "",
         model: "",
-        features: "",
-        images: "",
-        link: "",
+        features: [],
+        images: [],
         isActive: true,
-        isFeatured: false,
         stock: "",
       });
+      setSpecifications({ general: [], advanced: [] });
       setErrors({});
     }
-  }, [editingProduct]);
+  }, [editingProduct, initialCategoryId]);
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.name.trim()) newErrors.name = "Le nom est requis";
+    if (!formData.name?.trim()) newErrors.name = "Le nom est requis";
     if (!formData.category) newErrors.category = "La catégorie est requise";
 
-    // ✅ price requis + doit être >= 0
     if (formData.price === "") newErrors.price = "Le prix est requis";
     else {
       const p = Number(formData.price);
-      if (Number.isNaN(p) || p < 0) newErrors.price = "Prix invalide";
+      if (isNaN(p) || p < 0) newErrors.price = "Prix invalide";
     }
 
-    // ✅ stock optionnel mais si rempli => entier >= 0
     if (formData.stock !== "") {
       const s = Number(formData.stock);
-      if (Number.isNaN(s) || s < 0) newErrors.stock = "Stock invalide";
-      // (optionnel) forcer entier:
+      if (isNaN(s) || s < 0) newErrors.stock = "Stock invalide";
       if (!Number.isInteger(s)) newErrors.stock = "Stock doit être un entier";
     }
 
@@ -88,7 +126,6 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
     return Object.keys(newErrors).length === 0;
   };
 
-  // ✅ Ne parse pas dans handleChange : on garde la string
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
@@ -100,24 +137,65 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const formattedData = {
-      ...formData,
-      features: formData.features.split(",").map((f) => f.trim()).filter(Boolean),
-      images: formData.images.split(",").map((i) => i.trim()).filter(Boolean),
+    setLoading(true);
+    try {
+      const formattedData = {
+        ...formData,
+        price: Number(formData.price),
+        stock: formData.stock === "" ? 0 : parseInt(formData.stock, 10),
+        features: typeof formData.features === 'string'
+          ? formData.features.split('\n').filter(f => f.trim())
+          : formData.features,
+        images: typeof formData.images === 'string'
+          ? formData.images.split(',').map(i => i.trim()).filter(Boolean)
+          : formData.images,
+      };
 
-      // ✅ Conversion sûre ici فقط
-      price: Number(formData.price), // price requis donc pas besoin de fallback
-      stock: formData.stock === "" ? 0 : Number.parseInt(formData.stock, 10), // vide => 0 (rupture)
-    };
+      // Sauvegarder le produit d'abord
+      const savedProduct = await onSave(formattedData);
+      
+      // Si c'est une création, le produit retourné contient l'ID
+      const productId = savedProduct?._id || editingProduct?._id;
+      
+      if (productId) {
+        // Préparer toutes les spécifications pour l'envoi en masse
+        const allSpecs = [
+          ...specifications.general.map((s, index) => ({ 
+            key: s.key, 
+            value: s.value, 
+            type: 'general',
+            order: s.order ?? index 
+          })),
+          ...specifications.advanced.map((s, index) => ({ 
+            key: s.key, 
+            value: s.value, 
+            type: 'advanced',
+            order: s.order ?? index 
+          }))
+        ];
 
-    // Debug utile
-    // console.log("SUBMIT:", formattedData);
-
-    onSave(formattedData);
+        if (allSpecs.length > 0) {
+          // Utilisation de la nouvelle méthode bulk pour une seule requête
+          await specificationAPI.createBulk(productId, allSpecs);
+          console.log(`✅ ${allSpecs.length} spécifications sauvegardées en une requête`);
+        } else {
+          // Si pas de spécifications, on supprime quand même les anciennes
+          await specificationAPI.deleteByProductId(productId);
+        }
+      }
+      
+      handleCloseModal();
+    } catch (error) {
+      console.error("Erreur lors de la sauvegarde:", error);
+      // Afficher une notification d'erreur
+      alert("Erreur lors de la sauvegarde. Veuillez réessayer.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleImageUpload = (e) => {
@@ -125,22 +203,272 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
     if (!files || files.length === 0) return;
 
     const urls = Array.from(files).map((file) => URL.createObjectURL(file));
-    const existing = formData.images
-      ? formData.images.split(",").map((i) => i.trim()).filter(Boolean)
-      : [];
-
+    
     setFormData((prev) => ({
       ...prev,
-      images: [...existing, ...urls].join(", "),
+      images: [...(prev.images || []), ...urls]
     }));
   };
 
-  const imageCount = formData.images
-    ? formData.images.split(",").filter((i) => i.trim()).length
-    : 0;
+  const removeImage = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      images: prev.images.filter((_, i) => i !== index)
+    }));
+  };
+
+  // Gestion des spécifications
+  const handleAddSpec = () => {
+    setIsEditingSpec(false);
+    setCurrentSpec({ key: "", value: "", id: null });
+    setShowSpecModal(true);
+  };
+
+  const handleEditSpec = (type, spec) => {
+    setIsEditingSpec(true);
+    setSpecType(type);
+    setCurrentSpec({ 
+      key: spec.key, 
+      value: spec.value, 
+      id: spec._id 
+    });
+    setShowSpecModal(true);
+  };
+
+  const handleSaveSpec = () => {
+    if (!currentSpec.key.trim() || !currentSpec.value.trim()) return;
+
+    if (isEditingSpec) {
+      // Mode édition
+      setSpecifications(prev => ({
+        ...prev,
+        [specType]: prev[specType].map(s => 
+          s._id === currentSpec.id 
+            ? { ...s, key: currentSpec.key, value: currentSpec.value }
+            : s
+        )
+      }));
+    } else {
+      // Mode ajout
+      const newSpec = {
+        key: currentSpec.key.trim(),
+        value: currentSpec.value.trim(),
+        _id: Date.now().toString(), // ID temporaire
+        order: specifications[specType].length
+      };
+
+      setSpecifications(prev => ({
+        ...prev,
+        [specType]: [...prev[specType], newSpec]
+      }));
+    }
+
+    setShowSpecModal(false);
+    setCurrentSpec({ key: "", value: "", id: null });
+  };
+
+  const handleRemoveSpec = (type, index) => {
+    if (window.confirm("Voulez-vous supprimer cette spécification ?")) {
+      setSpecifications(prev => ({
+        ...prev,
+        [type]: prev[type].filter((_, i) => i !== index)
+      }));
+    }
+  };
+
+  const handleReorderSpecs = (type, fromIndex, toIndex) => {
+    if (fromIndex === toIndex) return;
+    
+    setSpecifications(prev => {
+      const newSpecs = [...prev[type]];
+      const [movedSpec] = newSpecs.splice(fromIndex, 1);
+      newSpecs.splice(toIndex, 0, movedSpec);
+      
+      // Mettre à jour les ordres
+      const updatedSpecs = newSpecs.map((spec, idx) => ({
+        ...spec,
+        order: idx
+      }));
+      
+      return {
+        ...prev,
+        [type]: updatedSpecs
+      };
+    });
+  };
+
+  const SpecModal = () => (
+    <div 
+      className="modal fade show" 
+      style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }} 
+      onClick={() => setShowSpecModal(false)}
+    >
+      <div className="modal-dialog" onClick={e => e.stopPropagation()}>
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">
+              {isEditingSpec ? 'Modifier' : 'Ajouter'} une spécification {specType === 'general' ? 'générale' : 'avancée'}
+            </h5>
+            <button type="button" className="btn-close" onClick={() => setShowSpecModal(false)}></button>
+          </div>
+          <div className="modal-body">
+            <div className="mb-3">
+              <label className="form-label">Nom de la spécification</label>
+              <input
+                type="text"
+                className="form-control"
+                value={currentSpec.key}
+                onChange={(e) => setCurrentSpec({ ...currentSpec, key: e.target.value })}
+                placeholder={specType === 'general' 
+                  ? "Ex: Marque, Matériau, Garantie..." 
+                  : "Ex: Tension, Puissance, Fréquence..."}
+                autoFocus
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Valeur</label>
+              <input
+                type="text"
+                className="form-control"
+                value={currentSpec.value}
+                onChange={(e) => setCurrentSpec({ ...currentSpec, value: e.target.value })}
+                placeholder={specType === 'general' 
+                  ? "Ex: Bosch, Acier, 2 ans..." 
+                  : "Ex: 12V, 1.5kW, 100MHz..."}
+              />
+            </div>
+          </div>
+          <div className="modal-footer">
+            <button type="button" className="btn btn-secondary" onClick={() => setShowSpecModal(false)}>
+              Annuler
+            </button>
+            <button 
+              type="button" 
+              className="btn btn-primary"
+              onClick={handleSaveSpec}
+              disabled={!currentSpec.key.trim() || !currentSpec.value.trim()}
+            >
+              {isEditingSpec ? 'Modifier' : 'Ajouter'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const SpecificationsSection = ({ type, title, icon, bgColor }) => {
+    const specs = specifications[type] || [];
+    
+    return (
+      <div className="col-md-6">
+        <div className="card h-100 shadow-sm">
+          <div className="card-header d-flex justify-content-between align-items-center">
+            <h6 className="mb-0 d-flex align-items-center">
+              {icon} <span className="ms-2">{title}</span>
+              <span className="badge bg-secondary ms-2">{specs.length}</span>
+            </h6>
+            <button
+              type="button"
+              className="btn btn-sm btn-outline-primary"
+              onClick={() => {
+                setSpecType(type);
+                handleAddSpec();
+              }}
+            >
+              <FaPlus size={12} className="me-1" />
+              Ajouter
+            </button>
+          </div>
+          <div className="card-body p-0">
+            {specs.length === 0 ? (
+              <div className="text-center p-4 text-muted">
+                <small>Aucune spécification {title.toLowerCase()}</small>
+              </div>
+            ) : (
+              <div className="table-responsive">
+                <table className="table table-sm table-hover mb-0">
+                  <thead className={bgColor}>
+                    <tr>
+                      <th style={{ width: '5%' }}>#</th>
+                      <th style={{ width: '40%' }}>Caractéristique</th>
+                      <th style={{ width: '40%' }}>Valeur</th>
+                      <th style={{ width: '15%' }}>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {specs.map((spec, index) => (
+                      <tr key={spec._id || index}>
+                        <td className="text-muted">{index + 1}</td>
+                        <td className="fw-bold">{spec.key}</td>
+                        <td>{spec.value}</td>
+                        <td>
+                          <div className="btn-group btn-group-sm">
+                            <button
+                              type="button"
+                              className="btn btn-outline-warning"
+                              onClick={() => handleEditSpec(type, spec)}
+                              title="Modifier"
+                              disabled={loading}
+                            >
+                              <FaEdit size={12} />
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-outline-danger"
+                              onClick={() => handleRemoveSpec(type, index)}
+                              title="Supprimer"
+                              disabled={loading}
+                            >
+                              <FaTrash size={12} />
+                            </button>
+                          </div>
+                          {index > 0 && (
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-secondary ms-1"
+                              onClick={() => handleReorderSpecs(type, index, index - 1)}
+                              title="Monter"
+                              disabled={loading}
+                            >
+                              ↑
+                            </button>
+                          )}
+                          {index < specs.length - 1 && (
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-outline-secondary ms-1"
+                              onClick={() => handleReorderSpecs(type, index, index + 1)}
+                              title="Descendre"
+                              disabled={loading}
+                            >
+                              ↓
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const imageList = Array.isArray(formData.images) ? formData.images : 
+    (formData.images ? formData.images.split(",").map(i => i.trim()).filter(Boolean) : []);
+
+  const handleCloseModal = () => {
+    onCancel();
+  };
 
   return (
     <form onSubmit={handleSubmit} className="needs-validation" noValidate>
+      {showSpecModal && <SpecModal />}
+
+      {/* Informations de base */}
       <div className="row">
         <div className="col-md-8 mb-3">
           <label htmlFor="name" className="form-label">Nom du produit *</label>
@@ -151,7 +479,8 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
             name="name"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Ex: Livre de Mathématiques"
+            placeholder="Ex: De2-Ultra Mini CNC Turning Center"
+            disabled={loading}
           />
           {errors.name && <div className="invalid-feedback">{errors.name}</div>}
         </div>
@@ -165,7 +494,8 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
             name="model"
             value={formData.model}
             onChange={handleChange}
-            placeholder="Ex: MATH-001"
+            placeholder="Ex: DT-M002, PTL908-2H"
+            disabled={loading}
           />
         </div>
       </div>
@@ -184,6 +514,7 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
               value={formData.price}
               onChange={handleChange}
               placeholder="0.00"
+              disabled={loading}
             />
             <span className="input-group-text">€</span>
             {errors.price && <div className="invalid-feedback">{errors.price}</div>}
@@ -202,6 +533,7 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
             value={formData.stock}
             onChange={handleChange}
             placeholder="0"
+            disabled={loading}
           />
           {errors.stock && <div className="invalid-feedback">{errors.stock}</div>}
         </div>
@@ -215,6 +547,7 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
           name="category"
           value={formData.category}
           onChange={handleChange}
+          disabled={loading}
         >
           <option value="">Sélectionnez une catégorie</option>
           {categories.map((c) => (
@@ -237,6 +570,7 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
           value={formData.shortDescription}
           onChange={handleChange}
           placeholder="Description concise pour les listes de produits..."
+          disabled={loading}
         />
         <small className="text-muted">{formData.shortDescription.length}/150 caractères</small>
       </div>
@@ -251,6 +585,7 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
           value={formData.description}
           onChange={handleChange}
           placeholder="Description détaillée du produit..."
+          disabled={loading}
         />
       </div>
 
@@ -260,53 +595,86 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
           className="form-control"
           id="features"
           name="features"
-          rows="2"
-          value={formData.features}
-          onChange={handleChange}
-          placeholder="Séparez les caractéristiques par des virgules"
+          rows="3"
+          value={Array.isArray(formData.features) ? formData.features.join('\n') : formData.features}
+          onChange={(e) => setFormData({
+            ...formData,
+            features: e.target.value.split('\n').filter(f => f.trim())
+          })}
+          placeholder="Une caractéristique par ligne"
+          disabled={loading}
         />
-        <small className="text-muted">Entrez les caractéristiques séparées par des virgules</small>
+        <small className="text-muted">Entrez une caractéristique par ligne</small>
       </div>
 
-      <div className="mb-3">
-        <label className="form-label">Images du produit ({imageCount})</label>
+      {/* Section Spécifications */}
+      <div className="mb-4">
+        <h6 className="mb-3">Spécifications techniques</h6>
+        <div className="row g-3">
+          <SpecificationsSection 
+            type="general"
+            title="Spécifications générales"
+            icon={<FaCog className="text-primary" />}
+            bgColor="bg-primary bg-opacity-10"
+          />
+          <SpecificationsSection 
+            type="advanced"
+            title="Spécifications avancées"
+            icon={<FaWrench className="text-info" />}
+            bgColor="bg-info bg-opacity-10"
+          />
+        </div>
+      </div>
 
-        {formData.images.trim() && (
+      {/* Images */}
+      <div className="mb-3">
+        <label className="form-label">Images du produit ({imageList.length})</label>
+
+        {imageList.length > 0 && (
           <div className="mb-3">
             <div className="row g-2">
-              {formData.images.split(",").map((imgUrl, index) => {
-                const url = imgUrl.trim();
-                if (!url) return null;
-                return (
-                  <div key={index} className="col-3">
-                    <div className="border rounded p-1">
-                      <img
-                        src={url}
-                        alt={`Preview ${index + 1}`}
-                        className="img-fluid rounded"
-                        style={{ height: "80px", objectFit: "cover", width: "100%" }}
-                      />
-                    </div>
+              {imageList.map((imgUrl, index) => (
+                <div key={index} className="col-3">
+                  <div className="border rounded p-1 position-relative">
+                    <img
+                      src={imgUrl}
+                      alt={`Preview ${index + 1}`}
+                      className="img-fluid rounded"
+                      style={{ height: "80px", objectFit: "cover", width: "100%" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                      style={{ padding: '2px 6px' }}
+                      onClick={() => removeImage(index)}
+                      disabled={loading}
+                    >
+                      ×
+                    </button>
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
           </div>
         )}
 
-        <div className="input-group">
+        <div className="input-group mb-2">
           <span className="input-group-text"><FaImage /></span>
           <input
             type="text"
             className="form-control"
             name="images"
-            value={formData.images}
-            onChange={handleChange}
+            value={imageList.join(', ')}
+            onChange={(e) => setFormData({
+              ...formData,
+              images: e.target.value.split(',').map(i => i.trim()).filter(Boolean)
+            })}
             placeholder="URLs des images séparées par des virgules"
+            disabled={loading}
           />
         </div>
 
-        <div className="mt-2">
+        <div>
           <label className="btn btn-outline-secondary btn-sm">
             <input
               type="file"
@@ -314,6 +682,7 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
               accept="image/*"
               onChange={handleImageUpload}
               style={{ display: "none" }}
+              disabled={loading}
             />
             <FaImage className="me-1" />
             Télécharger des images
@@ -324,24 +693,9 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
         </div>
       </div>
 
-      <div className="mb-3">
-        <label htmlFor="link" className="form-label">Lien du produit</label>
-        <div className="input-group">
-          <span className="input-group-text"><FaLink /></span>
-          <input
-            type="url"
-            className="form-control"
-            id="link"
-            name="link"
-            value={formData.link}
-            onChange={handleChange}
-            placeholder="https://exemple.com/produit"
-          />
-        </div>
-      </div>
-
+      {/* Switch */}
       <div className="row mb-4">
-        <div className="col-md-4">
+        <div className="col-md-6">
           <div className="form-check form-switch">
             <input
               className="form-check-input"
@@ -350,26 +704,13 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
               name="isActive"
               checked={formData.isActive}
               onChange={handleChange}
+              disabled={loading}
             />
             <label className="form-check-label" htmlFor="isActive">Produit actif</label>
           </div>
         </div>
 
-        <div className="col-md-4">
-          <div className="form-check form-switch">
-            <input
-              className="form-check-input"
-              type="checkbox"
-              id="isFeatured"
-              name="isFeatured"
-              checked={formData.isFeatured}
-              onChange={handleChange}
-            />
-            <label className="form-check-label" htmlFor="isFeatured">En vedette</label>
-          </div>
-        </div>
-
-        <div className="col-md-4">
+        <div className="col-md-6">
           <div className="form-check form-switch">
             <input
               className="form-check-input"
@@ -384,18 +725,30 @@ export default function ProductForm({ editingProduct, onSave, onCancel, categori
         </div>
       </div>
 
+      {/* Boutons */}
       <div className="d-flex justify-content-end gap-2">
-        <button type="button" className="btn btn-secondary d-flex align-items-center gap-2" onClick={onCancel}>
+        <button 
+          type="button" 
+          className="btn btn-secondary d-flex align-items-center gap-2" 
+          onClick={handleCloseModal}
+          disabled={loading}
+        >
           <FaTimes /> Annuler
         </button>
-        <button type="submit" className="btn btn-primary d-flex align-items-center gap-2">
-          {editingProduct ? (
+        <button 
+          type="submit" 
+          className="btn btn-primary d-flex align-items-center gap-2"
+          disabled={loading}
+        >
+          {loading ? (
             <>
-              <FaSave /> Modifier
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              {editingProduct ? ' Modification...' : ' Création...'}
             </>
           ) : (
             <>
-              <FaPlus /> Créer
+              {editingProduct ? <FaSave /> : <FaPlus />}
+              {editingProduct ? ' Modifier' : ' Créer'}
             </>
           )}
         </button>

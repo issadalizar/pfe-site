@@ -98,6 +98,8 @@ const productSchema = new mongoose.Schema(
   {
     // ✅ Mongoose gère createdAt / updatedAt automatiquement
     timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
   }
 );
 
@@ -271,7 +273,17 @@ productSchema.pre("findOneAndUpdate", function (next) {
 productSchema.index({ category: 1 });
 productSchema.index({ isActive: 1, isFeatured: 1 });
 productSchema.index({ model: 1 }); // Nouvel index pour le modèle
+// Ajoutez cette relation virtuelle
+productSchema.virtual('specifications', {
+  ref: 'Specification',
+  localField: '_id',
+  foreignField: 'productId',
+  options: { sort: { order: 1, type: 1 } }
+});
 
-const Product = mongoose.model("Product", productSchema);
+// Configurez les options pour inclure les virtuals
+productSchema.set('toJSON', { virtuals: true });
+productSchema.set('toObject', { virtuals: true });
 
-export default Product;
+// Export existant
+export default mongoose.model('Product', productSchema);
