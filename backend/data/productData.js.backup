@@ -1,3 +1,6 @@
+//st3mlt code js 5ter howa productData.js bach n7ot fih les details mta3 les produits CNC, w ba3d nimportih f les composants li y7ebou yst3mlouh
+//ki yas2lni chkoun y7eb yst3mlouh, n9oulouh productData.js, w ki y7eb yjib les details mta3 produit, n9oulouh getProductDetails('nom du produit'), w houwa yjib les details mta3ou
+
 export const cncProductDetails = {
   'De2-Ultra Mini CNC Turning Center': {
     title: 'De2-Ultra Mini CNC Turning Center',
@@ -875,4 +878,298 @@ export const cncProductDetails = {
     'Accessoires': 'Câbles, manuel TP'
   }
 }
+};
+
+// Fonction utilitaire pour récupérer les détails d'un produit par son nom
+// VERSION ULTRA-COMPLÈTE avec gestion de tous les cas spéciaux
+export const getProductDetails = (productName) => {
+  // Nettoyer le nom pour la recherche
+  const cleanName = productName?.trim();
+  
+  if (!cleanName) return null;
+  
+  console.log("🔍 Recherche du produit:", cleanName);
+  
+  // =======================================================
+  // 1. RECHERCHE EXACTE D'ABORD
+  // =======================================================
+  if (cncProductDetails[cleanName]) {
+    console.log("✅ Trouvé exact:", cleanName);
+    return cncProductDetails[cleanName];
+  }
+  
+  // =======================================================
+  // 2. CORRECTIONS SPÉCIFIQUES POUR TOUS LES PRODUITS
+  // =======================================================
+  
+  // CORRECTION: Remplacer les deux-points par des tirets (pour MI2505)
+  const correctedNameColon = cleanName?.replace(':', '-');
+  if (correctedNameColon && cncProductDetails[correctedNameColon]) {
+    console.log("✅ Trouvé après correction deux-points:", correctedNameColon);
+    return cncProductDetails[correctedNameColon];
+  }
+  
+  // CORRECTION: Remplacer "&" par "and"
+  const correctedNameAmpersand = cleanName?.replace(/&/g, 'and');
+  if (correctedNameAmpersand && cncProductDetails[correctedNameAmpersand]) {
+    console.log("✅ Trouvé après correction &:", correctedNameAmpersand);
+    return cncProductDetails[correctedNameAmpersand];
+  }
+  
+  // CORRECTION: Gérer les apostrophes (pour "d'Angle", "d'Injection", "d'Étude", etc.)
+  const correctedNameApostrophe = cleanName?.replace(/\b(d'|l'|D'|L')\b/g, (match) => match.replace("'", ""));
+  if (correctedNameApostrophe && cncProductDetails[correctedNameApostrophe]) {
+    console.log("✅ Trouvé après correction apostrophe:", correctedNameApostrophe);
+    return cncProductDetails[correctedNameApostrophe];
+  }
+  
+  // CORRECTION: Supprimer toutes les apostrophes
+  const correctedNameNoApostrophe = cleanName?.replace(/'/g, '');
+  if (correctedNameNoApostrophe && cncProductDetails[correctedNameNoApostrophe]) {
+    console.log("✅ Trouvé après suppression apostrophes:", correctedNameNoApostrophe);
+    return cncProductDetails[correctedNameNoApostrophe];
+  }
+  
+  // CORRECTION: Remplacer les tirets longs par des tirets courts
+  const correctedNameDash = cleanName?.replace(/[–—−]/g, '-');
+  if (correctedNameDash && cncProductDetails[correctedNameDash]) {
+    console.log("✅ Trouvé après correction tirets:", correctedNameDash);
+    return cncProductDetails[correctedNameDash];
+  }
+  
+  // CORRECTION: Supprimer les accents (é,è,ê,à,ù,ç, etc.)
+  const removeAccents = (str) => {
+    return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  };
+  const correctedNameNoAccents = removeAccents(cleanName);
+  if (correctedNameNoAccents !== cleanName && cncProductDetails[correctedNameNoAccents]) {
+    console.log("✅ Trouvé après suppression accents:", correctedNameNoAccents);
+    return cncProductDetails[correctedNameNoAccents];
+  }
+  
+  // CORRECTION: Supprimer tous les caractères spéciaux (garder lettres, chiffres, espaces, tirets)
+  const correctedNameSpecial = cleanName?.replace(/[^\w\s-]/gi, '');
+  if (correctedNameSpecial && cncProductDetails[correctedNameSpecial]) {
+    console.log("✅ Trouvé après suppression spéciaux:", correctedNameSpecial);
+    return cncProductDetails[correctedNameSpecial];
+  }
+  
+  // =======================================================
+  // 3. CORRECTIONS SPÉCIFIQUES POUR CNC EDUCATION
+  // =======================================================
+  
+  // CORRECTION: Remplacer '65' par '6S' pour l'erreur fréquente
+  const correctedName65 = cleanName?.replace('iKC65', 'iKC6S');
+  if (correctedName65 && cncProductDetails[correctedName65]) {
+    console.log("✅ Trouvé après correction 65:", correctedName65);
+    return cncProductDetails[correctedName65];
+  }
+  
+  // CORRECTION: Remplacer 'Turning' par 'Turing' pour correspondre au dossier
+  const correctedNameTurning = cleanName?.replace('CNC Turning Machine', 'CNC Turing Machine');
+  if (correctedNameTurning && cncProductDetails[correctedNameTurning]) {
+    console.log("✅ Trouvé après correction Turning:", correctedNameTurning);
+    return cncProductDetails[correctedNameTurning];
+  }
+  
+  // CORRECTION: Remplacer 'Lathe' par 'Lathe' (pas de changement mais gardé pour cohérence)
+  const correctedNameLathe = cleanName?.replace(/Lathe-Mach/, 'Lathe-Mach');
+  if (correctedNameLathe && cncProductDetails[correctedNameLathe]) {
+    console.log("✅ Trouvé après correction Lathe:", correctedNameLathe);
+    return cncProductDetails[correctedNameLathe];
+  }
+  
+  // =======================================================
+  // 4. CORRECTIONS SPÉCIFIQUES POUR MCP LAB ELECTRONICS
+  // =======================================================
+  
+  // CORRECTION: Normaliser les références (ex: PTL908-2H)
+  const correctedNameRef = cleanName?.replace(/([A-Z]{2,4})(\d{3,4})-([A-Z0-9]+)/g, '$1$2-$3');
+  if (correctedNameRef && cncProductDetails[correctedNameRef]) {
+    console.log("✅ Trouvé après correction référence:", correctedNameRef);
+    return cncProductDetails[correctedNameRef];
+  }
+  
+  // CORRECTION: Supprimer les mots génériques pour trouver par référence seulement
+  const removeGenericWords = (str) => {
+    return str
+      .replace(/(Basic|Logic|Circuit|Training|System|Oscilloscope|Probe|Test|Lead|Voltage|Safety)/gi, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  };
+  const correctedNameGeneric = removeGenericWords(cleanName);
+  if (correctedNameGeneric && correctedNameGeneric !== cleanName && cncProductDetails[correctedNameGeneric]) {
+    console.log("✅ Trouvé après suppression mots génériques:", correctedNameGeneric);
+    return cncProductDetails[correctedNameGeneric];
+  }
+  
+  // CORRECTION: Chercher par référence uniquement (ex: PTL908-2H)
+  const refMatch = cleanName.match(/([A-Z]{2,4}\d{3,4}-[A-Z0-9]+)/);
+  if (refMatch) {
+    const reference = refMatch[0];
+    if (cncProductDetails[reference]) {
+      console.log("✅ Trouvé par référence:", reference);
+      return cncProductDetails[reference];
+    }
+  }
+  
+  // =======================================================
+  // 5. CORRECTIONS SPÉCIFIQUES POUR VOITURES
+  // =======================================================
+  
+  // CORRECTION: Gérer "d'Angle" spécifiquement
+  if (cleanName.includes("d'Angle")) {
+    const correctedAngle = cleanName.replace("d'Angle", "dAngle");
+    if (cncProductDetails[correctedAngle]) {
+      console.log("✅ Trouvé après correction d'Angle:", correctedAngle);
+      return cncProductDetails[correctedAngle];
+    }
+  }
+  
+  // CORRECTION: Gérer "d'Injection" spécifiquement
+  if (cleanName.includes("d'Injection")) {
+    const correctedInjection = cleanName.replace("d'Injection", "dInjection");
+    if (cncProductDetails[correctedInjection]) {
+      console.log("✅ Trouvé après correction d'Injection:", correctedInjection);
+      return cncProductDetails[correctedInjection];
+    }
+  }
+  
+  // CORRECTION: Gérer les slashs (ex: 12V/500A)
+  const correctedNameSlash = cleanName?.replace('/', '-');
+  if (correctedNameSlash && cncProductDetails[correctedNameSlash]) {
+    console.log("✅ Trouvé après correction slash:", correctedNameSlash);
+    return cncProductDetails[correctedNameSlash];
+  }
+  
+  // =======================================================
+  // 6. RECHERCHE APPROXIMATIVE AVEC NORMALISATION
+  // =======================================================
+  
+  // Fonction pour normaliser une chaîne (version améliorée)
+  const normalizeString = (str) => {
+    return str
+      .toLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Enlève les accents
+      .replace(/[–—−]/g, '-') // Normalise les tirets
+      .replace(/['`´]/g, '') // Enlève les apostrophes
+      .replace(/[&]/g, 'and') // Remplace & par and
+      .replace(/[\/]/g, '-') // Remplace / par -
+      .replace(/[^\w\s-]/g, '') // Enlève les autres caractères spéciaux
+      .replace(/\s+/g, ' ') // Normalise les espaces
+      .replace(/-(?!\w)/g, '') // Enlève les tirets en fin de chaîne
+      .trim();
+  };
+  
+  const normalizedSearch = normalizeString(cleanName);
+  console.log("🔍 Recherche normalisée:", normalizedSearch);
+  
+  // Essayer d'abord avec la chaîne normalisée exacte
+  for (const [key, details] of Object.entries(cncProductDetails)) {
+    const normalizedKey = normalizeString(key);
+    
+    // Correspondance exacte après normalisation
+    if (normalizedKey === normalizedSearch) {
+      console.log("✅ Trouvé par normalisation exacte:", key);
+      return details;
+    }
+  }
+  
+  // Essayer ensuite avec inclusion
+  for (const [key, details] of Object.entries(cncProductDetails)) {
+    const normalizedKey = normalizeString(key);
+    
+    // Correspondance partielle (l'un contient l'autre)
+    if (normalizedKey.includes(normalizedSearch) || normalizedSearch.includes(normalizedKey)) {
+      console.log("✅ Trouvé par inclusion:", key);
+      return details;
+    }
+  }
+  
+  // =======================================================
+  // 7. RECHERCHE PAR MOTS-CLÉS
+  // =======================================================
+  
+  // Extraire les mots-clés importants
+  const extractKeywords = (str) => {
+    const keywords = [];
+    
+    // Chercher les références (ex: DT-M001, MT-H9000, PTL908-2H)
+    const refMatch = str.match(/([A-Z]{2,4}\d{3,4}-[A-Z0-9]+)/i);
+    if (refMatch) keywords.push(refMatch[0].toLowerCase());
+    
+    // Chercher les références sans tiret (ex: PTL9082H)
+    const refNoDashMatch = str.match(/([A-Z]{2,4}\d{3,4}[A-Z0-9]+)/i);
+    if (refNoDashMatch) keywords.push(refNoDashMatch[0].toLowerCase());
+    
+    // Chercher les mots significatifs (plus de 3 lettres)
+    const words = str.toLowerCase().split(/\s+/);
+    words.forEach(word => {
+      // Ignorer les mots trop courts ou trop génériques
+      if (word.length > 3 && 
+          !word.includes('mesure') && 
+          !word.includes('angle') && 
+          !word.includes('system') &&
+          !word.includes('training') &&
+          !word.includes('probe') &&
+          !word.includes('test')) {
+        keywords.push(word);
+      }
+    });
+    
+    return [...new Set(keywords)]; // Éliminer les doublons
+  };
+  
+  const searchKeywords = extractKeywords(cleanName);
+  console.log("🔑 Mots-clés extraits:", searchKeywords);
+  
+  if (searchKeywords.length > 0) {
+    let bestMatch = null;
+    let bestScore = 0;
+    
+    for (const [key, details] of Object.entries(cncProductDetails)) {
+      const keyLower = key.toLowerCase();
+      let score = 0;
+      
+      searchKeywords.forEach(keyword => {
+        if (keyLower.includes(keyword)) {
+          // Plus le mot-clé est long, plus le score est élevé
+          score += keyword.length * 2;
+        }
+      });
+      
+      // Bonus si la référence exacte est trouvée
+      if (searchKeywords[0] && keyLower.includes(searchKeywords[0])) {
+        score += 20;
+      }
+      
+      if (score > bestScore) {
+        bestScore = score;
+        bestMatch = details;
+      }
+    }
+    
+    if (bestMatch && bestScore > 5) {
+      console.log("✅ Trouvé par mots-clés avec score:", bestScore);
+      return bestMatch;
+    }
+  }
+  
+  // =======================================================
+  // 8. DERNIER RECOURS: Recherche très large
+  // =======================================================
+  
+  // Prendre les 3 premiers mots significatifs
+  const words = cleanName.split(/\s+/).filter(w => w.length > 2);
+  const firstWords = words.slice(0, 3).join(' ').toLowerCase();
+  
+  for (const [key, details] of Object.entries(cncProductDetails)) {
+    if (key.toLowerCase().includes(firstWords)) {
+      console.log("✅ Trouvé par premiers mots:", key);
+      return details;
+    }
+  }
+  
+  console.log("❌ Aucun produit trouvé pour:", cleanName);
+  return null;
 };

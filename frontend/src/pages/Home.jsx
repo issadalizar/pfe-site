@@ -20,6 +20,7 @@ import "../styles/home.css";
 import { cncProductDetails } from "./productData";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
+import ChatBot from '../components/ChatBot';
 
 const Home = () => {
   const navigate = useNavigate();
@@ -38,7 +39,14 @@ const Home = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [language, setLanguage] = useState("fr"); // 'fr' for French, 'en' for English
-
+  const [showChatbot, setShowChatbot] = useState(false); 
+  // Charger l'image du chatbot
+  useEffect(() => {
+    const img = new Image();
+    img.src = '/chatbot.png';
+    img.onload = () => setChatbotImage('/chatbot.png');
+    img.onerror = () => setChatbotImage(null);
+  }, []);
   // Translations
   const translations = {
     fr: {
@@ -47,7 +55,7 @@ const Home = () => {
       products: "Produits",
       expertise: "Expertise",
       about: "À propos",
-      contact: "Contact",
+      contactNav: "Contact", // Changé de "contact" à "contactNav"
       searchPlaceholder: "Rechercher un produit...",
 
       // Hero Section
@@ -95,7 +103,7 @@ const Home = () => {
       // Footer
       footerDescription: "Leader dans la fourniture d'équipements technologiques pour l'éducation et l'industrie.",
       quickLinks: "Liens rapides",
-      contact: "Contact",
+      contact: "Contact", // Gardé pour le footer
       allRightsReserved: "Tous droits réservés.",
 
       // Sector names
@@ -124,7 +132,7 @@ const Home = () => {
       products: "Products",
       expertise: "Expertise",
       about: "About",
-      contact: "Contact",
+      contactNav: "Contact", // Changé de "contact" à "contactNav"
       searchPlaceholder: "Search for a product...",
 
       // Hero Section
@@ -172,7 +180,7 @@ const Home = () => {
       // Footer
       footerDescription: "Leader in providing technological equipment for education and industry.",
       quickLinks: "Quick links",
-      contact: "Contact",
+      contact: "Contact", // Gardé pour le footer
       allRightsReserved: "All rights reserved.",
 
       // Sector names
@@ -589,7 +597,7 @@ const Home = () => {
                   { name: t.products, href: '#products' },
                   { name: t.expertise, href: '#services' },
                   { name: t.about, href: '#about' },
-                  { name: t.contact, href: '/contact' }
+                  { name: t.contactNav, href: '/contact' } // Changé de t.contact à t.contactNav
                 ].map((item, index) => (
                   <li className="nav-item" key={index}>
                     {item.href.startsWith('/') ? (
@@ -787,7 +795,7 @@ const Home = () => {
                   { name: t.products, href: '#products' },
                   { name: t.expertise, href: '#services' },
                   { name: t.about, href: '#about' },
-                  { name: t.contact, href: '/contact' }
+                  { name: t.contactNav, href: '/contact' } // Changé de t.contact à t.contactNav
                 ].map((item, index) => (
                   <li className="nav-item" key={index}>
                     {item.href.startsWith('/') ? (
@@ -1137,7 +1145,7 @@ const Home = () => {
                       let displayCat = cat;
                       if (language === 'en') {
                         const catMap = {
-                          "CNC Turing Machine": "CNC Turing Machine",
+                          "CNC Turning Machine": "CNC Turning Machine",
                           "CNC Milling Machine": "CNC Milling Machine",
                           "CAPTEURS ET ACTIONNEURS": "SENSORS AND ACTUATORS",
                           "ÉLECTRICITÉ": "ELECTRICITY",
@@ -1495,7 +1503,7 @@ const Home = () => {
                 <div className="col-md-4">
                   <h5 className="fw-bold text-white mb-4">{t.quickLinks}</h5>
                   <ul className="list-unstyled">
-                    {[t.home, t.products, t.expertise, t.about, t.contact].map((item, index) => (
+                    {[t.home, t.products, t.expertise, t.about, t.contactNav].map((item, index) => ( // Changé t.contact à t.contactNav
                       <li className="mb-3" key={index}>
                         <a href="#" className="text-decoration-none" style={{ color: '#94a3b8' }}>
                           <FaAngleRight className="me-2" style={{ fontSize: '12px', color: '#4361ee' }} />
@@ -1538,61 +1546,61 @@ const Home = () => {
           </div>
         </div>
       </footer>
+          {/* Chatbot Button avec Image agrandie */}
+<button
+    className="btn btn-primary position-fixed d-flex align-items-center justify-content-center shadow-lg border-0"
+    onClick={() => setShowChatbot(true)}
+    style={{
+        bottom: '30px',
+        right: '30px',
+        width: '80px',
+        height: '80px',
+        zIndex: 1050,
+        padding: 0,
+        overflow: 'hidden',
+        borderRadius: '50%',
+        animation: 'pulse 2s infinite'
+    }}
+>
+    <img 
+        src="/chatbot.png" 
+        alt="Chatbot" 
+        className="w-100 h-100"
+        style={{ 
+            objectFit: 'cover',
+            borderRadius: '50%'
+        }}
+        onError={(e) => {
+            e.target.style.display = 'none';
+            e.target.parentElement.innerHTML = '<svg width="40" height="40" viewBox="0 0 24 24" fill="white"><path d="M20 9V7c0-1.1-.9-2-2-2h-4c0-1.66-1.34-3-3-3S8 3.34 8 5H4c-1.1 0-2 .9-2 2v2c0 1.66 1.34 3 3 3h1v4H4c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2v-2c0-1.1-.9-2-2-2h-1v-4h1c1.66 0 3-1.34 3-3z"/></svg>';
+        }}
+    />
+</button>
 
-      {/* Styles globaux */}
-      <style jsx>{`
-        .py-6 {
-          padding-top: 5rem;
-          padding-bottom: 5rem;
+{/* ChatBot Component - PAS de modal supplémentaire */}
+<ChatBot 
+    isOpen={showChatbot} 
+    onClose={() => setShowChatbot(false)} 
+/>
+
+{/* Style pour l'animation pulse (optionnel) */}
+<style jsx>{`
+    @keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7);
         }
-        
-        .nav-link {
-          transition: all 0.3s ease;
-          font-weight: 500;
+        50% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 10px rgba(67, 97, 238, 0);
         }
-        
-        .card {
-          transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .btn {
-          transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .sticky-top {
-          position: sticky;
-          top: 0;
-          z-index: 1020;
-        }
-        
-        .cursor-pointer {
-          cursor: pointer;
-        }
-        
-        ::-webkit-scrollbar {
-          width: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-          background: #f1f5f9;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-          background: #4361ee;
-          border-radius: 10px;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-          background: #3a0ca3;
-        }
-        
-        ::selection {
-          background: #4361ee;
-          color: white;
-        }
-      `}</style>
+    }
+    
+    .text-white-50 {
+        color: rgba(255, 255, 255, 0.7) !important;
+    }
+`}</style>
     </div>
   );
 };
-
 export default Home;
