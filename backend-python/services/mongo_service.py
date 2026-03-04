@@ -75,10 +75,10 @@ class MongoService:
                     except:
                         pass
             
-            print(f"📦 {len(products)} produits chargés")
+            print(f" {len(products)} produits chargés")
             return products
         except Exception as e:
-            print(f"❌ Erreur get_all_products: {e}")
+            print(f" Erreur get_all_products: {e}")
             return []
     
     def get_product_by_id(self, product_id):
@@ -146,7 +146,7 @@ class MongoService:
                     p['model'] = p.get('model', p['modele'])
             return products
         except Exception as e:
-            print(f"❌ Erreur search_products: {e}")
+            print(f" Erreur search_products: {e}")
             return []
     
     def get_products_by_category(self, category_name):
@@ -191,13 +191,13 @@ class MongoService:
                     if 'modele' in p:
                         p['model'] = p.get('model', p['modele'])
                 
-                print(f"📦 {len(products)} produits trouvés pour catégorie '{category_name}'")
+                print(f" {len(products)} produits trouvés pour catégorie '{category_name}'")
                 return products
             
-            print(f"❌ Catégorie '{category_name}' non trouvée")
+            print(f" Catégorie '{category_name}' non trouvée")
             return []
         except Exception as e:
-            print(f"❌ Erreur get_products_by_category: {e}")
+            print(f" Erreur get_products_by_category: {e}")
             return []
     
     def get_products_by_main_category(self, main_category_name):
@@ -239,7 +239,7 @@ class MongoService:
             
             return []
         except Exception as e:
-            print(f"❌ Erreur get_products_by_main_category: {e}")
+            print(f" Erreur get_products_by_main_category: {e}")
             return []
     
     def get_all_categories(self):
@@ -255,7 +255,7 @@ class MongoService:
                         cat['parent'] = str(cat['parent'])
             return categories
         except Exception as e:
-            print(f"❌ Erreur get_all_categories: {e}")
+            print(f" Erreur get_all_categories: {e}")
             return []
     
     def get_categories_hierarchy(self):
@@ -283,7 +283,7 @@ class MongoService:
             
             return roots
         except Exception as e:
-            print(f"❌ Erreur get_categories_hierarchy: {e}")
+            print(f" Erreur get_categories_hierarchy: {e}")
             return []
     
     def get_subcategories(self, category_id):
@@ -300,7 +300,7 @@ class MongoService:
             
             return subcategories
         except Exception as e:
-            print(f"❌ Erreur get_subcategories: {e}")
+            print(f" Erreur get_subcategories: {e}")
             return []
     
     def get_category_by_name(self, name):
@@ -320,7 +320,7 @@ class MongoService:
                         category['parent'] = str(category['parent'])
             return category
         except Exception as e:
-            print(f"❌ Erreur get_category_by_name: {e}")
+            print(f" Erreur get_category_by_name: {e}")
             return None
     
     def count_products_in_category(self, category_id):

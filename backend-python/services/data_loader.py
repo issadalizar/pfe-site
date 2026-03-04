@@ -20,7 +20,7 @@ class DataLoader:
             with open(self.data_path, 'r', encoding='utf-8') as file:
                 content = file.read()
                 
-                print(f"📊 Analyse du fichier: {self.data_path}")
+                print(f" Analyse du fichier: {self.data_path}")
                 
                 # Découper par produit
                 product_blocks = re.split(r'\n\s*\'', content)
@@ -142,7 +142,7 @@ class DataLoader:
                 self.products = products
                 self.products_by_id = {p.id: p for p in self.products}
                 
-                print(f"✅ {len(self.products)} produits chargés avec succès!")
+                print(f" {len(self.products)} produits chargés avec succès!")
                 
                 # Compter par catégorie principale
                 categories = {}
@@ -160,7 +160,7 @@ class DataLoader:
                 return self.products
                 
         except Exception as e:
-            print(f"❌ Erreur générale: {e}")
+            print(f" Erreur générale: {e}")
             import traceback
             traceback.print_exc()
             return []

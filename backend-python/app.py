@@ -21,90 +21,91 @@ def get_guide_message(language="fr"):
     """Retourne le guide d'utilisation complet du chatbot"""
     
     if language == "fr":
-        guide = "**🤖 GUIDE D'UTILISATION DU CHATBOT**\n\n"
-        guide += "**📋 CATÉGORIES**\n"
+        guide = "** GUIDE D'UTILISATION DU CHATBOT**\n\n"
+        guide += "** CATÉGORIES**\n"
         guide += "• 'liste' ou 'catégories' - Voir toutes les catégories\n"
         guide += "• 'aide achat' - Guide d'achat personnalisé\n\n"
         
-        guide += "**🔍 RECHERCHE**\n"
+        guide += "** RECHERCHE**\n"
         guide += "• 'cherche [mot]' - Rechercher un produit\n"
         guide += "• 'prix [produit]' - Voir le prix d'un produit\n\n"
         
-        guide += "**⚖️ COMPARAISON**\n"
+        guide += "** COMPARAISON**\n"
         guide += "• 'compare X et Y' - Comparer deux produits\n"
         guide += "• 'comparer tous' - Comparer tous les produits\n"
         guide += "• 'meilleur produit' - Meilleur produit global\n\n"
         
-        guide += "**🏆 RECOMMANDATIONS**\n"
+        guide += "** RECOMMANDATIONS**\n"
         guide += "• 'meilleur rapport qualité/prix' - Les moins chers\n"
         guide += "• 'haut de gamme' - Les plus prestigieux\n"
         guide += "• 'en stock' - Produits disponibles\n"
         guide += "• 'populaire' - Les plus demandés\n\n"
-        
-        guide += "**📦 CATÉGORIES SPÉCIFIQUES**\n"
+    
+        guide += "** CATÉGORIES SPÉCIFIQUES**\n"
         guide += "• 'CNC' - Machines CNC\n"
         guide += "• 'Voiture' - Systèmes automobiles\n"
         guide += "• 'MCP' - Équipements lab\n\n"
         
-        guide += "👉 **Cliquez directement sur les boutons pour naviguer !**"
+        guide += "Cliquez directement sur les boutons pour naviguer !"
         
     elif language == "en":
-        guide = "**🤖 CHATBOT USER GUIDE**\n\n"
-        guide += "**📋 CATEGORIES**\n"
+        guide = "** CHATBOT USER GUIDE**\n\n"
+        guide += "** CATEGORIES**\n"
         guide += "• 'list' or 'categories' - View all categories\n"
         guide += "• 'buy help' - Personalized buying guide\n\n"
         
-        guide += "**🔍 SEARCH**\n"
+        guide += "** SEARCH**\n"
         guide += "• 'search [word]' - Search for a product\n"
         guide += "• 'price [product]' - View product price\n\n"
         
-        guide += "**⚖️ COMPARISON**\n"
+        guide += "** COMPARISON**\n"
         guide += "• 'compare X and Y' - Compare two products\n"
         guide += "• 'compare all' - Compare all products\n"
         guide += "• 'best product' - Best overall product\n\n"
         
-        guide += "**🏆 RECOMMENDATIONS**\n"
+        guide += "** RECOMMENDATIONS**\n"
         guide += "• 'best value' - Cheapest products\n"
         guide += "• 'premium' - Most prestigious\n"
         guide += "• 'in stock' - Available products\n"
         guide += "• 'popular' - Most demanded\n\n"
         
-        guide += "**📦 SPECIFIC CATEGORIES**\n"
+        guide += "**SPECIFIC CATEGORIES**\n"
         guide += "• 'CNC' - CNC Machines\n"
         guide += "• 'Car' - Automotive systems\n"
         guide += "• 'MCP' - Lab equipment\n\n"
         
-        guide += "👉 **Click on buttons to navigate!**"
+        guide += "Click on buttons to navigate!"
     
     elif language == "ar":
-        guide = "**🤖 دليل استخدام المساعد**\n\n"
-        guide += "**📋 الفئات**\n"
+        guide = "** دليل استخدام المساعد**\n\n"
+        guide += "** الفئات**\n"
         guide += "• 'قائمة' أو 'فئات' - عرض جميع الفئات\n"
         guide += "• 'مساعدة شراء' - دليل شراء مخصص\n\n"
         
-        guide += "**🔍 بحث**\n"
+        guide += "** بحث**\n"
         guide += "• 'ابحث [كلمة]' - البحث عن منتج\n"
         guide += "• 'سعر [منتج]' - عرض سعر المنتج\n\n"
         
-        guide += "**⚖️ مقارنة**\n"
+        guide += "** مقارنة**\n"
         guide += "• 'قارن X و Y' - مقارنة منتجين\n"
         guide += "• 'قارن الكل' - مقارنة جميع المنتجات\n"
         guide += "• 'أفضل منتج' - أفضل منتج بشكل عام\n\n"
         
-        guide += "**🏆 توصيات**\n"
+        guide += "** توصيات**\n"
         guide += "• 'أفضل قيمة' - أرخص المنتجات\n"
         guide += "• 'فاخر' - الأكثر تميزًا\n"
         guide += "• 'متوفر' - المنتجات المتاحة\n"
         guide += "• 'شائع' - الأكثر طلبًا\n\n"
         
-        guide += "**📦 فئات محددة**\n"
+        guide += "** فئات محددة**\n"
         guide += "• 'CNC' - ماكينات التحكم الرقمي\n"
         guide += "• 'سيارة' - أنظمة السيارات\n"
         guide += "• 'MCP' - معدات المختبرات\n\n"
         
-        guide += "👉 **انقر على الأزرار للتنقل!**"
+        guide += "انقر على الأزرار للتنقل!"
     
     return guide
+
 app = Flask(__name__)
 CORS(app)
 
@@ -298,36 +299,36 @@ comparator = MongoProductComparator(mongo_service)
 text_processor = TextProcessor()
 training_service = TrainingService(None)  # Plus nécessaire avec MongoDB
 
-print("✅ Connexion MongoDB établie")
+print("Connexion MongoDB établie")
 
 def comparer_produits(produit1, produit2):
     """Fonction de comparaison détaillée"""
     
-    response = f"**🔍 COMPARAISON DÉTAILLÉE**\n\n"
+    response = f"** COMPARAISON DÉTAILLÉE**\n\n"
     response += f"**{produit1.name}** vs **{produit2.name}**\n"
     response += "=" * 50 + "\n\n"
     
     # 1. PRIX
-    response += f"💰 **PRIX**\n"
+    response += f"**PRIX**\n"
     response += f"• {produit1.name}: **{produit1.price} €**\n"
     response += f"• {produit2.name}: **{produit2.price} €**\n"
     
     diff_prix = abs(produit1.price - produit2.price)
     if produit1.price < produit2.price:
-        response += f"✅ **{produit1.name} est {diff_prix} € moins cher**\n\n"
+        response += f"**{produit1.name} est {diff_prix} € moins cher**\n\n"
     elif produit2.price < produit1.price:
-        response += f"✅ **{produit2.name} est {diff_prix} € moins cher**\n\n"
+        response += f"**{produit2.name} est {diff_prix} € moins cher**\n\n"
     else:
-        response += f"➡️ **Prix identiques**\n\n"
+        response += f"Prix identiques\n\n"
     
     # 2. CATÉGORIES
-    response += f"🔧 **CATÉGORIES**\n"
+    response += f"**CATÉGORIES**\n"
     response += f"• {produit1.name}: {produit1.category_name}\n"
     response += f"• {produit2.name}: {produit2.category_name}\n\n"
     
     # 3. CARACTÉRISTIQUES PRINCIPALES
     if produit1.features and produit2.features:
-        response += f"📋 **CARACTÉRISTIQUES**\n"
+        response += f"**CARACTÉRISTIQUES**\n"
         response += f"• {produit1.name}: {len(produit1.features)} fonctionnalités\n"
         response += f"• {produit2.name}: {len(produit2.features)} fonctionnalités\n"
         if produit1.features:
@@ -337,12 +338,12 @@ def comparer_produits(produit1, produit2):
         response += "\n"
     
     # 4. DISPONIBILITÉ
-    response += f"📦 **DISPONIBILITÉ**\n"
+    response += f"**DISPONIBILITÉ**\n"
     response += f"• {produit1.name}: {produit1.stock} en stock\n"
     response += f"• {produit2.name}: {produit2.stock} en stock\n\n"
     
     # 5. RECOMMANDATION
-    response += f"🏆 **RECOMMANDATION**\n"
+    response += f"**RECOMMANDATION**\n"
     
     # Calculer un score pour chaque produit
     score1 = 0
@@ -365,16 +366,16 @@ def comparer_produits(produit1, produit2):
             score2 += 1
     
     if score1 > score2:
-        response += f"✅ **{produit1.name}** est légèrement meilleur selon nos critères."
+        response += f"**{produit1.name}** est légèrement meilleur selon nos critères."
     elif score2 > score1:
-        response += f"✅ **{produit2.name}** est légèrement meilleur selon nos critères."
+        response += f"**{produit2.name}** est légèrement meilleur selon nos critères."
     else:
         if produit1.price < produit2.price:
-            response += f"✅ **{produit1.name}** offre un meilleur rapport qualité/prix."
+            response += f"**{produit1.name}** offre un meilleur rapport qualité/prix."
         elif produit2.price < produit1.price:
-            response += f"✅ **{produit2.name}** offre un meilleur rapport qualité/prix."
+            response += f"**{produit2.name}** offre un meilleur rapport qualité/prix."
         else:
-            response += f"🤝 Les deux produits sont très similaires, le choix dépend de vos besoins."
+            response += f"Les deux produits sont très similaires, le choix dépend de vos besoins."
     
     return response
 
@@ -386,14 +387,14 @@ def comparer_tous_les_produits(all_products):
     best_product = comparator.find_best_product(all_products)
     
     if best_product:
-        response = f"**🏆 MEILLEUR PRODUIT GLOBAL**\n\n"
+        response = f"** MEILLEUR PRODUIT GLOBAL**\n\n"
         response += f"Après analyse de tous nos produits, **{best_product.name}** est le meilleur choix !\n\n"
-        response += f"💰 Prix: {best_product.price} €\n"
-        response += f"📦 Stock: {best_product.stock} unités\n"
+        response += f"Prix: {best_product.price} €\n"
+        response += f"Stock: {best_product.stock} unités\n"
         if best_product.features:
-            response += f"📋 {len(best_product.features)} fonctionnalités\n"
+            response += f"{len(best_product.features)} fonctionnalités\n"
         if best_product.isFeatured:
-            response += f"⭐ Produit en vedette\n"
+            response += f"Produit en vedette\n"
         
         return best_product, response
     
@@ -404,25 +405,25 @@ def recommander_produits(critere, all_products):
     
     if critere == "meilleur_prix":
         products = sorted(all_products, key=lambda x: x.price)[:5]
-        return "🏆 **Meilleurs prix** :\nVoici nos produits les plus abordables :", products
+        return "Meilleurs prix :\nVoici nos produits les plus abordables :", products
     
     elif critere == "haut_gamme":
         products = sorted(all_products, key=lambda x: x.price, reverse=True)[:5]
-        return "💎 **Produits haut de gamme** :\nVoici nos produits les plus prestigieux :", products
+        return "Produits haut de gamme :\nVoici nos produits les plus prestigieux :", products
     
     elif critere == "stock":
         products = [p for p in all_products if p.stock > 0][:8]
-        return "📦 **Produits en stock** :\nVoici les produits disponibles immédiatement :", products
+        return "Produits en stock :\nVoici les produits disponibles immédiatement :", products
     
     elif critere == "populaire":
         products = [p for p in all_products if p.isFeatured][:6]
         if not products:
             products = all_products[:6]
-        return "🌟 **Produits populaires** :\nVoici nos produits les plus demandés :", products
+        return "Produits populaires :\nVoici nos produits les plus demandés :", products
     
     elif critere == "qualite_prix":
         products = sorted(all_products, key=lambda x: x.price)[:5]
-        return "⚖️ **Meilleur rapport qualité/prix** :\nVoici une sélection équilibrée :", products
+        return "Meilleur rapport qualité/prix :\nVoici une sélection équilibrée :", products
     
     else:
         return None, []
@@ -434,7 +435,7 @@ def chat():
         message = data.get('message', '')
         user_id = data.get('user_id', 'default')
         
-        print(f"📩 Message reçu: {message}")
+        print(f"Message reçu: {message}")
         
         # Ajouter au contexte
         conversation_manager.add_message(user_id, 'user', message)
@@ -463,7 +464,7 @@ def chat():
         category = mongo_service.get_category_by_name(message)
         
         if category:
-            print(f"✅ Catégorie reconnue: {category['name']}")
+            print(f"Catégorie reconnue: {category['name']}")
             
             # Récupérer les sous-catégories
             subcategories = mongo_service.get_subcategories(category['_id'])
@@ -490,7 +491,7 @@ def chat():
         # GESTION DES SALUTATIONS
         # ============================================
         elif intent == 'greeting':
-            response = "Bonjour ! 👋 Je suis votre assistant UniverTechno+. Comment puis-je vous aider aujourd'hui ?"
+            response = "Bonjour ! Je suis votre assistant UniverTechno+. Comment puis-je vous aider aujourd'hui ?"
         
         # ============================================
         # DEMANDE D'AIDE POUR ACHETER
@@ -510,7 +511,7 @@ def chat():
                     for sub in cat['subcategories'][:2]:
                         response += f"  - {sub['name']}\n"
             
-            response += "\n👉 **Cliquez sur une catégorie pour voir ses sous-catégories !**"
+            response += "\nCliquez sur une catégorie pour voir ses sous-catégories !"
         
         # ============================================
         # COMPARAISON DE PRODUITS (CAS 1: Deux produits spécifiques)
@@ -558,7 +559,7 @@ def chat():
                     response = "Je n'ai pas trouvé ces produits. Voici quelques produits disponibles :\n"
                     for i, p in enumerate(all_products[:8], 1):
                         response += f"{i}. {p.name}\n"
-                    response += "\n👉 Essayez avec des noms exacts comme 'De2-Ultra' ou 'PC1 Baby'"
+                    response += "\nEssayez avec des noms exacts comme 'De2-Ultra' ou 'PC1 Baby'"
             else:
                 response = "Pour comparer des produits, dites par exemple :\n• **'compare De2-Ultra et PC1 Baby'**\n• **'De2-Ultra vs PC1 Baby'**\n• **'différence entre Fa2-Ultra et PX1 Baby'**"
         
@@ -619,11 +620,11 @@ def chat():
                 # Utiliser la recherche avancée
                 products = product_search.search_by_keywords_advanced(keywords, limit=8)
                 if products:
-                    response = f"🔍 J'ai trouvé {len(products)} produit(s) correspondant à votre recherche par mots-clés :\n\n"
+                    response = f"J'ai trouvé {len(products)} produit(s) correspondant à votre recherche par mots-clés :\n\n"
                     for i, p in enumerate(products, 1):
                         response += f"{i}. **{p.name}** - {p.price} €\n"
                 else:
-                    response = "😕 Je n'ai pas trouvé de produit correspondant à ces mots-clés."
+                    response = "Je n'ai pas trouvé de produit correspondant à ces mots-clés."
                     # Proposer des catégories
                     categories = mongo_service.get_categories_hierarchy()
                     categories_to_show = []
@@ -631,9 +632,9 @@ def chat():
                         cat['count'] = mongo_service.count_products_in_category(cat['_id'])
                         cat['level'] = 1
                         categories_to_show.append(cat)
-                    response += "\n\n📋 **Catégories disponibles :**"
+                    response += "\n\n**Catégories disponibles :**"
             else:
-                response = "❓ Que voulez-vous chercher ? (ex: 'cherche tour CNC', 'recherche capteurs', 'find milling machine')"
+                response = "Que voulez-vous chercher ? (ex: 'cherche tour CNC', 'recherche capteurs', 'find milling machine')"
         
         # ============================================
         # RECHERCHE SIMPLE (existante)
@@ -646,9 +647,9 @@ def chat():
             if keywords:
                 products = product_search.search_by_keywords(keywords, limit=8)
                 if products:
-                    response = f"🔍 J'ai trouvé {len(products)} produit(s) correspondant à votre recherche :"
+                    response = f"J'ai trouvé {len(products)} produit(s) correspondant à votre recherche :"
                 else:
-                    response = "😕 Je n'ai pas trouvé de produit correspondant."
+                    response = "Je n'ai pas trouvé de produit correspondant."
                     # Proposer des catégories
                     categories = mongo_service.get_categories_hierarchy()
                     categories_to_show = []
@@ -656,23 +657,23 @@ def chat():
                         cat['count'] = mongo_service.count_products_in_category(cat['_id'])
                         cat['level'] = 1
                         categories_to_show.append(cat)
-                    response += "\n\n📋 **Catégories disponibles :**"
+                    response += "\n\n**Catégories disponibles :**"
             else:
-                response = "❓ Que voulez-vous chercher ? (ex: 'cherche tour CNC', 'recherche capteurs', 'find milling machine')"
+                response = "Que voulez-vous chercher ? (ex: 'cherche tour CNC', 'recherche capteurs', 'find milling machine')"
         
         # ============================================
         # CONSEILS / RECOMMANDATIONS
         # ============================================
         elif any(word in message_lower for word in ['conseil', 'conseille', 'recommande', 'suggère', 'advice', 'suggest']):
             
-            response = "🤔 **Je peux vous conseiller selon différents critères :**\n\n"
+            response = "**Je peux vous conseiller selon différents critères :**\n\n"
             response += "• **'meilleur rapport qualité/prix'** - Les plus abordables\n"
             response += "• **'produits haut de gamme'** - Les plus prestigieux\n"
             response += "• **'produits en stock'** - Disponibles immédiatement\n"
             response += "• **'produits populaires'** - Les plus demandés\n"
             response += "• **'meilleurs prix'** - Les moins chers\n"
             response += "• **'comparer tous'** - Comparer tous les produits\n\n"
-            response += "👉 Que préférez-vous ?"
+            response += "Que préférez-vous ?"
         
         # ============================================
         # MEILLEUR PRODUIT / TOP / RECOMMANDATION
@@ -682,43 +683,43 @@ def chat():
             # 1. Meilleur rapport qualité/prix
             if any(word in message_lower for word in ['qualité', 'prix', 'rapport', 'value', 'price']):
                 products = recommendation_engine.get_best_value_products(6)
-                response = "🏆 **Meilleur rapport qualité/prix** :\nVoici les produits les plus abordables :"
+                response = "**Meilleur rapport qualité/prix** :\nVoici les produits les plus abordables :"
             
             # 2. Haut de gamme / premium
             elif any(word in message_lower for word in ['haut de gamme', 'premium', 'cher', 'luxe', 'expensive']):
                 products = recommendation_engine.get_premium_products(6)
-                response = "💎 **Produits haut de gamme** :\nVoici nos produits les plus prestigieux :"
+                response = "**Produits haut de gamme** :\nVoici nos produits les plus prestigieux :"
             
             # 3. Produits en stock
             elif any(word in message_lower for word in ['stock', 'disponible', 'available']):
                 products = recommendation_engine.get_available_products(8)
-                response = "📦 **Produits disponibles immédiatement** :"
+                response = "**Produits disponibles immédiatement** :"
             
             # 4. Par catégorie spécifique
             elif 'cnc' in message_lower:
                 cnc_products = [p for p in all_products if 'cnc' in p.category_name.lower() or 'cnc' in p.name.lower()]
                 cnc_products.sort(key=lambda x: x.price)
                 products = cnc_products[:6]
-                response = "🔧 **Meilleurs produits CNC** :\nVoici une sélection :"
+                response = "**Meilleurs produits CNC** :\nVoici une sélection :"
             
             elif 'voiture' in message_lower or 'auto' in message_lower:
                 voiture_products = [p for p in all_products if 'voiture' in p.mainCategory.lower() or 'capteur' in p.name.lower()]
                 voiture_products.sort(key=lambda x: x.price)
                 products = voiture_products[:6]
-                response = "🚗 **Meilleurs produits automobile** :\nVoici une sélection :"
+                response = "**Meilleurs produits automobile** :\nVoici une sélection :"
             
             elif 'mcp' in message_lower or 'lab' in message_lower:
                 mcp_products = [p for p in all_products if 'mcp' in p.mainCategory.lower() or 'lab' in p.mainCategory.lower()]
                 mcp_products.sort(key=lambda x: x.price)
                 products = mcp_products[:6]
-                response = "🔬 **Meilleurs équipements MCP lab** :\nVoici une sélection :"
+                response = "**Meilleurs équipements MCP lab** :\nVoici une sélection :"
             
             # 5. Par défaut : produits populaires / en vedette
             else:
                 products = [p for p in all_products if p.isFeatured][:6]
                 if not products:
                     products = all_products[:6]
-                response = "🌟 **Nos produits populaires** :\nVoici nos produits les plus demandés :"
+                response = "**Nos produits populaires** :\nVoici nos produits les plus demandés :"
         
         # ============================================
         # PRODUITS EN STOCK
@@ -726,23 +727,23 @@ def chat():
         elif 'stock' in message_lower or 'disponible' in message_lower:
             products = recommendation_engine.get_available_products(8)
             if products:
-                response = "📦 **Produits en stock** :\nVoici les produits disponibles immédiatement :"
+                response = "**Produits en stock** :\nVoici les produits disponibles immédiatement :"
             else:
-                response = "😕 Désolé, aucun produit en stock pour le moment."
+                response = "Désolé, aucun produit en stock pour le moment."
         
         # ============================================
         # PRODUITS LES MOINS CHERS
         # ============================================
         elif 'moins cher' in message_lower or 'abordable' in message_lower or 'petit prix' in message_lower:
             products = recommendation_engine.get_best_value_products(8)
-            response = "💰 **Les moins chers** :\nVoici nos produits les plus abordables :"
+            response = "**Les moins chers** :\nVoici nos produits les plus abordables :"
         
         # ============================================
         # PRODUITS LES PLUS CHERS
         # ============================================
         elif 'plus cher' in message_lower or 'haut de gamme' in message_lower:
             products = recommendation_engine.get_premium_products(8)
-            response = "💎 **Les plus prestigieux** :\nVoici nos produits haut de gamme :"
+            response = "**Les plus prestigieux** :\nVoici nos produits haut de gamme :"
         
         # ============================================
         # LISTE DES CATÉGORIES - TOUS LES NIVEAUX
@@ -751,7 +752,7 @@ def chat():
             categories = mongo_service.get_categories_hierarchy()
             
             # Formater la réponse texte
-            response = "**📋 MENU COMPLET DES CATÉGORIES**\n\n"
+            response = "**MENU COMPLET DES CATÉGORIES**\n\n"
             
             # Préparer la liste plate de toutes les catégories pour les boutons
             categories_to_show = []
@@ -766,7 +767,7 @@ def chat():
                     'name': cat['name'],
                     'level': 1,
                     'count': cat_count,
-                    'icon': cat.get('icon', '📁')
+                    'icon': cat.get('icon')
                 })
                 
                 response += f"• **{cat['name']}** ({cat_count} produits)\n"
@@ -798,7 +799,7 @@ def chat():
                                 })
                                 response += f"    • {subsub['name']} ({subsub_count} produits)\n"
             
-            response += "\n👉 **Cliquez sur un bouton pour voir les produits ou sous-catégories !**"
+            response += "\nCliquez sur un bouton pour voir les produits ou sous-catégories !"
         
         # ============================================
         # PRIX D'UN PRODUIT SPÉCIFIQUE
@@ -807,59 +808,59 @@ def chat():
             keywords = text_processor.extract_keywords(message)
             products = product_search.search_by_keywords(keywords, limit=3)
             if products:
-                response = "💰 **Voici les prix des produits correspondants :**\n"
+                response = "**Voici les prix des produits correspondants :**\n"
                 for p in products:
                     response += f"• **{p.name}**: {p.price} €"
                     if p.stock > 0:
-                        response += f" (✓ en stock)"
+                        response += f" (en stock)"
                     else:
-                        response += f" (✗ rupture)"
+                        response += f" (rupture)"
                     response += "\n"
             else:
-                response = "❓ Pour quel produit voulez-vous connaître le prix ? (ex: 'prix du De2-Ultra', 'combien coûte le PC1 Baby')"
+                response = "Pour quel produit voulez-vous connaître le prix ? (ex: 'prix du De2-Ultra', 'combien coûte le PC1 Baby')"
         
         # ============================================
         # AIDE COMPLÈTE
         # ============================================
         elif 'aide' in message_lower or 'help' in message_lower:
-            response = "**🤖 GUIDE D'UTILISATION DU CHATBOT**\n\n"
-            response += "**📋 CATÉGORIES**\n"
+            response = "**GUIDE D'UTILISATION DU CHATBOT**\n\n"
+            response += "**CATÉGORIES**\n"
             response += "• 'liste' ou 'catégories' - Voir toutes les catégories\n"
             response += "• 'aide achat' - Guide d'achat personnalisé\n\n"
             
-            response += "**🔍 RECHERCHE**\n"
+            response += "**RECHERCHE**\n"
             response += "• 'cherche [mot]' - Rechercher un produit\n"
             response += "• 'prix [produit]' - Voir le prix d'un produit\n\n"
             
-            response += "**⚖️ COMPARAISON**\n"
+            response += "**COMPARAISON**\n"
             response += "• 'compare X et Y' - Comparer deux produits\n"
             response += "• 'comparer tous' - Comparer tous les produits\n"
             response += "• 'meilleur produit' - Meilleur produit global\n\n"
             
-            response += "**🏆 RECOMMANDATIONS**\n"
+            response += "**RECOMMANDATIONS**\n"
             response += "• 'meilleur rapport qualité/prix' - Les moins chers\n"
             response += "• 'haut de gamme' - Les plus prestigieux\n"
             response += "• 'en stock' - Produits disponibles\n"
             response += "• 'populaire' - Les plus demandés\n\n"
             
-            response += "**📦 CATÉGORIES SPÉCIFIQUES**\n"
+            response += "**CATÉGORIES SPÉCIFIQUES**\n"
             response += "• 'CNC' - Machines CNC\n"
             response += "• 'Voiture' - Systèmes automobiles\n"
             response += "• 'MCP' - Équipements lab\n\n"
             
-            response += "👉 **Cliquez directement sur les boutons pour naviguer !**"
+            response += "Cliquez directement sur les boutons pour naviguer !"
         
         # ============================================
         # REMERCIEMENT
         # ============================================
         elif any(word in message_lower for word in ['merci', 'thanks', 'thank you']):
-            response = "Je vous en prie ! 😊 N'hésitez pas si vous avez d'autres questions. Je suis là pour vous aider !"
+            response = "Je vous en prie ! N'hésitez pas si vous avez d'autres questions. Je suis là pour vous aider !"
         
         # ============================================
         # AU REVOIR
         # ============================================
         elif any(word in message_lower for word in ['au revoir', 'bye', 'à bientôt', 'goodbye']):
-            response = "Au revoir ! 👋 Merci d'avoir utilisé notre assistant. À bientôt sur UniverTechno+ !"
+            response = "Au revoir ! Merci d'avoir utilisé notre assistant. À bientôt sur UniverTechno+ !"
         
         # ============================================
         # RÉPONSE PAR DÉFAUT
@@ -872,9 +873,9 @@ def chat():
                     products = product_search.search_by_keywords(keywords, limit=4)
                 
                 if products:
-                    response = f"🔍 Voici ce que j'ai trouvé pour '{message}' :"
+                    response = f"Voici ce que j'ai trouvé pour '{message}' :"
                 else:
-                    response = "😕 Je n'ai pas compris. Tapez **'aide'** pour voir toutes les commandes disponibles."
+                    response = "Je n'ai pas compris. Tapez **'aide'** pour voir toutes les commandes disponibles."
         
         # Ajouter la réponse à la conversation
         conversation_manager.add_message(user_id, 'assistant', response, products)
@@ -896,9 +897,9 @@ def chat():
         if parent_category:
             response_data['parent_category'] = parent_category
         
-        print(f"📤 Réponse: {response[:100]}...")
-        print(f"📦 Produits: {len(products)}")
-        print(f"📋 Catégories: {len(categories_to_show)}")
+        print(f"Réponse: {response[:100]}...")
+        print(f"Produits: {len(products)}")
+        print(f"Catégories: {len(categories_to_show)}")
         
         return jsonify(response_data)
         
@@ -960,6 +961,6 @@ def health():
 
 if __name__ == '__main__':
     port = int(os.getenv('FLASK_PORT', 5001))
-    print(f"🚀 Serveur démarré sur http://localhost:{port}")
-    print(f"📦 Connecté à MongoDB")
+    print(f"Serveur démarré sur http://localhost:{port}")
+    print(f"Connecté à MongoDB")
     app.run(debug=True, port=port)

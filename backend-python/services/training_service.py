@@ -4,6 +4,6 @@ class TrainingService:
         self.is_trained = False
         
     def train_all(self):
-        print("🔄 Entraînement...")
+        print(" Entraînement...")
         self.is_trained = True
-        print("✅ Entraînement terminé")
+        print(" Entraînement terminé")
