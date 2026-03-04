@@ -1,3 +1,4 @@
+// routes/products.js
 import express from 'express';
 import {
   getAllProducts,
@@ -15,25 +16,27 @@ const router = express.Router();
 
 // Routes pour les produits
 router.route('/')
-  .get(getAllProducts)       // GET /api/products
-  .post(createProduct);      // POST /api/products
+  .get(getAllProducts)
+  .post(createProduct);
 
-router.route('/category/:categoryId')
-  .get(getProductsByCategory); // GET /api/products/category/:categoryId
+// Route pour les produits par catégorie (en français)
+router.route('/categorie/:categorieId')
+  .get(getProductsByCategory);
 
+// Routes pour un produit spécifique
 router.route('/:id')
-  .get(getProductById)       // GET /api/products/:id
-  .put(updateProduct)        // PUT /api/products/:id
-  .delete(deleteProduct);    // DELETE /api/products/:id
+  .get(getProductById)
+  .put(updateProduct)
+  .delete(deleteProduct);
 
-// Routes pour les alertes stock
-router.route('/out-of-stock')
-  .get(getOutOfStockProducts);  // GET /api/products/out-of-stock
+// Routes pour les alertes stock (en français)
+router.route('/rupture-stock')
+  .get(getOutOfStockProducts);
 
-router.route('/low-stock')
-  .get(getLowStockProducts);    // GET /api/products/low-stock
+router.route('/stock-faible')
+  .get(getLowStockProducts);
 
-router.route('/stock-stats')
-  .get(getStockStats);          // GET /api/products/stock-stats
+router.route('/statistiques-stock')
+  .get(getStockStats);
 
 export default router;

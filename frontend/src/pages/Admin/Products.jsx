@@ -183,12 +183,9 @@ export default function Products() {
             const allProducts = await productAPI.getAll();
             const filteredProducts = allProducts.data.data.filter((product) => {
               const productCategoryId =
-                product.category?._id || product.categoryId;
+                product.categorie?._id || product.category?._id || product.categoryId;
               const isDirectProduct = productCategoryId === categoryId;
 
-              console.log(
-                `  Produit "${product.name}": catégorie=${productCategoryId}, direct=${isDirectProduct}`,
-              );
               return isDirectProduct;
             });
 
@@ -221,7 +218,7 @@ export default function Products() {
 
           const filteredProducts = allProductsData.filter((product) => {
             const productCategoryId =
-              product.category?._id || product.categoryId;
+              product.categorie?._id || product.category?._id || product.categoryId;
             return allCategoryIds.includes(productCategoryId);
           });
 
@@ -328,8 +325,16 @@ export default function Products() {
   };
 
   const sortedProducts = [...products].sort((a, b) => {
-    const aValue = a[sortConfig.key] || 0;
-    const bValue = b[sortConfig.key] || 0;
+    // Gérer les différents noms de champs possibles
+    const getValue = (obj, key) => {
+      if (key === 'nom' || key === 'name') return obj.nom || obj.name || '';
+      if (key === 'prix' || key === 'price') return obj.prix || obj.price || 0;
+      if (key === 'stock') return obj.stock || 0;
+      return obj[key] || 0;
+    };
+
+    const aValue = getValue(a, sortConfig.key);
+    const bValue = getValue(b, sortConfig.key);
 
     if (aValue < bValue) {
       return sortConfig.direction === "asc" ? -1 : 1;
@@ -359,35 +364,73 @@ export default function Products() {
     return getChildrenIds(categoryId);
   }, [categoryId, categories]);
 
+  // Fonction sécurisée pour obtenir le nom du produit
+  const getProductName = (product) => {
+    return product?.nom || product?.name || '';
+  };
+
+  // Fonction sécurisée pour obtenir la description
+  const getProductDescription = (product) => {
+    return product?.description || '';
+  };
+
+  // Fonction sécurisée pour obtenir le modèle
+  const getProductModel = (product) => {
+    return product?.modele || product?.model || '';
+  };
+
+  // Fonction sécurisée pour obtenir le prix
+  const getProductPrice = (product) => {
+    return product?.prix || product?.price || 0;
+  };
+
+  // Fonction sécurisée pour obtenir le statut actif
+  const isProductActive = (product) => {
+    return product?.estActif ?? product?.isActive ?? true;
+  };
+
+  // Fonction sécurisée pour obtenir l'ID de catégorie
+  const getProductCategoryId = (product) => {
+    return product?.categorie?._id || product?.category?._id || product?.categoryId;
+  };
+
   const filteredProducts = sortedProducts.filter((product) => {
+    // Vérifier que product existe
+    if (!product) return false;
+
+    const productName = getProductName(product).toLowerCase();
+    const productDescription = getProductDescription(product).toLowerCase();
+    const productModel = getProductModel(product).toLowerCase();
+    const searchLower = (filters.search || '').toLowerCase();
+
     const matchesSearch =
       !filters.search ||
-      product.name.toLowerCase().includes(filters.search.toLowerCase()) ||
-      product.description
-        ?.toLowerCase()
-        .includes(filters.search.toLowerCase()) ||
-      product.model?.toLowerCase().includes(filters.search.toLowerCase());
+      productName.includes(searchLower) ||
+      productDescription.includes(searchLower) ||
+      productModel.includes(searchLower);
 
     let matchesCategory = true;
     if (filters.category) {
+      const productCategoryId = getProductCategoryId(product);
+      
       if (categoryId && !viewDirectProductsOnly) {
-        const productCategoryId = product.category?._id || product.categoryId;
         matchesCategory = getAllChildCategoryIds.includes(productCategoryId);
       } else if (categoryId && viewDirectProductsOnly) {
-        const productCategoryId = product.category?._id || product.categoryId;
         matchesCategory = productCategoryId === categoryId;
       } else {
-        matchesCategory = product.category?._id === filters.category;
+        matchesCategory = productCategoryId === filters.category;
       }
     }
 
     const matchesSubCategory =
-      !filters.subCategory || product.subCategory?._id === filters.subCategory;
+      !filters.subCategory || 
+      product.subCategory?._id === filters.subCategory ||
+      product.sousCategorie?._id === filters.subCategory;
 
     const matchesStatus =
       filters.status === "all" ||
-      (filters.status === "active" && product.isActive) ||
-      (filters.status === "inactive" && !product.isActive);
+      (filters.status === "active" && isProductActive(product)) ||
+      (filters.status === "inactive" && !isProductActive(product));
 
     return (
       matchesSearch && matchesCategory && matchesSubCategory && matchesStatus
@@ -398,7 +441,7 @@ export default function Products() {
     if (!categoryId) return null;
 
     const productsInCategory = allProducts.filter((product) => {
-      const productCategoryId = product.category?._id || product.categoryId;
+      const productCategoryId = getProductCategoryId(product);
       if (viewDirectProductsOnly) {
         return productCategoryId === categoryId;
       } else {
@@ -408,12 +451,14 @@ export default function Products() {
 
     return {
       total: productsInCategory.length,
-      active: productsInCategory.filter((p) => p.isActive).length,
-      outOfStock: productsInCategory.filter((p) => p.stock === 0).length,
-      lowStock: productsInCategory.filter((p) => p.stock > 0 && p.stock < 5)
-        .length,
+      active: productsInCategory.filter((p) => isProductActive(p)).length,
+      outOfStock: productsInCategory.filter((p) => (p.stock || 0) === 0).length,
+      lowStock: productsInCategory.filter((p) => {
+        const stock = p.stock || 0;
+        return stock > 0 && stock < 5;
+      }).length,
       totalValue: productsInCategory.reduce(
-        (sum, p) => sum + (p.price || 0) * (p.stock || 0),
+        (sum, p) => sum + (getProductPrice(p)) * (p.stock || 0),
         0,
       ),
     };
@@ -571,15 +616,16 @@ export default function Products() {
     setTimeout(() => alertDiv.remove(), 3000);
   };
 
+  // Calculs sécurisés pour les statistiques
   const totalValue = products.reduce(
-    (sum, p) => sum + (p.price || 0) * (p.stock || 0),
+    (sum, p) => sum + (getProductPrice(p)) * (p.stock || 0),
     0,
   );
 
-  const activeProductsCount = products.filter((p) => p.isActive).length;
-  const outOfStockCount = products.filter((p) => p.stock === 0).length;
+  const activeProductsCount = products.filter((p) => isProductActive(p)).length;
+  const outOfStockCount = products.filter((p) => (p.stock || 0) === 0).length;
   const lowStockCount = products.filter(
-    (p) => p.stock > 0 && p.stock < 5,
+    (p) => (p.stock || 0) > 0 && (p.stock || 0) < 5,
   ).length;
 
   // Formatage de la date
@@ -993,37 +1039,37 @@ export default function Products() {
                       </div>
                       <div>
                         <span
-                          className={`badge ${product.isActive ? "bg-success" : "bg-secondary"} rounded-pill px-3 py-2`}
+                          className={`badge ${isProductActive(product) ? "bg-success" : "bg-secondary"} rounded-pill px-3 py-2`}
                         >
-                          {product.isActive ? "Actif" : "Inactif"}
+                          {isProductActive(product) ? "Actif" : "Inactif"}
                         </span>
                       </div>
                     </div>
 
-                    <h5 className="card-title fw-bold mb-2">{product.name}</h5>
+                    <h5 className="card-title fw-bold mb-2">{getProductName(product)}</h5>
                     <p className="card-text text-muted small mb-3">
-                      {product.description || "Aucune description"}
+                      {getProductDescription(product) || "Aucune description"}
                     </p>
 
                     <div className="mb-3">
                       <div className="d-flex justify-content-between align-items-center mb-2">
                         <span className="text-muted small">Prix</span>
                         <span className="fw-bold text-success">
-                          {product.price}€
+                          {getProductPrice(product)}€
                         </span>
                       </div>
                       <div className="d-flex justify-content-between align-items-center">
                         <span className="text-muted small">Stock</span>
                         <span
                           className={`fw-bold ${
-                            product.stock === 0
+                            (product.stock || 0) === 0
                               ? "text-danger"
-                              : product.stock < 5
+                              : (product.stock || 0) < 5
                                 ? "text-warning"
                                 : "text-success"
                           }`}
                         >
-                          {product.stock} unités
+                          {product.stock || 0} unités
                         </span>
                       </div>
                     </div>

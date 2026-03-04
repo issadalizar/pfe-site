@@ -1,4 +1,4 @@
-// src/services/api.js
+// src/services/CategorieProduct.js
 import axios from 'axios';
 
 const API_BASE_URL = 'http://localhost:5000/api';
@@ -27,22 +27,41 @@ export const contactAPI = {
   delete: (id) => api.delete(`/contact/${id}`),
 };
 
-// Produits
+// Produits avec gestion d'erreur améliorée
 export const productAPI = {
   getAll: () => api.get('/products'),
-  getByCategory: (categoryId) => api.get(`/products/category/${categoryId}`),
+  
+  getByCategory: async (categoryId) => {
+    try {
+      console.log(`🔍 Tentative avec route française: /products/categorie/${categoryId}`);
+      const response = await api.get(`/products/categorie/${categoryId}`);
+      return response;
+    } catch (error) {
+      console.log(`⚠️ Route française échouée, essai route anglaise: /products/category/${categoryId}`);
+      
+      // Fallback vers l'ancienne route
+      try {
+        const fallbackResponse = await api.get(`/products/category/${categoryId}`);
+        console.log("✅ Route anglaise fonctionne");
+        return fallbackResponse;
+      } catch (fallbackError) {
+        console.error("❌ Les deux routes ont échoué");
+        throw error;
+      }
+    }
+  },
+  
   getById: (id) => api.get(`/products/${id}`),
+  
   // Méthodes CRUD
   create: (data) => api.post('/products', data),
   update: (id, data) => api.put(`/products/${id}`, data),
   delete: (id) => api.delete(`/products/${id}`),
-  // Nouvelles fonctions pour les alertes stock
-  getOutOfStock: () => api.get('/products/out-of-stock'),
-  getLowStock: () => api.get('/products/low-stock'),
-  getStockStats: () => api.get('/products/stock-stats'),
-
-
+  
+  // Alertes stock (routes françaises)
+  getOutOfStock: () => api.get('/products/rupture-stock'),
+  getLowStock: () => api.get('/products/stock-faible'),
+  getStockStats: () => api.get('/products/statistiques-stock'),
 };
-
 
 export default api;

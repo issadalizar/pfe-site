@@ -14,8 +14,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    trim: true,
-    lowercase: true,
+    trim: true,// Supprimer les espaces avant et après l'email
+    lowercase: true,// Convertir l'email en minuscules98
     match: [/^\S+@\S+\.\S+$/, 'Format email invalide']
   },
   password: {

@@ -7,12 +7,12 @@ const specificationSchema = new mongoose.Schema({
     required: true,
     index: true
   },
-  key: {
+  key: {//name
     type: String,
     required: true,
     trim: true
   },
-  value: {
+  value: {//description
     type: String,
     required: true,
     trim: true
@@ -26,14 +26,6 @@ const specificationSchema = new mongoose.Schema({
   order: {
     type: Number,
     default: 0
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
   }
 });
 

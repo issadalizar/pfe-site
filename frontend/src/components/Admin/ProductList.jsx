@@ -1,4 +1,5 @@
-import React from "react";
+// src/components/Admin/ProductList.jsx
+import React, { useState, useEffect } from "react";
 import { 
   FaEdit, 
   FaTrash, 
@@ -7,12 +8,14 @@ import {
   FaSort,
   FaSortUp,
   FaSortDown,
-  FaStar,
   FaEuroSign,
   FaCube,
   FaCheckCircle,
-  FaTimesCircle
+  FaTimesCircle,
+  FaImage,
+  FaStar
 } from "react-icons/fa";
+import { getProductDetails } from "../../pages/productData"; // Importer la fonction
 
 export default function ProductList({ 
   products, 
@@ -61,564 +64,117 @@ export default function ProductList({
     }
   };
 
-  // Composant interne pour charger proprement une image produit
-  function ProductImage({ product }) {
-    const [currentSrc, setCurrentSrc] = React.useState('');
-    const [failed, setFailed] = React.useState(false);
-    const [loading, setLoading] = React.useState(true);
-
-    React.useEffect(() => {
-      // Fonction pour générer toutes les URLs possibles selon votre structure
-      const generateImageUrls = () => {
-        const urls = new Set();
-        const tryExtensions = ['.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG'];
-        
-        // Obtenir les noms des catégories DIRECTEMENT depuis le produit
-        const parentCategory = product.category?.parent?.name || '';
-        const subCategory = product.category?.name || '';
-        const productName = product.name || '';
-        const productModel = product.model || '';
-        
-        console.log("🔍 Produit info:", {
-          name: productName,
-          model: productModel,
-          category: subCategory,
-          parent: parentCategory
-        });
-        
-        // Nettoyer les noms pour les chemins
-        const cleanName = (name) => {
-          return (name || '')
-            .replace(/[<>:"/\\|?*]/g, '') // Enlever les caractères invalides pour les chemins
-            .replace(/\s+/g, ' ')
-            .trim();
-        };
-        
-        const cleanParent = cleanName(parentCategory);
-        const cleanSub = cleanName(subCategory);
-        const cleanProduct = cleanName(productName);
-        const cleanModel = cleanName(productModel);
-        
-        // 1. D'abord essayer l'image stockée en base
-        if (product.image) {
-          urls.add(product.image);
-        }
-        
-        // 2. Générer les noms de fichier exacts pour TOUS les produits CNC EDUCATION
-        if (cleanParent.includes('CNC') || cleanParent.includes('EDUCATION') || 
-            cleanSub.includes('Turning') || cleanSub.includes('Lathe') || 
-            cleanSub.includes('Milling')) {
-          
-          // TOUS les produits CNC EDUCATION avec leurs noms de fichier exacts
-          const cncProducts = {
-            // CNC Turning Machine products
-            'DTS-011 à DTS-016 – Electrical Training System': 'DTS-011 à DTS-016 – Electrical Training System.png',
-            'De8 (iKC8) CNC Turning Machine': 'De8 (iKC8) CNC Turning Machine.png',
-            'De4-Pro (iKC4) Bench CNC Lathe': 'De4-Pro (iKC4) Bench CNC Lathe.png',
-            'De6 (iKC6S) CNC Turning Machine': 'De6 (iKC6S) CNC Turning Machine.png',
-            'De4-Eco (KC4S) Bench CNC Lathe': 'De4-Eco (KC4S) Bench CNC Lathe.png',
-            'PC1 Baby CNC Lathe-Mach': 'PC1 Baby CNC Lathe-Mach.png',
-            'De2-Ultra Mini CNC Turning Center': 'De2-Ultra Mini CNC Turning Center.png',
-            
-            // CNC Milling Machine products
-            'Fa4-Eco (KX1S) CNC Milling Machine': 'Fa4-Eco (KX1S) CNC Milling Machine.png',
-            'PX1 Baby CNC Milling Machine': 'PX1 Baby CNC Milling Machine.png',
-            'Fa2-Ultra Mini CNC Milling Center': 'Fa2-Ultra Mini CNC Milling Center.png'
-          };
-          
-          // Chercher le nom exact du fichier pour ce produit
-          for (const [prodName, fileName] of Object.entries(cncProducts)) {
-            // Recherche plus intelligente pour les correspondances
-            const productMatch = cleanProduct.toLowerCase();
-            const prodNameLower = prodName.toLowerCase();
-            
-            // Vérifier plusieurs types de correspondance
-            const isMatch = 
-              productMatch.includes(prodNameLower.substring(0, 15)) ||
-              prodNameLower.includes(productMatch.substring(0, 15)) ||
-              cleanProduct.includes(prodName.substring(0, 20)) ||
-              prodName.includes(cleanProduct.substring(0, 20));
-            
-            if (isMatch) {
-              console.log(`✅ Match trouvé: ${cleanProduct} -> ${fileName}`);
-              
-              // Déterminer le bon sous-dossier
-              let subFolder = '';
-              if (prodName.includes('Turning') || prodName.includes('Lathe')) {
-                subFolder = 'CNC Turing Machine';
-              } else if (prodName.includes('Milling')) {
-                subFolder = 'CNC Milling Machine';
-              }
-              
-              if (subFolder) {
-                // Chemin spécifique au sous-dossier
-                urls.add(`/images/products/CNC EDUCATION/${subFolder}/${fileName}`);
-              }
-              
-              // Chemin racine CNC EDUCATION
-              urls.add(`/images/products/CNC EDUCATION/${fileName}`);
-              
-              // Ajouter aussi des variantes sans parenthèses
-              const fileNameNoParen = fileName.replace(/[()]/g, '');
-              if (subFolder) {
-                urls.add(`/images/products/CNC EDUCATION/${subFolder}/${fileNameNoParen}`);
-              }
-              urls.add(`/images/products/CNC EDUCATION/${fileNameNoParen}`);
-            }
-          }
-          
-          // Ajouter aussi les chemins génériques pour TOUS les sous-dossiers CNC
-          const cncSubFolders = ['CNC Milling Machine', 'CNC Turing Machine'];
-          for (const folder of cncSubFolders) {
-            for (const ext of tryExtensions) {
-              // Produit par nom
-              urls.add(`/images/products/CNC EDUCATION/${folder}/${encodeURIComponent(cleanProduct)}${ext}`);
-              // Produit par modèle
-              urls.add(`/images/products/CNC EDUCATION/${folder}/${encodeURIComponent(cleanModel)}${ext}`);
-              // Variante sans parenthèses
-              const cleanProductNoParen = cleanProduct.replace(/[()]/g, '');
-              urls.add(`/images/products/CNC EDUCATION/${folder}/${encodeURIComponent(cleanProductNoParen)}${ext}`);
-              // Variante avec tirets
-              const cleanProductDash = cleanProduct.replace(/\s+/g, '-');
-              urls.add(`/images/products/CNC EDUCATION/${folder}/${encodeURIComponent(cleanProductDash)}${ext}`);
-            }
-          }
-        }
-        
-        // 3. DÉTECTION SPÉCIALE POUR LES PRODUITS MCP LAB ELECTRONICS
-        // Basé sur les références des produits (PTL, ACL, M21, F1-3, etc.)
-        const mcpLabReferences = ['PTL', 'ACL', 'M21', 'F1-3'];
-        const isMCPLabProduct = mcpLabReferences.some(ref => 
-          cleanProduct.includes(ref) || (cleanModel && cleanModel.includes(ref))
-        );
-        
-        // Vérifier aussi par catégorie
-        const isMCPLabByCategory = 
-          cleanSub.includes('Accessoires') || 
-          cleanSub.includes('EDUCATION EQUIPMENT') ||
-          cleanSub.includes('Éducation Equipment') ||
-          cleanParent.includes('MCP') ||
-          cleanParent.includes('lab') ||
-          cleanParent.includes('electronics');
-        
-        if (isMCPLabProduct || isMCPLabByCategory) {
-          console.log("🔬 Produit MCP Lab Electronics détecté:", cleanProduct, "Sous-catégorie:", cleanSub, "Modèle:", cleanModel);
-          
-          // Dictionnaire complet de tous les produits MCP Lab Electronics avec leurs noms de fichier exacts
-          const mcpLabProducts = {
-            // Produits ACCESSOIRES
-            'Accessoires': {
-              'PTL908-2H – High Voltage Safety Test Lead 10kV': 'PTL908-2H – High Voltage Safety Test Lead 10kV.png',
-              'PTL970 – Oscilloscope Probe 5kV': 'PTL970 – Oscilloscope Probe 5kV.png',
-              'PTL955 – Oscilloscope Probe 40kV': 'PTL955 – Oscilloscope Probe 40kV.png',
-              'PTL908-8 – Test Lead 4mm 20A': 'PTL908-8 – Test Lead 4mm 20A.png',
-              'PTL940 – Oscilloscope Probe 100MHz': 'PTL940 – Oscilloscope Probe 100MHz.png',
-              'PTL960 – Oscilloscope Probe 500MHz': 'PTL960 – Oscilloscope Probe 500MHz.png'
-            },
-            // Produits EDUCATION EQUIPMENT
-            'EDUCATION EQUIPMENT': {
-              'ACL-7000 – Analogue Training System': 'ACL-7000 – Analogue Training System.png',
-              'M21-7100 – Digital & Analogue Training System': 'M21-7100 – Digital & Analogue Training System.png',
-              'F1-3 – Basic Logic Circuit Training System': 'F1-3 – Basic Logic Circuit Training System.png'
-            }
-          };
-          
-          // Trouver la sous-catégorie correspondante
-          let targetSubCategory = '';
-          const cleanSubLower = cleanSub.toLowerCase();
-          
-          if (cleanSubLower.includes('accessoires') || cleanSubLower.includes('accessoire')) {
-            targetSubCategory = 'Accessoires';
-          } else if (cleanSubLower.includes('education') || cleanSubLower.includes('equipment') || 
-                     cleanSubLower.includes('éducation') || cleanSubLower.includes('équipement')) {
-            targetSubCategory = 'EDUCATION EQUIPMENT';
-          }
-          
-          // Si la sous-catégorie n'est pas détectée, essayer de la deviner par le produit
-          if (!targetSubCategory) {
-            // Produits de type EDUCATION EQUIPMENT
-            if (cleanProduct.includes('ACL') || cleanProduct.includes('M21') || cleanProduct.includes('F1-3') ||
-                cleanProduct.includes('Training') || cleanProduct.includes('System')) {
-              targetSubCategory = 'EDUCATION EQUIPMENT';
-            }
-            // Produits de type Accessoires
-            else if (cleanProduct.includes('PTL') || 
-                     cleanProduct.includes('Probe') || 
-                     cleanProduct.includes('Test Lead') ||
-                     cleanProduct.includes('Lead')) {
-              targetSubCategory = 'Accessoires';
-            }
-          }
-          
-          console.log(`🎯 Sous-catégorie détectée: ${targetSubCategory} pour ${cleanProduct}`);
-          
-          // Chercher le nom exact du fichier pour ce produit
-          if (targetSubCategory && mcpLabProducts[targetSubCategory]) {
-            const subCategoryProducts = mcpLabProducts[targetSubCategory];
-            
-            for (const [prodName, fileName] of Object.entries(subCategoryProducts)) {
-              // Recherche de correspondance améliorée
-              const productMatch = cleanProduct.toLowerCase();
-              const prodNameLower = prodName.toLowerCase();
-              
-              // Recherche plus flexible pour détecter les correspondances
-              const isMatch = 
-                // Correspondance par les premiers caractères
-                productMatch.includes(prodNameLower.substring(0, 8)) ||
-                prodNameLower.includes(productMatch.substring(0, 8)) ||
-                // Correspondance par modèle (référence)
-                (cleanModel && prodName.includes(cleanModel)) ||
-                (cleanModel && cleanModel.includes(prodName.substring(0, 10))) ||
-                // Correspondance par nom complet
-                cleanProduct.includes(prodName.substring(0, 15)) ||
-                prodName.includes(cleanProduct.substring(0, 15));
-              
-              if (isMatch) {
-                console.log(`✅ Match MCP Lab trouvé: ${cleanProduct} -> ${fileName} (${targetSubCategory})`);
-                
-                // Chemin spécifique pour la sous-catégorie
-                urls.add(`/images/products/MCP lab electronics/${targetSubCategory}/${fileName}`);
-                
-                // Ajouter aussi les variantes de nom de dossier
-                const folderVariants = {
-                  'Accessoires': ['Accessoires', 'ACCESSOIRES', 'accessoires'],
-                  'EDUCATION EQUIPMENT': ['EDUCATION EQUIPMENT', 'Education Equipment', 'education equipment', 'Éducation Equipment']
-                };
-                
-                if (folderVariants[targetSubCategory]) {
-                  for (const folder of folderVariants[targetSubCategory]) {
-                    urls.add(`/images/products/MCP lab electronics/${folder}/${fileName}`);
-                  }
-                }
-                
-                // Chemin racine MCP lab electronics
-                urls.add(`/images/products/MCP lab electronics/${fileName}`);
-                
-                // Ajouter aussi des variantes avec tirets au lieu d'espaces
-                const fileNameWithDash = fileName.replace(/\s+/g, '-');
-                urls.add(`/images/products/MCP lab electronics/${targetSubCategory}/${fileNameWithDash}`);
-                
-                break; // Arrêter après avoir trouvé une correspondance
-              }
-            }
-          }
-          
-          // Recherche avancée pour les produits qui ne correspondent pas exactement
-          // Recherche par modèle (référence)
-          if (cleanModel) {
-            // Essayer avec toutes les sous-catégories
-            const allMCPSubFolders = ['Accessoires', 'EDUCATION EQUIPMENT'];
-            
-            for (const folder of allMCPSubFolders) {
-              for (const ext of tryExtensions) {
-                // Essayer avec le modèle exact
-                urls.add(`/images/products/MCP lab electronics/${folder}/${encodeURIComponent(cleanModel)}${ext}`);
-                
-                // Essayer avec le modèle sans tirets
-                const cleanModelNoDash = cleanModel.replace(/-/g, '');
-                urls.add(`/images/products/MCP lab electronics/${folder}/${encodeURIComponent(cleanModelNoDash)}${ext}`);
-                
-                // Essayer avec le modèle en minuscules
-                urls.add(`/images/products/MCP lab electronics/${folder}/${encodeURIComponent(cleanModel.toLowerCase())}${ext}`);
-              }
-            }
-          }
-          
-          // Si aucune correspondance exacte n'est trouvée, essayer les chemins génériques
-          // Déterminer le dossier cible basé sur la sous-catégorie
-          const targetFolder = targetSubCategory || 'Accessoires'; // Par défaut Accessoires
-          
-          if (targetFolder) {
-            // Ajouter les chemins génériques pour tous les sous-dossiers MCP
-            const mcpSubFolders = [
-              'Accessoires',
-              'EDUCATION EQUIPMENT'
-            ];
-            
-            for (const folder of mcpSubFolders) {
-              for (const ext of tryExtensions) {
-                // Produit par nom
-                urls.add(`/images/products/MCP lab electronics/${folder}/${encodeURIComponent(cleanProduct)}${ext}`);
-                // Produit par modèle
-                urls.add(`/images/products/MCP lab electronics/${folder}/${encodeURIComponent(cleanModel)}${ext}`);
-                // Variante avec tirets
-                const cleanProductDash = cleanProduct.replace(/\s+/g, '-');
-                urls.add(`/images/products/MCP lab electronics/${folder}/${encodeURIComponent(cleanProductDash)}${ext}`);
-                // Variante sans caractères spéciaux
-                const cleanProductSimple = cleanProduct.replace(/[–—]/g, '-').replace(/\s+/g, ' ');
-                urls.add(`/images/products/MCP lab electronics/${folder}/${encodeURIComponent(cleanProductSimple)}${ext}`);
-                // Variante avec seulement la référence (ex: PTL908-2H)
-                if (cleanModel) {
-                  const modelSimple = cleanModel.split(' ')[0]; // Prendre juste la référence
-                  urls.add(`/images/products/MCP lab electronics/${folder}/${encodeURIComponent(modelSimple)}${ext}`);
-                }
-              }
-            }
-          }
-        }
-        
-        // 4. Générer les URLs pour les produits VOITURES - TOUTES LES SOUS-CATÉGORIES
-        if (cleanParent.toLowerCase().includes('voiture') || cleanParent.toLowerCase().includes('voitures') ||
-            cleanSub.includes('CAPTEURS') || cleanSub.includes('ACTIONNEURS') ||
-            cleanSub.includes('ÉLECTRICITÉ') || cleanSub.includes('ELECTRICITE') ||
-            cleanSub.includes('RÉSEAUX') || cleanSub.includes('RESEAUX')) {
-          
-          console.log("🚗 Produit voiture détecté:", cleanProduct, "Sous-catégorie:", cleanSub);
-          
-          // Dictionnaire complet de tous les produits voitures avec leurs noms de fichier exacts
-          const voituresProducts = {
-            // Produits CAPTEURS ET ACTIONNEURS
-            'CAPTEURS ET ACTIONNEURS': {
-              'DT-M002 – Mesure des Positions': 'DT-M002 – Mesure des Positions.png',
-              'DT-M001 – Mesure d\'Angle de Volant': 'produit2.png',
-              'DT-E001 – Unité de Contrôle Électronique': 'DT-E001 – Unité de Contrôle Électronique.png'
-            },
-            // Produits ÉLECTRICITÉ
-            'ÉLECTRICITÉ': {
-              'DTM7020 – Modules Essuie-Glaces': 'DTM7020 – Modules Essuie-Glaces.png',
-              'DTM7000 – Modules Éclairage et Signalisation': 'DTM7000 – Modules Éclairage et Signalisation.png',
-              'DT-M005 – Mesure des Courants et des Tensions': 'DT-M005 – Mesure des Courants et des Tensions.png',
-              'MI2505 – Contrôleur Charge-Démarrage 12V/500A': 'MI2505 – Contrôleur Charge-Démarrage 12V/500A.png',
-              'MT-4002V – Maquette de Charge Démarrage 12V': 'MT-4002V – Maquette de Charge Démarrage 12V.png'
-            },
-            // Produits RÉSEAUX MULTIPLEXÉS
-            'RÉSEAUX MULTIPLEXÉS': {
-              'MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur': 'MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur.png',
-              'MT-E5000 – Maquette d\'Injection Essence Séquentielle': 'produit1.png',
-              'MT-H9000 – Maquette d\'Injection Diesel Common Rail': 'produit2.png'
-            }
-          };
-          
-          // Trouver la sous-catégorie correspondante
-          let targetSubCategory = '';
-          const cleanSubLower = cleanSub.toLowerCase();
-          
-          if (cleanSubLower.includes('capteurs') || cleanSubLower.includes('actionneurs')) {
-            targetSubCategory = 'CAPTEURS ET ACTIONNEURS';
-          } else if (cleanSubLower.includes('électricité') || cleanSubLower.includes('electricite')) {
-            targetSubCategory = 'ÉLECTRICITÉ';
-          } else if (cleanSubLower.includes('réseaux') || cleanSubLower.includes('reseau') || cleanSubLower.includes('multiplex')) {
-            targetSubCategory = 'RÉSEAUX MULTIPLEXÉS';
-          }
-          
-          // Chercher le nom exact du fichier pour ce produit
-          if (targetSubCategory && voituresProducts[targetSubCategory]) {
-            const subCategoryProducts = voituresProducts[targetSubCategory];
-            
-            for (const [prodName, fileName] of Object.entries(subCategoryProducts)) {
-              // Recherche de correspondance améliorée pour les produits voitures
-              const productMatch = cleanProduct.toLowerCase();
-              const prodNameLower = prodName.toLowerCase();
-              
-              // Recherche plus flexible pour détecter les correspondances
-              const isMatch = 
-                // Correspondance par les premiers caractères
-                productMatch.includes(prodNameLower.substring(0, 8)) ||
-                prodNameLower.includes(productMatch.substring(0, 8)) ||
-                // Correspondance par modèle (référence)
-                (cleanModel && prodName.includes(cleanModel)) ||
-                (cleanModel && cleanModel.includes(prodName.substring(0, 10))) ||
-                // Correspondance par nom complet
-                cleanProduct.includes(prodName.substring(0, 15)) ||
-                prodName.includes(cleanProduct.substring(0, 15));
-              
-              if (isMatch) {
-                console.log(`✅ Match voiture trouvé: ${cleanProduct} -> ${fileName} (${targetSubCategory})`);
-                
-                // Chemin spécifique pour la sous-catégorie
-                urls.add(`/images/products/voitures/${targetSubCategory}/${fileName}`);
-                
-                // Ajouter aussi les variantes de nom de dossier
-                const folderVariants = {
-                  'CAPTEURS ET ACTIONNEURS': ['CAPTEURS ET ACTIONNEURS', 'CAPTEURS & ACTIONNEURS', 'CAPTEURS-ET-ACTIONNEURS'],
-                  'ÉLECTRICITÉ': ['ÉLECTRICITÉ', 'ELECTRICITE', 'ELECTRICITE'],
-                  'RÉSEAUX MULTIPLEXÉS': ['RÉSEAUX MULTIPLEXÉS', 'RESEAUX MULTIPLEXES', 'RESEAUX-MULTIPLEXES']
-                };
-                
-                if (folderVariants[targetSubCategory]) {
-                  for (const folder of folderVariants[targetSubCategory]) {
-                    urls.add(`/images/products/voitures/${folder}/${fileName}`);
-                  }
-                }
-                
-                // Chemin racine voitures
-                urls.add(`/images/products/voitures/${fileName}`);
-                
-                // Ajouter aussi des variantes avec tirets au lieu d'espaces
-                const fileNameWithDash = fileName.replace(/\s+/g, '-');
-                urls.add(`/images/products/voitures/${targetSubCategory}/${fileNameWithDash}`);
-                
-                break; // Arrêter après avoir trouvé une correspondance
-              }
-            }
-          }
-          
-          // Recherche avancée pour les produits qui ne correspondent pas exactement
-          // Recherche par modèle (référence)
-          if (cleanModel) {
-            // Essayer avec toutes les sous-catégories
-            const allVoitureSubFolders = ['CAPTEURS ET ACTIONNEURS', 'ÉLECTRICITÉ', 'RÉSEAUX MULTIPLEXÉS'];
-            
-            for (const folder of allVoitureSubFolders) {
-              for (const ext of tryExtensions) {
-                // Essayer avec le modèle exact
-                urls.add(`/images/products/voitures/${folder}/${encodeURIComponent(cleanModel)}${ext}`);
-                
-                // Essayer avec le modèle sans tirets
-                const cleanModelNoDash = cleanModel.replace(/-/g, '');
-                urls.add(`/images/products/voitures/${folder}/${encodeURIComponent(cleanModelNoDash)}${ext}`);
-                
-                // Essayer avec le modèle en minuscules
-                urls.add(`/images/products/voitures/${folder}/${encodeURIComponent(cleanModel.toLowerCase())}${ext}`);
-              }
-            }
-          }
-          
-          // Si aucune correspondance exacte n'est trouvée, essayer les chemins génériques
-          // Déterminer le dossier cible basé sur la sous-catégorie
-          const targetFolder = targetSubCategory || cleanSub;
-          
-          if (targetFolder) {
-            // Ajouter les chemins génériques pour tous les sous-dossiers voitures
-            const voitureSubFolders = [
-              'CAPTEURS ET ACTIONNEURS',
-              'ÉLECTRICITÉ',
-              'RÉSEAUX MULTIPLEXÉS'
-            ];
-            
-            for (const folder of voitureSubFolders) {
-              for (const ext of tryExtensions) {
-                // Produit par nom
-                urls.add(`/images/products/voitures/${folder}/${encodeURIComponent(cleanProduct)}${ext}`);
-                // Produit par modèle
-                urls.add(`/images/products/voitures/${folder}/${encodeURIComponent(cleanModel)}${ext}`);
-                // Variante avec tirets
-                const cleanProductDash = cleanProduct.replace(/\s+/g, '-');
-                urls.add(`/images/products/voitures/${folder}/${encodeURIComponent(cleanProductDash)}${ext}`);
-                // Variante sans caractères spéciaux
-                const cleanProductSimple = cleanProduct.replace(/[–—]/g, '-').replace(/\s+/g, ' ');
-                urls.add(`/images/products/voitures/${folder}/${encodeURIComponent(cleanProductSimple)}${ext}`);
-              }
-            }
-          }
-        }
-        
-        // 5. Essayer les URLs directes (comme dans votre structure de dossiers)
-        // Structure: /images/products/PARENT/SUBCATEGORY/PRODUCT.extension
-        if (cleanParent && cleanSub && cleanProduct) {
-          for (const ext of tryExtensions) {
-            urls.add(`/images/products/${encodeURIComponent(cleanParent)}/${encodeURIComponent(cleanSub)}/${encodeURIComponent(cleanProduct)}${ext}`);
-          }
-        }
-        
-        // 6. Structure alternative: /images/products/PARENT/PRODUCT.extension
-        if (cleanParent && cleanProduct) {
-          for (const ext of tryExtensions) {
-            urls.add(`/images/products/${encodeURIComponent(cleanParent)}/${encodeURIComponent(cleanProduct)}${ext}`);
-          }
-        }
-        
-        // 7. Structure avec modèle au lieu du nom
-        if (cleanParent && cleanSub && cleanModel) {
-          for (const ext of tryExtensions) {
-            urls.add(`/images/products/${encodeURIComponent(cleanParent)}/${encodeURIComponent(cleanSub)}/${encodeURIComponent(cleanModel)}${ext}`);
-          }
-        }
-        
-        // 8. Recherche par nom de produit seul (dossier racine)
-        for (const ext of tryExtensions) {
-          urls.add(`/images/products/${encodeURIComponent(cleanProduct)}${ext}`);
-          urls.add(`/images/products/${encodeURIComponent(cleanModel)}${ext}`);
-        }
-        
-        console.log("📁 URLs générées pour", cleanProduct, ":", Array.from(urls));
-        return Array.from(urls);
+  // Fonctions utilitaires pour récupérer les données de façon sécurisée
+  const getCategoryInfo = (product) => {
+    const category = product.categorie || product.category;
+    
+    if (!category) {
+      return {
+        icon: '',
+        name: 'Non catégorisé',
+        parentName: ''
       };
-      
-      const urls = generateImageUrls();
-      
-      // Fonction pour tester une URL
-      const testUrl = (url) => {
-        return new Promise((resolve) => {
-          const img = new Image();
-          img.onload = () => {
-            console.log("✅ Image trouvée:", url);
-            resolve({ url, valid: true });
-          };
-          img.onerror = () => {
-            console.log("❌ Image non trouvée:", url);
-            resolve({ url, valid: false });
-          };
-          img.src = url;
-        });
-      };
-      
-      // Tester les URLs séquentiellement jusqu'à en trouver une valide
-      const findValidImage = async () => {
-        setLoading(true);
-        
-        for (let i = 0; i < urls.length; i++) {
-          const url = urls[i];
-          try {
-            const result = await testUrl(url);
-            if (result.valid) {
-              setCurrentSrc(url);
-              setFailed(false);
-              setLoading(false);
-              return;
-            }
-          } catch (error) {
-            console.log(`Failed to load image: ${url}`);
-          }
-        }
-        
-        // Si aucune URL n'est valide
-        setFailed(true);
-        setCurrentSrc('');
-        setLoading(false);
-      };
-      
-      findValidImage();
-    }, [product]);
-
-    if (loading) {
-      return (
-        <div 
-          className="rounded me-3 d-flex align-items-center justify-content-center"
-          style={{ 
-            width: '60px', 
-            height: '60px', 
-            backgroundColor: '#f8f9fa',
-            border: '1px solid #dee2e6'
-          }}
-        >
-          <div className="spinner-border spinner-border-sm text-primary" role="status">
-            <span className="visually-hidden">Chargement...</span>
-          </div>
-        </div>
-      );
     }
 
-    if (failed || !currentSrc) {
+    return {
+      icon: category.icon || '',
+      name: category.nom || category.name || 'Non catégorisé',
+      parentName: category.parent?.nom || category.parent?.name || ''
+    };
+  };
+
+  // Composant pour afficher l'image du produit en utilisant productData.js
+  function ProductImage({ product }) {
+    const [imageError, setImageError] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+    const [productDetails, setProductDetails] = useState(null);
+
+    useEffect(() => {
+      // Utiliser le nom du produit pour récupérer les détails depuis productData.js
+      const productName = product.nom || product.name || '';
+      if (productName) {
+        const details = getProductDetails(productName);
+        setProductDetails(details);
+        
+        // Si des images existent dans productData.js, utiliser la première
+        if (details && details.images && details.images.length > 0) {
+          setImageUrl(details.images[0]);
+        }
+        // Sinon, utiliser l'image du produit dans la base de données
+        else if (product.images && product.images.length > 0 && product.images[0]) {
+          // Si l'image est une URL blob ou relative, on la garde telle quelle
+          if (product.images[0].startsWith('blob:') || product.images[0].startsWith('http')) {
+            setImageUrl(product.images[0]);
+          } else {
+            // Sinon, on construit l'URL complète
+            setImageUrl(product.images[0].startsWith('/') ? product.images[0] : `/${product.images[0]}`);
+          }
+        }
+        // Sinon, utiliser le chemin d'image auto-généré
+        else if (product.cheminImageAuto) {
+          setImageUrl(product.cheminImageAuto);
+        }
+        // Dernier recours : générer un chemin basé sur le nom du produit
+        else if (productName) {
+          // Déterminer le dossier en fonction de la catégorie
+          let categoryPath = 'products';
+          
+          // Utiliser la catégorie du produit si disponible
+          const category = product.categorie || product.category;
+          if (category) {
+            const catName = category.nom || category.name || '';
+            if (catName.includes('CNC') || productName.includes('CNC')) {
+              if (productName.includes('Turning') || productName.includes('Lathe')) {
+                categoryPath = 'CNC EDUCATION/CNC Turing Machine';
+              } else if (productName.includes('Milling')) {
+                categoryPath = 'CNC EDUCATION/CNC Milling Machine';
+              } else {
+                categoryPath = 'CNC EDUCATION';
+              }
+            } else if (catName.includes('Accessoires') || productName.includes('PTL')) {
+              categoryPath = 'MCP lab electronics/Accessoires';
+            } else if (catName.includes('EDUCATION EQUIPMENT')) {
+              categoryPath = 'MCP lab electronics/EDUCATION EQUIPMENT';
+            } else if (catName.includes('CAPTEURS') || catName.includes('ÉLECTRICITÉ') || catName.includes('RÉSEAUX')) {
+              categoryPath = `voitures/${catName}`;
+            }
+          }
+          
+          // Générer le nom de fichier
+          const filename = productName
+            .toLowerCase()
+            .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9]+/g, '_')
+            + '.png';
+          
+          setImageUrl(`/images/products/${categoryPath}/${filename}`);
+        } else {
+          setImageError(true);
+        }
+      } else {
+        setImageError(true);
+      }
+    }, [product]);
+
+    if (imageError) {
       return (
         <div 
-          className="rounded me-3 d-flex align-items-center justify-content-center"
+          className="rounded me-3 d-flex align-items-center justify-content-center bg-light"
           style={{ 
             width: '60px', 
             height: '60px', 
-            backgroundColor: '#f8f9fa',
             border: '1px solid #dee2e6'
           }}
         >
-          <FaBox className="text-muted" size={24} />
+          <FaImage className="text-muted" size={24} />
         </div>
       );
     }
 
     return (
       <img
-        src={currentSrc}
-        alt={product.name}
+        src={imageUrl}
+        alt={product.nom || product.name || 'Produit'}
         className="rounded me-3"
         style={{
           width: '60px',
@@ -627,7 +183,7 @@ export default function ProductList({
           border: '1px solid #dee2e6',
           borderRadius: '4px'
         }}
-        onError={() => setFailed(true)}
+        onError={() => setImageError(true)}
       />
     );
   }
@@ -666,7 +222,7 @@ export default function ProductList({
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    checked={selectedProducts.length === products.length}
+                    checked={selectedProducts.length === products.length && products.length > 0}
                     onChange={onSelectAll}
                   />
                 </div>
@@ -674,22 +230,22 @@ export default function ProductList({
             )}
             <th 
               style={{ cursor: 'pointer' }}
-              onClick={() => handleSort('name')}
+              onClick={() => handleSort('nom')}
             >
               <div className="d-flex align-items-center">
                 <span>Produit</span>
-                <span className="ms-1">{getSortIcon('name')}</span>
+                <span className="ms-1">{getSortIcon('nom')}</span>
               </div>
             </th>
             <th>Catégorie</th>
             <th 
               style={{ cursor: 'pointer' }}
-              onClick={() => handleSort('price')}
+              onClick={() => handleSort('prix')}
             >
               <div className="d-flex align-items-center">
                 <FaEuroSign className="me-1" />
                 <span>Prix</span>
-                <span className="ms-1">{getSortIcon('price')}</span>
+                <span className="ms-1">{getSortIcon('prix')}</span>
               </div>
             </th>
             <th 
@@ -709,6 +265,13 @@ export default function ProductList({
           {products.map((product) => {
             const stockStatus = getStockStatus(product.stock || 0);
             
+            // Récupérer les informations de catégorie de façon sécurisée
+            const categoryInfo = getCategoryInfo(product);
+            
+            // Récupérer les détails du produit depuis productData.js
+            const productName = product.nom || product.name || '';
+            const details = getProductDetails(productName);
+            
             return (
               <tr key={product._id} className="align-middle">
                 {onSelectProduct && (
@@ -727,15 +290,16 @@ export default function ProductList({
                   <div className="d-flex align-items-center">
                     <ProductImage product={product} />
                     <div>
-                      <strong className="d-block">{product.name}</strong>
-                      {product.model && (
+                      <strong className="d-block">{product.nom || product.name}</strong>
+                      {(product.modele || product.model) && (
                         <small className="text-muted d-block">
-                          Ref: {product.model}
+                          Ref: {product.modele || product.model}
                         </small>
                       )}
-                      {product.isFeatured && (
-                        <small className="text-warning d-block">
-                          <FaStar size={12} /> En vedette
+                      {/* Afficher la catégorie principale si disponible */}
+                      {details && details.mainCategory && (
+                        <small className="badge bg-info text-white mt-1">
+                          {details.mainCategory}
                         </small>
                       )}
                     </div>
@@ -743,10 +307,10 @@ export default function ProductList({
                 </td>
                 <td>
                   <span className="badge bg-light text-dark">
-                    {product.category?.icon} {product.category?.name}
-                    {product.category?.parent && (
+                    {categoryInfo.icon} {categoryInfo.name}
+                    {categoryInfo.parentName && (
                       <small className="d-block text-muted">
-                        {product.category.parent.name}
+                        {categoryInfo.parentName}
                       </small>
                     )}
                   </span>
@@ -755,8 +319,8 @@ export default function ProductList({
                   <div className="d-flex align-items-center">
                     <FaEuroSign className="text-muted me-1" />
                     <strong className="text-primary">
-                      {typeof product.price === 'number' 
-                        ? product.price.toFixed(2) 
+                      {typeof (product.prix || product.price) === 'number' 
+                        ? (product.prix || product.price).toFixed(2) 
                         : '0.00'} €
                     </strong>
                   </div>
@@ -779,17 +343,6 @@ export default function ProductList({
                       >
                         <FaEye />
                       </button>
-                    )}
-                    {product.link && (
-                      <a
-                        href={product.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="btn btn-outline-primary"
-                        title="Ouvrir le lien"
-                      >
-                        <FaEye />
-                      </a>
                     )}
                     {onEdit && (
                       <button

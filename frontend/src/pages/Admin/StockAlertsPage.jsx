@@ -17,8 +17,11 @@ import {
   FaEye,
   FaBox,
   FaEuroSign,
+  FaHistory,
+  FaClock
 } from "react-icons/fa";
 import ProductList from "../../components/Admin/ProductList";
+import notificationService from '../../services/notificationService'; // ✅ AJOUT
 
 export default function StockAlertsPage() {
   const [outOfStock, setOutOfStock] = useState([]);
@@ -32,6 +35,12 @@ export default function StockAlertsPage() {
   });
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [allProducts, setAllProducts] = useState([]);
+  
+  // ✅ NOUVEAUX STATES POUR LES NOTIFICATIONS
+  const [notifications, setNotifications] = useState([]);
+  const [notificationsNonLues, setNotificationsNonLues] = useState(0);
+  const [showNotificationHistory, setShowNotificationHistory] = useState(false);
+  
   const navigate = useNavigate();
 
   // Modal & état pour modification de stock
@@ -42,9 +51,14 @@ export default function StockAlertsPage() {
 
   useEffect(() => {
     fetchAlerts();
+    fetchNotifications(); // ✅ AJOUT
 
     // Actualiser toutes les minutes
-    const interval = setInterval(fetchAlerts, 60000);
+    const interval = setInterval(() => {
+      fetchAlerts();
+      fetchNotifications(); // ✅ AJOUT
+    }, 60000);
+    
     return () => clearInterval(interval);
   }, []);
 
@@ -150,8 +164,48 @@ export default function StockAlertsPage() {
     }
   };
 
+  // ✅ NOUVELLE FONCTION POUR CHARGER LES NOTIFICATIONS
+  const fetchNotifications = async () => {
+    try {
+      // Récupérer l'historique des ruptures
+      const response = await notificationService.getRuptures();
+      console.log('📋 Historique des ruptures:', response.data);
+      setNotifications(response.data);
+      
+      // Récupérer les statistiques des notifications
+      const stats = await notificationService.getStats();
+      setNotificationsNonLues(stats.data.nonLues);
+      
+      console.log(`🔔 ${stats.data.nonLues} notification(s) non lue(s)`);
+    } catch (error) {
+      console.error('❌ Erreur chargement notifications:', error);
+    }
+  };
+
+  // ✅ FONCTION POUR MARQUER COMME LUE
+  const handleMarquerLue = async (notificationId) => {
+    try {
+      await notificationService.marquerCommeLue(notificationId);
+      // Recharger les notifications
+      fetchNotifications();
+    } catch (error) {
+      console.error('❌ Erreur marquage notification:', error);
+    }
+  };
+
+  // ✅ FONCTION POUR MARQUER TOUTES COMME LUES
+  const handleMarquerToutesLues = async () => {
+    try {
+      await notificationService.marquerToutesCommeLues();
+      fetchNotifications();
+    } catch (error) {
+      console.error('❌ Erreur marquage toutes notifications:', error);
+    }
+  };
+
   const refreshAlerts = () => {
     fetchAlerts();
+    fetchNotifications(); // ✅ AJOUT
   };
 
   const handleEditProduct = async (product) => {
@@ -264,6 +318,11 @@ export default function StockAlertsPage() {
             <h1 className="h3 mb-2 text-dark d-flex align-items-center">
               <FaBell className="me-3 text-warning" size={32} />
               <span>Alertes Stock</span>
+              {notificationsNonLues > 0 && (
+                <span className="badge bg-danger ms-3 rounded-pill">
+                  {notificationsNonLues} nouvelle(s)
+                </span>
+              )}
             </h1>
             <p className="text-muted mb-0">
               Surveillez les produits en rupture et à faible stock
@@ -271,6 +330,19 @@ export default function StockAlertsPage() {
           </div>
         </div>
         <div className="d-flex gap-2">
+          {/* ✅ NOUVEAU BOUTON HISTORIQUE */}
+          <button
+            className="btn btn-outline-info d-flex align-items-center"
+            onClick={() => setShowNotificationHistory(!showNotificationHistory)}
+            title="Voir l'historique des notifications"
+          >
+            <FaHistory className="me-2" />
+            Historique
+            {notificationsNonLues > 0 && (
+              <span className="badge bg-danger ms-2">{notificationsNonLues}</span>
+            )}
+          </button>
+          
           {selectedProducts.length > 0 && (
             <button
               className="btn btn-primary d-flex align-items-center"
@@ -290,6 +362,79 @@ export default function StockAlertsPage() {
           </button>
         </div>
       </div>
+
+      {/* ✅ SECTION HISTORIQUE DES NOTIFICATIONS (conditionnelle) */}
+      {showNotificationHistory && (
+        <div className="card border-info shadow-sm mb-4">
+          <div className="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <div className="d-flex align-items-center">
+              <FaClock className="me-2" />
+              <h6 className="mb-0">Historique des ruptures de stock</h6>
+              <span className="badge bg-light text-info ms-2">
+                {notifications.length}
+              </span>
+            </div>
+            <div className="d-flex gap-2">
+              {notificationsNonLues > 0 && (
+                <button
+                  className="btn btn-sm btn-light"
+                  onClick={handleMarquerToutesLues}
+                >
+                  Tout marquer comme lu
+                </button>
+              )}
+              <button
+                className="btn btn-sm btn-light"
+                onClick={() => setShowNotificationHistory(false)}
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+          <div className="card-body p-0" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+            {notifications.length === 0 ? (
+              <div className="text-center p-4 text-muted">
+                <FaCheckCircle size={32} className="mb-2 text-success" />
+                <p className="mb-0">Aucune notification dans l'historique</p>
+              </div>
+            ) : (
+              <div className="list-group list-group-flush">
+                {notifications.map((notif) => (
+                  <div 
+                    key={notif._id} 
+                    className={`list-group-item list-group-item-action d-flex justify-content-between align-items-center ${!notif.lu ? 'bg-light' : ''}`}
+                  >
+                    <div className="d-flex align-items-center">
+                      {!notif.lu && (
+                        <span className="badge bg-danger rounded-pill me-2" style={{ width: '8px', height: '8px', padding: 0 }}></span>
+                      )}
+                      <div>
+                        <div className="fw-bold">{notif.description}</div>
+                        <small className="text-muted">
+                          {new Date(notif.dateNotification).toLocaleString('fr-FR')}
+                        </small>
+                        <div className="mt-1">
+                          <small className="text-muted">
+                            Produit: {notif.produitNom} | Stock: {notif.stockAvant} → {notif.stockApres}
+                          </small>
+                        </div>
+                      </div>
+                    </div>
+                    {!notif.lu && (
+                      <button
+                        className="btn btn-sm btn-outline-primary"
+                        onClick={() => handleMarquerLue(notif._id)}
+                      >
+                        Marquer comme lu
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Statistiques */}
       <div className="row mb-4">
@@ -614,6 +759,7 @@ export default function StockAlertsPage() {
                       window.alert("Stock mis à jour.");
                       setShowStockModal(false);
                       fetchAlerts();
+                      fetchNotifications(); // ✅ AJOUT pour mettre à jour l'historique
                     } catch (err) {
                       console.error(err);
                       window.alert("Erreur lors de la mise à jour du stock");

@@ -16,6 +16,7 @@ import { handleStripeWebhook } from './controllers/orderController.js';
 
 // IMPORT CORRIGÉ - C'EST LA SEULE LIGNE À MODIFIER
 import specificationRoutes from './routes/specificationRoutes.js';
+import notificationRoutes from './routes/notificationRoutes.js';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -135,6 +136,7 @@ app.use('/api/contact', contactRoutes);
 app.use('/api/devis', devisRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/specifications', specificationRoutes);
+app.use('/api/notifications', notificationRoutes);
 
 
 // Gestion des erreurs 404 (doit être après toutes les routes)

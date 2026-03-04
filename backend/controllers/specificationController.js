@@ -76,11 +76,15 @@ export const createSpecification = async (req, res) => {
       });
     }
 
+    // Valider le type
+    const validTypes = ['general', 'advanced'];
+    const specType = type && validTypes.includes(type) ? type : 'general';
+
     const spec = new Specification({
       productId,
       key: key.trim(),
       value: value.trim(),
-      type: type || 'general',
+      type: specType,
       order: order || 0
     });
 
@@ -128,14 +132,22 @@ export const createBulkSpecifications = async (req, res) => {
       });
     }
 
+    // Valider les types
+    const validTypes = ['general', 'advanced'];
+
     // Préparer les spécifications à créer
-    const specsToCreate = specs.map((spec, index) => ({
-      productId,
-      key: spec.key?.trim(),
-      value: spec.value?.trim(),
-      type: spec.type || 'general',
-      order: spec.order ?? index
-    }));
+    const specsToCreate = specs.map((spec, index) => {
+      // Valider le type
+      const specType = spec.type && validTypes.includes(spec.type) ? spec.type : 'general';
+      
+      return {
+        productId,
+        key: spec.key?.trim(),
+        value: spec.value?.trim(),
+        type: specType,
+        order: spec.order ?? index
+      };
+    });
 
     // Valider que chaque spécification a key et value
     for (const spec of specsToCreate) {
@@ -147,12 +159,12 @@ export const createBulkSpecifications = async (req, res) => {
       }
     }
 
-    // Supprimer les anciennes spécifications (optionnel - dépend de votre besoin)
-    // await Specification.deleteMany({ productId });
+    // Supprimer les anciennes spécifications du produit
+    await Specification.deleteMany({ productId });
 
     // Créer les nouvelles
     const created = await Specification.insertMany(specsToCreate, { 
-      ordered: false // Continue même si certaines échouent
+      ordered: false
     });
 
     res.status(201).json({ 
@@ -161,7 +173,6 @@ export const createBulkSpecifications = async (req, res) => {
       data: created 
     });
   } catch (error) {
-    // Gérer les erreurs de duplicate
     if (error.code === 11000) {
       res.status(400).json({ 
         success: false, 
@@ -176,21 +187,30 @@ export const createBulkSpecifications = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour une spécification
+// @desc    Mettre à jour une spécification (seulement value et type)
 // @route   PUT /api/specifications/:id
 export const updateSpecification = async (req, res) => {
   try {
-    const { key, value, type, order } = req.body;
+    const { value, type, order } = req.body;
     
+    // Valider le type si fourni
+    if (type && !['general', 'advanced'].includes(type)) {
+      return res.status(400).json({ 
+        success: false, 
+        error: 'Le type doit être "general" ou "advanced"' 
+      });
+    }
+
+    // Construire l'objet de mise à jour (seulement les champs autorisés)
+    const updateData = {};
+    if (value !== undefined) updateData.value = value?.trim();
+    if (type !== undefined) updateData.type = type;
+    if (order !== undefined) updateData.order = order;
+    updateData.updatedAt = Date.now();
+
     const spec = await Specification.findByIdAndUpdate(
       req.params.id,
-      { 
-        key: key?.trim(), 
-        value: value?.trim(), 
-        type, 
-        order, 
-        updatedAt: Date.now() 
-      },
+      updateData,
       { new: true, runValidators: true }
     );
 
@@ -275,7 +295,10 @@ export const reorderSpecifications = async (req, res) => {
 
     // Mettre à jour l'ordre de chaque spécification
     const updatePromises = specs.map((spec) => 
-      Specification.findByIdAndUpdate(spec._id, { order: spec.order })
+      Specification.findByIdAndUpdate(spec._id, { 
+        order: spec.order,
+        updatedAt: Date.now()
+      })
     );
 
     await Promise.all(updatePromises);
@@ -336,7 +359,7 @@ export const copySpecifications = async (req, res) => {
       order: spec.order
     }));
 
-    // Supprimer les anciennes spécifications du produit cible (optionnel)
+    // Supprimer les anciennes spécifications du produit cible
     await Specification.deleteMany({ productId: toProductId });
 
     // Créer les nouvelles

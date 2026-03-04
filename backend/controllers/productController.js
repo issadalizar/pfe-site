@@ -1,13 +1,14 @@
 // controllers/productController.js
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
+import notificationService from '../services/notificationService.js';
 
 // @desc    Récupérer tous les produits
 // @route   GET /api/products
 // @access  Public
 export const getAllProducts = async (req, res) => {
   try {
-    const products = await Product.find().populate("category");
+    const products = await Product.find().populate("categorie");
 
     console.log(`✅ ${products.length} produits récupérés`);
     res.json({
@@ -26,26 +27,26 @@ export const getAllProducts = async (req, res) => {
 };
 
 // @desc    Récupérer les produits par catégorie
-// @route   GET /api/products/category/:categoryId
+// @route   GET /api/products/categorie/:categorieId
 // @access  Public
 export const getProductsByCategory = async (req, res) => {
   try {
-    const { categoryId } = req.params;
+    const { categorieId } = req.params;
 
-    const category = await Category.findById(categoryId);
-    if (!category) {
+    const categorie = await Category.findById(categorieId);
+    if (!categorie) {
       return res.status(404).json({
         success: false,
         error: "Catégorie non trouvée",
       });
     }
 
-    const products = await Product.find({ category: categoryId }).populate("category");
+    const products = await Product.find({ categorie: categorieId }).populate("categorie");
 
-    console.log(`✅ ${products.length} produits récupérés pour la catégorie "${category.name}"`);
+    console.log(`✅ ${products.length} produits récupérés pour la catégorie "${categorie.nom}"`);
     res.json({
       success: true,
-      category: category.name,
+      categorie: categorie.nom,
       count: products.length,
       data: products,
     });
@@ -64,7 +65,7 @@ export const getProductsByCategory = async (req, res) => {
 // @access  Public
 export const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id).populate("category");
+    const product = await Product.findById(req.params.id).populate("categorie");
 
     if (!product) {
       return res.status(404).json({
@@ -73,7 +74,7 @@ export const getProductById = async (req, res) => {
       });
     }
 
-    console.log(`✅ Produit "${product.name}" récupéré`);
+    console.log(`✅ Produit "${product.nom}" récupéré`);
     res.json({
       success: true,
       data: product,
@@ -94,30 +95,27 @@ export const getProductById = async (req, res) => {
 export const createProduct = async (req, res) => {
   try {
     const {
-      name,
+      nom,
       description,
-      shortDescription,
-      price,
+      prix,
       stock,
-      features,
+      caracteristiques,
       images,
-      model,
-      category,
-      link,
-      isActive,
-      isFeatured,
-      order,
+      modele,
+      categorie,
+      estActif,
+      ordre,
     } = req.body;
 
-    if (!name || !category) {
+    if (!nom || !categorie) {
       return res.status(400).json({
         success: false,
         error: "Le nom et la catégorie sont requis",
       });
     }
 
-    const categoryExists = await Category.findById(category);
-    if (!categoryExists) {
+    const categorieExists = await Category.findById(categorie);
+    if (!categorieExists) {
       return res.status(404).json({
         success: false,
         error: "Catégorie non trouvée",
@@ -125,10 +123,10 @@ export const createProduct = async (req, res) => {
     }
 
     // ✅ parse numbers
-    const parsedPrice = price === "" || price === undefined || price === null ? 0 : Number(price);
+    const parsedPrix = prix === "" || prix === undefined || prix === null ? 0 : Number(prix);
     const parsedStock = stock === "" || stock === undefined || stock === null ? 0 : Number.parseInt(stock, 10);
 
-    if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+    if (Number.isNaN(parsedPrix) || parsedPrix < 0) {
       return res.status(400).json({ success: false, error: "Prix invalide" });
     }
     if (Number.isNaN(parsedStock) || parsedStock < 0) {
@@ -136,24 +134,21 @@ export const createProduct = async (req, res) => {
     }
 
     const productData = {
-      name,
+      nom,
       description: description ?? "",
-      shortDescription: shortDescription ?? "",
-      price: parsedPrice,
+      prix: parsedPrix,
       stock: parsedStock,
-      features: Array.isArray(features) ? features : [],
+      caracteristiques: Array.isArray(caracteristiques) ? caracteristiques : [],
       images: Array.isArray(images) ? images : [],
-      model: model ?? "",
-      category,
-      link: link ?? "",
-      isActive: isActive !== undefined ? Boolean(isActive) : true,
-      isFeatured: isFeatured !== undefined ? Boolean(isFeatured) : false,
-      order: order !== undefined ? Number(order) : 0,
+      modele: modele ?? "",
+      categorie,
+      estActif: estActif !== undefined ? Boolean(estActif) : true,
+      ordre: ordre !== undefined ? Number(ordre) : 0,
     };
 
     const product = await Product.create(productData);
 
-    console.log(`✅ Produit créé: ${product.name}`);
+    console.log(`✅ Produit créé: ${product.nom}`);
     res.status(201).json({
       success: true,
       message: "Produit créé avec succès",
@@ -177,35 +172,38 @@ export const createProduct = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour un produit
+// @desc    Mettre à jour un produit (AVEC NOTIFICATIONS)
 // @route   PUT /api/products/:id
 // @access  Public (à protéger plus tard)
 export const updateProduct = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
-
-    if (!product) {
+    const { id } = req.params;
+    
+    // Récupérer l'ancien produit avant modification
+    const ancienProduit = await Product.findById(id);
+    
+    if (!ancienProduit) {
       return res.status(404).json({
         success: false,
         error: "Produit non trouvé",
       });
     }
-
-    // ✅ IMPORTANT: ajouter price + stock + isFeatured
+    
+    // Sauvegarder l'ancien stock
+    const ancienStock = ancienProduit.stock || 0;
+    
+    // ✅ Liste des champs autorisés pour la mise à jour
     const allowedUpdates = [
-      "name",
+      "nom",
       "description",
-      "shortDescription",
-      "price",
+      "prix",
       "stock",
-      "features",
+      "caracteristiques",
       "images",
-      "model",
-      "category",
-      "link",
-      "isActive",
-      "isFeatured",
-      "order",
+      "modele",
+      "categorie",
+      "estActif",
+      "ordre",
     ];
 
     const updates = {};
@@ -215,9 +213,9 @@ export const updateProduct = async (req, res) => {
       }
     }
 
-    if (updates.category) {
-      const categoryExists = await Category.findById(updates.category);
-      if (!categoryExists) {
+    if (updates.categorie) {
+      const categorieExists = await Category.findById(updates.categorie);
+      if (!categorieExists) {
         return res.status(404).json({
           success: false,
           error: "Catégorie non trouvée",
@@ -226,12 +224,12 @@ export const updateProduct = async (req, res) => {
     }
 
     // ✅ parse numbers
-    if (updates.price !== undefined) {
-      const parsedPrice = updates.price === "" || updates.price === null ? 0 : Number(updates.price);
-      if (Number.isNaN(parsedPrice) || parsedPrice < 0) {
+    if (updates.prix !== undefined) {
+      const parsedPrix = updates.prix === "" || updates.prix === null ? 0 : Number(updates.prix);
+      if (Number.isNaN(parsedPrix) || parsedPrix < 0) {
         return res.status(400).json({ success: false, error: "Prix invalide" });
       }
-      updates.price = parsedPrice;
+      updates.prix = parsedPrix;
     }
 
     if (updates.stock !== undefined) {
@@ -243,8 +241,8 @@ export const updateProduct = async (req, res) => {
     }
 
     // ✅ normaliser arrays si envoyés en string "a,b,c"
-    if (updates.features && !Array.isArray(updates.features)) {
-      updates.features = String(updates.features)
+    if (updates.caracteristiques && !Array.isArray(updates.caracteristiques)) {
+      updates.caracteristiques = String(updates.caracteristiques)
         .split(",")
         .map((s) => s.trim())
         .filter(Boolean);
@@ -256,14 +254,26 @@ export const updateProduct = async (req, res) => {
         .filter(Boolean);
     }
 
-    Object.assign(product, updates);
-    await product.save();
+    Object.assign(ancienProduit, updates);
+    await ancienProduit.save();
 
-    console.log(`✅ Produit mis à jour: ${product.name}`);
+    // 🔔 CRÉER UNE NOTIFICATION SI LE STOCK A CHANGÉ
+    if (ancienStock !== ancienProduit.stock) {
+      await notificationService.notifierModificationStock(
+        ancienProduit,
+        ancienStock,
+        ancienProduit.stock,
+        req.user?._id // Si vous avez l'utilisateur connecté
+      );
+      
+      console.log(`📢 Notification créée pour ${ancienProduit.nom || ancienProduit.name}`);
+    }
+
+    console.log(`✅ Produit mis à jour: ${ancienProduit.nom}`);
     res.json({
       success: true,
       message: "Produit mis à jour avec succès",
-      data: product,
+      data: ancienProduit,
     });
   } catch (error) {
     console.error("❌ Erreur dans updateProduct:", error);
@@ -299,7 +309,7 @@ export const deleteProduct = async (req, res) => {
 
     await product.deleteOne();
 
-    console.log(`✅ Produit supprimé: ${product.name}`);
+    console.log(`✅ Produit supprimé: ${product.nom}`);
     res.json({
       success: true,
       message: "Produit supprimé avec succès",
@@ -315,14 +325,14 @@ export const deleteProduct = async (req, res) => {
 };
 
 // @desc    Récupérer les produits en rupture de stock
-// @route   GET /api/products/out-of-stock
+// @route   GET /api/products/rupture-stock
 // @access  Private/Admin
 export const getOutOfStockProducts = async (req, res) => {
   try {
     const products = await Product.find({ 
       stock: 0,
-      isActive: true 
-    }).populate("category");
+      estActif: true 
+    }).populate("categorie");
 
     console.log(`✅ ${products.length} produits en rupture de stock récupérés`);
     res.json({
@@ -341,14 +351,14 @@ export const getOutOfStockProducts = async (req, res) => {
 };
 
 // @desc    Récupérer les produits à faible stock (moins de 5)
-// @route   GET /api/products/low-stock
+// @route   GET /api/products/stock-faible
 // @access  Private/Admin
 export const getLowStockProducts = async (req, res) => {
   try {
     const products = await Product.find({ 
       stock: { $gt: 0, $lt: 5 },
-      isActive: true 
-    }).populate("category");
+      estActif: true 
+    }).populate("categorie");
 
     console.log(`✅ ${products.length} produits à faible stock récupérés`);
     res.json({
@@ -367,11 +377,7 @@ export const getLowStockProducts = async (req, res) => {
 };
 
 // @desc    Récupérer les statistiques de stock
-// @route   GET /api/products/stock-stats
-// @access  Private/Admin
-// Dans productController.js, modifiez getStockStats :
-// @desc    Récupérer les statistiques de stock
-// @route   GET /api/products/stock-stats
+// @route   GET /api/products/statistiques-stock
 // @access  Private/Admin
 export const getStockStats = async (req, res) => {
   console.log("📊 [DEBUG] Début de getStockStats");
@@ -381,8 +387,8 @@ export const getStockStats = async (req, res) => {
     console.log("📊 [DEBUG] Modèle Product:", Product ? "OK" : "NON DÉFINI");
     
     // Vérifiez l'état MongoDB
-    const mongoose = require('mongoose');
-    const dbState = mongoose.connection.readyState;
+    const mongoose = await import('mongoose');
+    const dbState = mongoose.default.connection.readyState;
     console.log(`📊 [DEBUG] État MongoDB: ${dbState} (0=déconnecté, 1=connecté)`);
     
     if (dbState !== 1) {
@@ -390,73 +396,73 @@ export const getStockStats = async (req, res) => {
       return res.json({
         success: true,
         data: {
-          totalProducts: 15,
-          outOfStockCount: 3,
-          lowStockCount: 4,
-          normalStockCount: 8,
-          outOfStockPercentage: "20.00"
+          totalProduits: 15,
+          ruptureStock: 3,
+          stockFaible: 4,
+          stockNormal: 8,
+          pourcentageRupture: "20.00"
         }
       });
     }
     
     // Version SÉCURISÉE avec try-catch individuel
-    let totalProducts = 0;
-    let outOfStockCount = 0;
-    let lowStockCount = 0;
-    let normalStockCount = 0;
+    let totalProduits = 0;
+    let ruptureStock = 0;
+    let stockFaible = 0;
+    let stockNormal = 0;
     
     try {
-      totalProducts = await Product.countDocuments({});
-      console.log(`📊 [DEBUG] Total produits: ${totalProducts}`);
+      totalProduits = await Product.countDocuments({});
+      console.log(`📊 [DEBUG] Total produits: ${totalProduits}`);
     } catch (countError) {
       console.error("❌ Erreur countDocuments total:", countError.message);
-      totalProducts = 0;
+      totalProduits = 0;
     }
     
     try {
-      outOfStockCount = await Product.countDocuments({ 
+      ruptureStock = await Product.countDocuments({ 
         stock: 0,
-        isActive: true 
+        estActif: true 
       });
-      console.log(`📊 [DEBUG] Produits en rupture: ${outOfStockCount}`);
+      console.log(`📊 [DEBUG] Produits en rupture: ${ruptureStock}`);
     } catch (err) {
       console.error("❌ Erreur countDocuments rupture:", err.message);
-      outOfStockCount = 0;
+      ruptureStock = 0;
     }
     
     try {
-      lowStockCount = await Product.countDocuments({ 
+      stockFaible = await Product.countDocuments({ 
         stock: { $gt: 0, $lt: 5 },
-        isActive: true 
+        estActif: true 
       });
-      console.log(`📊 [DEBUG] Stock faible: ${lowStockCount}`);
+      console.log(`📊 [DEBUG] Stock faible: ${stockFaible}`);
     } catch (err) {
       console.error("❌ Erreur countDocuments faible:", err.message);
-      lowStockCount = 0;
+      stockFaible = 0;
     }
     
     try {
-      normalStockCount = await Product.countDocuments({ 
+      stockNormal = await Product.countDocuments({ 
         stock: { $gte: 5 },
-        isActive: true 
+        estActif: true 
       });
-      console.log(`📊 [DEBUG] Stock normal: ${normalStockCount}`);
+      console.log(`📊 [DEBUG] Stock normal: ${stockNormal}`);
     } catch (err) {
       console.error("❌ Erreur countDocuments normal:", err.message);
-      normalStockCount = 0;
+      stockNormal = 0;
     }
     
     // Calcul du pourcentage
-    const outOfStockPercentage = totalProducts > 0 
-      ? ((outOfStockCount / totalProducts) * 100).toFixed(2)
+    const pourcentageRupture = totalProduits > 0 
+      ? ((ruptureStock / totalProduits) * 100).toFixed(2)
       : "0.00";
     
     const result = {
-      totalProducts,
-      outOfStockCount,
-      lowStockCount,
-      normalStockCount,
-      outOfStockPercentage
+      totalProduits,
+      ruptureStock,
+      stockFaible,
+      stockNormal,
+      pourcentageRupture
     };
     
     console.log("📊 [DEBUG] Résultat final:", result);
@@ -476,12 +482,189 @@ export const getStockStats = async (req, res) => {
     return res.json({
       success: true,
       data: {
-        totalProducts: 10,
-        outOfStockCount: 0,
-        lowStockCount: 0,
-        normalStockCount: 10,
-        outOfStockPercentage: "0.00"
+        totalProduits: 10,
+        ruptureStock: 0,
+        stockFaible: 0,
+        stockNormal: 10,
+        pourcentageRupture: "0.00"
       }
+    });
+  }
+};
+
+// ============= NOUVELLES FONCTIONS POUR LES NOTIFICATIONS =============
+
+// @desc    Récupérer toutes les notifications
+// @route   GET /api/notifications
+// @access  Private/Admin
+export const getNotifications = async (req, res) => {
+  try {
+    const { page = 1, limit = 50, type, lu } = req.query;
+    
+    const result = await notificationService.getNotifications(
+      { type, lu },
+      parseInt(page),
+      parseInt(limit)
+    );
+    
+    res.status(200).json({
+      success: true,
+      data: result.notifications,
+      pagination: result.pagination
+    });
+    
+  } catch (error) {
+    console.error('❌ Erreur récupération notifications:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Récupérer les notifications non lues
+// @route   GET /api/notifications/non-lues
+// @access  Private/Admin
+export const getNotificationsNonLues = async (req, res) => {
+  try {
+    const { limit = 20 } = req.query;
+    const result = await notificationService.getNotificationsNonLues(parseInt(limit));
+    
+    res.status(200).json({
+      success: true,
+      data: result.notifications,
+      nonLuesCount: result.notifications.length
+    });
+  } catch (error) {
+    console.error('❌ Erreur récupérations notifications non lues:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Marquer une notification comme lue
+// @route   PUT /api/notifications/:id/lire
+// @access  Private/Admin
+export const marquerNotificationLue = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const notification = await notificationService.marquerCommeLue(id);
+    
+    if (!notification) {
+      return res.status(404).json({
+        success: false,
+        message: 'Notification non trouvée'
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      data: notification,
+      message: 'Notification marquée comme lue'
+    });
+    
+  } catch (error) {
+    console.error('❌ Erreur marquage notification:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Marquer toutes les notifications comme lues
+// @route   PUT /api/notifications/lire-toutes
+// @access  Private/Admin
+export const marquerToutesNotificationsLues = async (req, res) => {
+  try {
+    const result = await notificationService.marquerToutesCommeLues();
+    
+    res.status(200).json({
+      success: true,
+      message: `${result.modifiedCount} notification(s) marquée(s) comme lue(s)`,
+      data: { modifiedCount: result.modifiedCount }
+    });
+    
+  } catch (error) {
+    console.error('❌ Erreur marquage toutes notifications:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Récupérer les statistiques des notifications
+// @route   GET /api/notifications/stats
+// @access  Private/Admin
+export const getNotificationsStats = async (req, res) => {
+  try {
+    const stats = await notificationService.getStatistiques();
+    
+    res.status(200).json({
+      success: true,
+      data: stats
+    });
+    
+  } catch (error) {
+    console.error('❌ Erreur stats notifications:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Récupérer les notifications de rupture
+// @route   GET /api/notifications/ruptures
+// @access  Private/Admin
+export const getRuptureNotifications = async (req, res) => {
+  try {
+    const { page = 1, limit = 50 } = req.query;
+    
+    const result = await notificationService.getNotifications(
+      { type: 'rupture' },
+      parseInt(page),
+      parseInt(limit)
+    );
+    
+    res.status(200).json({
+      success: true,
+      data: result.notifications,
+      pagination: result.pagination
+    });
+    
+  } catch (error) {
+    console.error('❌ Erreur récupération notifications rupture:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// @desc    Supprimer les anciennes notifications
+// @route   DELETE /api/notifications/nettoyer
+// @access  Private/Admin
+export const nettoyerAnciennesNotifications = async (req, res) => {
+  try {
+    const { jours = 30 } = req.query;
+    const result = await notificationService.nettoyerAnciennes(parseInt(jours));
+    
+    res.status(200).json({
+      success: true,
+      message: `${result.deletedCount} notification(s) plus anciennes que ${jours} jours supprimée(s)`,
+      data: { deletedCount: result.deletedCount }
+    });
+    
+  } catch (error) {
+    console.error('❌ Erreur nettoyage notifications:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
     });
   }
 };
