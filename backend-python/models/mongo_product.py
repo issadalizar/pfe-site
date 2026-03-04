@@ -2,16 +2,22 @@
 class MongoProduct:
     def __init__(self, data):
         self.id = str(data.get('_id', ''))
-        self.name = data.get('name', '')
+        # Utiliser les noms français de MongoDB avec fallback pour les noms anglais
+        self.name = data.get('name') or data.get('nom', '')
         self.description = data.get('description', '')
         self.shortDescription = data.get('shortDescription', '')
-        self.price = float(data.get('price', 0))
-        self.features = data.get('features', [])
+        
+        # Corriger les prix qui ont été divisés par 100
+        raw_price = float((data.get('price') or data.get('prix')) or 0)
+        # Si le prix est anormalement petit (< 1000), le multiplier par 100
+        self.price = raw_price * 100 if raw_price < 1000 and raw_price > 0 else raw_price
+        
+        self.features = data.get('features') or data.get('caracteristiques', [])
         self.images = data.get('images', [])
         self.image = self.images[0] if self.images else ''
-        self.model = data.get('model', '')
+        self.model = data.get('model') or data.get('modele', '')
         self.slug = data.get('slug', '')
-        self.isActive = data.get('isActive', True)
+        self.isActive = data.get('isActive') or data.get('estActif', True)
         self.isFeatured = data.get('isFeatured', False)
         self.stock = int(data.get('stock', 0))
         self.order = data.get('order', 0)
@@ -26,9 +32,9 @@ class MongoProduct:
             self.category_name = data['category_details'].get('name', '')
             self.mainCategory = data.get('mainCategory', '')
             self.category_id = data['category_details'].get('_id', '')
-        elif 'category' in data:
-            if isinstance(data['category'], dict) and '$oid' in data['category']:
-                self.category_id = data['category']['$oid']
+        elif 'categorie' in data:
+            if isinstance(data['categorie'], dict) and '$oid' in data['categorie']:
+                self.category_id = data['categorie']['$oid']
         
         # ===== CORRECTION DES IMAGES =====
         # Si pas d'image en base, générer un chemin basé sur la catégorie et le nom

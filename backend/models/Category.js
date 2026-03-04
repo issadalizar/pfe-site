@@ -7,7 +7,7 @@ const categorySchema = new mongoose.Schema({
     trim: true,
     unique: true  // Le name devient ton identifiant unique
   },
-  // slug a été supprimé 👈
+ 
   description: {
     type: String,
     default: ''
@@ -17,32 +17,19 @@ const categorySchema = new mongoose.Schema({
     ref: 'Category', 
     default: null 
   },
-  level: { 
+  level: { // Le niveau de la catégorie dans la hiérarchie
     type: Number, 
     default: 1,
     min: 1,
     max: 3
   },
-  icon: {
-    type: String,
-    default: '📁'
-  },
+ 
   isActive: {
     type: Boolean,
     default: true
   },
-  order: {
-    type: Number,
-    default: 0
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
+ 
+ 
 });
 
 // Middleware simplifié (plus de slug)

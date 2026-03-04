@@ -11,8 +11,6 @@ const ADMIN_DATA = {
     password: 'Admin123!',
     isAdmin: true,
     actif: true,
-    telephone: '',
-    adresse: ''
 };
 
 const createAdmin = async () => {

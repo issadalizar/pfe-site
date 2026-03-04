@@ -1,6 +1,8 @@
+// frontend/src/services/notificationService.js
 import axios from 'axios';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
+// ✅ CORRECTION : Utiliser import.meta.env pour Vite
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 class NotificationService {
   constructor() {
@@ -30,18 +32,18 @@ class NotificationService {
       const response = await this.api.get('/', { params });
       return response.data;
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('❌ Erreur notificationService.getNotifications:', error);
       throw error;
     }
   }
 
   // Récupérer les notifications non lues
-  async getNotificationsNonLues() {
+  async getNotificationsNonLues(limit = 20) {
     try {
-      const response = await this.api.get('/non-lues');
+      const response = await this.api.get('/non-lues', { params: { limit } });
       return response.data;
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('❌ Erreur notificationService.getNotificationsNonLues:', error);
       throw error;
     }
   }
@@ -52,7 +54,18 @@ class NotificationService {
       const response = await this.api.get('/stats');
       return response.data;
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('❌ Erreur notificationService.getStats:', error);
+      throw error;
+    }
+  }
+
+  // Récupérer les notifications de rupture
+  async getRuptures(page = 1, limit = 50) {
+    try {
+      const response = await this.api.get('/ruptures', { params: { page, limit } });
+      return response.data;
+    } catch (error) {
+      console.error('❌ Erreur notificationService.getRuptures:', error);
       throw error;
     }
   }
@@ -63,7 +76,7 @@ class NotificationService {
       const response = await this.api.put(`/${id}/lire`);
       return response.data;
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('❌ Erreur notificationService.marquerCommeLue:', error);
       throw error;
     }
   }
@@ -74,14 +87,9 @@ class NotificationService {
       const response = await this.api.put('/lire-toutes');
       return response.data;
     } catch (error) {
-      console.error('Erreur:', error);
+      console.error('❌ Erreur notificationService.marquerToutesCommeLues:', error);
       throw error;
     }
-  }
-
-  // Récupérer les notifications de rupture
-  async getRuptures() {
-    return this.getNotifications({ type: 'rupture' });
   }
 }
 

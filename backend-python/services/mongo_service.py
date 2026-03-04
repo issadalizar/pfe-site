@@ -25,13 +25,30 @@ class MongoService:
     def get_all_products(self):
         """Récupère tous les produits avec leurs catégories"""
         try:
-            products = list(self.products.find({'isActive': True}))
+            # Chercher les produits (utiliser 'estActif' au lieu de 'isActive')
+            products = list(self.products.find({'estActif': True}))
+            
+            if not products:
+                # Fallback: si estActif n'existe pas, prendre tous les produits
+                products = list(self.products.find())
             
             # Pour chaque produit, ajouter les infos de catégorie
             for product in products:
                 product['_id'] = str(product['_id'])  # Convertir ObjectId en string
-                if 'category' in product and product['category']:
-                    category_id = product['category']
+                # Normaliser les noms de champs anglais pour compatibilité
+                if 'nom' in product:
+                    product['name'] = product.get('name', product['nom'])
+                if 'prix' in product:
+                    product['price'] = product.get('price', product['prix'])
+                if 'caracteristiques' in product:
+                    product['features'] = product.get('features', product['caracteristiques'])
+                if 'modele' in product:
+                    product['model'] = product.get('model', product['modele'])
+                if 'estActif' in product:
+                    product['isActive'] = product.get('isActive', product['estActif'])
+                
+                if 'categorie' in product and product['categorie']:
+                    category_id = product['categorie']
                     if isinstance(category_id, dict) and '$oid' in category_id:
                         category_id = category_id['$oid']
                     
@@ -77,12 +94,28 @@ class MongoService:
     def get_product_by_name(self, name):
         """Récupère un produit par son nom (recherche approximative)"""
         try:
+            # Chercher d'abord avec le champ 'nom' puis 'name'
             products = list(self.products.find({
-                'name': {'$regex': name, '$options': 'i'},
-                'isActive': True
+                'nom': {'$regex': name, '$options': 'i'}
             }))
+            
+            if not products:
+                products = list(self.products.find({
+                    'name': {'$regex': name, '$options': 'i'}
+                }))
+            
             for p in products:
                 p['_id'] = str(p['_id'])
+                # Normaliser les noms de champs
+                if 'nom' in p:
+                    p['name'] = p.get('name', p['nom'])
+                if 'prix' in p:
+                    p['price'] = p.get('price', p['prix'])
+                if 'caracteristiques' in p:
+                    p['features'] = p.get('features', p['caracteristiques'])
+                if 'modele' in p:
+                    p['model'] = p.get('model', p['modele'])
+            
             return products[0] if products else None
         except:
             return None
@@ -90,21 +123,27 @@ class MongoService:
     def search_products(self, query, limit=10):
         """Recherche de produits par mots-clés"""
         try:
-            # Créer une recherche textuelle
+            # Créer une recherche textuelle (utiliser les noms français)
             products = list(self.products.find({
-                '$and': [
-                    {'isActive': True},
-                    {'$or': [
-                        {'name': {'$regex': query, '$options': 'i'}},
-                        {'description': {'$regex': query, '$options': 'i'}},
-                        {'model': {'$regex': query, '$options': 'i'}},
-                        {'features': {'$elemMatch': {'$regex': query, '$options': 'i'}}}
-                    ]}
+                '$or': [
+                    {'nom': {'$regex': query, '$options': 'i'}},
+                    {'description': {'$regex': query, '$options': 'i'}},
+                    {'modele': {'$regex': query, '$options': 'i'}},
+                    {'caracteristiques': {'$elemMatch': {'$regex': query, '$options': 'i'}}}
                 ]
             }).limit(limit))
             
             for p in products:
                 p['_id'] = str(p['_id'])
+                # Normaliser les noms de champs
+                if 'nom' in p:
+                    p['name'] = p.get('name', p['nom'])
+                if 'prix' in p:
+                    p['price'] = p.get('price', p['prix'])
+                if 'caracteristiques' in p:
+                    p['features'] = p.get('features', p['caracteristiques'])
+                if 'modele' in p:
+                    p['model'] = p.get('model', p['modele'])
             return products
         except Exception as e:
             print(f"❌ Erreur search_products: {e}")
@@ -123,16 +162,39 @@ class MongoService:
             if category:
                 category_id = category['_id']
                 
-                # Chercher les produits avec cette catégorie
-                products = list(self.products.find({
-                    'category': ObjectId(category_id),
-                    'isActive': True
-                }))
+                # Si c'est une catégorie principale (level 1), chercher aussi dans ses sous-catégories
+                products = []
+                if category.get('level') == 1:
+                    # Chercher les sous-catégories
+                    subcategories = list(self.categories.find({'parent': category_id}))
+                    all_cat_ids = [category_id] + [sub['_id'] for sub in subcategories]
+                    
+                    # Chercher les produits dans toutes ces catégories
+                    products = list(self.products.find({
+                        'categorie': {'$in': all_cat_ids}
+                    }))
+                else:
+                    # C'est une sous-catégorie, chercher juste ses produits
+                    products = list(self.products.find({
+                        'categorie': ObjectId(category_id)
+                    }))
                 
                 for p in products:
                     p['_id'] = str(p['_id'])
+                    # Normaliser les noms de champs
+                    if 'nom' in p:
+                        p['name'] = p.get('name', p['nom'])
+                    if 'prix' in p:
+                        p['price'] = p.get('price', p['prix'])
+                    if 'caracteristiques' in p:
+                        p['features'] = p.get('features', p['caracteristiques'])
+                    if 'modele' in p:
+                        p['model'] = p.get('model', p['modele'])
+                
+                print(f"📦 {len(products)} produits trouvés pour catégorie '{category_name}'")
                 return products
             
+            print(f"❌ Catégorie '{category_name}' non trouvée")
             return []
         except Exception as e:
             print(f"❌ Erreur get_products_by_category: {e}")
@@ -157,14 +219,22 @@ class MongoService:
                 # Ajouter la catégorie principale elle-même
                 all_cat_ids = [main_cat_id] + subcat_ids
                 
-                # Chercher les produits dans toutes ces catégories
+                # Chercher les produits dans toutes ces catégories (utiliser 'categorie' au lieu de 'category')
                 products = list(self.products.find({
-                    'category': {'$in': all_cat_ids},
-                    'isActive': True
+                    'categorie': {'$in': all_cat_ids}
                 }))
                 
                 for p in products:
                     p['_id'] = str(p['_id'])
+                    # Normaliser les noms de champs
+                    if 'nom' in p:
+                        p['name'] = p.get('name', p['nom'])
+                    if 'prix' in p:
+                        p['price'] = p.get('price', p['prix'])
+                    if 'caracteristiques' in p:
+                        p['features'] = p.get('features', p['caracteristiques'])
+                    if 'modele' in p:
+                        p['model'] = p.get('model', p['modele'])
                 return products
             
             return []
@@ -254,12 +324,26 @@ class MongoService:
             return None
     
     def count_products_in_category(self, category_id):
-        """Compte le nombre de produits dans une catégorie"""
+        """Compte le nombre de produits dans une catégorie (incluant les sous-catégories)"""
         try:
             cat_id = ObjectId(category_id) if isinstance(category_id, str) else category_id
-            return self.products.count_documents({
-                'category': cat_id,
-                'isActive': True
-            })
+            
+            # Chercher la catégorie pour voir son niveau
+            category = self.categories.find_one({'_id': cat_id})
+            if not category:
+                return 0
+            
+            # Si c'est une catégorie principale (level 1), compter aussi dans les sous-catégories
+            if category.get('level') == 1:
+                subcategories = list(self.categories.find({'parent': cat_id}))
+                all_cat_ids = [cat_id] + [sub['_id'] for sub in subcategories]
+                return self.products.count_documents({
+                    'categorie': {'$in': all_cat_ids}
+                })
+            else:
+                # Compter juste les produits directs
+                return self.products.count_documents({
+                    'categorie': cat_id
+                })
         except:
             return 0
