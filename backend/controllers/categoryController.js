@@ -1,4 +1,6 @@
+// controllers/categoryController.js
 import Category from '../models/Category.js';
+import dataSyncService from '../services/dataSyncService.js'; // AJOUT
 
 // @desc    Récupérer toutes les catégories
 // @route   GET /api/categories
@@ -75,6 +77,16 @@ export const createCategory = async (req, res) => {
     };
     
     const category = await Category.create(categoryData);
+
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.updateCategoryInFile(
+        category._id.toString(),
+        category.toObject()
+      );
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+    }
     
     console.log(`✅ Catégorie créée: ${category.name}`);
     res.status(201).json({
@@ -127,6 +139,16 @@ export const updateCategory = async (req, res) => {
     
     Object.assign(category, updates);
     await category.save();
+
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.updateCategoryInFile(
+        req.params.id,
+        category.toObject()
+      );
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+    }
     
     console.log(` Catégorie mise à jour: ${category.name}`);
     res.json({
@@ -159,6 +181,13 @@ export const deleteCategory = async (req, res) => {
     }
     
     await category.deleteOne();
+
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.deleteCategoryFromFile(req.params.id);
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+    }
     
     console.log(` Catégorie supprimée: ${category.name}`);
     res.json({

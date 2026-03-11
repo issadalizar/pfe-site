@@ -1,6 +1,6 @@
-// ProductDetails.jsx (version simplifiée)
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+// ProductDetails.jsx (version complète avec gestion d'images)
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import {
   FaArrowLeft,
   FaStar,
@@ -25,89 +25,145 @@ import {
   FaEye,
   FaChartBar,
   FaArrowRight,
-  FaShoppingCart
-} from 'react-icons/fa';
-import { getProductDetails } from './productData';
-import DevisModal from '../components/DevisModal';
-import { useCart } from '../context/CartContext';
+  FaShoppingCart,
+} from "react-icons/fa";
+import { getProductDetails } from "../services/productDataService";
+import DevisModal from "../components/DevisModal";
+import { useCart } from "../context/CartContext";
 
 const ProductDetails = () => {
   const { productName } = useParams();
   const navigate = useNavigate();
   const { addToCart, notification } = useCart();
-  const [selectedImage, setSelectedImage] = useState('');
+  const [productDetails, setProductDetails] = useState(null);
+  const [selectedImage, setSelectedImage] = useState("");
   const [loading, setLoading] = useState(true);
   const [showQuoteForm, setShowQuoteForm] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [showSpecsModal, setShowSpecsModal] = useState(false);
   const [showTextSpecsPage, setShowTextSpecsPage] = useState(false);
 
-  // Décoder le nom du produit depuis l'URL
-  const decodedProductName = decodeURIComponent(productName);
+  // ✅ FONCTION AJOUTÉE : Valider si une URL d'image est valide
+  const isValidImage = (url) => {
+    if (!url || typeof url !== 'string') return false;
+    
+    // Liste des extensions d'image valides
+    const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.bmp'];
+    
+    // Vérifier si l'URL a une extension valide
+    const hasValidExtension = validExtensions.some(ext => 
+      url.toLowerCase().endsWith(ext)
+    );
+    
+    // Vérifier que l'URL n'est pas juste ".PNG" ou similaire
+    if (url === '.PNG' || url === '.JPG' || url === '.JPEG' || url.length < 5) {
+      return false;
+    }
+    
+    // Vérifier que l'URL commence par http ou /images
+    if (!url.startsWith('http') && !url.startsWith('/images')) {
+      return false;
+    }
+    
+    return hasValidExtension;
+  };
 
-  // Récupérer les détails du produit
-  const productDetails = getProductDetails(decodedProductName);
-
-  // Gestionnaire d'erreur d'image simplifié
-  const handleImageError = (imagePath) => {
-    console.log(`Erreur de chargement: ${imagePath}`);
+  // ✅ FONCTION AJOUTÉE : Gérer les erreurs de chargement d'images
+  const handleImageError = (imageUrl) => {
+    console.warn(`⚠️ Erreur de chargement d'image: ${imageUrl}`);
     setImageErrors(prev => ({
       ...prev,
-      [imagePath]: true
+      [imageUrl]: true
     }));
   };
 
-  const isValidImage = (imagePath) => {
-    if (!imagePath) return false;
-    return !imageErrors[imagePath];
-  };
+  // Décoder le nom du produit depuis l'URL
+  const decodedProductName = decodeURIComponent(productName);
 
+  // Récupérer les détails du produit de façon asynchrone
   useEffect(() => {
-    if (productDetails) {
-      setImageErrors({});
-      setSelectedImage(productDetails.images?.[0] || '');
-      setLoading(false);
-    } else {
-      setLoading(false);
+    const fetchProductDetails = async () => {
+      setLoading(true);
+      try {
+        const details = await getProductDetails(decodedProductName);
+        setProductDetails(details);
+        if (details) {
+          // Sélectionner la première image valide
+          const validImage = details.images?.find(img => isValidImage(img));
+          setSelectedImage(validImage || "");
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement du produit:", error);
+        setProductDetails(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (decodedProductName) {
+      fetchProductDetails();
     }
-  }, [productDetails]);
+  }, [decodedProductName]);
 
   const handleRequestQuote = () => {
     setShowQuoteForm(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const handleCloseQuoteForm = () => {
     setShowQuoteForm(false);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   const handleOpenSpecsPage = () => {
     setShowTextSpecsPage(true);
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   };
 
   const handleCloseSpecsPage = () => {
     setShowTextSpecsPage(false);
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   };
 
   const handleGeneratePDF = () => {
-    alert(`Génération du PDF pour ${productDetails.title}\n\nCette fonctionnalité sera bientôt disponible.`);
+    alert(
+      `Génération du PDF pour ${productDetails?.title}\n\nCette fonctionnalité sera bientôt disponible.`,
+    );
   };
 
   const getSpecIcon = (specKey) => {
-    if (specKey.includes('Moteur') || specKey.includes('broche') || specKey.includes('Vitesse'))
+    if (
+      specKey.includes("Moteur") ||
+      specKey.includes("broche") ||
+      specKey.includes("Vitesse")
+    )
       return <FaTachometerAlt className="text-primary me-2" />;
-    if (specKey.includes('Vis') || specKey.includes('Guide') || specKey.includes('Rail') || specKey.includes('Course'))
+    if (
+      specKey.includes("Vis") ||
+      specKey.includes("Guide") ||
+      specKey.includes("Rail") ||
+      specKey.includes("Course")
+    )
       return <FaRuler className="text-success me-2" />;
-    if (specKey.includes('Changeur') || specKey.includes('Magasin') || specKey.includes('Porte-outils'))
+    if (
+      specKey.includes("Changeur") ||
+      specKey.includes("Magasin") ||
+      specKey.includes("Porte-outils")
+    )
       return <FaWrench className="text-warning me-2" />;
-    if (specKey.includes('Structure') || specKey.includes('Bâti') || specKey.includes('Banc'))
+    if (
+      specKey.includes("Structure") ||
+      specKey.includes("Bâti") ||
+      specKey.includes("Banc")
+    )
       return <FaIndustry className="text-secondary me-2" />;
-    if (specKey.includes('Certification') || specKey.includes('Sécurité'))
+    if (specKey.includes("Certification") || specKey.includes("Sécurité"))
       return <FaShieldAlt className="text-info me-2" />;
-    if (specKey.includes('Système') || specKey.includes('Interface') || specKey.includes('Compatibilité'))
+    if (
+      specKey.includes("Système") ||
+      specKey.includes("Interface") ||
+      specKey.includes("Compatibilité")
+    )
       return <FaMicrochip className="text-danger me-2" />;
     return <FaCog className="text-dark me-2" />;
   };
@@ -131,7 +187,11 @@ const ProductDetails = () => {
   if (loading) {
     return (
       <div className="container py-5 text-center">
-        <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}>
+        <div
+          className="spinner-border text-primary"
+          role="status"
+          style={{ width: "3rem", height: "3rem" }}
+        >
           <span className="visually-hidden">Chargement...</span>
         </div>
         <p className="mt-3">Chargement des détails du produit...</p>
@@ -144,7 +204,10 @@ const ProductDetails = () => {
       <div className="container py-5">
         <div className="alert alert-warning">
           <h4>Produit non trouvé</h4>
-          <p>Les détails pour "{decodedProductName}" ne sont pas encore disponibles.</p>
+          <p>
+            Les détails pour "{decodedProductName}" ne sont pas encore
+            disponibles.
+          </p>
           <button className="btn btn-primary" onClick={() => navigate(-1)}>
             <FaArrowLeft className="me-2" /> Retour
           </button>
@@ -157,16 +220,30 @@ const ProductDetails = () => {
     <div className="product-details-page">
       {/* Cart notification toast */}
       {notification && (
-        <div style={{
-          position: 'fixed', top: '90px', right: '30px', zIndex: 9999,
-          animation: 'slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
-        }}>
-          <div className="alert" style={{
-            background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
-            color: 'white', border: 'none', borderRadius: '16px',
-            padding: '14px 24px', boxShadow: '0 10px 40px rgba(67, 97, 238, 0.4)',
-            fontWeight: 500, display: 'flex', alignItems: 'center', gap: '10px'
-          }}>
+        <div
+          style={{
+            position: "fixed",
+            top: "90px",
+            right: "30px",
+            zIndex: 9999,
+            animation: "slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+          }}
+        >
+          <div
+            className="alert"
+            style={{
+              background: "linear-gradient(145deg, #4361ee, #3a0ca3)",
+              color: "white",
+              border: "none",
+              borderRadius: "16px",
+              padding: "14px 24px",
+              boxShadow: "0 10px 40px rgba(67, 97, 238, 0.4)",
+              fontWeight: 500,
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+            }}
+          >
             <FaCheck size={16} />
             {notification}
           </div>
@@ -179,20 +256,27 @@ const ProductDetails = () => {
             <button
               className="btn btn-link text-dark p-0 me-3"
               onClick={() => navigate(-1)}
-              style={{ textDecoration: 'none' }}
+              style={{ textDecoration: "none" }}
             >
               <FaArrowLeft size={20} />
             </button>
             <nav aria-label="breadcrumb">
               <ol className="breadcrumb mb-0">
                 <li className="breadcrumb-item">
-                  <Link to="/home" className="text-decoration-none">Accueil</Link>
+                  <Link to="/home" className="text-decoration-none">
+                    Accueil
+                  </Link>
                 </li>
                 <li className="breadcrumb-item">
-                  <Link to="/shop" className="text-decoration-none">{productDetails.mainCategory}</Link>
+                  <Link to="/shop" className="text-decoration-none">
+                    {productDetails.mainCategory}
+                  </Link>
                 </li>
                 <li className="breadcrumb-item">
-                  <Link to={`/shop/${productDetails.category}`} className="text-decoration-none">
+                  <Link
+                    to={`/shop/${productDetails.category}`}
+                    className="text-decoration-none"
+                  >
                     {productDetails.category}
                   </Link>
                 </li>
@@ -212,17 +296,19 @@ const ProductDetails = () => {
           <div className="col-lg-6">
             <div className="product-gallery">
               {/* Image principale */}
-              <div className="main-image-container bg-light rounded-3 mb-3 d-flex align-items-center justify-content-center"
-                style={{ height: '400px', border: '1px solid #dee2e6' }}>
-                {selectedImage && isValidImage(selectedImage) ? (
+              <div
+                className="main-image-container bg-light rounded-3 mb-3 d-flex align-items-center justify-content-center"
+                style={{ height: "400px", border: "1px solid #dee2e6" }}
+              >
+                {selectedImage && isValidImage(selectedImage) && !imageErrors[selectedImage] ? (
                   <img
                     src={selectedImage}
                     alt={productDetails.title}
                     style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%',
-                      objectFit: 'contain',
-                      padding: '20px'
+                      maxWidth: "100%",
+                      maxHeight: "100%",
+                      objectFit: "contain",
+                      padding: "20px",
                     }}
                     onError={() => handleImageError(selectedImage)}
                   />
@@ -239,18 +325,18 @@ const ProductDetails = () => {
               {productDetails.images && productDetails.images.length > 0 && (
                 <div className="thumbnail-row d-flex gap-2 overflow-auto pb-2">
                   {productDetails.images.map((img, index) => {
-                    const isValid = isValidImage(img);
+                    const isValid = isValidImage(img) && !imageErrors[img];
 
                     return (
                       <div
                         key={index}
-                        className={`thumbnail-item border rounded-3 d-flex align-items-center justify-content-center ${selectedImage === img && isValid ? 'border-primary border-2' : ''}`}
+                        className={`thumbnail-item border rounded-3 d-flex align-items-center justify-content-center ${selectedImage === img && isValid ? "border-primary border-2" : ""}`}
                         style={{
-                          width: '100px',
-                          height: '100px',
-                          cursor: isValid ? 'pointer' : 'default',
-                          background: '#f8f9fa',
-                          opacity: isValid ? 1 : 0.5
+                          width: "100px",
+                          height: "100px",
+                          cursor: isValid ? "pointer" : "default",
+                          background: "#f8f9fa",
+                          opacity: isValid ? 1 : 0.5,
                         }}
                         onClick={() => isValid && setSelectedImage(img)}
                       >
@@ -258,7 +344,11 @@ const ProductDetails = () => {
                           <img
                             src={img}
                             alt={`${productDetails.title} - ${index + 1}`}
-                            style={{ maxWidth: '90%', maxHeight: '90%', objectFit: 'contain' }}
+                            style={{
+                              maxWidth: "90%",
+                              maxHeight: "90%",
+                              objectFit: "contain",
+                            }}
                             onError={() => handleImageError(img)}
                           />
                         ) : (
@@ -277,8 +367,12 @@ const ProductDetails = () => {
             <div className="product-info">
               {/* Catégorie et badge */}
               <div className="d-flex align-items-center gap-2 mb-3">
-                <span className="badge bg-primary">{productDetails.category}</span>
-                <span className="badge bg-secondary">{productDetails.mainCategory}</span>
+                <span className="badge bg-primary">
+                  {productDetails.category}
+                </span>
+                <span className="badge bg-secondary">
+                  {productDetails.mainCategory}
+                </span>
                 <span className="badge bg-success">En stock</span>
               </div>
 
@@ -289,9 +383,7 @@ const ProductDetails = () => {
               {renderStars(4.8)}
 
               {/* Description courte */}
-              <p className="lead mb-4">
-                {productDetails.fullDescription}
-              </p>
+              <p className="lead mb-4">{productDetails.fullDescription}</p>
 
               {/* Caractéristiques principales */}
               <div className="features-section bg-light p-4 rounded-3 mb-4">
@@ -302,7 +394,10 @@ const ProductDetails = () => {
                 <ul className="list-unstyled mb-0">
                   {productDetails.features.map((feature, index) => (
                     <li key={index} className="mb-2 d-flex align-items-start">
-                      <FaCheck size={16} className="text-success me-2 mt-1 flex-shrink-0" />
+                      <FaCheck
+                        size={16}
+                        className="text-success me-2 mt-1 flex-shrink-0"
+                      />
                       <span>{feature}</span>
                     </li>
                   ))}
@@ -314,10 +409,14 @@ const ProductDetails = () => {
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <span className="text-muted text-decoration-line-through me-2">
-                      {productDetails.price ? `${Math.round(productDetails.price * 1.2)}€` : 'Sur devis'}
+                      {productDetails.price
+                        ? `${Math.round(productDetails.price * 1.2)}€`
+                        : "Sur devis"}
                     </span>
                     <span className="display-6 fw-bold text-primary">
-                      {productDetails.price ? `${productDetails.price}€` : 'Prix sur demande'}
+                      {productDetails.price
+                        ? `${productDetails.price}€`
+                        : "Prix sur demande"}
                     </span>
                   </div>
                   <div className="d-flex gap-2">
@@ -380,7 +479,9 @@ const ProductDetails = () => {
                 </button>
               </div>
 
-              <h6 className="fw-bold mb-2">À propos de {productDetails.title}</h6>
+              <h6 className="fw-bold mb-2">
+                À propos de {productDetails.title}
+              </h6>
               <p className="mb-4">{productDetails.fullDescription}</p>
 
               <h6 className="fw-bold mb-2">Applications pédagogiques</h6>
@@ -413,7 +514,9 @@ const ProductDetails = () => {
                     <FaCube size={48} className="text-primary mb-3" />
                     <h6 className="fw-bold">De4-Pro (iKC4)</h6>
                     <p className="small text-muted">Bench CNC Lathe</p>
-                    <button className="btn btn-sm btn-outline-primary mt-2">Voir</button>
+                    <button className="btn btn-sm btn-outline-primary mt-2">
+                      Voir
+                    </button>
                   </div>
                 </div>
               </div>
@@ -423,7 +526,9 @@ const ProductDetails = () => {
                     <FaCube size={48} className="text-primary mb-3" />
                     <h6 className="fw-bold">De6 (iKC6S)</h6>
                     <p className="small text-muted">CNC Turning Machine</p>
-                    <button className="btn btn-sm btn-outline-primary mt-2">Voir</button>
+                    <button className="btn btn-sm btn-outline-primary mt-2">
+                      Voir
+                    </button>
                   </div>
                 </div>
               </div>
@@ -433,7 +538,9 @@ const ProductDetails = () => {
                     <FaCube size={48} className="text-primary mb-3" />
                     <h6 className="fw-bold">Fa4 (iKX1)</h6>
                     <p className="small text-muted">CNC Milling Center</p>
-                    <button className="btn btn-sm btn-outline-primary mt-2">Voir</button>
+                    <button className="btn btn-sm btn-outline-primary mt-2">
+                      Voir
+                    </button>
                   </div>
                 </div>
               </div>
@@ -443,7 +550,9 @@ const ProductDetails = () => {
                     <FaCube size={48} className="text-primary mb-3" />
                     <h6 className="fw-bold">ECO1</h6>
                     <p className="small text-muted">5-axis Milling Machine</p>
-                    <button className="btn btn-sm btn-outline-primary mt-2">Voir</button>
+                    <button className="btn btn-sm btn-outline-primary mt-2">
+                      Voir
+                    </button>
                   </div>
                 </div>
               </div>
@@ -470,58 +579,71 @@ const ProductDetails = () => {
 
             <div className="specs-page-body">
               {/* SECTION 1: Spécifications générales */}
-              {productDetails.specifications && Object.keys(productDetails.specifications).length > 0 && (
-                <div className="specs-text-section mb-4">
-                  <h4 className="fw-bold text-primary mb-3">
-                    <FaArrowRight className="me-2" size={18} />
-                    Spécifications générales
-                  </h4>
-                  <div className="specs-text-content p-3 bg-light rounded-3">
-                    {Object.entries(productDetails.specifications).map(([key, value], index) => (
-                      <div key={index} className="mb-2 pb-2 border-bottom border-secondary border-opacity-10">
-                        <strong>{key} :</strong> {value}
-                      </div>
-                    ))}
+              {productDetails.specifications &&
+                Object.keys(productDetails.specifications).length > 0 && (
+                  <div className="specs-text-section mb-4">
+                    <h4 className="fw-bold text-primary mb-3">
+                      <FaArrowRight className="me-2" size={18} />
+                      Spécifications générales
+                    </h4>
+                    <div className="specs-text-content p-3 bg-light rounded-3">
+                      {Object.entries(productDetails.specifications).map(
+                        ([key, value], index) => (
+                          <div
+                            key={index}
+                            className="mb-2 pb-2 border-bottom border-secondary border-opacity-10"
+                          >
+                            <strong>{key} :</strong> {value}
+                          </div>
+                        ),
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* SECTION 2: Spécifications techniques avancées */}
-              {productDetails.technicalSpecs && Object.keys(productDetails.technicalSpecs).length > 0 && (
-                <div className="specs-text-section mb-4">
-                  <h4 className="fw-bold text-primary mb-3">
-                    <FaArrowRight className="me-2" size={18} />
-                    Spécifications techniques avancées
-                  </h4>
-                  <div className="specs-text-content p-3 bg-light rounded-3">
-                    {Object.entries(productDetails.technicalSpecs).map(([key, value], index) => (
-                      <div key={index} className="mb-2 pb-2 border-bottom border-secondary border-opacity-10">
-                        <strong>{key} :</strong> {value}
-                      </div>
-                    ))}
+              {productDetails.technicalSpecs &&
+                Object.keys(productDetails.technicalSpecs).length > 0 && (
+                  <div className="specs-text-section mb-4">
+                    <h4 className="fw-bold text-primary mb-3">
+                      <FaArrowRight className="me-2" size={18} />
+                      Spécifications techniques avancées
+                    </h4>
+                    <div className="specs-text-content p-3 bg-light rounded-3">
+                      {Object.entries(productDetails.technicalSpecs).map(
+                        ([key, value], index) => (
+                          <div
+                            key={index}
+                            className="mb-2 pb-2 border-bottom border-secondary border-opacity-10"
+                          >
+                            <strong>{key} :</strong> {value}
+                          </div>
+                        ),
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* SECTION 3: Caractéristiques principales */}
-              {productDetails.features && productDetails.features.length > 0 && (
-                <div className="specs-text-section mb-4">
-                  <h4 className="fw-bold text-primary mb-3">
-                    <FaArrowRight className="me-2" size={18} />
-                    Caractéristiques principales
-                  </h4>
-                  <div className="specs-text-content p-3 bg-light rounded-3">
-                    <ul className="mb-0">
-                      {productDetails.features.map((feature, index) => (
-                        <li key={index} className="mb-2">
-                          <FaCheck className="text-success me-2" size={14} />
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
+              {productDetails.features &&
+                productDetails.features.length > 0 && (
+                  <div className="specs-text-section mb-4">
+                    <h4 className="fw-bold text-primary mb-3">
+                      <FaArrowRight className="me-2" size={18} />
+                      Caractéristiques principales
+                    </h4>
+                    <div className="specs-text-content p-3 bg-light rounded-3">
+                      <ul className="mb-0">
+                        {productDetails.features.map((feature, index) => (
+                          <li key={index} className="mb-2">
+                            <FaCheck className="text-success me-2" size={14} />
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
         </div>
@@ -534,233 +656,233 @@ const ProductDetails = () => {
         onClose={handleCloseQuoteForm}
       />
 
-      {/* CSS additionnel */}
-      <style jsx>{`
-        .product-details-page .breadcrumb {
-          background: transparent;
-        }
-        .product-details-page .thumbnail-item {
-          transition: all 0.2s;
-        }
-        .product-details-page .thumbnail-item:hover {
-          border-color: #0d6efd !important;
-          transform: scale(1.05);
-        }
-        
-        /* STYLES POUR LA PAGE DE SPÉCIFICATIONS TEXTUELLES */
-        .specs-page-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1050;
-          padding: 20px;
-        }
-        
-        .specs-page {
-          background: white;
-          border-radius: 12px;
-          width: 100%;
-          max-width: 900px;
-          max-height: 90vh;
-          overflow-y: auto;
-          position: relative;
-          padding: 30px;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        
-        .specs-page-close {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          background: none;
-          border: none;
-          font-size: 24px;
-          color: #6c757d;
-          cursor: pointer;
-          padding: 5px;
-          line-height: 1;
-          transition: color 0.2s;
-          z-index: 1;
-        }
-        
-        .specs-page-close:hover {
-          color: #dc3545;
-        }
-        
-        .specs-page-header {
-          margin-bottom: 25px;
-          padding-right: 30px;
-          border-bottom: 2px solid #f1f1f1;
-          padding-bottom: 15px;
-        }
-        
-        .specs-page-header h2 {
-          font-size: 24px;
-          font-weight: 700;
-          color: #212529;
-          margin-bottom: 5px;
-          display: flex;
-          align-items: center;
-        }
-        
-        .specs-page-body {
-          padding: 10px 0;
-        }
-        
-        .specs-text-section {
-          margin-bottom: 25px;
-        }
-        
-        .specs-text-section h4 {
-          font-size: 18px;
-          display: flex;
-          align-items: center;
-        }
-        
-        .specs-text-content {
-          background: #f8f9fa;
-          border-radius: 8px;
-          line-height: 1.6;
-        }
-        
-        /* Styles pour le modal de devis */
-        .quote-modal-overlay {
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          background-color: rgba(0, 0, 0, 0.7);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1060;
-          padding: 20px;
-        }
-        
-        .quote-modal {
-          background: white;
-          border-radius: 12px;
-          width: 100%;
-          max-width: 800px;
-          max-height: 90vh;
-          overflow-y: auto;
-          position: relative;
-          padding: 30px;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
-        
-        .quote-modal-close {
-          position: absolute;
-          top: 15px;
-          right: 15px;
-          background: none;
-          border: none;
-          font-size: 24px;
-          color: #6c757d;
-          cursor: pointer;
-          padding: 5px;
-          line-height: 1;
-          transition: color 0.2s;
-        }
-        
-        .quote-modal-close:hover {
-          color: #dc3545;
-        }
-        
-        .quote-modal-header {
-          margin-bottom: 25px;
-          padding-right: 30px;
-        }
-        
-        .quote-modal-header h2 {
-          font-size: 24px;
-          font-weight: 700;
-          color: #212529;
-          margin-bottom: 5px;
-        }
-        
-        .quote-modal-form .form-label {
-          font-weight: 600;
-          color: #495057;
-          margin-bottom: 5px;
-          display: flex;
-          align-items: center;
-        }
-        
-        .quote-modal-form .form-control {
-          border-radius: 8px;
-          border: 1px solid #ced4da;
-          padding: 10px 15px;
-        }
-        
-        .quote-modal-form .form-control:focus {
-          border-color: #0d6efd;
-          box-shadow: 0 0 0 0.2rem rgba(13,110,253,0.25);
-        }
-        
-        .quote-modal-footer {
-          margin-top: 20px;
-          padding-top: 20px;
-          border-top: 1px solid #dee2e6;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-        
-        .quote-modal-info {
-          color: #6c757d;
-          max-width: 60%;
-        }
-        
-        .quote-modal-actions .btn {
-          padding: 10px 25px;
-          border-radius: 8px;
-        }
-        
-        .quote-modal-success {
-          text-align: center;
-          padding: 40px 20px;
-        }
-        
-        .quote-modal-success .success-icon {
-          width: 80px;
-          height: 80px;
-          background: #28a745;
-          color: white;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          margin: 0 auto 20px;
-        }
-        
-        @media (max-width: 768px) {
-          .specs-page {
-            padding: 20px;
-          }
-          
-          .quote-modal {
-            padding: 20px;
-          }
-          
-          .quote-modal-footer {
-            flex-direction: column;
-            gap: 15px;
-          }
-          
-          .quote-modal-info {
-            max-width: 100%;
-            text-align: center;
-          }
-        }
-      `}</style>
+   {/* Remplacer <style jsx>{`...`}</style> par : */}
+<style>{`
+  .product-details-page .breadcrumb {
+    background: transparent;
+  }
+  .product-details-page .thumbnail-item {
+    transition: all 0.2s;
+  }
+  .product-details-page .thumbnail-item:hover {
+    border-color: #0d6efd !important;
+    transform: scale(1.05);
+  }
+
+  /* STYLES POUR LA PAGE DE SPÉCIFICATIONS TEXTUELLES */
+  .specs-page-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+    padding: 20px;
+  }
+
+  .specs-page {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .specs-page-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    transition: color 0.2s;
+    z-index: 1;
+  }
+
+  .specs-page-close:hover {
+    color: #dc3545;
+  }
+
+  .specs-page-header {
+    margin-bottom: 25px;
+    padding-right: 30px;
+    border-bottom: 2px solid #f1f1f1;
+    padding-bottom: 15px;
+  }
+
+  .specs-page-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+  }
+
+  .specs-page-body {
+    padding: 10px 0;
+  }
+
+  .specs-text-section {
+    margin-bottom: 25px;
+  }
+
+  .specs-text-section h4 {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+  }
+
+  .specs-text-content {
+    background: #f8f9fa;
+    border-radius: 8px;
+    line-height: 1.6;
+  }
+
+  /* Styles pour le modal de devis */
+  .quote-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1060;
+    padding: 20px;
+  }
+
+  .quote-modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  }
+
+  .quote-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    transition: color 0.2s;
+  }
+
+  .quote-modal-close:hover {
+    color: #dc3545;
+  }
+
+  .quote-modal-header {
+    margin-bottom: 25px;
+    padding-right: 30px;
+  }
+
+  .quote-modal-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 5px;
+  }
+
+  .quote-modal-form .form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+  }
+
+  .quote-modal-form .form-control {
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    padding: 10px 15px;
+  }
+
+  .quote-modal-form .form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  }
+
+  .quote-modal-footer {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .quote-modal-info {
+    color: #6c757d;
+    max-width: 60%;
+  }
+
+  .quote-modal-actions .btn {
+    padding: 10px 25px;
+    border-radius: 8px;
+  }
+
+  .quote-modal-success {
+    text-align: center;
+    padding: 40px 20px;
+  }
+
+  .quote-modal-success .success-icon {
+    width: 80px;
+    height: 80px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+  }
+
+  @media (max-width: 768px) {
+    .specs-page {
+      padding: 20px;
+    }
+
+    .quote-modal {
+      padding: 20px;
+    }
+
+    .quote-modal-footer {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .quote-modal-info {
+      max-width: 100%;
+      text-align: center;
+    }
+  }
+`}</style>
     </div>
   );
 };

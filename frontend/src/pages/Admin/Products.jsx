@@ -9,10 +9,7 @@ import {
   FaSearch,
   FaFilter,
   FaTrash,
-  FaBook,
-  FaArrowLeft,
   FaLayerGroup,
-  FaEye,
   FaThLarge,
   FaList,
 } from "react-icons/fa";
@@ -33,7 +30,7 @@ export default function Products() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [currentCategory, setCurrentCategory] = useState(null);
   const [viewDirectProductsOnly, setViewDirectProductsOnly] = useState(false);
-  const [viewMode, setViewMode] = useState("table"); // "table" ou "card"
+  const [viewMode, setViewMode] = useState("table");
 
   // State for filtering and sorting
   const [filters, setFilters] = useState({
@@ -175,7 +172,7 @@ export default function Products() {
             productsResponse = await productAPI.getByCategory(categoryId);
             console.log(
               "✅ Produits DIRECTS de la catégorie (API):",
-              productsResponse.data.data.length,
+              productsResponse.data.data?.length || 0,
             );
           } catch (apiError) {
             console.log("⚠️ API getByCategory échouée, fallback...");
@@ -258,13 +255,18 @@ export default function Products() {
       console.log("🔍 Tentative de récupération des alertes stock...");
 
       try {
-        const [outOfStockRes, lowStockRes] = await Promise.all([
+        const [outOfStockRes, lowStockRes] = await Promise.allSettled([
           productAPI.getOutOfStock(),
           productAPI.getLowStock(),
         ]);
 
-        const outOfStockCount = outOfStockRes.data.data?.length || 0;
-        const lowStockCount = lowStockRes.data.data?.length || 0;
+        const outOfStockCount = outOfStockRes.status === 'fulfilled' 
+          ? outOfStockRes.value.data.data?.length || 0 
+          : 0;
+        
+        const lowStockCount = lowStockRes.status === 'fulfilled' 
+          ? lowStockRes.value.data.data?.length || 0 
+          : 0;
 
         console.log("📊 Résultats API directe:", {
           outOfStockCount,
@@ -364,32 +366,27 @@ export default function Products() {
     return getChildrenIds(categoryId);
   }, [categoryId, categories]);
 
-  // Fonction sécurisée pour obtenir le nom du produit
+  // Fonctions sécurisées pour obtenir les données du produit
   const getProductName = (product) => {
     return product?.nom || product?.name || '';
   };
 
-  // Fonction sécurisée pour obtenir la description
   const getProductDescription = (product) => {
     return product?.description || '';
   };
 
-  // Fonction sécurisée pour obtenir le modèle
   const getProductModel = (product) => {
     return product?.modele || product?.model || '';
   };
 
-  // Fonction sécurisée pour obtenir le prix
   const getProductPrice = (product) => {
     return product?.prix || product?.price || 0;
   };
 
-  // Fonction sécurisée pour obtenir le statut actif
   const isProductActive = (product) => {
     return product?.estActif ?? product?.isActive ?? true;
   };
 
-  // Fonction sécurisée pour obtenir l'ID de catégorie
   const getProductCategoryId = (product) => {
     return product?.categorie?._id || product?.category?._id || product?.categoryId;
   };
@@ -464,30 +461,58 @@ export default function Products() {
     };
   }, [categoryId, allProducts, getAllChildCategoryIds, viewDirectProductsOnly]);
 
+  // ✅ FONCTION handleSaveProduct
   const handleSaveProduct = async (formData) => {
     try {
+      console.log("📦 Données reçues dans handleSaveProduct:", formData);
+      
+      // Vérification que la catégorie est présente
+      if (!formData.categorie) {
+        showAlert("La catégorie est obligatoire", "danger");
+        return;
+      }
+
+      let response;
       if (editingProduct) {
-        await productAPI.update(editingProduct._id, formData);
+        console.log("✏️ Mise à jour du produit:", editingProduct._id);
+        response = await productAPI.update(editingProduct._id, formData);
+        console.log("✅ Réponse update:", response);
         showAlert("Produit modifié avec succès", "success");
       } else {
-        await productAPI.create(formData);
+        console.log("➕ Création d'un nouveau produit");
+        response = await productAPI.create(formData);
+        console.log("✅ Réponse create:", response);
         showAlert("Produit créé avec succès", "success");
       }
-      fetchData();
-      fetchAlertCount();
+      
+      // Recharger les données
+      await fetchData();
+      await fetchAlertCount();
+      
       handleCloseModal();
     } catch (error) {
-      console.error("Erreur lors de la sauvegarde:", error);
-      showAlert("Erreur lors de la sauvegarde", "danger");
+      console.error("❌ Erreur détaillée lors de la sauvegarde:", error);
+      
+      // Afficher un message d'erreur plus précis
+      if (error.response) {
+        console.error("Données de la réponse d'erreur:", error.response.data);
+        showAlert(`Erreur: ${error.response.data.error || error.response.data.message || "Erreur serveur"}`, "danger");
+      } else if (error.request) {
+        console.error("Pas de réponse du serveur:", error.request);
+        showAlert("Erreur de connexion au serveur", "danger");
+      } else {
+        showAlert(`Erreur: ${error.message}`, "danger");
+      }
     }
   };
 
+  // ✅ FONCTION handleDeleteProduct
   const handleDeleteProduct = async (id) => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce produit ?")) {
       try {
         await productAPI.delete(id);
-        fetchData();
-        fetchAlertCount();
+        await fetchData();
+        await fetchAlertCount();
         showAlert("Produit supprimé avec succès", "success");
       } catch (error) {
         console.error("Erreur lors de la suppression:", error);
@@ -496,6 +521,7 @@ export default function Products() {
     }
   };
 
+  // ✅ FONCTION handleDeleteSelected
   const handleDeleteSelected = async () => {
     if (selectedProducts.length === 0) {
       showAlert("Aucun produit sélectionné", "warning");
@@ -507,11 +533,11 @@ export default function Products() {
         for (const productId of selectedProducts) {
           await productAPI.delete(productId);
         }
-        fetchData();
-        fetchAlertCount();
+        await fetchData();
+        await fetchAlertCount();
         setSelectedProducts([]);
         showAlert(
-          `${selectedProducts.length} produit(s) supprimé(s)`,
+          `${selectedProducts.length} produit(s) supprimé(s) avec succès`,
           "success",
         );
       } catch (error) {
@@ -595,10 +621,6 @@ export default function Products() {
     navigate("/products");
   };
 
-  const toggleViewMode = () => {
-    setViewMode(viewMode === "table" ? "card" : "table");
-  };
-
   const showAlert = (message, type) => {
     const alertDiv = document.createElement("div");
     alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
@@ -661,7 +683,7 @@ export default function Products() {
           </div>
 
           <div className="d-flex align-items-center gap-3">
-            {/* Date comme dans UsersPage */}
+            {/* Date */}
             <div className="d-none d-md-flex align-items-center gap-3">
               <span className="badge bg-light text-dark p-3 shadow-sm rounded-3">
                 <i className="bi bi-calendar me-2"></i>
@@ -669,7 +691,7 @@ export default function Products() {
               </span>
             </div>
 
-            {/* Boutons de changement de vue avec texte comme dans l'image */}
+            {/* Boutons de changement de vue */}
             <div className="d-flex align-items-center gap-2">
               <button
                 className={`btn d-flex align-items-center gap-2 ${viewMode === "card" ? "btn-primary" : "btn-outline-primary"}`}
@@ -757,7 +779,7 @@ export default function Products() {
           </div>
         </div>
 
-        {/* Statistiques avec le même design que UsersPage */}
+        {/* Statistiques */}
         <div className="row g-4 mb-4">
           <div className="col-md-3">
             <div className="card border-0 shadow-sm h-100 rounded-4">

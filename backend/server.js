@@ -1,9 +1,9 @@
+// backend/server.js
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/database.js';
 import userRoutes from './routes/userRoutes.js';
-// Import des nouvelles routes
 import categoryRoutes from './routes/categories.js';
 import productRoutes from './routes/products.js';
 import contactRoutes from './routes/contactRoutes.js';
@@ -13,10 +13,13 @@ import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import { protect, adminOnly } from './middleware/authMiddleware.js';
 import { handleStripeWebhook } from './controllers/orderController.js';
-
-// IMPORT CORRIGÉ - C'EST LA SEULE LIGNE À MODIFIER
 import specificationRoutes from './routes/specificationRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
+import productDataRoutes from './routes/productDataRoutes.js';
+// AJOUT: Routes de synchronisation
+import syncRoutes from './routes/syncRoutes.js';
+// AJOUT: Service de synchronisation
+import dataSyncService from './services/dataSyncService.js';
 
 // Charger les variables d'environnement
 dotenv.config();
@@ -26,7 +29,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: true,
+  origin: ['http://localhost:5173', 'http://localhost:3000'], // Autoriser les requêtes depuis ces origines
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -51,6 +54,12 @@ connectDB().catch((err) => {
   console.log(' Le serveur continue de fonctionner, mais les routes nécessitent MongoDB');
 });
 
+// AJOUT: Initialiser la synchronisation après connexion MongoDB
+mongoose.connection.once('open', async () => {
+  console.log('✅ MongoDB connecté, initialisation de la synchronisation...');
+  await dataSyncService.initializeOnStartup();
+});
+
 // Route racine (mise à jour avec les nouvelles routes)
 app.get('/', (req, res) => {
   res.json({
@@ -72,10 +81,13 @@ app.get('/', (req, res) => {
         create: 'POST /api/products',
         update: 'PUT /api/products/:id',
         delete: 'DELETE /api/products/:id',
-        // API DE STOCK AJOUTÉES
         outOfStock: 'GET /api/products/out-of-stock',
         lowStock: 'GET /api/products/low-stock',
         stockStats: 'GET /api/products/stock-stats'
+      },
+      productData: {
+        allCnc: 'GET /api/product-data/all-cnc',
+        details: 'GET /api/product-data/details/:productName'
       },
       users: {
         list: 'GET /api/users',
@@ -85,12 +97,10 @@ app.get('/', (req, res) => {
         update: 'PUT /api/users/:id',
         delete: 'DELETE /api/users/:id'
       },
-      // ✅ AJOUT : Routes contact
       contact: {
         create: 'POST /api/contact',
         getAll: 'GET /api/contact'
       },
-      // ✅ AJOUT : Routes devis
       devis: {
         list: 'GET /api/devis',
         create: 'POST /api/devis',
@@ -98,6 +108,12 @@ app.get('/', (req, res) => {
         updateStatus: 'PATCH /api/devis/:id/status',
         delete: 'DELETE /api/devis/:id',
         stats: 'GET /api/devis/stats'
+      },
+      // AJOUT: Routes de synchronisation
+      sync: {
+        status: 'GET /api/sync/status',
+        all: 'POST /api/sync/all',
+        products: 'POST /api/sync/products'
       }
     }
   });
@@ -105,7 +121,6 @@ app.get('/', (req, res) => {
 
 // Route de test
 app.get('/api/health', (req, res) => {
-  // États de connexion MongoDB: 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
   const states = {
     0: 'déconnecté',
     1: 'connecté',
@@ -131,13 +146,15 @@ app.use('/api/auth', authRoutes);
 // Routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/product-data', productDataRoutes);
 app.use('/api/users', protect, adminOnly, userRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/devis', devisRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/specifications', specificationRoutes);
 app.use('/api/notifications', notificationRoutes);
-
+// AJOUT: Routes de synchronisation
+app.use('/api/sync', syncRoutes);
 
 // Gestion des erreurs 404 (doit être après toutes les routes)
 app.use((req, res) => {
@@ -160,26 +177,29 @@ app.use((req, res) => {
       'GET /api/products/:id',
       'PUT /api/products/:id',
       'DELETE /api/products/:id',
-      // ROUTES DE STOCK AJOUTÉES
       'GET /api/products/out-of-stock',
       'GET /api/products/low-stock',
       'GET /api/products/stock-stats',
+      'GET /api/product-data/all-cnc',
+      'GET /api/product-data/details/:productName',
       'GET /api/users',
       'POST /api/users',
       'GET /api/users/:id',
       'PATCH /api/users/:id/toggle',
       'PUT /api/users/:id',
       'DELETE /api/users/:id',
-      // ✅ AJOUT : Routes contact
       'POST /api/contact',
       'GET /api/contact',
-      // ✅ AJOUT : Routes devis
       'GET /api/devis',
       'POST /api/devis',
       'GET /api/devis/:id',
       'PATCH /api/devis/:id/status',
       'DELETE /api/devis/:id',
-      'GET /api/devis/stats'
+      'GET /api/devis/stats',
+      // AJOUT: Routes sync
+      'GET /api/sync/status',
+      'POST /api/sync/all',
+      'POST /api/sync/products'
     ]
   });
 });
@@ -195,20 +215,16 @@ app.use((err, req, res, next) => {
 
 // Démarrage du serveur
 app.listen(PORT, () => {
-  console.log(` Serveur backend démarré sur le port ${PORT}`);
-  console.log(` URL: http://localhost:${PORT}`);
-  console.log(` Test: http://localhost:${PORT}/api/health`);
-  console.log(` API Categories: http://localhost:${PORT}/api/categories`);
-  console.log(` API Products: http://localhost:${PORT}/api/products`);
-  console.log(` API Stock Stats: http://localhost:${PORT}/api/products/stock-stats`);
-  console.log(` API Rupture stock: http://localhost:${PORT}/api/products/out-of-stock`);
-  console.log(`  API Stock faible: http://localhost:${PORT}/api/products/low-stock`);
-  // ✅ AJOUT : Logs pour les nouvelles routes
-  console.log(` API Contact: http://localhost:${PORT}/api/contact`);
-  console.log(` API Devis: http://localhost:${PORT}/api/devis`);
-  console.log(' API Auth: http://localhost:${PORT}/api/auth');
-  console.log(' API Orders: http://localhost:${PORT}/api/orders');
-  console.log(' API Specifications: http://localhost:${PORT}/api/specifications');
+  console.log(`🚀 Serveur backend démarré sur le port ${PORT}`);
+  console.log(`📍 URL: http://localhost:${PORT}`);
+  console.log(`🔍 Test: http://localhost:${PORT}/api/health`);
+  console.log(`📦 API Categories: http://localhost:${PORT}/api/categories`);
+  console.log(`📦 API Products: http://localhost:${PORT}/api/products`);
+  console.log(`📦 API Product Data: http://localhost:${PORT}/api/product-data/all-cnc`);
+  console.log(`🔄 API Sync: http://localhost:${PORT}/api/sync/status`);
+  console.log(`   - POST /api/sync/all (synchronisation complète)`);
+  console.log(`   - POST /api/sync/products (synchronisation produits)`);
+  console.log(`📁 Fichier de synchronisation: backend/data/productData.js`);
 });
 
 export default app;

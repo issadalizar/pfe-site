@@ -2,6 +2,7 @@
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 import notificationService from '../services/notificationService.js';
+import dataSyncService from '../services/dataSyncService.js'; // AJOUT
 
 // @desc    Récupérer tous les produits
 // @route   GET /api/products
@@ -148,6 +149,17 @@ export const createProduct = async (req, res) => {
 
     const product = await Product.create(productData);
 
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.addProductToFile({
+        ...product.toObject(),
+        _id: product._id.toString()
+      });
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+      // Ne pas bloquer la réponse
+    }
+
     console.log(`✅ Produit créé: ${product.nom}`);
     res.status(201).json({
       success: true,
@@ -257,6 +269,16 @@ export const updateProduct = async (req, res) => {
     Object.assign(ancienProduit, updates);
     await ancienProduit.save();
 
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.updateProductInFile(
+        id, 
+        ancienProduit.toObject()
+      );
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+    }
+
     // 🔔 CRÉER UNE NOTIFICATION SI LE STOCK A CHANGÉ
     if (ancienStock !== ancienProduit.stock) {
       await notificationService.notifierModificationStock(
@@ -308,6 +330,13 @@ export const deleteProduct = async (req, res) => {
     }
 
     await product.deleteOne();
+
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.deleteProductFromFile(req.params.id);
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+    }
 
     console.log(`✅ Produit supprimé: ${product.nom}`);
     res.json({

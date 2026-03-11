@@ -1,5 +1,12 @@
 # chatbot/__init__.py
-from chatbot.intent_recognizer import IntentRecognizer
-from chatbot.product_search import ProductSearch
-from chatbot.recommendation import RecommendationEngine
-from chatbot.conversation import ConversationManager
+from services.data_loader import ProductDataLoader
+from .intelligent_search import IntelligentSearch  # Changé: chemin complet
+from .conversation import ConversationManager
+from .recommendation_service import RecommendationService  # Changé: chemin complet
+
+# Initialisation globale
+data_loader = ProductDataLoader()   
+data_loader.load_products()  # Charger les produits au démarrage
+intelligent_search = IntelligentSearch(data_loader)
+recommendation_service = RecommendationService(intelligent_search)  # Utiliser le moteur de recherche pour les recommandations
+conversation_manager = ConversationManager()

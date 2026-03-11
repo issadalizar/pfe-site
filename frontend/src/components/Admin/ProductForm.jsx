@@ -12,7 +12,7 @@ import {
   FaInfoCircle,
 } from "react-icons/fa";
 import { specificationAPI } from "../../services/specificationAPI";
-import { getProductDetails } from "../../pages/productData";
+import { getProductDetails } from "../../services/productDataService";
 
 export default function ProductForm({
   editingProduct,
@@ -206,88 +206,78 @@ export default function ProductForm({
     }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
   };
+// src/components/Admin/ProductForm.jsx
+// Modifiez la fonction handleSubmit
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!validateForm()) return;
 
-    setLoading(true);
-    setSaveError(null);
+  setLoading(true);
+  setSaveError(null);
 
-    try {
-      const formattedData = {
-        ...formData,
-        prix: Number(formData.prix),
-        stock: formData.stock === "" ? 0 : parseInt(formData.stock, 10),
-        caracteristiques: Array.isArray(formData.caracteristiques)
-          ? formData.caracteristiques
-          : typeof formData.caracteristiques === "string"
-            ? formData.caracteristiques.split("\n").filter((f) => f.trim())
-            : [],
-        images: Array.isArray(formData.images)
-          ? formData.images
-          : typeof formData.images === "string"
-            ? formData.images
-                .split(",")
-                .map((i) => i.trim())
-                .filter(Boolean)
-            : [],
-      };
-
-      // Sauvegarder le produit d'abord
-      const savedProduct = await onSave(formattedData);
-
-      // Si c'est une création, le produit retourné contient l'ID
-      const productId = savedProduct?._id || editingProduct?._id;
-
-      if (productId) {
-        // Préparer toutes les spécifications pour l'envoi en masse
-        const allSpecs = [
-          ...(specifications.general || []).map((s, index) => ({
-            key: s.key || "",
-            value: s.value || "",
-            type: "general",
-            order: s.order ?? index,
-          })),
-          ...(specifications.advanced || []).map((s, index) => ({
-            key: s.key || "",
-            value: s.value || "",
-            type: "advanced",
-            order: s.order ?? index,
-          })),
-        ].filter((spec) => spec.key && spec.value); // Ne garder que les spécifications valides
-
-        if (allSpecs.length > 0) {
-          try {
-            await specificationAPI.createBulk(productId, allSpecs);
-            console.log(`✅ ${allSpecs.length} spécifications sauvegardées`);
-          } catch (specError) {
-            console.error(
-              "Erreur lors de la sauvegarde des spécifications:",
-              specError,
-            );
-            // Ne pas bloquer la fermeture du modal même si les spécifications échouent
-          }
-        } else {
-          try {
-            await specificationAPI.deleteByProductId(productId);
-          } catch (deleteError) {
-            console.error(
-              "Erreur lors de la suppression des spécifications:",
-              deleteError,
-            );
-          }
-        }
-      }
-
-      handleCloseModal();
-    } catch (error) {
-      console.error("Erreur lors de la sauvegarde:", error);
-      setSaveError("Erreur lors de la sauvegarde. Veuillez réessayer.");
-    } finally {
+  try {
+    // IMPORTANT: S'assurer que la catégorie est bien définie
+    if (!formData.categorie) {
+      setSaveError("Veuillez sélectionner une catégorie");
       setLoading(false);
+      return;
     }
-  };
+
+    const formattedData = {
+      ...formData,
+      prix: Number(formData.prix),
+      stock: formData.stock === "" ? 0 : parseInt(formData.stock, 10),
+      categorie: formData.categorie,
+      caracteristiques: Array.isArray(formData.caracteristiques)
+        ? formData.caracteristiques
+        : typeof formData.caracteristiques === "string"
+          ? formData.caracteristiques.split("\n").filter((f) => f.trim())
+          : [],
+      images: Array.isArray(formData.images)
+        ? formData.images
+        : typeof formData.images === "string"
+          ? formData.images
+              .split(",")
+              .map((i) => i.trim())
+              .filter(Boolean)
+          : [],
+    };
+
+    console.log("📦 Données du produit à sauvegarder:", formattedData);
+    console.log("📂 Catégorie sélectionnée:", formattedData.categorie);
+
+    // Sauvegarder le produit
+    const savedProduct = await onSave(formattedData);
+    console.log("✅ Produit sauvegardé:", savedProduct);
+
+    // Mettre à jour les catégories dans le localStorage ou le contexte
+    try {
+      // Récupérer toutes les catégories
+      const categoriesResponse = await categoryAPI.getAll();
+      const allCategories = categoriesResponse.data.data || [];
+      
+      // Sauvegarder dans localStorage pour un accès rapide
+      localStorage.setItem('categories', JSON.stringify(allCategories));
+      
+      // Si vous utilisez un contexte, mettez à jour ici
+      if (window.categoryContext && window.categoryContext.refresh) {
+        window.categoryContext.refresh();
+      }
+      
+      console.log("✅ Catégories mises à jour après sauvegarde du produit");
+    } catch (categoryError) {
+      console.error("⚠️ Erreur lors de la mise à jour des catégories:", categoryError);
+    }
+
+    // ... suite du code pour les spécifications ...
+  } catch (error) {
+    console.error("❌ Erreur lors de la sauvegarde:", error);
+    setSaveError("Erreur lors de la sauvegarde. Veuillez réessayer.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const handleImageUpload = (e) => {
     const files = e.target.files;

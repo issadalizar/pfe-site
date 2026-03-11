@@ -1,6 +1,7 @@
 // backend/controllers/specificationController.js
 import Specification from '../models/Specification.js';
 import Product from '../models/Product.js';
+import dataSyncService from '../services/dataSyncService.js'; // AJOUT
 
 // @desc    Récupérer toutes les spécifications d'un produit
 // @route   GET /api/specifications/product/:productId
@@ -89,6 +90,16 @@ export const createSpecification = async (req, res) => {
     });
 
     await spec.save();
+
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.updateSpecificationInFile(
+        spec._id.toString(),
+        spec.toObject()
+      );
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+    }
     
     res.status(201).json({ 
       success: true, 
@@ -167,6 +178,18 @@ export const createBulkSpecifications = async (req, res) => {
       ordered: false
     });
 
+    // 🔄 SYNC AVEC PRODUCTDATA.JS (pour chaque spécification)
+    for (const spec of created) {
+      try {
+        await dataSyncService.updateSpecificationInFile(
+          spec._id.toString(),
+          spec.toObject()
+        );
+      } catch (syncError) {
+        console.error('⚠️ Erreur sync productData:', syncError);
+      }
+    }
+
     res.status(201).json({ 
       success: true, 
       count: created.length,
@@ -221,6 +244,16 @@ export const updateSpecification = async (req, res) => {
       });
     }
 
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.updateSpecificationInFile(
+        req.params.id,
+        spec.toObject()
+      );
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+    }
+
     res.json({ 
       success: true, 
       data: spec 
@@ -246,6 +279,13 @@ export const deleteSpecification = async (req, res) => {
       });
     }
 
+    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    try {
+      await dataSyncService.deleteSpecificationFromFile(req.params.id);
+    } catch (syncError) {
+      console.error('⚠️ Erreur sync productData:', syncError);
+    }
+
     res.json({ 
       success: true, 
       data: {} 
@@ -262,9 +302,19 @@ export const deleteSpecification = async (req, res) => {
 // @route   DELETE /api/specifications/product/:productId
 export const deleteProductSpecifications = async (req, res) => {
   try {
+    const specs = await Specification.find({ productId: req.params.productId });
     const result = await Specification.deleteMany({ 
       productId: req.params.productId 
     });
+
+    // 🔄 SYNC AVEC PRODUCTDATA.JS (supprimer chaque spécification)
+    for (const spec of specs) {
+      try {
+        await dataSyncService.deleteSpecificationFromFile(spec._id.toString());
+      } catch (syncError) {
+        console.error('⚠️ Erreur sync productData:', syncError);
+      }
+    }
     
     res.json({ 
       success: true, 
@@ -306,6 +356,18 @@ export const reorderSpecifications = async (req, res) => {
     // Récupérer les spécifications mises à jour
     const updatedSpecs = await Specification.find({ productId })
       .sort({ type: 1, order: 1 });
+
+    // 🔄 SYNC AVEC PRODUCTDATA.JS (mettre à jour chaque spécification)
+    for (const spec of updatedSpecs) {
+      try {
+        await dataSyncService.updateSpecificationInFile(
+          spec._id.toString(),
+          spec.toObject()
+        );
+      } catch (syncError) {
+        console.error('⚠️ Erreur sync productData:', syncError);
+      }
+    }
     
     res.json({ 
       success: true, 
@@ -350,6 +412,9 @@ export const copySpecifications = async (req, res) => {
       });
     }
 
+    // Supprimer les anciennes spécifications du produit cible
+    await Specification.deleteMany({ productId: toProductId });
+
     // Préparer les nouvelles spécifications
     const newSpecs = sourceSpecs.map(spec => ({
       productId: toProductId,
@@ -359,11 +424,20 @@ export const copySpecifications = async (req, res) => {
       order: spec.order
     }));
 
-    // Supprimer les anciennes spécifications du produit cible
-    await Specification.deleteMany({ productId: toProductId });
-
     // Créer les nouvelles
     const created = await Specification.insertMany(newSpecs);
+
+    // 🔄 SYNC AVEC PRODUCTDATA.JS (ajouter les nouvelles spécifications)
+    for (const spec of created) {
+      try {
+        await dataSyncService.updateSpecificationInFile(
+          spec._id.toString(),
+          spec.toObject()
+        );
+      } catch (syncError) {
+        console.error('⚠️ Erreur sync productData:', syncError);
+      }
+    }
 
     res.status(201).json({ 
       success: true, 

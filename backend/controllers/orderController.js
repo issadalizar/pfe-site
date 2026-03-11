@@ -1,6 +1,8 @@
+// controllers/orderController.js
 import Stripe from 'stripe';
 import Order from '../models/Order.js';
 import { sendInvoiceEmail, sendAdminNotificationEmail } from '../utils/emailService.js';
+import dataSyncService from '../services/dataSyncService.js'; // AJOUT
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -42,6 +44,16 @@ export const createCheckoutSession = async (req, res) => {
             orderStatus: 'en_attente'
         });
 
+        // 🔄 SYNC AVEC PRODUCTDATA.JS
+        try {
+            await dataSyncService.updateOrderInFile(
+                order._id.toString(),
+                order.toObject()
+            );
+        } catch (syncError) {
+            console.error('⚠️ Erreur sync productData:', syncError);
+        }
+
         // Creer la session Stripe Checkout
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
@@ -59,6 +71,16 @@ export const createCheckoutSession = async (req, res) => {
         // Sauvegarder l'ID de session Stripe
         order.stripeSessionId = session.id;
         await order.save();
+
+        // 🔄 SYNC AVEC PRODUCTDATA.JS (mise à jour avec sessionId)
+        try {
+            await dataSyncService.updateOrderInFile(
+                order._id.toString(),
+                order.toObject()
+            );
+        } catch (syncError) {
+            console.error('⚠️ Erreur sync productData:', syncError);
+        }
 
         // Notifier l'admin par email
         sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
@@ -102,16 +124,22 @@ export const handleStripeWebhook = async (req, res) => {
 
         if (orderId) {
             try {
-                await Order.findByIdAndUpdate(orderId, {
+                const order = await Order.findByIdAndUpdate(orderId, {
                     paymentStatus: 'paid',
                     orderStatus: 'confirmee',
                     stripeSessionId: session.id
-                });
+                }, { new: true });
+
                 console.log(`Commande ${orderId} payee avec succes`);
 
-                // Envoyer l'email de facture
-                const order = await Order.findById(orderId);
+                // 🔄 SYNC AVEC PRODUCTDATA.JS
                 if (order) {
+                    await dataSyncService.updateOrderInFile(
+                        orderId,
+                        order.toObject()
+                    );
+                    
+                    // Envoyer l'email de facture
                     sendInvoiceEmail(order).catch(err => console.error('Erreur email:', err));
                 }
             } catch (err) {
@@ -137,8 +165,14 @@ export const verifySession = async (req, res) => {
                     orderStatus: 'confirmee'
                 }, { new: true });
 
-                // Envoyer l'email de facture
+                // 🔄 SYNC AVEC PRODUCTDATA.JS
                 if (order) {
+                    await dataSyncService.updateOrderInFile(
+                        orderId,
+                        order.toObject()
+                    );
+                    
+                    // Envoyer l'email de facture
                     sendInvoiceEmail(order).catch(err => console.error('Erreur email:', err));
                 }
             }
@@ -239,6 +273,16 @@ export const updateOrderStatus = async (req, res) => {
 
         if (!order) {
             return res.status(404).json({ success: false, error: 'Commande non trouvee.' });
+        }
+
+        // 🔄 SYNC AVEC PRODUCTDATA.JS
+        try {
+            await dataSyncService.updateOrderInFile(
+                req.params.id,
+                order.toObject()
+            );
+        } catch (syncError) {
+            console.error('⚠️ Erreur sync productData:', syncError);
         }
 
         res.json({ success: true, order });
