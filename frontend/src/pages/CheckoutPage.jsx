@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
@@ -13,12 +13,17 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
-    const { user } = useAuth();
+    const { user, isAuthenticated } = useAuth(); 
     const { cart, getCartTotal, getCartCount, clearCart } = useCart();
+     // Rediriger si non connecté
+    useEffect(() => {
+        if (!isAuthenticated) {
+            navigate('/login', { state: { from: '/checkout' } });
+        }
+    }, [isAuthenticated, navigate]);
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-
     const [shippingInfo, setShippingInfo] = useState({
         fullName: user?.client_name || '',
         email: user?.email || '',

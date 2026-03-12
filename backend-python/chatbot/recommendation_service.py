@@ -59,6 +59,33 @@ class RecommendationService:
 
         # Scorer et trier
         return self._score_products(products)[:max_results]
+    
+    def recommend_best_by_criteria(self, criteria, limit=5):
+        """Recommande les meilleurs produits selon un critère global"""
+        all_products = self.data_loader.get_all_products()
+        
+        if criteria == 'prix':
+            # Moins chers
+            return sorted(all_products, key=lambda x: x.price)[:limit]
+        elif criteria == 'stock':
+            # Mieux approvisionnés
+            return sorted(all_products, key=lambda x: x.stock, reverse=True)[:limit]
+        elif criteria == 'order':
+            # Plus commandés
+            return sorted(all_products, key=lambda x: x.order_count, reverse=True)[:limit]
+        elif criteria == 'rating':
+            # Mieux notés
+            return sorted(all_products, key=lambda x: x.rating, reverse=True)[:limit]
+        elif criteria == 'value':
+            # Meilleur rapport qualité/prix
+            scored = []
+            for p in all_products:
+                if p.price > 0:
+                    score = (p.rating * 10 + min(p.order_count / 100, 10)) / p.price * 1000
+                    scored.append((score, p))
+            return [p for _, p in sorted(scored, key=lambda x: x[0], reverse=True)][:limit]
+        else:
+            return self._top_rated(limit)
 
     def _extract_budget(self, text):
         patterns = [

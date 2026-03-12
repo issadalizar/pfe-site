@@ -76,16 +76,7 @@ const Home = () => {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [language, setLanguage] = useState("fr"); // 'fr' for French, 'en' for English
-  const [showChatbot, setShowChatbot] = useState(false);
-const [chatbotImage, setChatbotImage] = useState(null);
 
-// Charger l'image du chatbot
-useEffect(() => {
-  const img = new Image();
-  img.src = "/chatbot.png";
-  img.onload = () => setChatbotImage("/chatbot.png");
-  img.onerror = () => setChatbotImage(null);
-}, []);
   // Translations
   const translations = {
     fr: {
@@ -1962,39 +1953,10 @@ useEffect(() => {
           </div>
         </div>
       </footer>
-      {/* Chatbot Button avec Image agrandie */}
-      <button
-  className="btn btn-primary position-fixed d-flex align-items-center justify-content-center shadow-lg border-0"
-  onClick={() => setShowChatbot(true)}
-  style={{
-    bottom: "30px",
-    right: "30px",
-    width: "80px",
-    height: "80px",
-    zIndex: 1050,
-    padding: 0,
-    overflow: "hidden",
-    borderRadius: "50%",
-    animation: "pulse 2s infinite",
-  }}
->
-  {chatbotImage ? (
-    <img
-      src={chatbotImage}
-      alt="Chatbot"
-      className="w-100 h-100"
-      style={{
-        objectFit: "cover",
-        borderRadius: "50%",
-      }}
-    />
-  ) : (
-    <FaRobot size={40} />
-  )}
-</button>
 
-      {/* ChatBot Component - PAS de modal supplémentaire */}
-      <ChatBot isOpen={showChatbot} onClose={() => setShowChatbot(false)} />
+
+      {/* ChatBot Component */}
+      <ChatBot/>
 
       {/* Style pour l'animation pulse (optionnel) */}
       <style jsx>{`

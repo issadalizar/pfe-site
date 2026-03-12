@@ -49,6 +49,34 @@ class IntelligentSearch:
 
         # Texte libre
         return self._full_text_search(q, limit)
+    
+    def search_advanced(self, query, filters=None):
+        """
+        Recherche avancée avec filtres
+        filters: dict avec clés comme 'price_min', 'price_max', 'category', 'in_stock'
+        """
+        results = self.search(query, limit=50)
+        
+        if not filters:
+            return results
+        
+        filtered = []
+        for p in results:
+            include = True
+            
+            if 'price_min' in filters and p.price < filters['price_min']:
+                include = False
+            if 'price_max' in filters and p.price > filters['price_max']:
+                include = False
+            if 'category' in filters and filters['category'].lower() not in p.category.lower():
+                include = False
+            if 'in_stock' in filters and filters['in_stock'] and p.stock == 0:
+                include = False
+            
+            if include:
+                filtered.append(p)
+        
+        return filtered[:10]
 
     def _is_price_query(self, q):
         return bool(re.search(

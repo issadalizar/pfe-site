@@ -65,6 +65,43 @@ class SmartComparator:
             result['keyword_specs'] = matching_specs
             result['keyword_tech_specs'] = matching_tech
         return result
+    
+    def get_global_stats(self):
+        """Retourne des statistiques globales sur tous les produits"""
+        products = self.data_loader.get_all_products()
+        
+        if not products:
+            return {}
+        
+        prices = [p.price for p in products]
+        
+        return {
+            'total_products': len(products),
+            'total_categories': len(set(p.category for p in products)),
+            'price': {
+                'avg': sum(prices) / len(prices),
+                'min': min(prices),
+                'max': max(prices),
+                'distribution': {
+                    'cheap': sum(1 for p in products if p.price < sum(prices)/len(prices) * 0.7),
+                    'medium': sum(1 for p in products if sum(prices)/len(prices) * 0.7 <= p.price <= sum(prices)/len(prices) * 1.3),
+                    'expensive': sum(1 for p in products if p.price > sum(prices)/len(prices) * 1.3)
+                }
+            },
+            'stock': {
+                'total': sum(p.stock for p in products),
+                'in_stock': sum(1 for p in products if p.stock > 0),
+                'out_of_stock': sum(1 for p in products if p.stock == 0)
+            },
+            'orders': {
+                'total': sum(p.order_count for p in products),
+                'avg_per_product': sum(p.order_count for p in products) / len(products)
+            },
+            'ratings': {
+                'avg': sum(p.rating for p in products) / len(products),
+                'best_rated': max(p.rating for p in products)
+            }
+        }
 
     def _generate_summary(self, products):
         return [{

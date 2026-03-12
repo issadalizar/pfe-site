@@ -57,7 +57,7 @@ connectDB().catch((err) => {
 
 // AJOUT: Initialiser la synchronisation après connexion MongoDB
 mongoose.connection.once('open', async () => {
-  console.log('✅ MongoDB connecté, initialisation de la synchronisation...');
+  console.log(' MongoDB connecté, initialisation de la synchronisation...');
   await dataSyncService.initializeOnStartup();
 });
 
@@ -217,16 +217,17 @@ app.use((err, req, res, next) => {
 
 // Démarrage du serveur
 app.listen(PORT, () => {
-  console.log(`🚀 Serveur backend démarré sur le port ${PORT}`);
-  console.log(`📍 URL: http://localhost:${PORT}`);
-  console.log(`🔍 Test: http://localhost:${PORT}/api/health`);
-  console.log(`📦 API Categories: http://localhost:${PORT}/api/categories`);
-  console.log(`📦 API Products: http://localhost:${PORT}/api/products`);
-  console.log(`📦 API Product Data: http://localhost:${PORT}/api/product-data/all-cnc`);
-  console.log(`🔄 API Sync: http://localhost:${PORT}/api/sync/status`);
+  console.log(`Serveur backend démarré sur le port ${PORT}`);
+  console.log(` URL: http://localhost:${PORT}`);
+  console.log(` Test: http://localhost:${PORT}/api/health`);
+  console.log(` API Categories: http://localhost:${PORT}/api/categories`);
+  console.log(` API Products: http://localhost:${PORT}/api/products`);
+  console.log(` API orders : http://localhost:${PORT}/api/orders`);
+  console.log(` API Product Data: http://localhost:${PORT}/api/product-data/all-cnc`);
+  console.log(` API Sync: http://localhost:${PORT}/api/sync/status`);
   console.log(`   - POST /api/sync/all (synchronisation complète)`);
   console.log(`   - POST /api/sync/products (synchronisation produits)`);
-  console.log(`📁 Fichier de synchronisation: backend/data/productData.js`);
+  console.log(` Fichier de synchronisation: backend/data/productData.js`);
 });
 
 export default app;

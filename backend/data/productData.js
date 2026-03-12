@@ -855,5 +855,779 @@ export const cncProductDetails = {
     "id": "69b08a343964a3dfaec5d34b",
     "createdAt": "2026-03-10T21:16:36.593Z",
     "updatedAt": "2026-03-10T21:18:45.002Z"
+  },
+  "_orders": {
+    "69b2c62e18b12803dcd93277": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c62e18b12803dcd93277",
+      "createdAt": "2026-03-12T13:57:02.210Z",
+      "updatedAt": "2026-03-12T13:57:02.235Z"
+    },
+    "69b2c630fac46a9589e4863c": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c630fac46a9589e4863c",
+      "createdAt": "2026-03-12T13:57:04.271Z",
+      "updatedAt": "2026-03-12T13:57:04.279Z"
+    },
+    "69b2c636a1beb25f9f6226c1": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c636a1beb25f9f6226c1",
+      "createdAt": "2026-03-12T13:57:10.973Z",
+      "updatedAt": "2026-03-12T13:57:10.995Z"
+    },
+    "69b2c638a6017fa6f54dfcc1": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c638a6017fa6f54dfcc1",
+      "createdAt": "2026-03-12T13:57:12.759Z",
+      "updatedAt": "2026-03-12T13:57:12.796Z"
+    },
+    "69b2c66491f3525024aa4c76": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c66491f3525024aa4c76",
+      "createdAt": "2026-03-12T13:57:57.453Z",
+      "updatedAt": "2026-03-12T13:57:57.892Z"
+    },
+    "69b2c66948ac1458c7fb3226": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c66948ac1458c7fb3226",
+      "createdAt": "2026-03-12T13:58:01.796Z",
+      "updatedAt": "2026-03-12T13:58:01.814Z"
+    },
+    "69b2c724ab7f41976b5fc140": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c724ab7f41976b5fc140",
+      "createdAt": "2026-03-12T14:01:08.397Z",
+      "updatedAt": "2026-03-12T14:01:08.421Z"
+    },
+    "69b2c726feb55f502d6097d9": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c726feb55f502d6097d9",
+      "createdAt": "2026-03-12T14:01:10.667Z",
+      "updatedAt": "2026-03-12T14:01:10.712Z"
+    },
+    "69b2c9084cee5b250df422a6": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c9084cee5b250df422a6",
+      "createdAt": "2026-03-12T14:09:12.491Z",
+      "updatedAt": "2026-03-12T14:09:12.513Z"
+    },
+    "69b2c90a64fecb9ceff2abae": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2c90a64fecb9ceff2abae",
+      "createdAt": "2026-03-12T14:09:14.498Z",
+      "updatedAt": "2026-03-12T14:09:14.507Z"
+    },
+    "69b2ca20d67e8ab876bebd10": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2ca20d67e8ab876bebd10",
+      "createdAt": "2026-03-12T14:13:53.172Z",
+      "updatedAt": "2026-03-12T14:13:54.086Z"
+    },
+    "69b2cb91c3b56204e9581dc0": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2cb91c3b56204e9581dc0",
+      "createdAt": "2026-03-12T14:20:01.687Z",
+      "updatedAt": "2026-03-12T14:20:01.710Z"
+    },
+    "69b2cb9312430946137fc09a": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2cb9312430946137fc09a",
+      "createdAt": "2026-03-12T14:20:03.459Z",
+      "updatedAt": "2026-03-12T14:20:03.483Z"
+    },
+    "69b2cc87f47193ff7051c93e": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2cc87f47193ff7051c93e",
+      "createdAt": "2026-03-12T14:24:07.677Z",
+      "updatedAt": "2026-03-12T14:24:07.699Z"
+    },
+    "69b2cc8957de17a51b978ed0": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2cc8957de17a51b978ed0",
+      "createdAt": "2026-03-12T14:24:09.592Z",
+      "updatedAt": "2026-03-12T14:24:09.634Z"
+    },
+    "69b2cec0b5c0e98a4c377f7c": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2cec0b5c0e98a4c377f7c",
+      "createdAt": "2026-03-12T14:33:36.994Z",
+      "updatedAt": "2026-03-12T14:33:37.018Z"
+    },
+    "69b2d01057fb88b9d2310387": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 3,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 22470,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2d01057fb88b9d2310387",
+      "createdAt": "2026-03-12T14:39:12.374Z",
+      "updatedAt": "2026-03-12T14:39:12.404Z"
+    },
+    "69b2e9d2cb47f72c7f14f2c5": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2e9d2cb47f72c7f14f2c5",
+      "createdAt": "2026-03-12T16:29:06.367Z",
+      "updatedAt": "2026-03-12T16:29:06.410Z"
+    },
+    "69b2f20606b28530d1972dfc": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2f20606b28530d1972dfc",
+      "createdAt": "2026-03-12T17:04:06.203Z",
+      "updatedAt": "2026-03-12T17:04:06.246Z"
+    },
+    "69b2f208be09cc8e44415d07": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b2f208be09cc8e44415d07",
+      "createdAt": "2026-03-12T17:04:08.131Z",
+      "updatedAt": "2026-03-12T17:04:08.138Z"
+    },
+    "69b30790059598c63269cde1": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b30790059598c63269cde1",
+      "createdAt": "2026-03-12T18:36:00.973Z",
+      "updatedAt": "2026-03-12T18:36:00.986Z"
+    },
+    "69b307929f09aac5538f89a5": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b307929f09aac5538f89a5",
+      "createdAt": "2026-03-12T18:36:02.566Z",
+      "updatedAt": "2026-03-12T18:36:02.582Z"
+    },
+    "69b307e1b22170c05c707e36": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b307e1b22170c05c707e36",
+      "createdAt": "2026-03-12T18:37:21.713Z",
+      "updatedAt": "2026-03-12T18:37:21.729Z"
+    },
+    "69b307e3304b8b4ab3cc55b8": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b307e3304b8b4ab3cc55b8",
+      "createdAt": "2026-03-12T18:37:23.130Z",
+      "updatedAt": "2026-03-12T18:37:23.150Z"
+    },
+    "69b30aa6970d8f45b93146b1": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b30aa6970d8f45b93146b1",
+      "createdAt": "2026-03-12T18:49:10.322Z",
+      "updatedAt": "2026-03-12T18:49:10.338Z"
+    },
+    "69b30aa8bd7173c17b2b58e5": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 7490,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b30aa8bd7173c17b2b58e5",
+      "createdAt": "2026-03-12T18:49:12.193Z",
+      "updatedAt": "2026-03-12T18:49:12.206Z"
+    }
   }
 };

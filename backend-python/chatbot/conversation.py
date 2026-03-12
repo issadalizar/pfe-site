@@ -16,6 +16,10 @@ class ConversationManager:
                     'comparison_products': [],  # Produits en cours de comparaison
                     'price_filter': None,       # Filtre prix actif
                     'category_filter': None,    # Filtre catégorie actif
+                    'last_comparison_type': None, # Dernier type de comparaison
+                    'comparison_warning': None,   # Message d'avertissement
+                    'viewing_global': False,      # Si on est en mode global
+                    'global_criteria': None,      # Critère de comparaison globale
                 }
             }
         return self.sessions[user_id]
@@ -59,3 +63,19 @@ class ConversationManager:
     def clear_session(self, user_id):
         if user_id in self.sessions:
             del self.sessions[user_id]
+    
+    def reset_context(self, user_id):
+        """Réinitialise le contexte tout en gardant l'historique"""
+        session = self.get_or_create_session(user_id)
+        session['context'] = {
+            'last_products': [],
+            'last_action': None,
+            'comparison_products': [],
+            'price_filter': None,
+            'category_filter': None,
+            'last_comparison_type': None,
+            'comparison_warning': None,
+            'viewing_global': False,
+            'global_criteria': None,
+        }
+        return session

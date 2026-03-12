@@ -39,6 +39,19 @@ class Product:
             'inStock': self.inStock, 'isFeatured': self.isFeatured,
             'rating': self.rating, 'order_count': self.order_count,
         }
+    
+    def get_summary(self):
+        """Retourne un résumé du produit pour les comparaisons globales"""
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'category': self.category,
+            'stock': self.stock,
+            'rating': self.rating,
+            'order_count': self.order_count,
+            'features_count': len(self.features)
+        }
 
 
 class ProductDataLoader:
@@ -50,6 +63,7 @@ class ProductDataLoader:
         self.categories = {}
         self.features_index = {}
         self.specs_index = {}
+        self._stats_cache = None
 
     def load_products(self):
         try:
@@ -87,6 +101,7 @@ class ProductDataLoader:
 
             self.products = products
             self._build_indexes()
+            self._stats_cache = None  # Invalider le cache
             print("OK : %d produits | %d categories" % (len(products), len(self.get_all_categories())))
             return products
 
@@ -432,3 +447,28 @@ class ProductDataLoader:
 
     def search_by_spec(self, kw):
         return self.specs_index.get(kw.lower().strip(), [])
+    
+    def get_global_stats(self):
+        """Retourne des statistiques globales sur tous les produits (avec cache)"""
+        if self._stats_cache:
+            return self._stats_cache
+        
+        if not self.products:
+            return {}
+        
+        prices = [p.price for p in self.products]
+        
+        stats = {
+            'total_products': len(self.products),
+            'total_categories': len(self.get_all_categories()),
+            'avg_price': sum(prices) / len(prices),
+            'min_price': min(prices),
+            'max_price': max(prices),
+            'total_stock': sum(p.stock for p in self.products),
+            'products_in_stock': sum(1 for p in self.products if p.stock > 0),
+            'total_orders': sum(p.order_count for p in self.products),
+            'avg_rating': sum(p.rating for p in self.products) / len(self.products),
+        }
+        
+        self._stats_cache = stats
+        return stats
