@@ -11,7 +11,8 @@ import {
   FaChartBar,
   FaBox,
   FaTags,
-  FaBell
+  FaBell,
+  FaExchangeAlt
 } from "react-icons/fa";
 
 export default function Sidebar() {
@@ -52,6 +53,11 @@ export default function Sidebar() {
       path: "/messages",
       icon: <FaBell className="me-2" style={{ color: "#4dc0ff" }} />,
       label: "Messages"
+    },
+    {
+      path: "/return-requests",
+      icon: <FaExchangeAlt className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: "Retours"
     },
   ];
 

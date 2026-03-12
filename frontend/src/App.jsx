@@ -14,6 +14,7 @@ import ProductDetails from "./pages/ProductDetails";
 import PublicCategoryPage from "./pages/PublicCategoryPage";
 import AdminMessages from "./pages/Admin/AdminMessages";
 import AdminOrders from "./pages/Admin/AdminOrders";
+import AdminReturnRequests from "./pages/Admin/AdminReturnRequests";
 import ContactPage from "./pages/ContactPage";
 import SectorPage from "./pages/SectorPage";
 import Login from "./pages/Login";
@@ -82,6 +83,7 @@ function App() {
                       <Route path="/stock-alerts" element={<StockAlertsPage />} />
                       <Route path="/messages" element={<AdminMessages />} />
                       <Route path="/orders" element={<AdminOrders />} />
+                      <Route path="/return-requests" element={<AdminReturnRequests />} />
                       <Route
                         path="/categories/:categoryId/products"
                         element={<CategoryProductsView />}

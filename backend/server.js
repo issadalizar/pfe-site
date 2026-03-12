@@ -18,6 +18,7 @@ import notificationRoutes from './routes/notificationRoutes.js';
 import productDataRoutes from './routes/productDataRoutes.js';
 // AJOUT: Routes de synchronisation
 import syncRoutes from './routes/syncRoutes.js';
+import returnRequestRoutes from './routes/returnRequestRoutes.js';
 // AJOUT: Service de synchronisation
 import dataSyncService from './services/dataSyncService.js';
 
@@ -155,6 +156,7 @@ app.use('/api/specifications', specificationRoutes);
 app.use('/api/notifications', notificationRoutes);
 // AJOUT: Routes de synchronisation
 app.use('/api/sync', syncRoutes);
+app.use('/api/return-requests', returnRequestRoutes);
 
 // Gestion des erreurs 404 (doit être après toutes les routes)
 app.use((req, res) => {

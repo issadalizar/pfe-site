@@ -9,9 +9,10 @@ import {
     FaShieldAlt, FaHistory, FaHeart, FaCog, FaCheckCircle,
     FaBox, FaChevronRight, FaCalendarAlt, FaUserCircle,
     FaLock, FaKey, FaExclamationTriangle, FaSpinner,
-    FaTruck, FaCreditCard
+    FaTruck, FaCreditCard, FaExchangeAlt, FaUndoAlt, FaSyncAlt
 } from 'react-icons/fa';
 import { getMyOrders } from '../services/orderService';
+import { createReturnRequest, getMyReturnRequests } from '../services/returnRequestService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ClientDashboard = () => {
@@ -41,6 +42,16 @@ const ClientDashboard = () => {
     const [passwordError, setPasswordError] = useState('');
     const [orders, setOrders] = useState([]);
     const [ordersLoading, setOrdersLoading] = useState(false);
+
+    // Retours/Échanges
+    const [returnRequests, setReturnRequests] = useState([]);
+    const [returnsLoading, setReturnsLoading] = useState(false);
+    const [showReturnModal, setShowReturnModal] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [returnForm, setReturnForm] = useState({ type: 'retour', reason: '', items: [] });
+    const [returnSubmitting, setReturnSubmitting] = useState(false);
+    const [returnSuccess, setReturnSuccess] = useState('');
+    const [returnError, setReturnError] = useState('');
 
     // Sync editData quand user change
     useEffect(() => {
@@ -78,6 +89,66 @@ const ClientDashboard = () => {
                 .finally(() => setOrdersLoading(false));
         }
     }, [activeTab]);
+
+    // Charger les demandes de retour
+    useEffect(() => {
+        if (activeTab === 'returns') {
+            setReturnsLoading(true);
+            getMyReturnRequests()
+                .then(data => setReturnRequests(data.returnRequests || []))
+                .catch(err => console.error('Erreur chargement retours:', err))
+                .finally(() => setReturnsLoading(false));
+        }
+    }, [activeTab]);
+
+    // Auto-clear return messages
+    useEffect(() => {
+        if (returnSuccess) {
+            const timer = setTimeout(() => setReturnSuccess(''), 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [returnSuccess]);
+
+    const openReturnModal = (order) => {
+        setSelectedOrder(order);
+        setReturnForm({
+            type: 'retour',
+            reason: '',
+            items: order.items.map(item => ({ productName: item.productName, quantity: item.quantity, selected: true }))
+        });
+        setReturnError('');
+        setShowReturnModal(true);
+    };
+
+    const handleSubmitReturn = async () => {
+        if (!returnForm.reason.trim()) {
+            setReturnError('Veuillez indiquer le motif de votre demande.');
+            return;
+        }
+        const selectedItems = returnForm.items.filter(i => i.selected);
+        if (selectedItems.length === 0) {
+            setReturnError('Veuillez sélectionner au moins un article.');
+            return;
+        }
+
+        setReturnSubmitting(true);
+        setReturnError('');
+        try {
+            await createReturnRequest({
+                orderId: selectedOrder._id,
+                type: returnForm.type,
+                reason: returnForm.reason,
+                items: selectedItems.map(i => ({ productName: i.productName, quantity: i.quantity }))
+            });
+            setReturnSuccess('Demande envoyée avec succès !');
+            setShowReturnModal(false);
+            setActiveTab('returns');
+        } catch (err) {
+            setReturnError(err.response?.data?.error || 'Erreur lors de l\'envoi de la demande.');
+        } finally {
+            setReturnSubmitting(false);
+        }
+    };
 
     const handleLogout = () => {
         logout();
@@ -176,6 +247,7 @@ const ClientDashboard = () => {
         { id: 'profile', label: 'Mon Profil', icon: <FaUser /> },
         { id: 'cart', label: 'Mon Panier', icon: <FaShoppingCart /> },
         { id: 'orders', label: 'Mes Commandes', icon: <FaHistory /> },
+        { id: 'returns', label: 'Retours/Échanges', icon: <FaExchangeAlt /> },
         { id: 'settings', label: 'Parametres', icon: <FaCog /> },
     ];
 
@@ -702,15 +774,229 @@ const ClientDashboard = () => {
                                                             <span className="text-muted" style={{ fontSize: '0.85rem' }}>
                                                                 {order.items.length} article{order.items.length > 1 ? 's' : ''}
                                                             </span>
-                                                            <span className="fw-bold" style={{ color: '#4361ee' }}>
-                                                                {formatPrice(order.totalAmount)} DT
-                                                            </span>
+                                                            <div className="d-flex align-items-center gap-2">
+                                                                {order.orderStatus === 'livree' && order.paymentStatus === 'paid' && (
+                                                                    <button
+                                                                        className="btn btn-sm rounded-pill px-3"
+                                                                        style={{
+                                                                            background: 'linear-gradient(145deg, #dc2626, #991b1b)',
+                                                                            border: 'none', color: 'white', fontSize: '0.75rem', fontWeight: 600
+                                                                        }}
+                                                                        onClick={(e) => { e.stopPropagation(); openReturnModal(order); }}
+                                                                    >
+                                                                        <FaExchangeAlt className="me-1" size={10} />
+                                                                        Retour/Échange
+                                                                    </button>
+                                                                )}
+                                                                <span className="fw-bold" style={{ color: '#4361ee' }}>
+                                                                    {formatPrice(order.totalAmount)} DT
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 );
                                             })}
                                         </div>
                                     )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Tab: Retours/Échanges */}
+                        {activeTab === 'returns' && (
+                            <div className="card border-0 rounded-4 shadow-sm">
+                                <div className="card-body p-4">
+                                    <h4 className="fw-bold mb-4" style={{ color: '#0f172a' }}>
+                                        <FaExchangeAlt className="me-2" style={{ color: '#dc2626' }} />
+                                        Mes Demandes de Retour / Échange
+                                    </h4>
+
+                                    {returnsLoading ? (
+                                        <div className="text-center py-5">
+                                            <FaSpinner size={32} style={{ color: '#4361ee', animation: 'spin 1s linear infinite' }} />
+                                            <p className="text-muted mt-3">Chargement...</p>
+                                        </div>
+                                    ) : returnRequests.length === 0 ? (
+                                        <div className="text-center py-5">
+                                            <div style={{
+                                                width: '80px', height: '80px', borderRadius: '24px',
+                                                background: 'linear-gradient(145deg, #dc262615, #991b1b15)',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                margin: '0 auto 16px'
+                                            }}>
+                                                <FaExchangeAlt size={32} style={{ color: '#dc2626' }} />
+                                            </div>
+                                            <h5 className="fw-bold text-muted">Aucune demande</h5>
+                                            <p className="text-muted mb-4">
+                                                Vous pouvez demander un retour ou échange depuis l'onglet Commandes
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div>
+                                            {returnRequests.map((req) => {
+                                                const statusMap = {
+                                                    en_attente: { bg: '#fef3c7', color: '#92400e', label: 'En attente' },
+                                                    acceptee: { bg: '#d1fae5', color: '#065f46', label: 'Acceptée' },
+                                                    refusee: { bg: '#fee2e2', color: '#991b1b', label: 'Refusée' },
+                                                };
+                                                const ss = statusMap[req.status] || statusMap.en_attente;
+                                                const typeIcon = req.type === 'retour' ? <FaUndoAlt size={10} /> : <FaSyncAlt size={10} />;
+                                                const typeLabel = req.type === 'retour' ? 'Retour' : 'Échange';
+                                                const typeBg = req.type === 'retour' ? '#fee2e2' : '#dbeafe';
+                                                const typeColor = req.type === 'retour' ? '#991b1b' : '#1e40af';
+
+                                                return (
+                                                    <div key={req._id} className="p-3 mb-3 rounded-3"
+                                                        style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', transition: 'all 0.2s' }}
+                                                        onMouseEnter={(e) => e.currentTarget.style.borderColor = '#dc2626'}
+                                                        onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e2e8f0'}>
+                                                        <div className="d-flex justify-content-between align-items-start mb-2">
+                                                            <div>
+                                                                <span className="fw-bold" style={{ color: '#0f172a', fontSize: '0.95rem' }}>
+                                                                    #{req._id.slice(-8).toUpperCase()}
+                                                                </span>
+                                                                <br />
+                                                                <small className="text-muted">
+                                                                    {new Date(req.createdAt).toLocaleDateString('fr-FR', {
+                                                                        day: '2-digit', month: 'long', year: 'numeric'
+                                                                    })}
+                                                                </small>
+                                                            </div>
+                                                            <div className="d-flex gap-2">
+                                                                <span className="badge rounded-pill px-3 py-1" style={{ backgroundColor: typeBg, color: typeColor, fontSize: '0.75rem' }}>
+                                                                    {typeIcon} <span className="ms-1">{typeLabel}</span>
+                                                                </span>
+                                                                <span className="badge rounded-pill px-3 py-1" style={{ backgroundColor: ss.bg, color: ss.color, fontSize: '0.75rem' }}>
+                                                                    {ss.label}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <p className="mb-2 text-muted" style={{ fontSize: '0.85rem' }}>
+                                                            <strong>Motif :</strong> {req.reason}
+                                                        </p>
+                                                        <div className="d-flex flex-wrap gap-1">
+                                                            {req.items?.map((item, idx) => (
+                                                                <span key={idx} className="badge bg-light text-dark border" style={{ fontSize: '0.75rem' }}>
+                                                                    {item.productName} x{item.quantity}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                        {req.adminNote && (
+                                                            <div className="mt-2 p-2 rounded-2" style={{
+                                                                backgroundColor: req.status === 'acceptee' ? '#f0fdf4' : '#fef2f2',
+                                                                border: `1px solid ${req.status === 'acceptee' ? '#bbf7d0' : '#fecaca'}`,
+                                                                fontSize: '0.85rem'
+                                                            }}>
+                                                                <strong>Réponse admin :</strong> {req.adminNote}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Modal: Demande de retour/échange */}
+                        {showReturnModal && selectedOrder && (
+                            <div style={{
+                                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                                backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }} onClick={() => setShowReturnModal(false)}>
+                                <div className="card border-0 rounded-4 shadow-lg" style={{ maxWidth: '550px', width: '95%', maxHeight: '90vh', overflow: 'auto' }}
+                                    onClick={e => e.stopPropagation()}>
+                                    <div className="card-body p-4">
+                                        <div className="d-flex justify-content-between align-items-center mb-4">
+                                            <h5 className="fw-bold mb-0">
+                                                <FaExchangeAlt className="me-2" style={{ color: '#dc2626' }} />
+                                                Demande de Retour / Échange
+                                            </h5>
+                                            <button className="btn btn-sm btn-outline-secondary rounded-circle" onClick={() => setShowReturnModal(false)}>
+                                                <FaTimes />
+                                            </button>
+                                        </div>
+
+                                        <div className="p-3 rounded-3 mb-3" style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                                            <small className="text-muted">Commande</small>
+                                            <div className="fw-bold" style={{ color: '#4361ee' }}>#{selectedOrder._id.slice(-8).toUpperCase()}</div>
+                                        </div>
+
+                                        {returnError && (
+                                            <div className="alert alert-danger d-flex align-items-center rounded-3 mb-3 py-2">
+                                                <FaExclamationTriangle className="me-2" />
+                                                <div style={{ fontSize: '0.9rem' }}>{returnError}</div>
+                                            </div>
+                                        )}
+
+                                        {/* Type */}
+                                        <label className="form-label fw-medium">Type de demande</label>
+                                        <div className="d-flex gap-2 mb-3">
+                                            <button
+                                                className={`btn flex-fill rounded-pill ${returnForm.type === 'retour' ? '' : 'btn-outline-secondary'}`}
+                                                style={returnForm.type === 'retour' ? { background: 'linear-gradient(145deg, #dc2626, #991b1b)', border: 'none', color: 'white' } : {}}
+                                                onClick={() => setReturnForm({ ...returnForm, type: 'retour' })}
+                                            >
+                                                <FaUndoAlt className="me-2" />Retour
+                                            </button>
+                                            <button
+                                                className={`btn flex-fill rounded-pill ${returnForm.type === 'echange' ? '' : 'btn-outline-secondary'}`}
+                                                style={returnForm.type === 'echange' ? { background: 'linear-gradient(145deg, #1e40af, #1e3a8a)', border: 'none', color: 'white' } : {}}
+                                                onClick={() => setReturnForm({ ...returnForm, type: 'echange' })}
+                                            >
+                                                <FaSyncAlt className="me-2" />Échange
+                                            </button>
+                                        </div>
+
+                                        {/* Motif */}
+                                        <label className="form-label fw-medium">Motif</label>
+                                        <textarea
+                                            className="form-control mb-3 rounded-3"
+                                            rows="3"
+                                            placeholder="Décrivez la raison de votre demande..."
+                                            value={returnForm.reason}
+                                            onChange={e => setReturnForm({ ...returnForm, reason: e.target.value })}
+                                        />
+
+                                        {/* Articles */}
+                                        <label className="form-label fw-medium">Articles concernés</label>
+                                        {returnForm.items.map((item, idx) => (
+                                            <div key={idx} className="d-flex align-items-center gap-2 mb-2 p-2 rounded-2" style={{ backgroundColor: '#f8fafc' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    className="form-check-input"
+                                                    checked={item.selected}
+                                                    onChange={() => {
+                                                        const newItems = [...returnForm.items];
+                                                        newItems[idx].selected = !newItems[idx].selected;
+                                                        setReturnForm({ ...returnForm, items: newItems });
+                                                    }}
+                                                />
+                                                <span className="flex-grow-1" style={{ fontSize: '0.9rem' }}>{item.productName}</span>
+                                                <span className="text-muted" style={{ fontSize: '0.85rem' }}>x{item.quantity}</span>
+                                            </div>
+                                        ))}
+
+                                        <div className="d-flex gap-2 mt-4">
+                                            <button className="btn btn-outline-secondary rounded-pill flex-fill" onClick={() => setShowReturnModal(false)}>
+                                                Annuler
+                                            </button>
+                                            <button
+                                                className="btn rounded-pill flex-fill"
+                                                style={{ background: 'linear-gradient(145deg, #dc2626, #991b1b)', border: 'none', color: 'white', fontWeight: 600 }}
+                                                onClick={handleSubmitReturn}
+                                                disabled={returnSubmitting}
+                                            >
+                                                {returnSubmitting ? (
+                                                    <><FaSpinner className="me-2" style={{ animation: 'spin 1s linear infinite' }} />Envoi...</>
+                                                ) : (
+                                                    <><FaExchangeAlt className="me-2" />Envoyer la demande</>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
