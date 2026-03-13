@@ -7,7 +7,8 @@ import {
     getMyOrders,
     getOrderById,
     getAllOrders,
-    updateOrderStatus
+    updateOrderStatus,
+    cancelOrder
 } from '../controllers/orderController.js';
 
 const router = express.Router();
@@ -19,10 +20,13 @@ const router = express.Router();
 router.post('/checkout', protect, createCheckoutSession);
 router.get('/my-orders', protect, getMyOrders);
 router.get('/verify-session/:sessionId', protect, verifySession);
+
+// ⚠️  IMPORTANT : routes spécifiques avec suffixe AVANT la route générique /:id
+router.patch('/:id/cancel', protect, cancelOrder);
+router.patch('/:id/status', protect, adminOnly, updateOrderStatus);
 router.get('/:id', protect, getOrderById);
 
 // Routes admin
 router.get('/', protect, adminOnly, getAllOrders);
-router.patch('/:id/status', protect, adminOnly, updateOrderStatus);
 
 export default router;

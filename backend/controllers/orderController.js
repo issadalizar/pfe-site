@@ -2,7 +2,7 @@
 import Stripe from 'stripe';
 import Order from '../models/Order.js';
 import { sendInvoiceEmail, sendAdminNotificationEmail } from '../utils/emailService.js';
-import dataSyncService from '../services/dataSyncService.js'; // AJOUT
+import dataSyncService from '../services/dataSyncService.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -18,23 +18,20 @@ export const createCheckoutSession = async (req, res) => {
             return res.status(400).json({ success: false, error: 'Informations de livraison incompletes.' });
         }
 
-        // Calculer le total
         const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-        // Creer les line_items pour Stripe (conversion DT -> EUR)
-        const DT_TO_EUR = 0.30; // 1 DT ≈ 0.30 EUR (taux approximatif)
+        const DT_TO_EUR = 0.30;
         const line_items = items.map(item => ({
             price_data: {
                 currency: 'eur',
                 product_data: {
                     name: item.productName,
                 },
-                unit_amount: Math.round(item.price * DT_TO_EUR * 100), // Convertir DT en centimes EUR
+                unit_amount: Math.round(item.price * DT_TO_EUR * 100),
             },
             quantity: item.quantity,
         }));
 
-        // Creer la commande en BDD (status pending)
         const order = await Order.create({
             user: req.user._id,
             items,
@@ -44,17 +41,12 @@ export const createCheckoutSession = async (req, res) => {
             orderStatus: 'en_attente'
         });
 
-        // 🔄 SYNC AVEC PRODUCTDATA.JS
         try {
-            await dataSyncService.updateOrderInFile(
-                order._id.toString(),
-                order.toObject()
-            );
+            await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
         } catch (syncError) {
             console.error('⚠️ Erreur sync productData:', syncError);
         }
 
-        // Creer la session Stripe Checkout
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items,
@@ -68,21 +60,15 @@ export const createCheckoutSession = async (req, res) => {
             }
         });
 
-        // Sauvegarder l'ID de session Stripe
         order.stripeSessionId = session.id;
         await order.save();
 
-        // 🔄 SYNC AVEC PRODUCTDATA.JS (mise à jour avec sessionId)
         try {
-            await dataSyncService.updateOrderInFile(
-                order._id.toString(),
-                order.toObject()
-            );
+            await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
         } catch (syncError) {
             console.error('⚠️ Erreur sync productData:', syncError);
         }
 
-        // Notifier l'admin par email
         sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
 
         res.json({
@@ -109,7 +95,6 @@ export const handleStripeWebhook = async (req, res) => {
         if (webhookSecret && sig) {
             event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
         } else {
-            // En mode dev sans webhook secret, parser le body directement
             event = JSON.parse(req.body.toString());
         }
     } catch (err) {
@@ -117,7 +102,6 @@ export const handleStripeWebhook = async (req, res) => {
         return res.status(400).json({ error: `Webhook Error: ${err.message}` });
     }
 
-    // Traiter l'evenement
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
         const orderId = session.metadata?.orderId;
@@ -132,14 +116,8 @@ export const handleStripeWebhook = async (req, res) => {
 
                 console.log(`Commande ${orderId} payee avec succes`);
 
-                // 🔄 SYNC AVEC PRODUCTDATA.JS
                 if (order) {
-                    await dataSyncService.updateOrderInFile(
-                        orderId,
-                        order.toObject()
-                    );
-                    
-                    // Envoyer l'email de facture
+                    await dataSyncService.updateOrderInFile(orderId, order.toObject());
                     sendInvoiceEmail(order).catch(err => console.error('Erreur email:', err));
                 }
             } catch (err) {
@@ -165,14 +143,8 @@ export const verifySession = async (req, res) => {
                     orderStatus: 'confirmee'
                 }, { new: true });
 
-                // 🔄 SYNC AVEC PRODUCTDATA.JS
                 if (order) {
-                    await dataSyncService.updateOrderInFile(
-                        orderId,
-                        order.toObject()
-                    );
-                    
-                    // Envoyer l'email de facture
+                    await dataSyncService.updateOrderInFile(orderId, order.toObject());
                     sendInvoiceEmail(order).catch(err => console.error('Erreur email:', err));
                 }
             }
@@ -211,7 +183,6 @@ export const getOrderById = async (req, res) => {
             return res.status(404).json({ success: false, error: 'Commande non trouvee.' });
         }
 
-        // Verifier que c'est bien la commande du user (sauf admin)
         if (!req.user.isAdmin && order.user._id.toString() !== req.user._id.toString()) {
             return res.status(403).json({ success: false, error: 'Acces non autorise.' });
         }
@@ -242,12 +213,7 @@ export const getAllOrders = async (req, res) => {
         res.json({
             success: true,
             orders,
-            pagination: {
-                page,
-                limit,
-                total,
-                pages: Math.ceil(total / limit)
-            }
+            pagination: { page, limit, total, pages: Math.ceil(total / limit) }
         });
     } catch (error) {
         console.error('Erreur liste commandes:', error);
@@ -275,12 +241,8 @@ export const updateOrderStatus = async (req, res) => {
             return res.status(404).json({ success: false, error: 'Commande non trouvee.' });
         }
 
-        // 🔄 SYNC AVEC PRODUCTDATA.JS
         try {
-            await dataSyncService.updateOrderInFile(
-                req.params.id,
-                order.toObject()
-            );
+            await dataSyncService.updateOrderInFile(req.params.id, order.toObject());
         } catch (syncError) {
             console.error('⚠️ Erreur sync productData:', syncError);
         }
@@ -289,5 +251,62 @@ export const updateOrderStatus = async (req, res) => {
     } catch (error) {
         console.error('Erreur mise a jour statut:', error);
         res.status(500).json({ success: false, error: 'Erreur lors de la mise a jour.' });
+    }
+};
+
+// PATCH /api/orders/:id/cancel - Annuler une commande (client, dans les 24h)
+export const cancelOrder = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ success: false, error: 'Commande introuvable.' });
+        }
+
+        // Récupérer le champ owner (supporte "user" et "client" selon le modèle)
+        const orderOwner = order.user || order.client;
+        if (!orderOwner) {
+            return res.status(500).json({ success: false, error: 'Impossible de vérifier le propriétaire de la commande.' });
+        }
+
+        // Vérifier que la commande appartient bien au client connecté
+        if (orderOwner.toString() !== req.user._id.toString()) {
+            return res.status(403).json({ success: false, error: 'Accès non autorisé.' });
+        }
+
+        // Vérifier le statut : seulement en_attente ou confirmee
+        const cancellableStatuses = ['en_attente', 'confirmee'];
+        if (!cancellableStatuses.includes(order.orderStatus)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Cette commande ne peut plus être annulée (déjà expédiée, livrée ou annulée).'
+            });
+        }
+
+        // Vérifier la fenêtre de 24h
+        const heuresEcoulees = (Date.now() - new Date(order.createdAt).getTime()) / (1000 * 60 * 60);
+        if (heuresEcoulees >= 24) {
+            return res.status(400).json({
+                success: false,
+                error: 'Le délai d\'annulation de 24h est dépassé.'
+            });
+        }
+
+        // Annuler la commande
+        order.orderStatus = 'annulee';
+        await order.save();
+
+        // Sync fichier
+        try {
+            await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
+        } catch (syncError) {
+            console.error('⚠️ Erreur sync productData:', syncError);
+        }
+
+        res.json({ success: true, message: 'Commande annulée avec succès.', order });
+
+    } catch (error) {
+        console.error('Erreur annulation commande:', error);
+        res.status(500).json({ success: false, error: 'Erreur lors de l\'annulation.' });
     }
 };

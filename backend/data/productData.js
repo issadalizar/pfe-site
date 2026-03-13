@@ -1657,9 +1657,41 @@ export const cncProductDetails = {
       "totalAmount": 12980,
       "stripeSessionId": "cs_test_b1uaVl9JV9IiNcYNsQbH3AVfenyqpvWEU9BnSdh5cBFzxeBZPOJ1deH51o",
       "paymentStatus": "paid",
-      "orderStatus": "confirmee",
+      "orderStatus": "livree",
       "createdAt": "2026-03-12T22:13:35.190Z",
-      "updatedAt": "2026-03-12T22:14:16.389Z"
+      "updatedAt": "2026-03-13T00:52:21.196Z"
+    },
+    "69b2cc38db0bb1958ddc8e93": {
+      "_id": "69b2cc38db0bb1958ddc8e93",
+      "user": "69a962aaca6c072acbba8669",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center.png",
+          "quantity": 1,
+          "price": 8990
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "dalizar aissa",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "totalAmount": 14480,
+      "stripeSessionId": "cs_test_b1dtlX7qqb7OQfvHELYOPHF2baPNfzPzJzX0brcsuzufNwjU2O140ZbULj",
+      "paymentStatus": "paid",
+      "orderStatus": "annulee",
+      "createdAt": "2026-03-12T14:22:48.981Z",
+      "updatedAt": "2026-03-13T00:53:33.009Z"
     }
   }
 };
