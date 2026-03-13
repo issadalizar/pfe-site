@@ -1628,6 +1628,38 @@ export const cncProductDetails = {
       "_id": "69b30aa8bd7173c17b2b58e5",
       "createdAt": "2026-03-12T18:49:12.193Z",
       "updatedAt": "2026-03-12T18:49:12.206Z"
+    },
+    "69b33a8f9c075ab50c5a7d00": {
+      "_id": "69b33a8f9c075ab50c5a7d00",
+      "user": "69a962aaca6c072acbba8669",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
+          "quantity": 1,
+          "price": 7490
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "dalizar aissa",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "totalAmount": 12980,
+      "stripeSessionId": "cs_test_b1uaVl9JV9IiNcYNsQbH3AVfenyqpvWEU9BnSdh5cBFzxeBZPOJ1deH51o",
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "createdAt": "2026-03-12T22:13:35.190Z",
+      "updatedAt": "2026-03-12T22:14:16.389Z"
     }
   }
 };

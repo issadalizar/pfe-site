@@ -42,4 +42,10 @@ export const getOrderById = async (orderId) => {
     return response.data;
 };
 
+// Annuler une commande (uniquement dans les 24h suivant la création)
+export const cancelOrder = async (orderId) => {
+    const response = await orderAPI.patch(`/${orderId}/cancel`);
+    return response.data;
+};
+
 export default orderAPI;

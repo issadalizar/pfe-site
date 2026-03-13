@@ -9,9 +9,10 @@ import {
     FaShieldAlt, FaHistory, FaHeart, FaCog, FaCheckCircle,
     FaBox, FaChevronRight, FaCalendarAlt, FaUserCircle,
     FaLock, FaKey, FaExclamationTriangle, FaSpinner,
-    FaTruck, FaCreditCard, FaExchangeAlt, FaUndoAlt, FaSyncAlt
+    FaTruck, FaCreditCard, FaExchangeAlt, FaUndoAlt, FaSyncAlt,
+    FaBan, FaClock
 } from 'react-icons/fa';
-import { getMyOrders } from '../services/orderService';
+import { getMyOrders, cancelOrder } from '../services/orderService';
 import { createReturnRequest, getMyReturnRequests } from '../services/returnRequestService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -52,6 +53,12 @@ const ClientDashboard = () => {
     const [returnSubmitting, setReturnSubmitting] = useState(false);
     const [returnSuccess, setReturnSuccess] = useState('');
     const [returnError, setReturnError] = useState('');
+
+    // Annulation de commande
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [orderToCancel, setOrderToCancel] = useState(null);
+    const [cancelLoading, setCancelLoading] = useState(false);
+    const [cancelError, setCancelError] = useState('');
 
     // Sync editData quand user change
     useEffect(() => {
@@ -108,6 +115,68 @@ const ClientDashboard = () => {
             return () => clearTimeout(timer);
         }
     }, [returnSuccess]);
+
+    // ─── Logique annulation ──────────────────────────────────────────────────
+
+    /**
+     * Retourne true si la commande a été passée il y a moins de 24h
+     * et que son statut autorise encore l'annulation.
+     */
+    const canCancelOrder = (order) => {
+        const cancellableStatuses = ['en_attente', 'confirmee'];
+        if (!cancellableStatuses.includes(order.orderStatus)) return false;
+        const hoursSinceCreation =
+            (Date.now() - new Date(order.createdAt).getTime()) / (1000 * 60 * 60);
+        return hoursSinceCreation < 24;
+    };
+
+    /**
+     * Calcule le temps restant avant expiration de la fenêtre d'annulation.
+     * Retourne une chaîne lisible, ex : "18h 34min restantes"
+     */
+    const getTimeRemaining = (createdAt) => {
+        const msRemaining =
+            24 * 60 * 60 * 1000 - (Date.now() - new Date(createdAt).getTime());
+        if (msRemaining <= 0) return null;
+        const hours = Math.floor(msRemaining / (1000 * 60 * 60));
+        const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
+        if (hours > 0) return `${hours}h ${minutes}min restantes`;
+        return `${minutes}min restantes`;
+    };
+
+    const openCancelModal = (order) => {
+        setOrderToCancel(order);
+        setCancelError('');
+        setShowCancelModal(true);
+    };
+
+    const handleConfirmCancel = async () => {
+        if (!orderToCancel) return;
+        setCancelLoading(true);
+        setCancelError('');
+        try {
+            await cancelOrder(orderToCancel._id);
+            // Mettre à jour localement pour éviter un rechargement complet
+            setOrders(prev =>
+                prev.map(o =>
+                    o._id === orderToCancel._id
+                        ? { ...o, orderStatus: 'annulee' }
+                        : o
+                )
+            );
+            setSuccessMsg('Commande annulée avec succès.');
+            setShowCancelModal(false);
+            setOrderToCancel(null);
+        } catch (err) {
+            setCancelError(
+                err.response?.data?.error || 'Erreur lors de l\'annulation. Veuillez réessayer.'
+            );
+        } finally {
+            setCancelLoading(false);
+        }
+    };
+
+    // ────────────────────────────────────────────────────────────────────────
 
     const openReturnModal = (order) => {
         setSelectedOrder(order);
@@ -493,7 +562,6 @@ const ClientDashboard = () => {
                                         )}
                                     </div>
 
-                                    {/* Error message */}
                                     {errorMsg && (
                                         <div className="alert alert-danger d-flex align-items-center rounded-3 mb-4" role="alert">
                                             <FaExclamationTriangle className="me-2 flex-shrink-0" />
@@ -743,12 +811,26 @@ const ClientDashboard = () => {
                                                 };
                                                 const os = statusColors[order.orderStatus] || statusColors.en_attente;
                                                 const ps = paymentColors[order.paymentStatus] || paymentColors.pending;
+                                                const cancellable = canCancelOrder(order);
+                                                const timeLeft = cancellable ? getTimeRemaining(order.createdAt) : null;
 
                                                 return (
                                                     <div key={order._id} className="p-3 mb-3 rounded-3"
-                                                        style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', transition: 'all 0.2s' }}
-                                                        onMouseEnter={(e) => e.currentTarget.style.borderColor = '#4361ee'}
-                                                        onMouseLeave={(e) => e.currentTarget.style.borderColor = '#e2e8f0'}>
+                                                        style={{
+                                                            backgroundColor: order.orderStatus === 'annulee' ? '#fef2f2' : '#f8fafc',
+                                                            border: `1px solid ${order.orderStatus === 'annulee' ? '#fecaca' : '#e2e8f0'}`,
+                                                            transition: 'all 0.2s',
+                                                            opacity: order.orderStatus === 'annulee' ? 0.75 : 1
+                                                        }}
+                                                        onMouseEnter={(e) => {
+                                                            if (order.orderStatus !== 'annulee')
+                                                                e.currentTarget.style.borderColor = '#4361ee';
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            e.currentTarget.style.borderColor =
+                                                                order.orderStatus === 'annulee' ? '#fecaca' : '#e2e8f0';
+                                                        }}>
+
                                                         <div className="d-flex justify-content-between align-items-start mb-2">
                                                             <div>
                                                                 <span className="fw-bold" style={{ color: '#0f172a', fontSize: '0.95rem' }}>
@@ -761,7 +843,7 @@ const ClientDashboard = () => {
                                                                     })}
                                                                 </small>
                                                             </div>
-                                                            <div className="d-flex gap-2">
+                                                            <div className="d-flex gap-2 flex-wrap justify-content-end">
                                                                 <span className="badge rounded-pill px-3 py-1" style={{ backgroundColor: ps.bg, color: ps.color, fontSize: '0.75rem' }}>
                                                                     <FaCreditCard className="me-1" size={10} />{ps.label}
                                                                 </span>
@@ -770,11 +852,61 @@ const ClientDashboard = () => {
                                                                 </span>
                                                             </div>
                                                         </div>
-                                                        <div className="d-flex justify-content-between align-items-center">
+
+                                                        <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
                                                             <span className="text-muted" style={{ fontSize: '0.85rem' }}>
                                                                 {order.items.length} article{order.items.length > 1 ? 's' : ''}
                                                             </span>
-                                                            <div className="d-flex align-items-center gap-2">
+
+                                                            <div className="d-flex align-items-center gap-2 flex-wrap">
+                                                                {/* ── Bouton Annuler (≤ 24h) ── */}
+                                                                {cancellable && (
+                                                                    <div className="d-flex align-items-center gap-2">
+                                                                        {/* Minuteur */}
+                                                                        {timeLeft && (
+                                                                            <span style={{
+                                                                                fontSize: '0.72rem',
+                                                                                backgroundColor: '#fff7ed',
+                                                                                color: '#c2410c',
+                                                                                border: '1px solid #fed7aa',
+                                                                                borderRadius: '20px',
+                                                                                padding: '3px 10px',
+                                                                                fontWeight: 500,
+                                                                                display: 'flex',
+                                                                                alignItems: 'center',
+                                                                                gap: '4px'
+                                                                            }}>
+                                                                                <FaClock size={9} />
+                                                                                {timeLeft}
+                                                                            </span>
+                                                                        )}
+                                                                        <button
+                                                                            className="btn btn-sm rounded-pill px-3"
+                                                                            style={{
+                                                                                border: '1.5px solid #dc2626',
+                                                                                background: 'white',
+                                                                                color: '#dc2626',
+                                                                                fontSize: '0.75rem',
+                                                                                fontWeight: 600,
+                                                                                transition: 'all 0.2s'
+                                                                            }}
+                                                                            onMouseEnter={(e) => {
+                                                                                e.currentTarget.style.background = '#dc2626';
+                                                                                e.currentTarget.style.color = 'white';
+                                                                            }}
+                                                                            onMouseLeave={(e) => {
+                                                                                e.currentTarget.style.background = 'white';
+                                                                                e.currentTarget.style.color = '#dc2626';
+                                                                            }}
+                                                                            onClick={(e) => { e.stopPropagation(); openCancelModal(order); }}
+                                                                        >
+                                                                            <FaBan className="me-1" size={10} />
+                                                                            Annuler la commande
+                                                                        </button>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* ── Bouton Retour/Échange (livrée) ── */}
                                                                 {order.orderStatus === 'livree' && order.paymentStatus === 'paid' && (
                                                                     <button
                                                                         className="btn btn-sm rounded-pill px-3"
@@ -788,6 +920,7 @@ const ClientDashboard = () => {
                                                                         Retour/Échange
                                                                     </button>
                                                                 )}
+
                                                                 <span className="fw-bold" style={{ color: '#4361ee' }}>
                                                                     {formatPrice(order.totalAmount)} DT
                                                                 </span>
@@ -798,6 +931,76 @@ const ClientDashboard = () => {
                                             })}
                                         </div>
                                     )}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* ── Modal de confirmation d'annulation ── */}
+                        {showCancelModal && orderToCancel && (
+                            <div style={{
+                                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+                                backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 9999,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }} onClick={() => !cancelLoading && setShowCancelModal(false)}>
+                                <div className="card border-0 rounded-4 shadow-lg"
+                                    style={{ maxWidth: '440px', width: '95%' }}
+                                    onClick={e => e.stopPropagation()}>
+                                    <div className="card-body p-4 text-center">
+                                        {/* Icône */}
+                                        <div style={{
+                                            width: '64px', height: '64px', borderRadius: '50%',
+                                            background: '#fef2f2', display: 'flex', alignItems: 'center',
+                                            justifyContent: 'center', margin: '0 auto 16px'
+                                        }}>
+                                            <FaBan size={28} style={{ color: '#dc2626' }} />
+                                        </div>
+
+                                        <h5 className="fw-bold mb-2" style={{ color: '#0f172a' }}>
+                                            Annuler la commande ?
+                                        </h5>
+                                        <p className="text-muted mb-1" style={{ fontSize: '0.9rem' }}>
+                                            Commande <strong style={{ color: '#4361ee' }}>
+                                                #{orderToCancel._id.slice(-8).toUpperCase()}
+                                            </strong>
+                                        </p>
+                                        <p className="text-muted mb-4" style={{ fontSize: '0.85rem' }}>
+                                            Cette action est irréversible. En cas de paiement effectué,
+                                            le remboursement sera traité sous 3 à 5 jours ouvrables.
+                                        </p>
+
+                                        {/* Alerte d'erreur */}
+                                        {cancelError && (
+                                            <div className="alert alert-danger d-flex align-items-center rounded-3 mb-3 py-2 text-start">
+                                                <FaExclamationTriangle className="me-2 flex-shrink-0" />
+                                                <div style={{ fontSize: '0.85rem' }}>{cancelError}</div>
+                                            </div>
+                                        )}
+
+                                        <div className="d-flex gap-3 justify-content-center">
+                                            <button
+                                                className="btn btn-outline-secondary rounded-pill px-4"
+                                                onClick={() => setShowCancelModal(false)}
+                                                disabled={cancelLoading}
+                                            >
+                                                Conserver
+                                            </button>
+                                            <button
+                                                className="btn rounded-pill px-4"
+                                                style={{
+                                                    background: 'linear-gradient(145deg, #dc2626, #991b1b)',
+                                                    border: 'none', color: 'white', fontWeight: 600
+                                                }}
+                                                onClick={handleConfirmCancel}
+                                                disabled={cancelLoading}
+                                            >
+                                                {cancelLoading ? (
+                                                    <><FaSpinner className="me-2" style={{ animation: 'spin 1s linear infinite' }} />Annulation...</>
+                                                ) : (
+                                                    <><FaBan className="me-2" size={13} />Oui, annuler</>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -931,7 +1134,6 @@ const ClientDashboard = () => {
                                             </div>
                                         )}
 
-                                        {/* Type */}
                                         <label className="form-label fw-medium">Type de demande</label>
                                         <div className="d-flex gap-2 mb-3">
                                             <button
@@ -950,7 +1152,6 @@ const ClientDashboard = () => {
                                             </button>
                                         </div>
 
-                                        {/* Motif */}
                                         <label className="form-label fw-medium">Motif</label>
                                         <textarea
                                             className="form-control mb-3 rounded-3"
@@ -960,7 +1161,6 @@ const ClientDashboard = () => {
                                             onChange={e => setReturnForm({ ...returnForm, reason: e.target.value })}
                                         />
 
-                                        {/* Articles */}
                                         <label className="form-label fw-medium">Articles concernés</label>
                                         {returnForm.items.map((item, idx) => (
                                             <div key={idx} className="d-flex align-items-center gap-2 mb-2 p-2 rounded-2" style={{ backgroundColor: '#f8fafc' }}>
@@ -1010,7 +1210,6 @@ const ClientDashboard = () => {
                                         Parametres du Compte
                                     </h4>
 
-                                    {/* Changer mot de passe */}
                                     <div className="p-4 rounded-3 mb-3" style={{ backgroundColor: '#f8fafc' }}>
                                         <div className="d-flex justify-content-between align-items-center mb-3">
                                             <h6 className="fw-bold mb-0">
@@ -1111,7 +1310,6 @@ const ClientDashboard = () => {
                                         )}
                                     </div>
 
-                                    {/* Notifications */}
                                     <div className="p-4 rounded-3 mb-3" style={{ backgroundColor: '#f8fafc' }}>
                                         <h6 className="fw-bold mb-3">Notifications</h6>
                                         <div className="form-check form-switch mb-2">
@@ -1128,7 +1326,6 @@ const ClientDashboard = () => {
                                         </div>
                                     </div>
 
-                                    {/* Danger Zone */}
                                     <div className="p-4 rounded-3" style={{ backgroundColor: '#fef2f2', border: '1px solid #fecaca' }}>
                                         <h6 className="fw-bold mb-3" style={{ color: '#dc2626' }}>Zone de danger</h6>
                                         <p className="text-muted mb-3" style={{ fontSize: '0.9rem' }}>
@@ -1145,7 +1342,6 @@ const ClientDashboard = () => {
                 </div>
             </div>
 
-            {/* Inline keyframe for spinner */}
             <style>{`
                 @keyframes spin {
                     from { transform: rotate(0deg); }
