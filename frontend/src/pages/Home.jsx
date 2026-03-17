@@ -48,6 +48,7 @@ import {
   FaRegBell,
   FaMapMarkedAlt,
   FaGlobe,
+  FaCube, // Import pour l'icône 3D
 } from "react-icons/fa";
 import { productAPI, categoryAPI } from "../services/CategorieProduct";
 import FeaturedProducts from "../components/FeaturedProducts";
@@ -77,6 +78,13 @@ const Home = () => {
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [language, setLanguage] = useState("fr"); // 'fr' for French, 'en' for English
 
+  // ========== FONCTION POUR LA NAVIGATION 3D ==========
+  const handleView3D = (e, product) => {
+    e.stopPropagation(); // Empêcher la propagation au clic sur la carte
+    navigate(`/product3d/${encodeURIComponent(product.title)}`);
+  };
+  // ====================================================
+
   // Translations
   const translations = {
     fr: {
@@ -85,7 +93,7 @@ const Home = () => {
       products: "Produits",
       expertise: "Expertise",
       about: "À propos",
-      contactNav: "Contact", // Changé de "contact" à "contactNav"
+      contactNav: "Contact",
       searchPlaceholder: "Rechercher un produit...",
 
       // Hero Section
@@ -139,7 +147,7 @@ const Home = () => {
       footerDescription:
         "Leader dans la fourniture d'équipements technologiques pour l'éducation et l'industrie.",
       quickLinks: "Liens rapides",
-      contact: "Contact", // Gardé pour le footer
+      contact: "Contact",
       allRightsReserved: "Tous droits réservés.",
 
       // Sector names
@@ -168,7 +176,7 @@ const Home = () => {
       products: "Products",
       expertise: "Expertise",
       about: "About",
-      contactNav: "Contact", // Changé de "contact" à "contactNav"
+      contactNav: "Contact",
       searchPlaceholder: "Search for a product...",
 
       // Hero Section
@@ -221,7 +229,7 @@ const Home = () => {
       footerDescription:
         "Leader in providing technological equipment for education and industry.",
       quickLinks: "Quick links",
-      contact: "Contact", // Gardé pour le footer
+      contact: "Contact",
       allRightsReserved: "All rights reserved.",
 
       // Sector names
@@ -628,6 +636,7 @@ const Home = () => {
           </div>
         </div>
       )}
+      
       {/* Scroll to top button */}
       {showScrollTop && (
         <button
@@ -720,7 +729,7 @@ const Home = () => {
                   { name: t.products, href: "#products" },
                   { name: t.expertise, href: "#services" },
                   { name: t.about, href: "#about" },
-                  { name: t.contactNav, href: "/contact" }, // Changé de t.contact à t.contactNav
+                  { name: t.contactNav, href: "/contact" },
                 ].map((item, index) => (
                   <li className="nav-item" key={index}>
                     {item.href.startsWith("/") ? (
@@ -937,7 +946,7 @@ const Home = () => {
                   { name: t.products, href: "#products" },
                   { name: t.expertise, href: "#services" },
                   { name: t.about, href: "#about" },
-                  { name: t.contactNav, href: "/contact" }, // Changé de t.contact à t.contactNav
+                  { name: t.contactNav, href: "/contact" },
                 ].map((item, index) => (
                   <li className="nav-item" key={index}>
                     {item.href.startsWith("/") ? (
@@ -1130,48 +1139,6 @@ const Home = () => {
             </div>
           </div>
         </div>
-
-        <style jsx>{`
-          @keyframes gradient {
-            0% {
-              background-position: 0% 50%;
-            }
-            50% {
-              background-position: 100% 50%;
-            }
-            100% {
-              background-position: 0% 50%;
-            }
-          }
-          @keyframes float {
-            0%,
-            100% {
-              transform: translateY(0);
-            }
-            50% {
-              transform: translateY(-5px);
-            }
-          }
-          @keyframes pulse {
-            0%,
-            100% {
-              opacity: 0.3;
-            }
-            50% {
-              opacity: 0.6;
-            }
-          }
-          @keyframes fadeInUp {
-            from {
-              opacity: 0;
-              transform: translateY(30px);
-            }
-            to {
-              opacity: 1;
-              transform: translateY(0);
-            }
-          }
-        `}</style>
       </section>
 
       {/* Secteurs d'expertise */}
@@ -1528,7 +1495,7 @@ const Home = () => {
                 {filteredProducts.slice(0, 12).map((product, index) => (
                   <div key={index} className="col-md-6 col-xl-4">
                     <div
-                      className="card h-100 border-0 rounded-4 overflow-hidden"
+                      className="card h-100 border-0 rounded-4 overflow-hidden position-relative"
                       onClick={() => handleProductClick(product)}
                       style={{
                         cursor: "pointer",
@@ -1539,6 +1506,42 @@ const Home = () => {
                         border: "1px solid rgba(67, 97, 238, 0.1)",
                       }}
                     >
+                      {/* ========== BOUTON 3D FLOTTANT ========== */}
+                      <button
+                        onClick={(e) => handleView3D(e, product)}
+                        className="btn-3d-float"
+                        style={{
+                          position: 'absolute',
+                          top: '15px',
+                          right: '15px',
+                          width: '40px',
+                          height: '40px',
+                          borderRadius: '10px',
+                          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                          border: 'none',
+                          color: 'white',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                          transition: 'all 0.3s ease',
+                          zIndex: 10,
+                          opacity: 0,
+                          transform: 'translateY(-5px)',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'scale(1.1) translateY(0)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'scale(1) translateY(0)';
+                        }}
+                        title="Voir en 3D"
+                      >
+                        <FaCube size={18} />
+                      </button>
+                      {/* ========================================= */}
+
                       <div className="position-relative">
                         <div
                           className="product-image p-4 text-center"
@@ -1890,7 +1893,7 @@ const Home = () => {
                     ].map(
                       (
                         item,
-                        index, // Changé t.contact à t.contactNav
+                        index,
                       ) => (
                         <li className="mb-3" key={index}>
                           <a
@@ -1954,11 +1957,10 @@ const Home = () => {
         </div>
       </footer>
 
-
       {/* ChatBot Component */}
       <ChatBot/>
 
-      {/* Style pour l'animation pulse (optionnel) */}
+      {/* Styles additionnels */}
       <style jsx>{`
         @keyframes pulse {
           0%,
@@ -1975,8 +1977,38 @@ const Home = () => {
         .text-white-50 {
           color: rgba(255, 255, 255, 0.7) !important;
         }
+
+        /* Animation pour le bouton 3D */
+        .card:hover .btn-3d-float {
+          opacity: 1 !important;
+          transform: translateY(0) !important;
+        }
+
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
       `}</style>
     </div>
   );
 };
+
 export default Home;

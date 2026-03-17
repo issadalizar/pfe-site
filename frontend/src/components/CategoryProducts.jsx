@@ -126,6 +126,7 @@ const CategoryProducts = ({
                 product={product}
                 onView={(id) => console.log("Voir produit:", id)}
                 showCategory={false}
+                show3DButton={true} // Activer le bouton 3D
               />
             </div>
           ))}

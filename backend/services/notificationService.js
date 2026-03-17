@@ -1,3 +1,4 @@
+// services/notificationService.js
 import Notification from '../models/Notification.js';
 
 class NotificationService {
@@ -26,23 +27,10 @@ class NotificationService {
       type: 'rupture',
       produitId: produit._id,
       produitNom: produit.nom || produit.name,
-      stockAvant: produit.stock || 0,
-      stockApres: 0,
-      utilisateurId
-    });
-  }
-
-  // Notification de stock faible
-  async notifierStockFaible(produit, seuil = 5, utilisateurId = null) {
-    return this.creerNotification({
-      description: `🟡 Le produit "${produit.nom || produit.name}" a un stock faible (${produit.stock} unités)`,
-      type: 'stock_faible',
-      produitId: produit._id,
-      produitNom: produit.nom || produit.name,
-      stockAvant: produit.stock,
-      stockApres: produit.stock,
-      metadata: { seuil: seuil.toString() },
-      utilisateurId
+      utilisateurId,
+      metadata: {
+        stockActuel: '0'
+      }
     });
   }
 
@@ -57,9 +45,6 @@ class NotificationService {
     } else if (ancienStock === 0 && nouveauStock > 0) {
       type = 'reapprovisionnement';
       description = `✅ Réapprovisionnement: 0 → ${nouveauStock}`;
-    } else if (nouveauStock < 5 && nouveauStock > 0) {
-      type = 'stock_faible';
-      description = `🟡 Stock faible: ${nouveauStock} unités`;
     }
     
     return this.creerNotification({
@@ -67,9 +52,12 @@ class NotificationService {
       type,
       produitId: produit._id,
       produitNom: produit.nom || produit.name,
-      stockAvant: ancienStock,
-      stockApres: nouveauStock,
-      utilisateurId
+      utilisateurId,
+      metadata: {
+        stockAvant: ancienStock.toString(),
+        stockApres: nouveauStock.toString(),
+        stockActuel: nouveauStock.toString()
+      }
     });
   }
 
@@ -98,8 +86,17 @@ class NotificationService {
       
       const total = await Notification.countDocuments(query);
       
+      // Enrichir les notifications avec les infos de stock actuelles du produit
+      const notificationsEnrichies = await Promise.all(notifications.map(async (notif) => {
+        const notifObj = notif.toObject();
+        if (notif.produitId) {
+          notifObj.stockActuel = notif.produitId.stock;
+        }
+        return notifObj;
+      }));
+      
       return {
-        notifications,
+        notifications: notificationsEnrichies,
         pagination: {
           page,
           limit,
@@ -206,7 +203,7 @@ class NotificationService {
       const dernieresRuptures = await Notification.find({ type: 'rupture' })
         .sort({ dateNotification: -1 })
         .limit(5)
-        .populate('produitId', 'nom name');
+        .populate('produitId', 'nom name stock');
       
       return {
         total,

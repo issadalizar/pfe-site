@@ -1,12 +1,24 @@
 // src/components/FeaturedProducts.jsx
 import { useState } from "react";
 import PropTypes from "prop-types";
-import { FaBox } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { FaBox, FaCube } from "react-icons/fa";
 
 const FeaturedProducts = ({ products, title = "Produits Vedettes", subtitle = "Découvrez notre sélection de produits phares" }) => {
+  const navigate = useNavigate();
   const [imageErrors, setImageErrors] = useState({});
 
-  // Fonction pour gérer les erreurs de chargement d'images
+  // ========== NOUVELLE FONCTION: Navigation vers la vue 3D ==========
+  const handleView3D = (e, product) => {
+    e.stopPropagation();
+    navigate(`/product3d/${encodeURIComponent(product.title)}`);
+  };
+  // ==================================================================
+
+  const handleProductClick = (product) => {
+    navigate(`/product/${encodeURIComponent(product.title)}`);
+  };
+
   const handleImageError = (productId) => {
     setImageErrors(prev => ({
       ...prev,
@@ -14,7 +26,6 @@ const FeaturedProducts = ({ products, title = "Produits Vedettes", subtitle = "D
     }));
   };
 
-  // Fonction pour obtenir la première image valide d'un produit
   const getProductImage = (product) => {
     if (product.images && product.images.length > 0) {
       return product.images[0];
@@ -22,7 +33,6 @@ const FeaturedProducts = ({ products, title = "Produits Vedettes", subtitle = "D
     return null;
   };
 
-  // Fonction pour obtenir l'icône de catégorie (fallback)
   const getCategoryIcon = (mainCategory) => {
     if (mainCategory === "CNC for Education") return "⚙️";
     if (mainCategory === "Voitures") return "🚗";
@@ -30,7 +40,6 @@ const FeaturedProducts = ({ products, title = "Produits Vedettes", subtitle = "D
     return "📦";
   };
 
-  // Fonction pour obtenir la couleur de fond basée sur la catégorie
   const getCategoryColor = (mainCategory) => {
     if (mainCategory === "CNC for Education") return "#e3f2fd";
     if (mainCategory === "Voitures") return "#fff3e0";
@@ -66,8 +75,9 @@ const FeaturedProducts = ({ products, title = "Produits Vedettes", subtitle = "D
               <div key={index} className="col-6 col-md-4 col-lg-2">
                 <div className="featured-product-card">
                   <div 
-                    className="product-image-container"
-                    style={{ backgroundColor: bgColor }}
+                    className="product-image-container position-relative"
+                    style={{ backgroundColor: bgColor, cursor: "pointer" }}
+                    onClick={() => handleProductClick(product)}
                   >
                     {productImage && !hasImageError ? (
                       <img 
@@ -81,6 +91,41 @@ const FeaturedProducts = ({ products, title = "Produits Vedettes", subtitle = "D
                         <span style={{ fontSize: "2.5rem" }}>{getCategoryIcon(product.mainCategory)}</span>
                       </div>
                     )}
+
+                    {/* ========== NOUVEAU: Bouton 3D flottant ========== */}
+                    <button
+                      onClick={(e) => handleView3D(e, product)}
+                      className="btn-3d-float"
+                      style={{
+                        position: 'absolute',
+                        top: '10px',
+                        right: '10px',
+                        width: '32px',
+                        height: '32px',
+                        borderRadius: '8px',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        border: 'none',
+                        color: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 10px rgba(102, 126, 234, 0.4)',
+                        transition: 'all 0.3s ease',
+                        zIndex: 2,
+                        opacity: 0,
+                        transform: 'translateY(-5px)',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.1)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                      title="Voir en 3D"
+                    >
+                      <FaCube size={14} />
+                    </button>
                   </div>
                   
                   <div className="product-info text-center mt-2">
@@ -108,12 +153,13 @@ const FeaturedProducts = ({ products, title = "Produits Vedettes", subtitle = "D
           cursor: default;
         }
         
-        .featured-product-card:hover {
-          transform: translateY(-5px);
-        }
-        
         .featured-product-card:hover .product-image-container {
           box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .featured-product-card:hover .btn-3d-float {
+          opacity: 1 !important;
+          transform: translateY(0) !important;
         }
         
         .product-image-container {
@@ -126,6 +172,8 @@ const FeaturedProducts = ({ products, title = "Produits Vedettes", subtitle = "D
           padding: 15px;
           transition: all 0.3s ease;
           border: 1px solid rgba(0,0,0,0.05);
+          position: relative;
+          cursor: pointer;
         }
         
         .product-image {

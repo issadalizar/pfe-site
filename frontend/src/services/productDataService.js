@@ -1,8 +1,4 @@
-// frontend/src/services/productDataService.js
-// ⚠️ Ce service appelle l'API backend - PAS d'import direct du fichier data
-
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/product-data';
-
+const API_URL = import.meta.env.VITE_PRODUCT_DATA_URL || 'http://localhost:5000/api/product-data';
 export const getProductDetails = async (productName) => {
   try {
     const response = await fetch(`${API_URL}/details/${encodeURIComponent(productName)}`);

@@ -1,40 +1,45 @@
-// ProductCard.jsx - Version corrigée avec productDataService
-import { FaStar, FaArrowRight, FaBox } from "react-icons/fa";
+// ProductCard.jsx - Version corrigée avec productDataService et bouton 3D
+import { FaStar, FaArrowRight, FaBox, FaCube } from "react-icons/fa";
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProductDetails } from "../services/productDataService"; // Importer la fonction
+import { getProductDetails } from "../services/productDataService";
 
-const ProductCard = ({ product, onView }) => {
+const ProductCard = ({ product, onView, show3DButton = true }) => {
   const navigate = useNavigate();
   const [imageError, setImageError] = useState(false);
   const [imageUrl, setImageUrl] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // CORRECTION: Utiliser EXACTEMENT le même nom de paramètre que dans ProductDetails.jsx
+  // Fonction pour naviguer vers les détails
   const handleDetailsClick = () => {
     if (onView) {
       onView(product._id);
     }
-    // Utiliser le nom du produit (gérer les deux formats)
-    const productName = product.nom || product.name || "";
+    const productName = product.nom || product.name || product.title || "";
     navigate(`/product/${encodeURIComponent(productName)}`);
   };
+
+  // ========== NOUVELLE FONCTION: Navigation vers la vue 3D ==========
+  const handleView3D = (e) => {
+    e.stopPropagation(); // Empêcher la propagation au clic sur la carte
+    const productName = product.nom || product.name || product.title || "";
+    navigate(`/product3d/${encodeURIComponent(productName)}`);
+  };
+  // ==================================================================
 
   // Effet pour charger l'image du produit
   useEffect(() => {
     const loadProductImage = async () => {
       setLoading(true);
 
-      // Vérifier que le produit existe
       if (!product) {
         setImageError(true);
         setLoading(false);
         return;
       }
 
-      // Récupérer le nom du produit (gérer les deux formats)
-      const productName = product.nom || product.name || "";
+      const productName = product.nom || product.name || product.title || "";
 
       if (!productName) {
         setImageError(true);
@@ -43,13 +48,11 @@ const ProductCard = ({ product, onView }) => {
       }
 
       try {
-        // Essayer de récupérer les détails depuis l'API productDataService (backend)
         const details = await getProductDetails(productName);
 
-        // Priorité 1: Images depuis productData.js (backend)
+        // Priorité 1: Images depuis productData.js
         if (details && details.images && details.images.length > 0) {
           const firstImage = details.images[0];
-          // Vérifier que l'URL n'est pas vide ou invalide
           if (
             firstImage &&
             firstImage !== ".PNG" &&
@@ -63,10 +66,7 @@ const ProductCard = ({ product, onView }) => {
           }
         }
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des détails du produit:",
-          error,
-        );
+        console.error("Erreur lors de la récupération des détails:", error);
       }
 
       // Priorité 2: Images du produit dans la base de données
@@ -82,7 +82,6 @@ const ProductCard = ({ product, onView }) => {
           firstImage !== ".JPG" &&
           firstImage !== ".JPEG"
         ) {
-          // Construire l'URL complète si nécessaire
           let imagePath = firstImage;
           if (!firstImage.startsWith("http") && !firstImage.startsWith("/")) {
             imagePath = `/${firstImage}`;
@@ -105,8 +104,6 @@ const ProductCard = ({ product, onView }) => {
       // Priorité 4: Générer un chemin basé sur la catégorie
       const category = product.categorie || product.category;
       const categoryName = category?.nom || category?.name || "";
-
-      // Déterminer le dossier en fonction de la catégorie
       let categoryPath = "products";
 
       if (categoryName.includes("CNC") || productName.includes("CNC")) {
@@ -132,7 +129,6 @@ const ProductCard = ({ product, onView }) => {
         categoryPath = `voitures/${categoryName}`;
       }
 
-      // Générer le nom de fichier à partir du nom du produit
       const filename =
         productName
           .toLowerCase()
@@ -149,18 +145,16 @@ const ProductCard = ({ product, onView }) => {
     loadProductImage();
   }, [product]);
 
-  // Gestionnaire d'erreur d'image
   const handleImageError = () => {
     setImageError(true);
   };
 
-  // Fonctions pour récupérer les données du produit de façon sécurisée
   const getProductName = () => {
-    return product?.nom || product?.name || "Produit sans nom";
+    return product?.nom || product?.name || product?.title || "Produit sans nom";
   };
 
   const getProductDescription = () => {
-    const desc = product?.description || "";
+    const desc = product?.description || product?.fullDescription || "";
     return desc.length > 60 ? desc.substring(0, 60) + "..." : desc;
   };
 
@@ -188,7 +182,7 @@ const ProductCard = ({ product, onView }) => {
     <div className="product-card card h-100 border-0 shadow-sm hover-shadow">
       <div
         className="product-image-wrapper bg-light d-flex align-items-center justify-content-center"
-        style={{ height: "200px", overflow: "hidden" }}
+        style={{ height: "200px", overflow: "hidden", position: "relative" }}
       >
         {loading ? (
           <div className="spinner-border text-primary" role="status">
@@ -218,17 +212,50 @@ const ProductCard = ({ product, onView }) => {
           {getProductDescription()}
         </p>
         <div className="mb-3">{renderStars(product.rating || 4.5)}</div>
-        <div className="d-flex justify-content-between align-items-center">
-          <span className="h5 mb-0 text-primary fw-bold">
-            {getProductPrice()}€
-          </span>
+        
+        {/* ========== NOUVEAU: Boutons d'action ========== */}
+        <div className="d-flex gap-2 mb-2">
           <button
-            className="btn btn-sm btn-outline-primary"
+            className="btn btn-sm btn-outline-primary flex-grow-1"
             onClick={handleDetailsClick}
           >
             Détails{" "}
             <FaArrowRight className="ms-1" style={{ fontSize: "0.8rem" }} />
           </button>
+          
+          {show3DButton && (
+            <button
+              className="btn btn-sm"
+              onClick={handleView3D}
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: 'none',
+                color: 'white',
+                width: '38px',
+                height: '38px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '8px',
+                transition: 'all 0.3s ease'
+              }}
+              title="Voir en 3D"
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
+              <FaCube size={16} />
+            </button>
+          )}
+        </div>
+        
+        <div className="d-flex justify-content-between align-items-center mt-2">
+          <span className="h5 mb-0 text-primary fw-bold">
+            {getProductPrice()}€
+          </span>
         </div>
       </div>
     </div>
@@ -240,7 +267,9 @@ ProductCard.propTypes = {
     _id: PropTypes.string.isRequired,
     nom: PropTypes.string,
     name: PropTypes.string,
+    title: PropTypes.string,
     description: PropTypes.string,
+    fullDescription: PropTypes.string,
     prix: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     price: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     images: PropTypes.array,
@@ -250,6 +279,7 @@ ProductCard.propTypes = {
     category: PropTypes.object,
   }).isRequired,
   onView: PropTypes.func,
+  show3DButton: PropTypes.bool,
 };
 
 export default ProductCard;

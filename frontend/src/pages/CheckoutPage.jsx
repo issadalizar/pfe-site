@@ -61,32 +61,38 @@ const CheckoutPage = () => {
     };
 
     const handleCheckout = async () => {
-        setLoading(true);
-        setError('');
+    setLoading(true);
+    setError('');
 
-        try {
-            const items = cart.map(item => ({
-                productName: item.product.title || item.product.name,
-                productImage: item.product.images?.[0] || '',
-                quantity: item.quantity,
-                price: parseFloat(item.product.price) || 0
-            }));
+    try {
+        // ✅ AJOUTER productId à chaque item
+        const items = cart.map(item => ({
+            productId: item.product._id, // AJOUT CRUCIAL
+            // ✅ CORRECTION : supporter nom (français), name, et title
+            productName: item.product.nom || item.product.name || item.product.title || 'Produit',
+            productImage: item.product.images?.[0] || '',
+            quantity: item.quantity,
+            // ✅ CORRECTION : supporter prix (français) et price
+            price: parseFloat(item.product.prix || item.product.price) || 0
+        }));
 
-            const result = await createCheckoutSession(items, shippingInfo);
+        console.log('📦 Items envoyés:', items); // Debug
 
-            if (result.success && result.sessionUrl) {
-                // Rediriger vers Stripe Checkout
-                window.location.href = result.sessionUrl;
-            } else {
-                setError('Erreur lors de la creation de la session de paiement.');
-            }
-        } catch (err) {
-            console.error('Checkout error:', err);
-            setError(err.response?.data?.error || 'Erreur lors du paiement. Veuillez reessayer.');
-        } finally {
-            setLoading(false);
+        const result = await createCheckoutSession(items, shippingInfo);
+
+        if (result.success && result.sessionUrl) {
+            // Rediriger vers Stripe Checkout
+            window.location.href = result.sessionUrl;
+        } else {
+            setError('Erreur lors de la création de la session de paiement.');
         }
-    };
+    } catch (err) {
+        console.error('Checkout error:', err);
+        setError(err.response?.data?.error || 'Erreur lors du paiement. Veuillez réessayer.');
+    } finally {
+        setLoading(false);
+    }
+};
 
     const subtotal = getCartTotal();
 

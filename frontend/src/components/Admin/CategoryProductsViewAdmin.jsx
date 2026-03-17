@@ -18,12 +18,12 @@ import {
 } from "react-icons/fa";
 import { getAllCncProducts } from "../../services/productDataService";
 import { categoryAPI } from "../../services/CategorieProduct";
+
 const ProductImage = ({ product, className, style }) => {
   const [imageSrc, setImageSrc] = useState(null);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    // Utiliser la première image du tableau images s'il existe
     if (product.images && product.images.length > 0) {
       console.log("📸 Image trouvée dans productData:", product.images[0]);
       setImageSrc(product.images[0]);
@@ -79,7 +79,14 @@ export default function CategoryProductsView() {
   const [parentCategories, setParentCategories] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
 
-  // Liste des produits à exclure (mettre les titres exacts des produits à supprimer)
+  // ========== NOUVELLE FONCTION: Navigation vers la vue 3D ==========
+  const handleView3D = (e, product) => {
+    e.stopPropagation();
+    navigate(`/product3d/${encodeURIComponent(product.title)}`);
+  };
+  // ==================================================================
+
+  // Liste des produits à exclure
   const excludedProducts = ["MI2505 – Contrôleur Charge-Démarrage 12V/500A"];
 
   useEffect(() => {
@@ -153,10 +160,9 @@ export default function CategoryProductsView() {
         Object.entries(cncProducts).forEach(([key, productData]) => {
           if (typeof productData !== "object" || !productData.title) return;
 
-          // ✅ EXCLUSION : Vérifier si le produit est dans la liste des exclus
           if (excludedProducts.includes(productData.title)) {
             console.log("🚫 Produit exclu:", productData.title);
-            return; // Ignorer ce produit
+            return;
           }
 
           const productCategory = productData.category?.toLowerCase() || "";
@@ -416,7 +422,42 @@ export default function CategoryProductsView() {
           <div className="row g-4">
             {filteredProducts.map((product, index) => (
               <div key={index} className="col-md-6 col-lg-4 col-xl-3">
-                <div className="card h-100 border-0 shadow-sm hover-shadow transition rounded-4">
+                <div className="card h-100 border-0 shadow-sm hover-shadow transition rounded-4 position-relative">
+                  {/* ========== NOUVEAU: Bouton 3D flottant ========== */}
+                  <button
+                    onClick={(e) => handleView3D(e, product)}
+                    className="btn-3d-float"
+                    style={{
+                      position: 'absolute',
+                      top: '15px',
+                      right: '15px',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '10px',
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      border: 'none',
+                      color: 'white',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                      transition: 'all 0.3s ease',
+                      zIndex: 10,
+                      opacity: 0,
+                      transform: 'translateY(-5px)',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.1) translateY(0)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1) translateY(0)';
+                    }}
+                    title="Voir en 3D"
+                  >
+                    <FaCube size={18} />
+                  </button>
+
                   <div
                     className="card-img-top p-3 text-center border-bottom"
                     style={{
@@ -454,13 +495,15 @@ export default function CategoryProductsView() {
                       </div>
                     )}
 
-                    <button
-                      className="btn btn-outline-primary w-100 rounded-pill"
-                      onClick={() => handleViewProduct(product)}
-                    >
-                      <FaEye className="me-2" />
-                      Voir détails
-                    </button>
+                    <div className="d-flex gap-2">
+                      <button
+                        className="btn btn-outline-primary flex-grow-1 rounded-pill"
+                        onClick={() => handleViewProduct(product)}
+                      >
+                        <FaEye className="me-2" />
+                        Détails
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -483,18 +526,37 @@ export default function CategoryProductsView() {
                           }}
                         />
                       </div>
-                      <div className="col-md-7">
+                      <div className="col-md-6">
                         <h6 className="fw-bold mb-1">{product.title}</h6>
                         <small className="text-muted">{product.category}</small>
                       </div>
 
-                      <div className="col-md-4">
-                        <div className="d-flex align-items-center justify-content-end gap-3">
+                      <div className="col-md-5">
+                        <div className="d-flex align-items-center justify-content-end gap-2">
                           {product.price && (
-                            <span className="fw-bold text-success">
+                            <span className="fw-bold text-success me-3">
                               {product.price.toLocaleString()} DT
                             </span>
                           )}
+                          {/* ========== NOUVEAU: Bouton 3D en mode liste ========== */}
+                          <button
+                            className="btn btn-sm"
+                            onClick={(e) => handleView3D(e, product)}
+                            style={{
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              border: 'none',
+                              color: 'white',
+                              width: '32px',
+                              height: '32px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRadius: '6px',
+                            }}
+                            title="Voir en 3D"
+                          >
+                            <FaCube size={14} />
+                          </button>
                           <button
                             className="btn btn-outline-primary btn-sm"
                             onClick={() => handleViewProduct(product)}
@@ -611,6 +673,31 @@ export default function CategoryProductsView() {
                       {selectedProduct.price.toLocaleString()} DT
                     </div>
                   )}
+
+                  {/* ========== NOUVEAU: Bouton 3D dans le modal ========== */}
+                  <div className="d-flex justify-content-center mt-4">
+                    <button
+                      onClick={(e) => {
+                        setShowProductModal(false);
+                        navigate(`/product3d/${encodeURIComponent(selectedProduct.title)}`);
+                      }}
+                      className="btn btn-lg"
+                      style={{
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        border: 'none',
+                        color: 'white',
+                        padding: '12px 30px',
+                        borderRadius: '12px',
+                        fontWeight: '600',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                      }}
+                    >
+                      <FaCube size={20} />
+                      Voir ce produit en 3D
+                    </button>
+                  </div>
                 </div>
                 <div className="modal-footer">
                   <button
@@ -625,6 +712,14 @@ export default function CategoryProductsView() {
             </div>
           </div>
         )}
+
+        {/* Style pour les boutons 3D */}
+        <style jsx>{`
+          .card:hover .btn-3d-float {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+          }
+        `}</style>
       </div>
     </div>
   );

@@ -8,35 +8,23 @@ import {
   updateProduct,
   deleteProduct,
   getOutOfStockProducts,
-  getLowStockProducts,
   getStockStats
 } from '../controllers/productController.js';
 
 const router = express.Router();
 
-// Routes pour les produits
-router.route('/')
-  .get(getAllProducts)
-  .post(createProduct);
+// Routes specifiques EN PREMIER (avant /:id)
+router.route('/rupture-stock').get(getOutOfStockProducts);
+router.route('/statistiques-stock').get(getStockStats);
+router.route('/categorie/:categorieId').get(getProductsByCategory);
 
-// Route pour les produits par catégorie (en français)
-router.route('/categorie/:categorieId')
-  .get(getProductsByCategory);
+// Routes generales
+router.route('/').get(getAllProducts).post(createProduct);
 
-// Routes pour un produit spécifique
+// Route generique /:id EN DERNIER
 router.route('/:id')
   .get(getProductById)
   .put(updateProduct)
   .delete(deleteProduct);
-
-// Routes pour les alertes stock (en français)
-router.route('/rupture-stock')
-  .get(getOutOfStockProducts);
-
-router.route('/stock-faible')
-  .get(getLowStockProducts);
-
-router.route('/statistiques-stock')
-  .get(getStockStats);
 
 export default router;

@@ -49,7 +49,6 @@ export default function Products() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [alertCounts, setAlertCounts] = useState({
     outOfStock: 0,
-    lowStock: 0,
   });
 
   // Effet pour gérer la catégorie depuis l'URL
@@ -255,27 +254,18 @@ export default function Products() {
       console.log("🔍 Tentative de récupération des alertes stock...");
 
       try {
-        const [outOfStockRes, lowStockRes] = await Promise.allSettled([
+        const [outOfStockRes] = await Promise.allSettled([
           productAPI.getOutOfStock(),
-          productAPI.getLowStock(),
         ]);
 
         const outOfStockCount = outOfStockRes.status === 'fulfilled' 
           ? outOfStockRes.value.data.data?.length || 0 
           : 0;
-        
-        const lowStockCount = lowStockRes.status === 'fulfilled' 
-          ? lowStockRes.value.data.data?.length || 0 
-          : 0;
 
-        console.log("📊 Résultats API directe:", {
-          outOfStockCount,
-          lowStockCount,
-        });
+        console.log("📊 Résultats API directe:", { outOfStockCount });
 
         setAlertCounts({
           outOfStock: outOfStockCount,
-          lowStock: lowStockCount,
         });
       } catch (apiError) {
         console.log("⚠️ API spécifique échouée, méthode alternative...");
@@ -288,31 +278,21 @@ export default function Products() {
           return isNaN(stock) || stock === 0;
         });
 
-        const lowStockProducts = products.filter((p) => {
-          const stock = Number(p.stock);
-          return stock > 0 && stock < 5;
-        });
-
-        console.log("📊 Calcul local:", {
-          outOfStock: outOfStockProducts.length,
-          lowStock: lowStockProducts.length,
-        });
+        console.log("📊 Calcul local:", { outOfStock: outOfStockProducts.length });
 
         setAlertCounts({
           outOfStock: outOfStockProducts.length,
-          lowStock: lowStockProducts.length,
         });
       }
     } catch (error) {
       console.error("❌ Erreur lors du chargement des alertes:", error.message);
       setAlertCounts({
         outOfStock: 0,
-        lowStock: 0,
       });
     }
   };
 
-  const alertCount = alertCounts.outOfStock + alertCounts.lowStock;
+  const alertCount = alertCounts.outOfStock;
 
   const handleNavigateToAlerts = () => {
     navigate("/stock-alerts");
@@ -450,10 +430,6 @@ export default function Products() {
       total: productsInCategory.length,
       active: productsInCategory.filter((p) => isProductActive(p)).length,
       outOfStock: productsInCategory.filter((p) => (p.stock || 0) === 0).length,
-      lowStock: productsInCategory.filter((p) => {
-        const stock = p.stock || 0;
-        return stock > 0 && stock < 5;
-      }).length,
       totalValue: productsInCategory.reduce(
         (sum, p) => sum + (getProductPrice(p)) * (p.stock || 0),
         0,
@@ -646,9 +622,6 @@ export default function Products() {
 
   const activeProductsCount = products.filter((p) => isProductActive(p)).length;
   const outOfStockCount = products.filter((p) => (p.stock || 0) === 0).length;
-  const lowStockCount = products.filter(
-    (p) => (p.stock || 0) > 0 && (p.stock || 0) < 5,
-  ).length;
 
   // Formatage de la date
   const formatDate = (date) => {
@@ -830,9 +803,9 @@ export default function Products() {
                 </div>
                 <div>
                   <h6 className="text-muted mb-1">Alertes Stock</h6>
-                  <h2 className="fw-bold text-warning mb-0">{alertCount}</h2>
+                  <h2 className="fw-bold text-warning mb-0">{outOfStockCount}</h2>
                   <small className="text-muted">
-                    {outOfStockCount} rupture • {lowStockCount} faible
+                    {outOfStockCount} produit{outOfStockCount !== 1 ? 's' : ''} en rupture
                   </small>
                 </div>
               </div>

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import Account from '../models/Account.js'; // AJOUT: Importer Account
 
 // Générer un token JWT
 const generateToken = (user) => {
@@ -23,9 +24,9 @@ export const register = async (req, res) => {
             });
         }
 
-        // Vérifier si l'email existe déjà
-        const existingUser = await User.findOne({ email: email.toLowerCase() });
-        if (existingUser) {
+        // MODIFICATION: Vérifier si l'email existe déjà dans Account
+        const existingAccount = await Account.findOne({ email: email.toLowerCase() });
+        if (existingAccount) {
             return res.status(400).json({
                 success: false,
                 error: 'Cet email est déjà utilisé.'
@@ -36,28 +37,41 @@ export const register = async (req, res) => {
         const userCount = await User.countDocuments();
         const client_code = `CLT-${String(userCount + 1).padStart(4, '0')}`;
 
-        // Créer l'utilisateur
+        // MODIFICATION: 1. Créer l'utilisateur (sans email, password, actif)
         const user = new User({
             client_code,
             client_name,
-            email: email.toLowerCase(),
-            password,
             telephone: telephone || '',
             adresse: adresse || '',
-            isAdmin: false,
-            actif: true
+            isAdmin: false
+            // SUPPRIMÉ: email, password, actif
         });
 
         await user.save();
 
+        // AJOUT: 2. Créer le compte associé (avec email, password, actif)
+        const account = new Account({
+            email: email.toLowerCase(),
+            password, // Sera hashé automatiquement par le pre-save hook d'Account
+            actif: true,
+            user: user._id
+        });
+
+        await account.save();
+
         // Générer le token
         const token = generateToken(user);
 
+        // MODIFICATION: Retourner les informations combinées
         res.status(201).json({
             success: true,
             message: 'Inscription réussie !',
             token,
-            user: user.toJSON()
+            user: {
+                ...user.toJSON(),
+                email: account.email,
+                actif: account.actif
+            }
         });
     } catch (error) {
         if (error.name === 'ValidationError') {
@@ -88,10 +102,11 @@ export const login = async (req, res) => {
             });
         }
 
-        // Chercher l'utilisateur (inclure le password pour la comparaison)
-        const user = await User.findOne({ email: email.toLowerCase() }).select('+password');
+        // MODIFICATION: Chercher d'abord dans Account, puis peupler User
+        const account = await Account.findOne({ email: email.toLowerCase() })
+            .populate('user');
 
-        if (!user) {
+        if (!account) {
             return res.status(401).json({
                 success: false,
                 error: 'Email ou mot de passe incorrect.'
@@ -99,15 +114,15 @@ export const login = async (req, res) => {
         }
 
         // Vérifier que le compte est actif
-        if (!user.actif) {
+        if (!account.actif) {
             return res.status(401).json({
                 success: false,
                 error: 'Votre compte a été désactivé. Contactez l\'administrateur.'
             });
         }
 
-        // Vérifier le mot de passe
-        const isMatch = await user.comparePassword(password);
+        // Vérifier le mot de passe (utilise la méthode d'Account)
+        const isMatch = await account.comparePassword(password);
 
         if (!isMatch) {
             return res.status(401).json({
@@ -117,13 +132,17 @@ export const login = async (req, res) => {
         }
 
         // Générer le token
-        const token = generateToken(user);
+        const token = generateToken(account.user);
 
         res.json({
             success: true,
             message: 'Connexion réussie !',
             token,
-            user: user.toJSON()
+            user: {
+                ...account.user.toJSON(),
+                email: account.email,
+                actif: account.actif
+            }
         });
     } catch (error) {
         console.error('Erreur login:', error);
@@ -138,9 +157,11 @@ export const login = async (req, res) => {
 // GET /api/auth/profile - Profil de l'utilisateur connecté
 export const getProfile = async (req, res) => {
     try {
+        // Récupérer l'utilisateur et son compte
         const user = await User.findById(req.user._id);
+        const account = await Account.findOne({ user: req.user._id });
 
-        if (!user) {
+        if (!user || !account) {
             return res.status(404).json({
                 success: false,
                 error: 'Utilisateur non trouvé.'
@@ -149,7 +170,11 @@ export const getProfile = async (req, res) => {
 
         res.json({
             success: true,
-            user: user.toJSON()
+            user: {
+                ...user.toJSON(),
+                email: account.email,
+                actif: account.actif
+            }
         });
     } catch (error) {
         console.error('Erreur getProfile:', error);
@@ -163,21 +188,43 @@ export const getProfile = async (req, res) => {
 // PUT /api/auth/profile - Modifier le profil de l'utilisateur connecté
 export const updateProfile = async (req, res) => {
     try {
-        const { client_name, telephone, adresse, currentPassword, newPassword } = req.body;
+        const { client_name, telephone, adresse, email, currentPassword, newPassword } = req.body;
 
-        const user = await User.findById(req.user._id).select('+password');
+        // Récupérer l'utilisateur
+        const user = await User.findById(req.user._id);
+        
+        // Récupérer le compte associé
+        const account = await Account.findOne({ user: req.user._id }).select('+password');
 
-        if (!user) {
+        if (!user || !account) {
             return res.status(404).json({
                 success: false,
                 error: 'Utilisateur non trouvé.'
             });
         }
 
-        // Mettre à jour les champs modifiables
+        // Mettre à jour les champs modifiables de User
         if (client_name !== undefined) user.client_name = client_name;
         if (telephone !== undefined) user.telephone = telephone;
         if (adresse !== undefined) user.adresse = adresse;
+
+        // Mettre à jour l'email si fourni
+        if (email !== undefined && email !== account.email) {
+            // Vérifier si le nouvel email n'est pas déjà utilisé
+            const existingAccount = await Account.findOne({ 
+                email: email.toLowerCase(),
+                _id: { $ne: account._id }
+            });
+            
+            if (existingAccount) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Cet email est déjà utilisé.'
+                });
+            }
+            
+            account.email = email.toLowerCase();
+        }
 
         // Changement de mot de passe (optionnel)
         if (newPassword) {
@@ -188,7 +235,7 @@ export const updateProfile = async (req, res) => {
                 });
             }
 
-            const isMatch = await user.comparePassword(currentPassword);
+            const isMatch = await account.comparePassword(currentPassword);
             if (!isMatch) {
                 return res.status(400).json({
                     success: false,
@@ -203,15 +250,21 @@ export const updateProfile = async (req, res) => {
                 });
             }
 
-            user.password = newPassword;
+            account.password = newPassword; // Sera hashé automatiquement
         }
 
+        // Sauvegarder les modifications
         await user.save();
+        await account.save();
 
         res.json({
             success: true,
             message: 'Profil mis à jour avec succès !',
-            user: user.toJSON()
+            user: {
+                ...user.toJSON(),
+                email: account.email,
+                actif: account.actif
+            }
         });
     } catch (error) {
         if (error.name === 'ValidationError') {

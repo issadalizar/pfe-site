@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api/contact'; // Ajustez l'URL selon votre configuration
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api') + '/contact';
 
 export const contactAPI = {
     // Récupérer tous les messages (pour admin)

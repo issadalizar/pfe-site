@@ -14,7 +14,7 @@ import {
 const router = express.Router();
 
 // Webhook Stripe (doit utiliser raw body - monte separement dans server.js)
-// router.post('/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
+router.post('/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
 
 // Routes protegees (client)
 router.post('/checkout', protect, createCheckoutSession);

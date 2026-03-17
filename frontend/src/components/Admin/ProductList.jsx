@@ -9,13 +9,75 @@ import {
   FaSortUp,
   FaSortDown,
   FaEuroSign,
-  FaCube,
   FaCheckCircle,
   FaTimesCircle,
   FaImage,
-  FaStar,
 } from "react-icons/fa";
-import { getProductDetails } from "../../services/productDataService"; // Importer la fonction
+import { getProductDetails } from "../../services/productDataService";
+
+// ✅ ProductImage défini EN DEHORS de ProductList pour éviter "Rendered fewer hooks"
+function ProductImage({ product }) {
+  const [imageError, setImageError] = useState(false);
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      const productName = product.nom || product.name || "";
+      if (productName) {
+        try {
+          const details = await getProductDetails(productName);
+          if (details && details.images && details.images.length > 0) {
+            setImageUrl(details.images[0]);
+            return;
+          }
+        } catch (error) {
+          console.error("Erreur lors de la récupération des détails du produit:", error);
+        }
+      }
+
+      if (product.images && product.images.length > 0 && product.images[0]) {
+        if (product.images[0].startsWith("blob:") || product.images[0].startsWith("http")) {
+          setImageUrl(product.images[0]);
+        } else {
+          setImageUrl(product.images[0].startsWith("/") ? product.images[0] : `/${product.images[0]}`);
+        }
+      } else if (product.cheminImageAuto) {
+        setImageUrl(product.cheminImageAuto);
+      } else {
+        setImageError(true);
+      }
+    };
+
+    fetchProductDetails();
+  }, [product]);
+
+  if (imageError || !imageUrl) {
+    return (
+      <div
+        className="rounded me-3 d-flex align-items-center justify-content-center bg-light"
+        style={{ width: "60px", height: "60px", border: "1px solid #dee2e6" }}
+      >
+        <FaImage className="text-muted" size={24} />
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={imageUrl}
+      alt={product.nom || product.name || "Produit"}
+      className="rounded me-3"
+      style={{
+        width: "60px",
+        height: "60px",
+        objectFit: "cover",
+        border: "1px solid #dee2e6",
+        borderRadius: "4px",
+      }}
+      onError={() => setImageError(true)}
+    />
+  );
+}
 
 export default function ProductList({
   products,
@@ -35,13 +97,6 @@ export default function ProductList({
         badge: "danger",
         text: "Rupture",
         icon: <FaTimesCircle className="me-1" />,
-      };
-    }
-    if (stock < 5) {
-      return {
-        badge: "warning",
-        text: "Faible",
-        icon: <FaCube className="me-1" />,
       };
     }
     return {
@@ -83,140 +138,6 @@ export default function ProductList({
     };
   };
 
-  // Composant pour afficher l'image du produit en utilisant productDataService (backend)
-  function ProductImage({ product }) {
-    const [imageError, setImageError] = useState(false);
-    const [imageUrl, setImageUrl] = useState("");
-    const [productDetails, setProductDetails] = useState(null);
-
-    useEffect(() => {
-      // Utiliser le nom du produit pour récupérer les détails depuis l'API (backend)
-      const fetchProductDetails = async () => {
-        const productName = product.nom || product.name || "";
-        if (productName) {
-          try {
-            const details = await getProductDetails(productName);
-            setProductDetails(details);
-
-            // Si des images existent dans productData.js (backend), utiliser la première
-            if (details && details.images && details.images.length > 0) {
-              setImageUrl(details.images[0]);
-              return;
-            }
-          } catch (error) {
-            console.error(
-              "Erreur lors de la récupération des détails du produit:",
-              error,
-            );
-          }
-        }
-
-        // Sinon, utiliser l'image du produit dans la base de données
-        if (product.images && product.images.length > 0 && product.images[0]) {
-          // Si l'image est une URL blob ou relative, on la garde telle quelle
-          if (
-            product.images[0].startsWith("blob:") ||
-            product.images[0].startsWith("http")
-          ) {
-            setImageUrl(product.images[0]);
-          } else {
-            // Sinon, on construit l'URL complète
-            setImageUrl(
-              product.images[0].startsWith("/")
-                ? product.images[0]
-                : `/${product.images[0]}`,
-            );
-          }
-        }
-        // Sinon, utiliser le chemin d'image auto-généré
-        else if (product.cheminImageAuto) {
-          setImageUrl(product.cheminImageAuto);
-        }
-        // Dernier recours : générer un chemin basé sur le nom du produit
-        else if (productName) {
-          // Déterminer le dossier en fonction de la catégorie
-          let categoryPath = "products";
-
-          // Utiliser la catégorie du produit si disponible
-          const category = product.categorie || product.category;
-          if (category) {
-            const catName = category.nom || category.name || "";
-            if (catName.includes("CNC") || productName.includes("CNC")) {
-              if (
-                productName.includes("Turning") ||
-                productName.includes("Lathe")
-              ) {
-                categoryPath = "CNC EDUCATION/CNC Turing Machine";
-              } else if (productName.includes("Milling")) {
-                categoryPath = "CNC EDUCATION/CNC Milling Machine";
-              } else {
-                categoryPath = "CNC EDUCATION";
-              }
-            } else if (
-              catName.includes("Accessoires") ||
-              productName.includes("PTL")
-            ) {
-              categoryPath = "MCP lab electronics/Accessoires";
-            } else if (catName.includes("EDUCATION EQUIPMENT")) {
-              categoryPath = "MCP lab electronics/EDUCATION EQUIPMENT";
-            } else if (
-              catName.includes("CAPTEURS") ||
-              catName.includes("ÉLECTRICITÉ") ||
-              catName.includes("RÉSEAUX")
-            ) {
-              categoryPath = `voitures/${catName}`;
-            }
-          }
-
-          // Générer le nom de fichier
-          const filename =
-            productName
-              .toLowerCase()
-              .normalize("NFD")
-              .replace(/[\u0300-\u036f]/g, "")
-              .replace(/[^a-z0-9]+/g, "_") + ".png";
-
-          setImageUrl(`/images/products/${categoryPath}/${filename}`);
-        } else {
-          setImageError(true);
-        }
-      };
-
-      fetchProductDetails();
-    }, [product]);
-
-    if (imageError) {
-      return (
-        <div
-          className="rounded me-3 d-flex align-items-center justify-content-center bg-light"
-          style={{
-            width: "60px",
-            height: "60px",
-            border: "1px solid #dee2e6",
-          }}
-        >
-          <FaImage className="text-muted" size={24} />
-        </div>
-      );
-    }
-
-    return (
-      <img
-        src={imageUrl}
-        alt={product.nom || product.name || "Produit"}
-        className="rounded me-3"
-        style={{
-          width: "60px",
-          height: "60px",
-          objectFit: "cover",
-          border: "1px solid #dee2e6",
-          borderRadius: "4px",
-        }}
-        onError={() => setImageError(true)}
-      />
-    );
-  }
-
   if (loading) {
     return (
       <div className="text-center py-5">
@@ -249,10 +170,7 @@ export default function ProductList({
                   <input
                     className="form-check-input"
                     type="checkbox"
-                    checked={
-                      selectedProducts.length === products.length &&
-                      products.length > 0
-                    }
+                    checked={selectedProducts.length === products.length && products.length > 0}
                     onChange={onSelectAll}
                   />
                 </div>
@@ -265,20 +183,14 @@ export default function ProductList({
               </div>
             </th>
             <th>Catégorie</th>
-            <th
-              style={{ cursor: "pointer" }}
-              onClick={() => handleSort("prix")}
-            >
+            <th style={{ cursor: "pointer" }} onClick={() => handleSort("prix")}>
               <div className="d-flex align-items-center">
                 <FaEuroSign className="me-1" />
                 <span>Prix</span>
                 <span className="ms-1">{getSortIcon("prix")}</span>
               </div>
             </th>
-            <th
-              style={{ cursor: "pointer" }}
-              onClick={() => handleSort("stock")}
-            >
+            <th style={{ cursor: "pointer" }} onClick={() => handleSort("stock")}>
               <div className="d-flex align-items-center">
                 <span>Stock</span>
                 <span className="ms-1">{getSortIcon("stock")}</span>
@@ -291,13 +203,7 @@ export default function ProductList({
         <tbody>
           {products.map((product) => {
             const stockStatus = getStockStatus(product.stock || 0);
-
-            // Récupérer les informations de catégorie de façon sécurisée
             const categoryInfo = getCategoryInfo(product);
-
-            // Récupérer les détails du produit depuis productData.js
-            const productName = product.nom || product.name || "";
-            const details = getProductDetails(productName);
 
             return (
               <tr key={product._id} className="align-middle">
@@ -317,18 +223,10 @@ export default function ProductList({
                   <div className="d-flex align-items-center">
                     <ProductImage product={product} />
                     <div>
-                      <strong className="d-block">
-                        {product.nom || product.name}
-                      </strong>
+                      <strong className="d-block">{product.nom || product.name}</strong>
                       {(product.modele || product.model) && (
                         <small className="text-muted d-block">
                           Ref: {product.modele || product.model}
-                        </small>
-                      )}
-                      {/* Afficher la catégorie principale si disponible */}
-                      {details && details.mainCategory && (
-                        <small className="badge bg-info text-white mt-1">
-                          {details.mainCategory}
                         </small>
                       )}
                     </div>
@@ -350,8 +248,7 @@ export default function ProductList({
                     <strong className="text-primary">
                       {typeof (product.prix || product.price) === "number"
                         ? (product.prix || product.price).toFixed(2)
-                        : "0.00"}{" "}
-                      €
+                        : "0.00"} €
                     </strong>
                   </div>
                 </td>

@@ -1,4 +1,4 @@
-// ProductDetails.jsx (version complète avec gestion d'images)
+// ProductDetails.jsx (version complète avec gestion d'images et bouton 3D)
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import {
@@ -6,7 +6,6 @@ import {
   FaStar,
   FaCheck,
   FaCog,
-  FaCube,
   FaRuler,
   FaTachometerAlt,
   FaWrench,
@@ -26,6 +25,8 @@ import {
   FaChartBar,
   FaArrowRight,
   FaShoppingCart,
+  // ========== NOUVEAU: Import pour l'icône 3D ==========
+  FaCube,
 } from "react-icons/fa";
 import { getProductDetails } from "../services/productDataService";
 import DevisModal from "../components/DevisModal";
@@ -76,6 +77,12 @@ const ProductDetails = () => {
       [imageUrl]: true
     }));
   };
+
+  // ========== NOUVELLE FONCTION: Navigation vers la vue 3D ==========
+  const handleView3D = () => {
+    navigate(`/product3d/${encodeURIComponent(decodedProductName)}`);
+  };
+  // ==================================================================
 
   // Décoder le nom du produit depuis l'URL
   const decodedProductName = decodeURIComponent(productName);
@@ -385,6 +392,43 @@ const ProductDetails = () => {
               {/* Description courte */}
               <p className="lead mb-4">{productDetails.fullDescription}</p>
 
+              {/* ========== NOUVEAU BOUTON: Voir en 3D ========== */}
+              <div className="mb-4">
+                <button 
+                  onClick={handleView3D}
+                  className="btn btn-3d-view w-100"
+                  style={{
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    border: 'none',
+                    padding: '15px 20px',
+                    borderRadius: '12px',
+                    color: 'white',
+                    cursor: 'pointer',
+                    fontSize: '1.1rem',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '10px',
+                    transition: 'transform 0.2s, box-shadow 0.2s',
+                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
+                  }}
+                >
+                  <FaCube size={24} />
+                  Visualisation 3D Interactive
+                  <FaArrowRight size={20} />
+                </button>
+              </div>
+              {/* ============================================== */}
+
               {/* Caractéristiques principales */}
               <div className="features-section bg-light p-4 rounded-3 mb-4">
                 <h5 className="fw-bold mb-3">
@@ -656,7 +700,7 @@ const ProductDetails = () => {
         onClose={handleCloseQuoteForm}
       />
 
-   {/* Remplacer <style jsx>{`...`}</style> par : */}
+   {/* Styles */}
 <style>{`
   .product-details-page .breadcrumb {
     background: transparent;
@@ -667,6 +711,23 @@ const ProductDetails = () => {
   .product-details-page .thumbnail-item:hover {
     border-color: #0d6efd !important;
     transform: scale(1.05);
+  }
+
+  /* Styles pour le bouton 3D */
+  .btn-3d-view {
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    50% {
+      box-shadow: 0 8px 25px rgba(102, 126, 234, 0.8);
+    }
+    100% {
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
   }
 
   /* STYLES POUR LA PAGE DE SPÉCIFICATIONS TEXTUELLES */

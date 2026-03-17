@@ -379,32 +379,6 @@ export const getOutOfStockProducts = async (req, res) => {
   }
 };
 
-// @desc    Récupérer les produits à faible stock (moins de 5)
-// @route   GET /api/products/stock-faible
-// @access  Private/Admin
-export const getLowStockProducts = async (req, res) => {
-  try {
-    const products = await Product.find({ 
-      stock: { $gt: 0, $lt: 5 },
-      estActif: true 
-    }).populate("categorie");
-
-    console.log(`✅ ${products.length} produits à faible stock récupérés`);
-    res.json({
-      success: true,
-      count: products.length,
-      data: products,
-    });
-  } catch (error) {
-    console.error("❌ Erreur dans getLowStockProducts:", error);
-    res.status(500).json({
-      success: false,
-      error: "Erreur serveur lors de la récupération des produits à faible stock",
-      message: error.message,
-    });
-  }
-};
-
 // @desc    Récupérer les statistiques de stock
 // @route   GET /api/products/statistiques-stock
 // @access  Private/Admin
@@ -421,28 +395,23 @@ export const getStockStats = async (req, res) => {
     console.log(`📊 [DEBUG] État MongoDB: ${dbState} (0=déconnecté, 1=connecté)`);
     
     if (dbState !== 1) {
-      console.log("📊 [DEBUG] MongoDB non connecté, données simulées");
       return res.json({
         success: true,
         data: {
           totalProduits: 15,
           ruptureStock: 3,
-          stockFaible: 4,
-          stockNormal: 8,
+          stockNormal: 12,
           pourcentageRupture: "20.00"
         }
       });
     }
     
-    // Version SÉCURISÉE avec try-catch individuel
     let totalProduits = 0;
     let ruptureStock = 0;
-    let stockFaible = 0;
     let stockNormal = 0;
     
     try {
       totalProduits = await Product.countDocuments({});
-      console.log(`📊 [DEBUG] Total produits: ${totalProduits}`);
     } catch (countError) {
       console.error("❌ Erreur countDocuments total:", countError.message);
       totalProduits = 0;
@@ -453,29 +422,16 @@ export const getStockStats = async (req, res) => {
         stock: 0,
         estActif: true 
       });
-      console.log(`📊 [DEBUG] Produits en rupture: ${ruptureStock}`);
     } catch (err) {
       console.error("❌ Erreur countDocuments rupture:", err.message);
       ruptureStock = 0;
     }
     
     try {
-      stockFaible = await Product.countDocuments({ 
-        stock: { $gt: 0, $lt: 5 },
-        estActif: true 
-      });
-      console.log(`📊 [DEBUG] Stock faible: ${stockFaible}`);
-    } catch (err) {
-      console.error("❌ Erreur countDocuments faible:", err.message);
-      stockFaible = 0;
-    }
-    
-    try {
       stockNormal = await Product.countDocuments({ 
-        stock: { $gte: 5 },
+        stock: { $gte: 1 },
         estActif: true 
       });
-      console.log(`📊 [DEBUG] Stock normal: ${stockNormal}`);
     } catch (err) {
       console.error("❌ Erreur countDocuments normal:", err.message);
       stockNormal = 0;
@@ -489,12 +445,9 @@ export const getStockStats = async (req, res) => {
     const result = {
       totalProduits,
       ruptureStock,
-      stockFaible,
       stockNormal,
       pourcentageRupture
     };
-    
-    console.log("📊 [DEBUG] Résultat final:", result);
     
     return res.json({
       success: true,
@@ -502,18 +455,12 @@ export const getStockStats = async (req, res) => {
     });
     
   } catch (error) {
-    console.error("❌ [ERREUR GLOBALE] getStockStats:");
-    console.error("Message:", error.message);
-    console.error("Stack:", error.stack);
-    console.error("Nom:", error.name);
-    
-    // Même en cas d'erreur, retournez quelque chose
+    console.error("❌ [ERREUR GLOBALE] getStockStats:", error.message);
     return res.json({
       success: true,
       data: {
         totalProduits: 10,
         ruptureStock: 0,
-        stockFaible: 0,
         stockNormal: 10,
         pourcentageRupture: "0.00"
       }

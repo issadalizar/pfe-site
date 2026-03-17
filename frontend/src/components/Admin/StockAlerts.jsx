@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { productAPI } from "../../services/CategorieProduct";
 import { Link, useNavigate } from "react-router-dom";
 import { 
-  FaExclamationTriangle, 
   FaArrowLeft,
   FaRedo,
   FaBoxOpen,
@@ -14,7 +13,6 @@ import {
 
 export default function StockAlertsPage() {
   const [outOfStock, setOutOfStock] = useState([]);
-  const [lowStock, setLowStock] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -36,14 +34,12 @@ export default function StockAlertsPage() {
   const fetchAlerts = async () => {
     try {
       setLoading(true);
-      const [outOfStockRes, lowStockRes, statsRes] = await Promise.all([
+      const [outOfStockRes, statsRes] = await Promise.all([
         productAPI.getOutOfStock(),
-        productAPI.getLowStock(),
         productAPI.getStockStats()
       ]);
       
       setOutOfStock(outOfStockRes.data.data || []);
-      setLowStock(lowStockRes.data.data || []);
       setStats(statsRes.data.data);
     } catch (error) {
       console.error("Erreur lors du chargement des alertes:", error);
@@ -99,7 +95,7 @@ export default function StockAlertsPage() {
               </span>
             </h1>
             <p className="text-muted mb-0">
-              Surveillez les produits en rupture et à faible stock
+              Surveillez les produits en rupture de stock
             </p>
           </div>
         </div>
@@ -137,31 +133,6 @@ export default function StockAlertsPage() {
                 <div className="mt-2">
                   <small className="text-muted">
                     {stats.outOfStockPercentage}% du stock total
-                  </small>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div className="col-xl-3 col-md-6 mb-3">
-            <div className="card border-warning border-start-3 border-0 shadow-sm h-100">
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <div className="text-muted small text-uppercase fw-semibold">
-                      Stock faible
-                    </div>
-                    <div className="fw-bold text-warning fs-3">
-                      {stats.lowStockCount}
-                    </div>
-                  </div>
-                  <div className="text-warning opacity-25">
-                    <FaExclamationTriangle size={28} />
-                  </div>
-                </div>
-                <div className="mt-2">
-                  <small className="text-muted">
-                    Moins de 5 unités
                   </small>
                 </div>
               </div>
@@ -313,93 +284,6 @@ export default function StockAlertsPage() {
         </div>
       </div>
 
-      {/* Stock faible */}
-      <div className="card border-warning shadow-sm">
-        <div className="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-          <div className="d-flex align-items-center">
-            <FaExclamationTriangle className="me-2" />
-            <h6 className="mb-0">Produits à faible stock</h6>
-            <span className="badge bg-light text-warning ms-2">
-              {lowStock.length}
-            </span>
-          </div>
-          <div>
-            <button 
-              className="btn btn-sm btn-light"
-              onClick={refreshAlerts}
-              disabled={loading}
-            >
-              <FaRedo className={loading ? "fa-spin" : ""} />
-            </button>
-          </div>
-        </div>
-        
-        <div className="card-body p-0">
-          {loading ? (
-            <div className="text-center p-5">
-              <div className="spinner-border text-warning" role="status">
-                <span className="visually-hidden">Chargement...</span>
-              </div>
-            </div>
-          ) : lowStock.length === 0 ? (
-            <div className="text-center p-5 text-muted">
-              <FaCheckCircle size={48} className="mb-3 text-success" />
-              <h5 className="text-success">Aucun produit à faible stock</h5>
-            </div>
-          ) : (
-            <div className="table-responsive">
-              <table className="table table-hover mb-0">
-                <thead className="table-light">
-                  <tr>
-                    <th width="40">
-                      <input type="checkbox" className="form-check-input" />
-                    </th>
-                    <th>Produit</th>
-                    <th>Stock restant</th>
-                    <th>Catégorie</th>
-                    <th>Prix</th>
-                    <th width="150">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {lowStock.map(product => (
-                    <tr key={product._id} className="align-middle">
-                      <td>
-                        <input type="checkbox" className="form-check-input" />
-                      </td>
-                      <td>
-                        <div className="fw-bold">{product.name}</div>
-                      </td>
-                      <td>
-                        <span className="badge bg-warning">
-                          {product.stock} unité(s)
-                        </span>
-                      </td>
-                      <td>
-                        <span className="badge bg-secondary">
-                          {product.category?.name}
-                        </span>
-                      </td>
-                      <td className="fw-bold">
-                        {product.price?.toFixed(2)}€
-                      </td>
-                      <td>
-                        <button
-                          className="btn btn-sm btn-warning"
-                          onClick={() => handleEditProduct(product._id)}
-                        >
-                          Mettre à jour
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Modal de modification de stock */}
       {showStockModal && (
         <>
@@ -448,4 +332,4 @@ export default function StockAlertsPage() {
       )}
     </div>
   );
-} 
+}

@@ -1,3 +1,4 @@
+// models/Notification.js
 import mongoose from 'mongoose';
 
 const notificationSchema = new mongoose.Schema({
@@ -17,7 +18,7 @@ const notificationSchema = new mongoose.Schema({
   // Type de notification
   type: {
     type: String,
-    enum: ['rupture', 'stock_faible', 'reapprovisionnement', 'creation', 'modification'],
+    enum: ['rupture', 'reapprovisionnement', 'creation', 'modification'],
     default: 'rupture'
   },
   
@@ -34,18 +35,6 @@ const notificationSchema = new mongoose.Schema({
     required: true
   },
   
-  // Quantité avant modification
-  stockAvant: {
-    type: Number,
-    default: 0
-  },
-  
-  // Quantité après modification
-  stockApres: {
-    type: Number,
-    default: 0
-  },
-  
   // Statut de lecture
   lu: {
     type: Boolean,
@@ -55,6 +44,13 @@ const notificationSchema = new mongoose.Schema({
   // Date de lecture
   dateLecture: {
     type: Date
+  },
+  
+  // Métadonnées supplémentaires (optionnel)
+  metadata: {
+    type: Map,
+    of: String,
+    default: {}
   }
 });
 

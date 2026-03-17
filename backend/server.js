@@ -12,7 +12,7 @@ import devisRoutes from './routes/devisRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import { protect, adminOnly } from './middleware/authMiddleware.js';
-import { handleStripeWebhook } from './controllers/orderController.js';
+import { handleStripeWebhook, createCheckoutSession } from './controllers/orderController.js';
 import specificationRoutes from './routes/specificationRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import productDataRoutes from './routes/productDataRoutes.js';
@@ -22,15 +22,33 @@ import returnRequestRoutes from './routes/returnRequestRoutes.js';
 // AJOUT: Service de synchronisation
 import dataSyncService from './services/dataSyncService.js';
 
+// ========== NOUVEAU: IMPORT POUR LA VISUALISATION 3D ==========
+import product3dRoutes from './routes/product3dRoutes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Obtenir __dirname équivalent en ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// ===============================================================
+
 // Charger les variables d'environnement
 dotenv.config();
+
+// Éviter que le processus ne tombe sur une exception non gérée (connexion reset côté client)
+process.on('uncaughtException', (err) => {
+  console.error('❌ uncaughtException:', err && err.message, err && err.stack);
+});
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ unhandledRejection:', reason);
+});
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'], // Autoriser les requêtes depuis ces origines
+  origin: /^http:\/\/localhost(:\d+)?$/,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -40,8 +58,26 @@ app.use(cors({
 app.post('/api/orders/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
 
 app.use(express.json());
+// Route checkout explicite pour éviter 404 (POST /api/orders/checkout)
+app.post('/api/orders/checkout', protect, createCheckoutSession);
 app.use(express.urlencoded({ extended: true }));
 
+// ========== NOUVEAU: Configuration pour les fichiers 3D ==========
+// Créer le dossier uploads/models3d s'il n'existe pas
+import fs from 'fs';
+const uploadsDir = path.join(__dirname, 'uploads');
+const models3dDir = path.join(uploadsDir, 'models3d');
+
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+if (!fs.existsSync(models3dDir)) {
+  fs.mkdirSync(models3dDir, { recursive: true });
+}
+
+// Servir les fichiers statiques 3D
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// =================================================================
 
 // Middleware de logging pour le débogage
 app.use((req, res, next) => {
@@ -115,7 +151,16 @@ app.get('/', (req, res) => {
         status: 'GET /api/sync/status',
         all: 'POST /api/sync/all',
         products: 'POST /api/sync/products'
+      },
+      // ========== NOUVEAU: Routes 3D ==========
+      models3d: {
+        list: 'GET /api/models3d',
+        getByProduct: 'GET /api/models3d/product/:productId',
+        upload: 'POST /api/models3d/upload/:productId',
+        update: 'PUT /api/models3d/:modelId',
+        delete: 'DELETE /api/models3d/:modelId'
       }
+      // =========================================
     }
   });
 });
@@ -157,6 +202,10 @@ app.use('/api/notifications', notificationRoutes);
 // AJOUT: Routes de synchronisation
 app.use('/api/sync', syncRoutes);
 app.use('/api/return-requests', returnRequestRoutes);
+
+// ========== NOUVEAU: Routes 3D ==========
+app.use('/api/models3d', product3dRoutes);
+// =========================================
 
 // Gestion des erreurs 404 (doit être après toutes les routes)
 app.use((req, res) => {
@@ -201,7 +250,14 @@ app.use((req, res) => {
       // AJOUT: Routes sync
       'GET /api/sync/status',
       'POST /api/sync/all',
-      'POST /api/sync/products'
+      'POST /api/sync/products',
+      // ========== NOUVEAU: Routes 3D ==========
+      'GET /api/models3d',
+      'GET /api/models3d/product/:productId',
+      'POST /api/models3d/upload/:productId',
+      'PUT /api/models3d/:modelId',
+      'DELETE /api/models3d/:modelId'
+      // =========================================
     ]
   });
 });
@@ -227,6 +283,15 @@ app.listen(PORT, () => {
   console.log(` API Sync: http://localhost:${PORT}/api/sync/status`);
   console.log(`   - POST /api/sync/all (synchronisation complète)`);
   console.log(`   - POST /api/sync/products (synchronisation produits)`);
+  // ========== NOUVEAU: Logs 3D ==========
+  console.log(` API 3D Models: http://localhost:${PORT}/api/models3d`);
+  console.log(`   - GET /api/models3d (liste tous les modèles)`);
+  console.log(`   - GET /api/models3d/product/:productId (modèle d'un produit)`);
+  console.log(`   - POST /api/models3d/upload/:productId (upload modèle)`);
+  console.log(`   - PUT /api/models3d/:modelId (mise à jour)`);
+  console.log(`   - DELETE /api/models3d/:modelId (suppression)`);
+  console.log(` Fichiers 3D: ${models3dDir}`);
+  // =======================================
   console.log(` Fichier de synchronisation: backend/data/productData.js`);
 });
 

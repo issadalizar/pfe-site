@@ -61,6 +61,12 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
+    // NOUVEAU: Stock après modification (historique)
+    stockApres: {
+      type: Number,
+      default: 0,
+    },
+
     ordre: {
       type: Number,
       default: 0,

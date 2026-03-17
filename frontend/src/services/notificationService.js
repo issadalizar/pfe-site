@@ -1,7 +1,6 @@
 // frontend/src/services/notificationService.js
 import axios from 'axios';
 
-// ✅ CORRECTION : Utiliser import.meta.env pour Vite
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 class NotificationService {
@@ -13,7 +12,6 @@ class NotificationService {
       }
     });
 
-    // Ajouter le token
     this.api.interceptors.request.use(
       (config) => {
         const token = localStorage.getItem('token');
@@ -26,7 +24,6 @@ class NotificationService {
     );
   }
 
-  // Récupérer toutes les notifications
   async getNotifications(params = {}) {
     try {
       const response = await this.api.get('/', { params });
@@ -37,7 +34,6 @@ class NotificationService {
     }
   }
 
-  // Récupérer les notifications non lues
   async getNotificationsNonLues(limit = 20) {
     try {
       const response = await this.api.get('/non-lues', { params: { limit } });
@@ -48,7 +44,6 @@ class NotificationService {
     }
   }
 
-  // Récupérer les statistiques
   async getStats() {
     try {
       const response = await this.api.get('/stats');
@@ -59,7 +54,6 @@ class NotificationService {
     }
   }
 
-  // Récupérer les notifications de rupture
   async getRuptures(page = 1, limit = 50) {
     try {
       const response = await this.api.get('/ruptures', { params: { page, limit } });
@@ -70,7 +64,6 @@ class NotificationService {
     }
   }
 
-  // Marquer comme lue
   async marquerCommeLue(id) {
     try {
       const response = await this.api.put(`/${id}/lire`);
@@ -81,7 +74,6 @@ class NotificationService {
     }
   }
 
-  // Marquer toutes comme lues
   async marquerToutesCommeLues() {
     try {
       const response = await this.api.put('/lire-toutes');

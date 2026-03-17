@@ -10,9 +10,6 @@ import {
   FaBell,
   FaExclamationCircle,
   FaCheckCircle,
-  FaSort,
-  FaSortUp,
-  FaSortDown,
   FaEdit,
   FaEye,
   FaBox,
@@ -25,7 +22,6 @@ import notificationService from '../../services/notificationService'; // ✅ AJO
 
 export default function StockAlertsPage() {
   const [outOfStock, setOutOfStock] = useState([]);
-  const [lowStock, setLowStock] = useState([]);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("outOfStock");
@@ -70,42 +66,28 @@ export default function StockAlertsPage() {
       // Même logique que dans Products.jsx pour garantir la cohérence
       try {
         // Essayez d'abord l'API spécifique
-        const [outOfStockRes, lowStockRes] = await Promise.all([
+        const [outOfStockRes] = await Promise.all([
           productAPI.getOutOfStock(),
-          productAPI.getLowStock(),
         ]);
 
         console.log("✅ API spécifique réussie");
-        console.log(
-          "Produits en rupture:",
-          outOfStockRes.data.data?.length || 0,
-        );
-        console.log(
-          "Produits à faible stock:",
-          lowStockRes.data.data?.length || 0,
-        );
+        console.log("Produits en rupture:", outOfStockRes.data.data?.length || 0);
 
         const outOfStockProducts = outOfStockRes.data.data || [];
-        const lowStockProducts = lowStockRes.data.data || [];
 
         setOutOfStock(outOfStockProducts);
-        setLowStock(lowStockProducts);
 
-        // Calculer les stats
         const allProductsRes = await productAPI.getAll();
         const totalProducts = allProductsRes.data.data?.length || 0;
-        const normalStockCount =
-          totalProducts - (outOfStockProducts.length + lowStockProducts.length);
+        const normalStockCount = totalProducts - outOfStockProducts.length;
 
         setStats({
           outOfStockCount: outOfStockProducts.length,
-          lowStockCount: lowStockProducts.length,
           normalStockCount: normalStockCount,
           totalProducts: totalProducts,
-          outOfStockPercentage:
-            totalProducts > 0
-              ? ((outOfStockProducts.length / totalProducts) * 100).toFixed(1)
-              : 0,
+          outOfStockPercentage: totalProducts > 0
+            ? ((outOfStockProducts.length / totalProducts) * 100).toFixed(1)
+            : 0,
         });
       } catch (apiError) {
         console.log("⚠️ API spécifique échouée, utilisation alternative...");
@@ -115,46 +97,28 @@ export default function StockAlertsPage() {
         const products = allProductsRes.data.data || [];
         setAllProducts(products);
 
-        console.log(`📦 Total produits récupérés: ${products.length}`);
-
-        // Même calcul que dans Products.jsx
         const outOfStockProducts = products.filter((p) => {
           const stock = Number(p.stock);
           return isNaN(stock) || stock === 0;
         });
 
-        const lowStockProducts = products.filter((p) => {
-          const stock = Number(p.stock);
-          return stock > 0 && stock < 5;
-        });
-
         console.log(`🔴 Produits en rupture: ${outOfStockProducts.length}`);
-        console.log(`🟡 Produits à faible stock: ${lowStockProducts.length}`);
-
-        // Afficher les détails
-        outOfStockProducts.forEach((p) => {
-          console.log(`  - ${p.name} (ID: ${p._id}, Stock: ${p.stock})`);
-        });
 
         setOutOfStock(outOfStockProducts);
-        setLowStock(lowStockProducts);
 
-        // Calculer les stats localement
         const totalProducts = products.length;
         const normalStockCount = products.filter((p) => {
           const stock = Number(p.stock);
-          return stock >= 5;
+          return stock >= 1;
         }).length;
 
         setStats({
           outOfStockCount: outOfStockProducts.length,
-          lowStockCount: lowStockProducts.length,
           normalStockCount: normalStockCount,
           totalProducts: totalProducts,
-          outOfStockPercentage:
-            totalProducts > 0
-              ? ((outOfStockProducts.length / totalProducts) * 100).toFixed(1)
-              : 0,
+          outOfStockPercentage: totalProducts > 0
+            ? ((outOfStockProducts.length / totalProducts) * 100).toFixed(1)
+            : 0,
         });
       }
     } catch (error) {
@@ -263,11 +227,10 @@ export default function StockAlertsPage() {
   };
 
   const handleSelectAll = () => {
-    const currentProducts = activeTab === "outOfStock" ? outOfStock : lowStock;
-    if (selectedProducts.length === currentProducts.length) {
+    if (selectedProducts.length === outOfStock.length) {
       setSelectedProducts([]);
     } else {
-      setSelectedProducts(currentProducts.map((p) => p._id));
+      setSelectedProducts(outOfStock.map((p) => p._id));
     }
   };
 
@@ -303,7 +266,6 @@ export default function StockAlertsPage() {
   };
 
   const sortedOutOfStock = getSortedProducts(outOfStock);
-  const sortedLowStock = getSortedProducts(lowStock);
 
   return (
     <div className="container-fluid">
@@ -464,29 +426,6 @@ export default function StockAlertsPage() {
         </div>
 
         <div className="col-xl-3 col-md-6 mb-3">
-          <div className="card border-warning border-start-3 border-0 shadow-sm h-100">
-            <div className="card-body">
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <div className="text-muted small text-uppercase fw-semibold">
-                    Stock faible
-                  </div>
-                  <div className="fw-bold text-warning fs-3">
-                    {stats?.lowStockCount || lowStock.length}
-                  </div>
-                </div>
-                <div className="text-warning opacity-25">
-                  <FaExclamationTriangle size={28} />
-                </div>
-              </div>
-              <div className="mt-2">
-                <small className="text-muted">Moins de 5 unités</small>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="col-xl-3 col-md-6 mb-3">
           <div className="card border-success border-start-3 border-0 shadow-sm h-100">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center">
@@ -533,47 +472,10 @@ export default function StockAlertsPage() {
         </div>
       </div>
 
-      {/* Onglets */}
-      <div className="row mb-3">
-        <div className="col">
-          <ul className="nav nav-tabs">
-            <li className="nav-item">
-              <button
-                className={`nav-link ${activeTab === "outOfStock" ? "active text-danger" : ""}`}
-                onClick={() => {
-                  setActiveTab("outOfStock");
-                  setSelectedProducts([]);
-                }}
-              >
-                <FaExclamationCircle className="me-2" />
-                Rupture de stock
-                <span className="badge bg-danger ms-2">
-                  {outOfStock.length}
-                </span>
-              </button>
-            </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link ${activeTab === "lowStock" ? "active text-warning" : ""}`}
-                onClick={() => {
-                  setActiveTab("lowStock");
-                  setSelectedProducts([]);
-                }}
-              >
-                <FaExclamationTriangle className="me-2" />
-                Stock faible
-                <span className="badge bg-warning ms-2">{lowStock.length}</span>
-              </button>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* Contenu des onglets */}
+      {/* Contenu */}
       <div className="row">
         <div className="col">
-          {activeTab === "outOfStock" ? (
-            <div className="card border-danger shadow-sm">
+          <div className="card border-danger shadow-sm">
               <div className="card-header bg-danger text-white d-flex justify-content-between align-items-center">
                 <div className="d-flex align-items-center">
                   <FaExclamationCircle className="me-2" />
@@ -629,64 +531,6 @@ export default function StockAlertsPage() {
                 )}
               </div>
             </div>
-          ) : (
-            <div className="card border-warning shadow-sm">
-              <div className="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-                <div className="d-flex align-items-center">
-                  <FaExclamationTriangle className="me-2" />
-                  <h6 className="mb-0">
-                    Produits à faible stock (stock &lt; 5)
-                  </h6>
-                </div>
-                <div className="d-flex align-items-center">
-                  <span className="me-3">
-                    {selectedProducts.length} sélectionné(s)
-                  </span>
-                  <button
-                    className="btn btn-sm btn-light"
-                    onClick={refreshAlerts}
-                    disabled={loading}
-                    title="Actualiser"
-                  >
-                    <FaRedo className={loading ? "fa-spin" : ""} />
-                  </button>
-                </div>
-              </div>
-
-              <div className="card-body p-0">
-                {loading ? (
-                  <div className="text-center p-5">
-                    <div className="spinner-border text-warning" role="status">
-                      <span className="visually-hidden">Chargement...</span>
-                    </div>
-                    <p className="mt-3 text-muted">
-                      Chargement des produits à faible stock...
-                    </p>
-                  </div>
-                ) : lowStock.length === 0 ? (
-                  <div className="text-center p-5 text-muted">
-                    <FaCheckCircle size={48} className="mb-3 text-success" />
-                    <h5 className="text-success">
-                      Aucun produit à faible stock
-                    </h5>
-                    <p className="mb-0">Tous les stocks sont suffisants !</p>
-                  </div>
-                ) : (
-                  <ProductList
-                    products={sortedLowStock}
-                    onEdit={handleEditProduct}
-                    onDelete={handleDeleteProduct}
-                    loading={false}
-                    sortConfig={sortConfig}
-                    onSort={handleSort}
-                    selectedProducts={selectedProducts}
-                    onSelectProduct={handleSelectProduct}
-                    onSelectAll={handleSelectAll}
-                  />
-                )}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 

@@ -8,7 +8,7 @@ import {
 } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const API_URL = 'http://localhost:5000/api/orders';
+const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api') + '/orders';
 
 export default function AdminOrders() {
     const [orders, setOrders] = useState([]);

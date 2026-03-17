@@ -1692,6 +1692,933 @@ export const cncProductDetails = {
       "orderStatus": "annulee",
       "createdAt": "2026-03-12T14:22:48.981Z",
       "updatedAt": "2026-03-13T00:53:33.009Z"
+    },
+    "69b3632696f549836a4d9331": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b3632696f549836a4d9331",
+      "createdAt": "2026-03-13T01:06:46.575Z",
+      "updatedAt": "2026-03-13T01:06:46.664Z"
+    },
+    "69b3634a4dc832213edd5355": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b3634a4dc832213edd5355",
+      "createdAt": "2026-03-13T01:07:22.145Z",
+      "updatedAt": "2026-03-13T01:07:22.166Z"
+    },
+    "69b3634b038f0b3742e88b14": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b3634b038f0b3742e88b14",
+      "createdAt": "2026-03-13T01:07:23.449Z",
+      "updatedAt": "2026-03-13T01:07:23.457Z"
+    },
+    "69b3649aeea2de032d87560b": {
+      "_id": "69b3649aeea2de032d87560b",
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "livree",
+      "createdAt": "2026-03-13T01:12:58.238Z",
+      "updatedAt": "2026-03-13T01:13:34.359Z"
+    },
+    "69b3672afccc0d57e23382f1": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b3672afccc0d57e23382f1",
+      "createdAt": "2026-03-13T01:23:54.771Z",
+      "updatedAt": "2026-03-13T01:23:54.786Z"
+    },
+    "69b3672c003ac69e2c69337f": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b3672c003ac69e2c69337f",
+      "createdAt": "2026-03-13T01:23:56.177Z",
+      "updatedAt": "2026-03-13T01:23:56.208Z"
+    },
+    "69b3673e6df4d5212ede5707": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "Balgouthi Salma",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b3673e6df4d5212ede5707",
+      "createdAt": "2026-03-13T01:24:14.754Z",
+      "updatedAt": "2026-03-13T01:24:14.770Z"
+    },
+    "69b3674016bbfa05b2858268": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "Balgouthi Salma",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b3674016bbfa05b2858268",
+      "createdAt": "2026-03-13T01:24:16.389Z",
+      "updatedAt": "2026-03-13T01:24:16.400Z"
+    },
+    "69b3692810d4f69cf2fc617f": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b3692810d4f69cf2fc617f",
+      "createdAt": "2026-03-13T01:32:24.262Z",
+      "updatedAt": "2026-03-13T01:32:24.278Z"
+    },
+    "69b36929870bd964ce7cd607": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b36929870bd964ce7cd607",
+      "createdAt": "2026-03-13T01:32:25.970Z",
+      "updatedAt": "2026-03-13T01:32:25.983Z"
+    },
+    "69b369a7bfceda830ec34211": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b369a7bfceda830ec34211",
+      "createdAt": "2026-03-13T01:34:31.947Z",
+      "updatedAt": "2026-03-13T01:34:31.963Z"
+    },
+    "69b369a9da12fe31d0f774c5": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b369a9da12fe31d0f774c5",
+      "createdAt": "2026-03-13T01:34:33.569Z",
+      "updatedAt": "2026-03-13T01:34:33.583Z"
+    },
+    "69b36cf2899227406b35f192": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b36cf2899227406b35f192",
+      "createdAt": "2026-03-13T01:48:34.281Z",
+      "updatedAt": "2026-03-13T01:48:34.298Z"
+    },
+    "69b36cf3aecce2a7c2354512": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b36cf3aecce2a7c2354512",
+      "createdAt": "2026-03-13T01:48:35.910Z",
+      "updatedAt": "2026-03-13T01:48:35.920Z"
+    },
+    "69b402526d35a8becb345bba": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b402526d35a8becb345bba",
+      "createdAt": "2026-03-13T12:25:54.088Z",
+      "updatedAt": "2026-03-13T12:25:54.251Z"
+    },
+    "69b40253666817602306e93a": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b40253666817602306e93a",
+      "createdAt": "2026-03-13T12:25:55.975Z",
+      "updatedAt": "2026-03-13T12:25:56.019Z"
+    },
+    "69b4034056e159cef53c3f35": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b4034056e159cef53c3f35",
+      "createdAt": "2026-03-13T12:29:52.729Z",
+      "updatedAt": "2026-03-13T12:29:52.754Z"
+    },
+    "69b403426de5e87d3a989691": {
+      "user": "69a4c2a20f2a9a8e1668aa74",
+      "items": [
+        {
+          "productName": "DT-E001 – Unité de Contrôle Électronique",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
+          "quantity": 1,
+          "price": 2450
+        },
+        {
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
+          "quantity": 1,
+          "price": 1950
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 4400,
+      "stripeSessionId": "",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "_id": "69b403426de5e87d3a989691",
+      "createdAt": "2026-03-13T12:29:54.365Z",
+      "updatedAt": "2026-03-13T12:29:54.396Z"
+    },
+    "69b8a2f05ae94772e1c297f9": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 4,
+          "price": 8990,
+          "_id": "69b8a2f05ae94772e1c297fa"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 35960,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8a2f05ae94772e1c297f9",
+      "updatedAt": "2026-03-17T00:40:16.180Z"
+    },
+    "69b8a2f193ec0b3d1eb98fc7": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 4,
+          "price": 8990,
+          "_id": "69b8a2f193ec0b3d1eb98fc8"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 35960,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8a2f193ec0b3d1eb98fc7",
+      "updatedAt": "2026-03-17T00:40:17.973Z"
+    },
+    "69b8a3c8d237fb7975a7f6f4": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 4,
+          "price": 8990,
+          "_id": "69b8a3c8d237fb7975a7f6f5"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 35960,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8a3c8d237fb7975a7f6f4",
+      "updatedAt": "2026-03-17T00:43:52.210Z"
+    },
+    "69b8a3caea35253147b57913": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 4,
+          "price": 8990,
+          "_id": "69b8a3caea35253147b57914"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 35960,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8a3caea35253147b57913",
+      "updatedAt": "2026-03-17T00:43:54.134Z"
+    },
+    "69b8a49e97c72b6e8fb38804": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 4,
+          "price": 8990,
+          "_id": "69b8a49f97c72b6e8fb38805"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 35960,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8a49e97c72b6e8fb38804",
+      "updatedAt": "2026-03-17T00:47:27.051Z"
+    },
+    "69b8a4d367487ad8cefa0da2": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 10,
+          "price": 5490,
+          "_id": "69b8a4d367487ad8cefa0da3"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 54900,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8a4d367487ad8cefa0da2",
+      "updatedAt": "2026-03-17T00:48:19.875Z"
+    },
+    "69b8a55a53098ad39ad863d3": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 10,
+          "price": 5490,
+          "_id": "69b8a55a53098ad39ad863d4"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 54900,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8a55a53098ad39ad863d3",
+      "updatedAt": "2026-03-17T00:50:34.703Z"
+    },
+    "69b8bf70772e3b31496cb3ba": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 10,
+          "price": 5490,
+          "_id": "69b8bf70772e3b31496cb3bb"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 54900,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8bf70772e3b31496cb3ba",
+      "updatedAt": "2026-03-17T02:41:52.618Z"
+    },
+    "69b8c0a0b67ccc23f1b4dc8c": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 10,
+          "price": 5490,
+          "_id": "69b8c0a0b67ccc23f1b4dc8d"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 54900,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8c0a0b67ccc23f1b4dc8c",
+      "updatedAt": "2026-03-17T02:46:56.600Z"
+    },
+    "69b8c21df3bcff0af150a606": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 10,
+          "price": 5490,
+          "_id": "69b8c21df3bcff0af150a607"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 54900,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8c21df3bcff0af150a606",
+      "updatedAt": "2026-03-17T02:53:17.295Z"
+    },
+    "69b8c37f1bbf67275f7afc19": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productId": null,
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 10,
+          "price": 5490,
+          "_id": "69b8c37f1bbf67275f7afc1a"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 54900,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8c37f1bbf67275f7afc19",
+      "updatedAt": "2026-03-17T02:59:11.829Z"
+    },
+    "69b8c6dda0c223318e1d1f63": {
+      "user": "69b8c69ca0c223318e1d1f49",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 10,
+          "price": 5490,
+          "_id": "69b8c6dda0c223318e1d1f64"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "mohamed habib",
+        "email": "mohamed@gmail.com",
+        "phone": "55445336",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 54900,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8c6dda0c223318e1d1f63",
+      "updatedAt": "2026-03-17T03:13:33.671Z"
+    },
+    "69b8c6eb57c53d4be92affce": {
+      "user": "69b8c69ca0c223318e1d1f49",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 7,
+          "price": 5490,
+          "_id": "69b8c6eb57c53d4be92affcf"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "mohamed habib",
+        "email": "mohamed@gmail.com",
+        "phone": "55445336",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 38430,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8c6eb57c53d4be92affce",
+      "updatedAt": "2026-03-17T03:13:47.380Z"
+    },
+    "69b8c70b5a53e601a789f1a9": {
+      "user": "69b8c69ca0c223318e1d1f49",
+      "items": [
+        {
+          "productName": "DTM7020 – Modules Essuie-Glaces",
+          "quantity": 1,
+          "price": 1290,
+          "_id": "69b8c70b5a53e601a789f1aa"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "mohamed habib",
+        "email": "mohamed@gmail.com",
+        "phone": "55445336",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 1290,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69b8c70b5a53e601a789f1a9",
+      "updatedAt": "2026-03-17T03:14:19.696Z"
     }
   }
 };

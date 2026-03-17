@@ -205,23 +205,10 @@ export const productAPI = {
    */
   getOutOfStock: async () => {
     try {
-      const response = await api.get('/products/stock/out-of-stock');
-      return response.data;
+      const response = await api.get('/products/rupture-stock');
+      return response;
     } catch (error) {
       console.error('❌ Erreur getOutOfStock:', error);
-      throw error;
-    }
-  },
-
-  /**
-   * Récupérer les produits avec stock faible (< 5)
-   */
-  getLowStock: async () => {
-    try {
-      const response = await api.get('/products/stock/low-stock');
-      return response.data;
-    } catch (error) {
-      console.error('❌ Erreur getLowStock:', error);
       throw error;
     }
   },

@@ -24,6 +24,7 @@ import CheckoutPage from "./pages/CheckoutPage";
 import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderCancelPage from "./pages/OrderCancelPage";
 import CategoryProductsView from "./components/Admin/CategoryProductsViewAdmin";
+import Product3DPage from './pages/Product3DPage';
 
 function App() {
   return (
@@ -36,6 +37,8 @@ function App() {
       <Route path="/sector/:sectorId" element={<SectorPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/cart" element={<CartPage />} />
+      {/* ========== NOUVELLE ROUTE: Visualisation 3D ========== */}
+      <Route path="/product3d/:productId" element={<Product3DPage />} />
       <Route path="/client/dashboard" element={
         <ProtectedRoute>
           <ClientDashboard />

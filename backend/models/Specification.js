@@ -23,10 +23,7 @@ const specificationSchema = new mongoose.Schema({
     required: true,
     default: 'general'
   },
-  order: {
-    type: Number,
-    default: 0
-  }
+  
 });
 
 specificationSchema.index({ productId: 1, key: 1, type: 1 }, { unique: true });
