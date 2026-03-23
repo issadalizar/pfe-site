@@ -2619,6 +2619,31 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "_id": "69b8c70b5a53e601a789f1a9",
       "updatedAt": "2026-03-17T03:14:19.696Z"
+    },
+    "69c1640c646ba10016637468": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c1640c646ba10016637469"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c1640c646ba10016637468",
+      "updatedAt": "2026-03-23T16:02:20.230Z"
     }
   }
 };
