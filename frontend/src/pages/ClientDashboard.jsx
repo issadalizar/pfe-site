@@ -10,7 +10,7 @@ import {
     FaBox, FaChevronRight, FaCalendarAlt, FaUserCircle,
     FaLock, FaKey, FaExclamationTriangle, FaSpinner,
     FaTruck, FaCreditCard, FaExchangeAlt, FaUndoAlt, FaSyncAlt,
-    FaBan, FaClock
+    FaBan, FaClock, FaMinus, FaPlus, FaTrash
 } from 'react-icons/fa';
 import { getMyOrders, cancelOrder } from '../services/orderService';
 import { createReturnRequest, getMyReturnRequests } from '../services/returnRequestService';
@@ -19,7 +19,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ClientDashboard = () => {
     const navigate = useNavigate();
     const { user, logout, updateProfile } = useAuth();
-    const { cart, getCartCount, getCartTotal } = useCart();
+    const { cart, getCartCount, getCartTotal, updateQuantity, removeFromCart } = useCart();
     const [activeTab, setActiveTab] = useState('profile');
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -670,13 +670,19 @@ const ClientDashboard = () => {
                                             <FaShoppingCart className="me-2" style={{ color: '#4361ee' }} />
                                             Mon Panier ({getCartCount()} articles)
                                         </h4>
-                                        <button
-                                            className="btn btn-outline-primary rounded-pill px-4"
-                                            onClick={() => navigate('/cart')}
-                                        >
-                                            Voir le panier complet
-                                            <FaChevronRight className="ms-2" size={12} />
-                                        </button>
+                                        {cart.length > 0 && (
+                                            <button
+                                                className="btn rounded-pill px-4"
+                                                onClick={() => navigate('/checkout')}
+                                                style={{
+                                                    background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                                                    border: 'none', color: 'white', fontWeight: '600'
+                                                }}
+                                            >
+                                                <FaLock className="me-2" size={12} />
+                                                Passer commande
+                                            </button>
+                                        )}
                                     </div>
 
                                     {cart.length === 0 ? (
@@ -704,7 +710,7 @@ const ClientDashboard = () => {
                                         </div>
                                     ) : (
                                         <>
-                                            {cart.slice(0, 5).map((item, index) => (
+                                            {cart.map((item, index) => (
                                                 <div key={index} className="d-flex align-items-center gap-3 p-3 mb-2 rounded-3"
                                                     style={{ backgroundColor: '#f8fafc', transition: 'all 0.2s' }}
                                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#eef2ff'}
@@ -729,18 +735,71 @@ const ClientDashboard = () => {
                                                                 ? item.product.title.substring(0, 40) + '...'
                                                                 : item.product.title}
                                                         </div>
-                                                        <small className="text-muted">Qte: {item.quantity}</small>
+                                                        {/* Quantity controls */}
+                                                        <div className="d-flex align-items-center gap-0 mt-1" style={{
+                                                            background: '#e2e8f0', borderRadius: '8px',
+                                                            display: 'inline-flex', overflow: 'hidden'
+                                                        }}>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.product.title, item.quantity - 1)}
+                                                                style={{
+                                                                    width: '28px', height: '28px', border: 'none',
+                                                                    background: 'transparent', color: '#4361ee',
+                                                                    cursor: 'pointer', display: 'flex',
+                                                                    alignItems: 'center', justifyContent: 'center',
+                                                                    fontSize: '12px', fontWeight: '700',
+                                                                    transition: 'background 0.2s'
+                                                                }}
+                                                                onMouseEnter={(e) => e.currentTarget.style.background = '#cbd5e1'}
+                                                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                                            >
+                                                                <FaMinus size={10} />
+                                                            </button>
+                                                            <span style={{
+                                                                width: '32px', textAlign: 'center',
+                                                                fontWeight: '700', fontSize: '0.85rem',
+                                                                color: '#0f172a', background: 'white',
+                                                                padding: '4px 0'
+                                                            }}>{item.quantity}</span>
+                                                            <button
+                                                                onClick={() => updateQuantity(item.product.title, item.quantity + 1)}
+                                                                style={{
+                                                                    width: '28px', height: '28px', border: 'none',
+                                                                    background: 'transparent', color: '#4361ee',
+                                                                    cursor: 'pointer', display: 'flex',
+                                                                    alignItems: 'center', justifyContent: 'center',
+                                                                    fontSize: '12px', fontWeight: '700',
+                                                                    transition: 'background 0.2s'
+                                                                }}
+                                                                onMouseEnter={(e) => e.currentTarget.style.background = '#cbd5e1'}
+                                                                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
+                                                            >
+                                                                <FaPlus size={10} />
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div className="fw-bold" style={{ color: '#4361ee' }}>
+                                                    <div className="fw-bold" style={{ color: '#4361ee', whiteSpace: 'nowrap' }}>
                                                         {formatPrice(item.product.price * item.quantity)} DT
                                                     </div>
+                                                    {/* Remove button */}
+                                                    <button
+                                                        onClick={() => removeFromCart(item.product.title)}
+                                                        title="Supprimer"
+                                                        style={{
+                                                            background: 'none', border: 'none',
+                                                            color: '#94a3b8', cursor: 'pointer',
+                                                            padding: '6px', borderRadius: '8px',
+                                                            transition: 'all 0.2s', display: 'flex',
+                                                            alignItems: 'center', justifyContent: 'center'
+                                                        }}
+                                                        onMouseEnter={(e) => { e.currentTarget.style.background = '#fee2e2'; e.currentTarget.style.color = '#ef4444'; }}
+                                                        onMouseLeave={(e) => { e.currentTarget.style.background = 'none'; e.currentTarget.style.color = '#94a3b8'; }}
+                                                    >
+                                                        <FaTrash size={14} />
+                                                    </button>
                                                 </div>
                                             ))}
-                                            {cart.length > 5 && (
-                                                <p className="text-center text-muted mt-3">
-                                                    + {cart.length - 5} autres articles
-                                                </p>
-                                            )}
+
                                             <div className="mt-3 p-3 rounded-3" style={{ backgroundColor: '#eef2ff', border: '1px solid #c7d2fe' }}>
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <span className="fw-bold" style={{ color: '#0f172a' }}>Total estime</span>

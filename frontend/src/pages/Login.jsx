@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock,
@@ -9,6 +9,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
   const { login, register, isAuthenticated, isAdmin } = useAuth();
 
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -23,7 +25,7 @@ const Login = () => {
     if (isAdmin) {
       navigate("/dashboard", { replace: true });
     } else {
-      navigate("/client/dashboard", { replace: true });
+      navigate(redirectTo || "/client/dashboard", { replace: true });
     }
     return null;
   }
@@ -76,7 +78,7 @@ const Login = () => {
         if (result.user.isAdmin) {
           navigate("/dashboard");
         } else {
-          navigate("/client/dashboard");
+          navigate(redirectTo || "/client/dashboard");
         }
       }
     } catch (err) {
