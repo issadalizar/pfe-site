@@ -1,0 +1,437 @@
+/* Glassmorphism effect for cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1.5px solid #e7f0ff !important;
+  box-shadow: 0 10px 40px 0 #4361ee22 !important;
+  transition: all 0.3s cubic-bezier(.4, 2, .3, 1) !important;
+}
+
+/* Animated gradient text */
+.animated-gradient-text {
+  background: linear-gradient(90deg, #3a8dde, #4361ee 60%, #3a0ca3 100%);
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine-gradient 3s linear infinite;
+}
+
+@keyframes shine-gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+/* Section divider (optional, for extra polish) */
+.section-divider {
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(180deg, #4361ee22 0%, transparent 100%);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+/* Home Page Styles */
+
+.home-page {
+  min-height: 100vh;
+  background: linear-gradient(120deg, #e7f0ff 0%, #f8faff 100%);
+}
+
+/* Hero Section */
+.hero-section {
+  background: linear-gradient(120deg, #3a8dde 0%, #4361ee 50%, #3a0ca3 100%);
+  color: #fff;
+}
+
+.hero-image-placeholder {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Hero image sizing */
+.hero-media {
+  width: 100%;
+  height: 100%;
+}
+
+.hero-media .hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(2, 6, 23, 0.08);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+  display: block;
+}
+
+.hero-media .hero-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 18px 50px rgba(2, 6, 23, 0.12);
+}
+
+@media (max-width: 992px) {
+  .hero-image-placeholder {
+    height: 360px;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-image-placeholder {
+    height: 300px;
+    padding: 18px;
+  }
+
+  .hero-media .hero-image {
+    border-radius: 8px;
+  }
+}
+
+/* Description shown inside right hero card when image is removed */
+.hero-image-placeholder .hero-card-description {
+  padding: 18px 24px;
+}
+
+.hero-image-placeholder .hero-card-description .lead {
+  color: #6c757d;
+  font-size: 1.05rem;
+}
+
+.hero-image-placeholder .hero-card-description .small {
+  color: #98a2ad;
+}
+
+/* Use accueil image as hero-section background on large screens
+   Keep the image element in the card (DOM) but hide it visually when
+   the background is used, so nothing is deleted. */
+@media (min-width: 992px) {
+  .hero-section {
+    position: relative;
+    background-image: linear-gradient(135deg, rgba(245, 247, 250, 0.95) 0%, rgba(233, 236, 239, 0.95) 100%);
+  }
+
+  /* show the hero image inside the white card on large screens
+     (move the visual image into the right white frame while keeping DOM) */
+  .hero-image-placeholder {
+    background-color: white;
+    background-image: url('/acceuil.png');
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    padding: 0;
+    /* let image occupy full card area visually */
+    height: 420px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* keep the descriptive text readable on top of the image */
+  .hero-image-placeholder .hero-card-description {
+    background: rgba(255, 255, 255, 0.92);
+    padding: 28px 36px;
+    border-radius: 10px;
+    box-shadow: none;
+    max-width: 80%;
+  }
+
+  /* ensure content sits above the background image */
+  .hero-section .container-fluid,
+  .hero-section .row,
+  .hero-section .col-lg-6 {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+@media (max-width: 991px) {
+  .hero-section {
+    background-image: none;
+  }
+
+  .hero-image-placeholder .hero-media {
+    display: flex;
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Product Cards */
+.product-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12) !important;
+}
+
+.product-image-wrapper {
+  height: 200px;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+
+.product-image-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent 0%, #3a8dde22 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card:hover .product-image-wrapper::after {
+  opacity: 1;
+}
+
+/* Sector Cards */
+.sector-card {
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 280px;
+}
+
+.sector-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 50px #4361ee33 !important;
+}
+
+.sector-card .card-body {
+  padding: 30px;
+  z-index: 1;
+  position: relative;
+}
+
+/* Hover Effects */
+.hover-shadow {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+}
+
+/* Testimonial Cards */
+.card {
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1) !important;
+  transform: translateY(-5px);
+}
+
+/* Buttons */
+.btn {
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.btn-primary {
+  background-color: #0066cc;
+  border-color: #0066cc;
+}
+
+.btn-primary {
+  background: linear-gradient(120deg, #3a8dde, #4361ee 60%, #3a0ca3);
+  border: none;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(120deg, #4361ee, #3a0ca3 80%);
+  border: none;
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.btn-outline-primary {
+  color: #4361ee;
+  border-color: #4361ee;
+  background: transparent;
+}
+
+.btn-outline-primary:hover {
+  background: linear-gradient(120deg, #3a8dde, #4361ee 60%, #3a0ca3);
+  color: #fff;
+  border: none;
+  transform: translateY(-2px);
+}
+
+.navbar {
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+
+.navbar:hover {
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+.nav-link {
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #0066cc !important;
+}
+
+/* Typography */
+.display-4,
+.display-5 {
+  font-weight: 700;
+  color: #1a1a2e;
+}
+
+.lead {
+  color: #666;
+  font-weight: 500;
+}
+
+/* Sections */
+section {
+  scroll-margin-top: 80px;
+}
+
+section h2 {
+  color: #1a1a2e;
+  margin-bottom: 1rem;
+}
+
+section p {
+  color: #666;
+}
+
+/* Footer */
+footer {
+  background: linear-gradient(120deg, #3a0ca3 0%, #4361ee 100%);
+  color: #e0e7ff;
+}
+
+footer a {
+  color: #e0e7ff;
+}
+
+footer a:hover {
+  color: #b3cfff !important;
+}
+
+footer a {
+  transition: color 0.3s ease;
+}
+
+footer a:hover {
+  color: #0099ff !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-image-placeholder {
+    height: 300px;
+    margin-top: 30px;
+  }
+
+  .display-4 {
+    font-size: 2rem;
+  }
+
+  .display-5 {
+    font-size: 1.8rem;
+  }
+
+  .sector-card {
+    min-height: 240px;
+  }
+}
+
+/* Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.product-card,
+.sector-card {
+  animation: slideInUp 0.6s ease-out;
+}
+
+section:nth-child(even) {
+  animation-delay: 0.1s;
+}
+
+/* Loading Spinner */
+.spinner-border {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Smooth Scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Cart notification animation */
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
