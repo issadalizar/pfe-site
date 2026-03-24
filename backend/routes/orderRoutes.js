@@ -2,6 +2,7 @@ import express from 'express';
 import { protect, adminOnly } from '../middleware/authMiddleware.js';
 import {
     createCheckoutSession,
+    createCodOrder,
     handleStripeWebhook,
     verifySession,
     getMyOrders,
@@ -18,6 +19,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), handleStripeW
 
 // Routes protegees (client)
 router.post('/checkout', protect, createCheckoutSession);
+router.post('/checkout-cod', protect, createCodOrder);
 router.get('/my-orders', protect, getMyOrders);
 router.get('/verify-session/:sessionId', protect, verifySession);
 

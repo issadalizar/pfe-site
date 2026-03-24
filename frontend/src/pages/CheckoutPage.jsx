@@ -2,20 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { createCheckoutSession } from '../services/orderService';
+import { createCheckoutSession, createCodOrder } from '../services/orderService';
 import {
     FaStore, FaArrowLeft, FaUser, FaEnvelope, FaPhone,
     FaMapMarkerAlt, FaCity, FaMailBulk, FaShoppingCart,
     FaCreditCard, FaLock, FaSpinner, FaCheckCircle,
-    FaChevronRight, FaBox, FaShieldAlt, FaTruck
+    FaChevronRight, FaBox, FaShieldAlt, FaTruck, FaMoneyBillWave
 } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
-    const { user, isAuthenticated } = useAuth(); 
+    const { user, isAuthenticated } = useAuth();
     const { cart, getCartTotal, getCartCount, clearCart } = useCart();
-     // Rediriger si non connecté
+    // Rediriger si non connecté
     useEffect(() => {
         if (!isAuthenticated) {
             navigate('/login', { state: { from: '/checkout' } });
@@ -24,6 +24,7 @@ const CheckoutPage = () => {
     const [step, setStep] = useState(1);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('stripe');
     const [shippingInfo, setShippingInfo] = useState({
         fullName: user?.client_name || '',
         email: user?.email || '',
@@ -61,38 +62,74 @@ const CheckoutPage = () => {
     };
 
     const handleCheckout = async () => {
-    setLoading(true);
-    setError('');
+        setLoading(true);
+        setError('');
 
-    try {
-        // ✅ AJOUTER productId à chaque item
-        const items = cart.map(item => ({
-            productId: item.product._id, // AJOUT CRUCIAL
-            // ✅ CORRECTION : supporter nom (français), name, et title
-            productName: item.product.nom || item.product.name || item.product.title || 'Produit',
-            productImage: item.product.images?.[0] || '',
-            quantity: item.quantity,
-            // ✅ CORRECTION : supporter prix (français) et price
-            price: parseFloat(item.product.prix || item.product.price) || 0
-        }));
+        try {
+            // ✅ AJOUTER productId à chaque item
+            const items = cart.map(item => ({
+                productId: item.product._id, // AJOUT CRUCIAL
+                // ✅ CORRECTION : supporter nom (français), name, et title
+                productName: item.product.nom || item.product.name || item.product.title || 'Produit',
+                productImage: item.product.images?.[0] || '',
+                quantity: item.quantity,
+                // ✅ CORRECTION : supporter prix (français) et price
+                price: parseFloat(item.product.prix || item.product.price) || 0
+            }));
 
-        console.log('📦 Items envoyés:', items); // Debug
+            console.log('📦 Items envoyés:', items); // Debug
 
-        const result = await createCheckoutSession(items, shippingInfo);
+            const result = await createCheckoutSession(items, shippingInfo);
 
-        if (result.success && result.sessionUrl) {
-            // Rediriger vers Stripe Checkout
-            window.location.href = result.sessionUrl;
-        } else {
-            setError('Erreur lors de la création de la session de paiement.');
+            if (result.success && result.sessionUrl) {
+                // Rediriger vers Stripe Checkout
+                window.location.href = result.sessionUrl;
+            } else {
+                setError('Erreur lors de la création de la session de paiement.');
+            }
+        } catch (err) {
+            console.error('Checkout error:', err);
+            setError(err.response?.data?.error || 'Erreur lors du paiement. Veuillez réessayer.');
+        } finally {
+            setLoading(false);
         }
-    } catch (err) {
-        console.error('Checkout error:', err);
-        setError(err.response?.data?.error || 'Erreur lors du paiement. Veuillez réessayer.');
-    } finally {
-        setLoading(false);
-    }
-};
+    };
+
+    const handleCodCheckout = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const items = cart.map(item => ({
+                productId: item.product._id,
+                productName: item.product.nom || item.product.name || item.product.title || 'Produit',
+                productImage: item.product.images?.[0] || '',
+                quantity: item.quantity,
+                price: parseFloat(item.product.prix || item.product.price) || 0
+            }));
+
+            const result = await createCodOrder(items, shippingInfo);
+
+            if (result.success && result.orderId) {
+                clearCart();
+                navigate(`/order/success?payment=cod&order_id=${result.orderId}`);
+            } else {
+                setError('Erreur lors de la création de la commande.');
+            }
+        } catch (err) {
+            console.error('COD checkout error:', err);
+            setError(err.response?.data?.error || 'Erreur lors de la commande. Veuillez réessayer.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handlePayment = () => {
+        if (paymentMethod === 'livraison') {
+            handleCodCheckout();
+        } else {
+            handleCheckout();
+        }
+    };
 
     const subtotal = getCartTotal();
 
@@ -306,6 +343,69 @@ const CheckoutPage = () => {
                                         </p>
                                     </div>
 
+                                    {/* Choix du mode de paiement */}
+                                    <h6 className="fw-bold mb-3" style={{ color: '#0f172a' }}>Mode de paiement</h6>
+                                    <div className="row g-3 mb-4">
+                                        <div className="col-md-6">
+                                            <div
+                                                onClick={() => setPaymentMethod('stripe')}
+                                                style={{
+                                                    border: paymentMethod === 'stripe' ? '2px solid #4361ee' : '2px solid #e2e8f0',
+                                                    borderRadius: '16px', padding: '20px', cursor: 'pointer',
+                                                    background: paymentMethod === 'stripe' ? 'linear-gradient(145deg, #eef2ff, #e0e7ff)' : 'white',
+                                                    transition: 'all 0.3s ease'
+                                                }}
+                                            >
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <div style={{
+                                                        width: '44px', height: '44px', borderRadius: '12px',
+                                                        background: paymentMethod === 'stripe' ? 'linear-gradient(145deg, #4361ee, #3a0ca3)' : '#f1f5f9',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        color: paymentMethod === 'stripe' ? 'white' : '#94a3b8'
+                                                    }}>
+                                                        <FaCreditCard size={18} />
+                                                    </div>
+                                                    <div>
+                                                        <div className="fw-bold" style={{ color: '#0f172a', fontSize: '0.95rem' }}>Carte bancaire</div>
+                                                        <small className="text-muted">Paiement sécurisé via Stripe</small>
+                                                    </div>
+                                                    {paymentMethod === 'stripe' && (
+                                                        <FaCheckCircle className="ms-auto" style={{ color: '#4361ee' }} />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div
+                                                onClick={() => setPaymentMethod('livraison')}
+                                                style={{
+                                                    border: paymentMethod === 'livraison' ? '2px solid #16a34a' : '2px solid #e2e8f0',
+                                                    borderRadius: '16px', padding: '20px', cursor: 'pointer',
+                                                    background: paymentMethod === 'livraison' ? 'linear-gradient(145deg, #f0fdf4, #dcfce7)' : 'white',
+                                                    transition: 'all 0.3s ease'
+                                                }}
+                                            >
+                                                <div className="d-flex align-items-center gap-3">
+                                                    <div style={{
+                                                        width: '44px', height: '44px', borderRadius: '12px',
+                                                        background: paymentMethod === 'livraison' ? 'linear-gradient(145deg, #16a34a, #15803d)' : '#f1f5f9',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        color: paymentMethod === 'livraison' ? 'white' : '#94a3b8'
+                                                    }}>
+                                                        <FaMoneyBillWave size={18} />
+                                                    </div>
+                                                    <div>
+                                                        <div className="fw-bold" style={{ color: '#0f172a', fontSize: '0.95rem' }}>À la livraison</div>
+                                                        <small className="text-muted">Payez en espèces à la réception</small>
+                                                    </div>
+                                                    {paymentMethod === 'livraison' && (
+                                                        <FaCheckCircle className="ms-auto" style={{ color: '#16a34a' }} />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     {/* Articles */}
                                     <h6 className="fw-bold mb-3" style={{ color: '#0f172a' }}>Articles ({getCartCount()})</h6>
                                     {cart.map((item, index) => (
@@ -342,15 +442,24 @@ const CheckoutPage = () => {
                                             <FaArrowLeft className="me-2" />Retour
                                         </button>
                                         <button className="btn rounded-pill px-4 py-3"
-                                            onClick={handleCheckout}
+                                            onClick={handlePayment}
                                             disabled={loading}
                                             style={{
-                                                background: 'linear-gradient(145deg, #16a34a, #15803d)',
+                                                background: paymentMethod === 'livraison'
+                                                    ? 'linear-gradient(145deg, #16a34a, #15803d)'
+                                                    : 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                                                 border: 'none', color: 'white', fontWeight: '700',
-                                                fontSize: '1.05rem', boxShadow: '0 8px 25px rgba(22, 163, 74, 0.35)'
+                                                fontSize: '1.05rem',
+                                                boxShadow: paymentMethod === 'livraison'
+                                                    ? '0 8px 25px rgba(22, 163, 74, 0.35)'
+                                                    : '0 8px 25px rgba(67, 97, 238, 0.35)'
                                             }}>
                                             {loading ? (
-                                                <><FaSpinner className="me-2" style={{ animation: 'spin 1s linear infinite' }} />Redirection vers Stripe...</>
+                                                <><FaSpinner className="me-2" style={{ animation: 'spin 1s linear infinite' }} />
+                                                    {paymentMethod === 'livraison' ? 'Confirmation en cours...' : 'Redirection vers Stripe...'}
+                                                </>
+                                            ) : paymentMethod === 'livraison' ? (
+                                                <><FaMoneyBillWave className="me-2" />Confirmer - Paiement à la livraison</>
                                             ) : (
                                                 <><FaLock className="me-2" />Payer {formatPrice(subtotal)} DT</>
                                             )}
@@ -404,12 +513,24 @@ const CheckoutPage = () => {
                                 <div className="mt-4 text-center">
                                     <div className="d-flex align-items-center justify-content-center gap-2 mb-2">
                                         <FaShieldAlt size={14} style={{ color: '#4361ee' }} />
-                                        <small className="text-muted">Paiement securise par Stripe</small>
+                                        <small className="text-muted">
+                                            {paymentMethod === 'livraison'
+                                                ? 'Paiement en espèces à la livraison'
+                                                : 'Paiement sécurisé par Stripe'}
+                                        </small>
                                     </div>
-                                    <div className="d-flex align-items-center justify-content-center gap-3">
-                                        <img src="https://img.icons8.com/color/32/visa.png" alt="Visa" style={{ height: '24px' }} />
-                                        <img src="https://img.icons8.com/color/32/mastercard.png" alt="Mastercard" style={{ height: '24px' }} />
-                                    </div>
+                                    {paymentMethod === 'stripe' && (
+                                        <div className="d-flex align-items-center justify-content-center gap-3">
+                                            <img src="https://img.icons8.com/color/32/visa.png" alt="Visa" style={{ height: '24px' }} />
+                                            <img src="https://img.icons8.com/color/32/mastercard.png" alt="Mastercard" style={{ height: '24px' }} />
+                                        </div>
+                                    )}
+                                    {paymentMethod === 'livraison' && (
+                                        <div className="d-flex align-items-center justify-content-center gap-2">
+                                            <FaMoneyBillWave size={16} style={{ color: '#16a34a' }} />
+                                            <small style={{ color: '#16a34a', fontWeight: '600' }}>Espèces</small>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

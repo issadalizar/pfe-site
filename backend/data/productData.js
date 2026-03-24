@@ -2644,6 +2644,70 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "_id": "69c1640c646ba10016637468",
       "updatedAt": "2026-03-23T16:02:20.230Z"
+    },
+    "69c2f57d26be735163a1b810": {
+      "user": "69c2eb03f88004e2c7807658",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 3,
+          "price": 5490,
+          "_id": "69c2f57d26be735163a1b811"
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 7490,
+          "_id": "69c2f57d26be735163a1b812"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "Seif",
+        "email": "boulabiarseif@gmail.com",
+        "phone": "+21625372382",
+        "address": "ggg",
+        "city": "Bardo",
+        "postalCode": "2000"
+      },
+      "totalAmount": 23960,
+      "paymentMethod": "livraison",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c2f57d26be735163a1b810",
+      "updatedAt": "2026-03-24T20:35:09.139Z"
+    },
+    "69c2f6912e37e0b06d2b6786": {
+      "user": "69c2eb03f88004e2c7807658",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c2f6912e37e0b06d2b6787"
+        },
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c2f6912e37e0b06d2b6788"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "Seif",
+        "email": "boulabiarseif@gmail.com",
+        "phone": "+21625372382",
+        "address": "ggg",
+        "city": "Bardo",
+        "postalCode": "2000"
+      },
+      "totalAmount": 14480,
+      "paymentMethod": "livraison",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c2f6912e37e0b06d2b6786",
+      "updatedAt": "2026-03-24T20:39:45.802Z"
     }
   }
 };

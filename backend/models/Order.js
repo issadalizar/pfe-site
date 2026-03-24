@@ -26,6 +26,11 @@ const orderSchema = new mongoose.Schema({
         required: true,
         min: 0
     },
+    paymentMethod: {
+        type: String,
+        enum: ['stripe', 'livraison'],
+        default: 'stripe'
+    },
     stripeSessionId: {
         type: String
     },
