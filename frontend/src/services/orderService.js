@@ -85,5 +85,20 @@ export const cancelOrder = async (orderId) => {
     const response = await orderAPI.patch(`/${orderId}/cancel`);
     return response.data;
 };
+// ✅ Créer une commande avec paiement à la livraison
+export const createCodOrder = async (items, shippingInfo) => {
+    const itemsWithIds = items.map(item => ({
+        ...item,
+        productId: item.productId || item._id
+    }));
+
+    console.log('📦 Envoi commande COD avec items:', itemsWithIds);
+
+    const response = await orderAPI.post('/checkout-cod', {
+        items: itemsWithIds,
+        shippingInfo
+    });
+    return response.data;
+};
 
 export default orderAPI;

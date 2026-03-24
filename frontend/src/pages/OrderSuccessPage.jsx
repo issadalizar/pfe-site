@@ -4,7 +4,7 @@ import { useCart } from '../context/CartContext';
 import { verifySession } from '../services/orderService';
 import {
     FaCheckCircle, FaStore, FaShoppingCart,
-    FaArrowLeft, FaSpinner, FaFileInvoice
+    FaArrowLeft, FaSpinner, FaFileInvoice, FaMoneyBillWave
 } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -19,24 +19,27 @@ const OrderSuccessPage = () => {
     useEffect(() => {
         const sessionId = searchParams.get('session_id');
         const orderIdParam = searchParams.get('order_id');
+        const paymentType = searchParams.get('payment');
         setOrderId(orderIdParam || '');
 
         const verify = async () => {
             try {
-                if (sessionId) {
+                if (paymentType === 'cod') {
+                    // Commande COD - pas besoin de vérifier Stripe
+                    clearCart();
+                    setVerified(true);
+                } else if (sessionId) {
                     const result = await verifySession(sessionId);
                     if (result.paymentStatus === 'paid') {
                         setVerified(true);
                         clearCart();
                     }
                 } else {
-                    // Pas de session_id, mais on nettoie quand meme le panier
                     clearCart();
                     setVerified(true);
                 }
             } catch (err) {
                 console.error('Verification error:', err);
-                // Meme en cas d'erreur, on considere le paiement OK (Stripe a redirige)
                 clearCart();
                 setVerified(true);
             } finally {
@@ -97,10 +100,25 @@ const OrderSuccessPage = () => {
                             }}>
                                 <FaCheckCircle size={48} color="white" />
                             </div>
-                            <h2 className="fw-bold mb-3" style={{ color: '#0f172a' }}>Commande confirmee !</h2>
-                            <p className="text-muted mb-2" style={{ fontSize: '1.05rem' }}>
-                                Votre paiement a ete traite avec succes.
-                            </p>
+                            <h2 className="fw-bold mb-3" style={{ color: '#0f172a' }}>Commande confirmée !</h2>
+                            {searchParams.get('payment') === 'cod' ? (
+                                <>
+                                    <div className="d-flex align-items-center justify-content-center gap-2 mb-2">
+                                        <FaMoneyBillWave style={{ color: '#16a34a' }} />
+                                        <span className="fw-medium" style={{ color: '#16a34a' }}>Paiement à la livraison</span>
+                                    </div>
+                                    <p className="text-muted mb-2" style={{ fontSize: '1.05rem' }}>
+                                        Votre commande a été enregistrée avec succès.
+                                    </p>
+                                    <p className="text-muted mb-2" style={{ fontSize: '0.9rem' }}>
+                                        Vous paierez en espèces lors de la réception de votre commande.
+                                    </p>
+                                </>
+                            ) : (
+                                <p className="text-muted mb-2" style={{ fontSize: '1.05rem' }}>
+                                    Votre paiement a ete traite avec succes.
+                                </p>
+                            )}
                             {orderId && (
                                 <p className="mb-4" style={{ fontSize: '0.9rem' }}>
                                     <span className="text-muted">N de commande : </span>

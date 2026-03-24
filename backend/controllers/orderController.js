@@ -27,7 +27,7 @@ const updateStockAfterPayment = async (orderId) => {
         }
 
         console.log(`🔄 Mise à jour du stock pour la commande ${orderId}`);
-        
+
         for (const item of order.items) {
             const product = await Product.findById(item.productId);
             if (!product) {
@@ -37,7 +37,7 @@ const updateStockAfterPayment = async (orderId) => {
 
             const ancienStock = product.stock;
             const nouveauStock = Math.max(0, ancienStock - item.quantity);
-            
+
             product.stock = nouveauStock;
             await product.save();
 
@@ -92,18 +92,18 @@ export const createCheckoutSession = async (req, res) => {
         const { items, shippingInfo } = req.body || {};
 
         if (!items || items.length === 0) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Le panier est vide.' 
+            return res.status(400).json({
+                success: false,
+                error: 'Le panier est vide.'
             });
         }
 
-        if (!shippingInfo || !shippingInfo.fullName || !shippingInfo.email || 
-            !shippingInfo.phone || !shippingInfo.address || !shippingInfo.city || 
+        if (!shippingInfo || !shippingInfo.fullName || !shippingInfo.email ||
+            !shippingInfo.phone || !shippingInfo.address || !shippingInfo.city ||
             !shippingInfo.postalCode) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Informations de livraison incomplètes.' 
+            return res.status(400).json({
+                success: false,
+                error: 'Informations de livraison incomplètes.'
             });
         }
 
@@ -205,14 +205,94 @@ export const createCheckoutSession = async (req, res) => {
         console.error('Erreur checkout:', error && error.stack ? error.stack : error);
         try {
             if (!res.headersSent) {
-                res.status(500).json({ 
-                    success: false, 
-                    error: (error && error.message) ? error.message : 'Erreur lors de la création de la session de paiement.' 
+                res.status(500).json({
+                    success: false,
+                    error: (error && error.message) ? error.message : 'Erreur lors de la création de la session de paiement.'
                 });
             }
         } catch (e) {
             console.error('Impossible d\'envoyer la réponse d\'erreur:', e);
         }
+    }
+};
+
+// POST /api/orders/checkout-cod - Créer une commande avec paiement à la livraison
+export const createCodOrder = async (req, res) => {
+    try {
+        const { items, shippingInfo } = req.body || {};
+
+        if (!items || items.length === 0) {
+            return res.status(400).json({ success: false, error: 'Le panier est vide.' });
+        }
+
+        if (!shippingInfo || !shippingInfo.fullName || !shippingInfo.email ||
+            !shippingInfo.phone || !shippingInfo.address || !shippingInfo.city ||
+            !shippingInfo.postalCode) {
+            return res.status(400).json({ success: false, error: 'Informations de livraison incomplètes.' });
+        }
+
+        // Vérifier le stock
+        for (const item of items) {
+            const productName = item.productName || item.product?.nom || item.product?.name || item.product?.title || '';
+            const productPrice = parseFloat(item.price) || 0;
+            if (!productName || (productPrice <= 0 && !item.productId)) {
+                return res.status(400).json({
+                    success: false,
+                    error: `Item invalide: nom ou prix manquant pour "${productName || 'produit'}".`
+                });
+            }
+            let product = null;
+            if (item.productId) {
+                product = await Product.findById(item.productId);
+            }
+            if (!product && productName) {
+                product = await Product.findOne({ nom: productName }) || await Product.findOne({ slug: productName });
+            }
+            if (product) {
+                if (product.stock < (item.quantity || 0)) {
+                    return res.status(400).json({
+                        success: false,
+                        error: `Stock insuffisant pour "${productName}". Disponible: ${product.stock}, demandé: ${item.quantity}`
+                    });
+                }
+            }
+        }
+
+        const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        // Créer la commande COD
+        const order = await Order.create({
+            user: req.user._id,
+            items,
+            shippingInfo,
+            totalAmount,
+            paymentMethod: 'livraison',
+            paymentStatus: 'pending',
+            orderStatus: 'en_attente'
+        });
+
+        try {
+            await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
+        } catch (syncError) {
+            console.error('⚠️ Erreur sync order:', syncError);
+        }
+
+        // Envoyer notification admin
+        sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
+
+        console.log(`📦 Commande COD créée: ${order._id}`);
+
+        res.json({
+            success: true,
+            orderId: order._id
+        });
+
+    } catch (error) {
+        console.error('Erreur checkout COD:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la création de la commande.'
+        });
     }
 };
 
@@ -253,7 +333,7 @@ export const handleStripeWebhook = async (req, res) => {
                 if (order) {
                     // Mettre à jour le stock
                     await updateStockAfterPayment(orderId);
-                    
+
                     // Synchroniser et envoyer les emails
                     await dataSyncService.updateOrderInFile(orderId, order.toObject());
                     sendInvoiceEmail(order).catch(err => console.error('Erreur email:', err));
@@ -279,7 +359,7 @@ export const verifySession = async (req, res) => {
             const orderId = session.metadata?.orderId;
             if (orderId) {
                 const order = await Order.findById(orderId);
-                
+
                 if (order && order.paymentStatus !== 'paid') {
                     order.paymentStatus = 'paid';
                     order.orderStatus = 'confirmee';
@@ -287,7 +367,7 @@ export const verifySession = async (req, res) => {
 
                     // Mettre à jour le stock
                     await updateStockAfterPayment(orderId);
-                    
+
                     await dataSyncService.updateOrderInFile(orderId, order.toObject());
                     sendInvoiceEmail(order).catch(err => console.error('Erreur email:', err));
                 }
@@ -301,9 +381,9 @@ export const verifySession = async (req, res) => {
         });
     } catch (error) {
         console.error('Erreur verification session:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Erreur lors de la vérification.' 
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la vérification.'
         });
     }
 };
@@ -314,15 +394,15 @@ export const getMyOrders = async (req, res) => {
         const orders = await Order.find({ user: req.user._id })
             .sort({ createdAt: -1 });
 
-        res.json({ 
-            success: true, 
-            orders 
+        res.json({
+            success: true,
+            orders
         });
     } catch (error) {
         console.error('Erreur recup commandes:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Erreur lors de la récupération des commandes.' 
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération des commandes.'
         });
     }
 };
@@ -334,29 +414,29 @@ export const getOrderById = async (req, res) => {
             .populate('user', 'client_name email client_code');
 
         if (!order) {
-            return res.status(404).json({ 
-                success: false, 
-                error: 'Commande non trouvée.' 
+            return res.status(404).json({
+                success: false,
+                error: 'Commande non trouvée.'
             });
         }
 
         // Vérifier que l'utilisateur est admin ou propriétaire de la commande
         if (!req.user.isAdmin && order.user._id.toString() !== req.user._id.toString()) {
-            return res.status(403).json({ 
-                success: false, 
-                error: 'Accès non autorisé.' 
+            return res.status(403).json({
+                success: false,
+                error: 'Accès non autorisé.'
             });
         }
 
-        res.json({ 
-            success: true, 
-            order 
+        res.json({
+            success: true,
+            order
         });
     } catch (error) {
         console.error('Erreur détail commande:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Erreur lors de la récupération de la commande.' 
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération de la commande.'
         });
     }
 };
@@ -380,18 +460,18 @@ export const getAllOrders = async (req, res) => {
         res.json({
             success: true,
             orders,
-            pagination: { 
-                page, 
-                limit, 
-                total, 
-                pages: Math.ceil(total / limit) 
+            pagination: {
+                page,
+                limit,
+                total,
+                pages: Math.ceil(total / limit)
             }
         });
     } catch (error) {
         console.error('Erreur liste commandes:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Erreur lors de la récupération des commandes.' 
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération des commandes.'
         });
     }
 };
@@ -403,9 +483,9 @@ export const updateOrderStatus = async (req, res) => {
         const validStatuses = ['en_attente', 'confirmee', 'expediee', 'livree', 'annulee'];
 
         if (!validStatuses.includes(orderStatus)) {
-            return res.status(400).json({ 
-                success: false, 
-                error: 'Statut invalide.' 
+            return res.status(400).json({
+                success: false,
+                error: 'Statut invalide.'
             });
         }
 
@@ -416,9 +496,9 @@ export const updateOrderStatus = async (req, res) => {
         );
 
         if (!order) {
-            return res.status(404).json({ 
-                success: false, 
-                error: 'Commande non trouvée.' 
+            return res.status(404).json({
+                success: false,
+                error: 'Commande non trouvée.'
             });
         }
 
@@ -428,15 +508,15 @@ export const updateOrderStatus = async (req, res) => {
             console.error('⚠️ Erreur sync order:', syncError);
         }
 
-        res.json({ 
-            success: true, 
-            order 
+        res.json({
+            success: true,
+            order
         });
     } catch (error) {
         console.error('Erreur mise à jour statut:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Erreur lors de la mise à jour.' 
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la mise à jour.'
         });
     }
 };
@@ -447,24 +527,24 @@ export const cancelOrder = async (req, res) => {
         const order = await Order.findById(req.params.id);
 
         if (!order) {
-            return res.status(404).json({ 
-                success: false, 
-                error: 'Commande introuvable.' 
+            return res.status(404).json({
+                success: false,
+                error: 'Commande introuvable.'
             });
         }
 
         const orderOwner = order.user || order.client;
         if (!orderOwner) {
-            return res.status(500).json({ 
-                success: false, 
-                error: 'Impossible de vérifier le propriétaire de la commande.' 
+            return res.status(500).json({
+                success: false,
+                error: 'Impossible de vérifier le propriétaire de la commande.'
             });
         }
 
         if (orderOwner.toString() !== req.user._id.toString() && !req.user.isAdmin) {
-            return res.status(403).json({ 
-                success: false, 
-                error: 'Accès non autorisé.' 
+            return res.status(403).json({
+                success: false,
+                error: 'Accès non autorisé.'
             });
         }
 
@@ -487,13 +567,13 @@ export const cancelOrder = async (req, res) => {
         // Restaurer le stock si la commande était payée
         if (order.paymentStatus === 'paid' && order.stockUpdated) {
             console.log(`🔄 Restauration du stock pour la commande annulée ${order._id}`);
-            
+
             for (const item of order.items) {
                 const product = await Product.findById(item.productId);
                 if (product) {
                     const ancienStock = product.stock;
                     const nouveauStock = ancienStock + item.quantity;
-                    
+
                     product.stock = nouveauStock;
                     await product.save();
 
@@ -516,7 +596,7 @@ export const cancelOrder = async (req, res) => {
                     }
                 }
             }
-            
+
             order.stockUpdated = false;
         }
 
@@ -529,17 +609,17 @@ export const cancelOrder = async (req, res) => {
             console.error('⚠️ Erreur sync order:', syncError);
         }
 
-        res.json({ 
-            success: true, 
-            message: 'Commande annulée avec succès.', 
-            order 
+        res.json({
+            success: true,
+            message: 'Commande annulée avec succès.',
+            order
         });
 
     } catch (error) {
         console.error('Erreur annulation commande:', error);
-        res.status(500).json({ 
-            success: false, 
-            error: 'Erreur lors de l\'annulation.' 
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de l\'annulation.'
         });
     }
 };
