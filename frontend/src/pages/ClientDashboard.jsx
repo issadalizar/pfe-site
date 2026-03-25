@@ -869,6 +869,42 @@ const ClientDashboard = () => {
                                                             </div>
                                                         </div>
 
+                                                        {/* ── Alerte date limite retour/échange ── */}
+                                                        {order.orderStatus === 'livree' && order.returnDeadline && (() => {
+                                                            const deadline = new Date(order.returnDeadline);
+                                                            const now = new Date();
+                                                            const isExpired = deadline < now;
+                                                            const daysLeft = Math.ceil((deadline - now) / (1000 * 60 * 60 * 24));
+                                                            return (
+                                                                <div style={{
+                                                                    background: isExpired
+                                                                        ? 'linear-gradient(135deg, #fef2f2, #fee2e2)'
+                                                                        : 'linear-gradient(135deg, #fffbeb, #fef3c7)',
+                                                                    border: `1px solid ${isExpired ? '#fecaca' : '#fde68a'}`,
+                                                                    borderRadius: '10px',
+                                                                    padding: '8px 14px',
+                                                                    marginBottom: '8px',
+                                                                    display: 'flex',
+                                                                    alignItems: 'center',
+                                                                    gap: '10px',
+                                                                    fontSize: '0.82rem'
+                                                                }}>
+                                                                    <span style={{ fontSize: '1.1rem' }}>{isExpired ? '⛔' : '⚠️'}</span>
+                                                                    <div>
+                                                                        {isExpired ? (
+                                                                            <span style={{ color: '#991b1b', fontWeight: 600 }}>
+                                                                                Le délai pour demander un retour/échange est expiré depuis le {deadline.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}.
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span style={{ color: '#92400e', fontWeight: 600 }}>
+                                                                                Vous avez jusqu'au <strong>{deadline.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}</strong> pour demander un retour ou échange.
+                                                                                {daysLeft <= 3 && <span style={{ color: '#dc2626' }}> ({daysLeft} jour{daysLeft > 1 ? 's' : ''} restant{daysLeft > 1 ? 's' : ''} !)</span>}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })()}
                                                         <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
                                                             <span className="text-muted" style={{ fontSize: '0.85rem' }}>
                                                                 {order.items.length} article{order.items.length > 1 ? 's' : ''}
