@@ -47,6 +47,14 @@ export const createReturnRequest = async (req, res) => {
             });
         }
 
+        // Vérifier la date limite de retour
+        if (order.returnDeadline && new Date() > new Date(order.returnDeadline)) {
+            return res.status(400).json({
+                success: false,
+                error: 'Le délai pour effectuer un retour/échange est dépassé.'
+            });
+        }
+
         // Vérifier qu'il n'y a pas déjà une demande en cours pour cette commande
         const existingRequest = await ReturnRequest.findOne({
             order: orderId,

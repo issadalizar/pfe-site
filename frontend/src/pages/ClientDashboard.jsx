@@ -19,7 +19,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const ClientDashboard = () => {
     const navigate = useNavigate();
     const { user, logout, updateProfile } = useAuth();
-    const { cart, getCartCount, getCartTotal } = useCart();
+    const { cart, getCartCount, getCartTotal, updateQuantity, removeFromCart } = useCart();
     const [activeTab, setActiveTab] = useState('profile');
     const [isEditing, setIsEditing] = useState(false);
     const [saving, setSaving] = useState(false);
@@ -681,13 +681,19 @@ const ClientDashboard = () => {
                                             <FaShoppingCart className="me-2" style={{ color: '#4361ee' }} />
                                             Mon Panier ({getCartCount()} articles)
                                         </h4>
-                                        <button
-                                            className="btn btn-outline-primary rounded-pill px-4"
-                                            onClick={() => navigate('/cart')}
-                                        >
-                                            Voir le panier complet
-                                            <FaChevronRight className="ms-2" size={12} />
-                                        </button>
+                                        {cart.length > 0 && (
+                                            <button
+                                                className="btn rounded-pill px-4"
+                                                onClick={() => navigate('/checkout')}
+                                                style={{
+                                                    background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                                                    border: 'none', color: 'white', fontWeight: 600, fontSize: '0.9rem'
+                                                }}
+                                            >
+                                                Passer la commande
+                                                <FaChevronRight className="ms-2" size={12} />
+                                            </button>
+                                        )}
                                     </div>
 
                                     {cart.length === 0 ? (
@@ -715,7 +721,7 @@ const ClientDashboard = () => {
                                         </div>
                                     ) : (
                                         <>
-                                            {cart.slice(0, 5).map((item, index) => (
+                                            {cart.map((item, index) => (
                                                 <div key={index} className="d-flex align-items-center gap-3 p-3 mb-2 rounded-3"
                                                     style={{ backgroundColor: '#f8fafc', transition: 'all 0.2s' }}
                                                     onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#eef2ff'}
@@ -740,18 +746,44 @@ const ClientDashboard = () => {
                                                                 ? item.product.title.substring(0, 40) + '...'
                                                                 : item.product.title}
                                                         </div>
-                                                        <small className="text-muted">Qte: {item.quantity}</small>
+                                                        <div className="d-flex align-items-center gap-2 mt-1">
+                                                            <button className="btn btn-sm" style={{
+                                                                width: '26px', height: '26px', padding: 0,
+                                                                borderRadius: '8px', border: '1px solid #e2e8f0',
+                                                                backgroundColor: '#f8fafc', fontSize: '0.85rem',
+                                                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                            }} onClick={() => updateQuantity(item.product.title, item.quantity - 1)}>
+                                                                −
+                                                            </button>
+                                                            <span style={{ fontSize: '0.85rem', fontWeight: 600, minWidth: '20px', textAlign: 'center' }}>
+                                                                {item.quantity}
+                                                            </span>
+                                                            <button className="btn btn-sm" style={{
+                                                                width: '26px', height: '26px', padding: 0,
+                                                                borderRadius: '8px', border: '1px solid #e2e8f0',
+                                                                backgroundColor: '#f8fafc', fontSize: '0.85rem',
+                                                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                                            }} onClick={() => updateQuantity(item.product.title, item.quantity + 1)}>
+                                                                +
+                                                            </button>
+                                                            <button className="btn btn-sm ms-1" style={{
+                                                                width: '26px', height: '26px', padding: 0,
+                                                                borderRadius: '8px', border: 'none',
+                                                                backgroundColor: '#fee2e2', color: '#dc2626',
+                                                                fontSize: '0.7rem', display: 'flex',
+                                                                alignItems: 'center', justifyContent: 'center'
+                                                            }} onClick={() => removeFromCart(item.product.title)}
+                                                                title="Supprimer">
+                                                                <FaTimes size={10} />
+                                                            </button>
+                                                        </div>
                                                     </div>
                                                     <div className="fw-bold" style={{ color: '#4361ee' }}>
                                                         {formatPrice(item.product.price * item.quantity)} DT
                                                     </div>
                                                 </div>
                                             ))}
-                                            {cart.length > 5 && (
-                                                <p className="text-center text-muted mt-3">
-                                                    + {cart.length - 5} autres articles
-                                                </p>
-                                            )}
+
                                             <div className="mt-3 p-3 rounded-3" style={{ backgroundColor: '#eef2ff', border: '1px solid #c7d2fe' }}>
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <span className="fw-bold" style={{ color: '#0f172a' }}>Total estime</span>

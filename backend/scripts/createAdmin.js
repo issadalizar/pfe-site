@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import User from '../models/User.js';
+import Account from '../models/Account.js';
 
 dotenv.config();
 
@@ -20,18 +21,41 @@ const createAdmin = async () => {
         await mongoose.connect(mongoURI);
         console.log('Connecté à MongoDB !\n');
 
-        // Vérifier si un admin existe déjà
-        const existingAdmin = await User.findOne({ email: ADMIN_DATA.email });
+        // Vérifier si un compte admin existe déjà
+        const existingAccount = await Account.findOne({ email: ADMIN_DATA.email.toLowerCase() });
 
-        if (existingAdmin) {
+        if (existingAccount) {
             console.log('⚠️  Un compte admin existe déjà avec cet email :');
-            console.log(`   Email: ${existingAdmin.email}`);
-            console.log(`   Nom: ${existingAdmin.client_name}`);
-            console.log(`   Code: ${existingAdmin.client_code}`);
+            console.log(`   Email: ${existingAccount.email}`);
             console.log('\n   Aucune modification effectuée.');
         } else {
-            const admin = new User(ADMIN_DATA);
-            await admin.save();
+            // 1. Créer le User admin
+            let adminUser = await User.findOne({ client_code: ADMIN_DATA.client_code });
+            
+            if (!adminUser) {
+                adminUser = new User({
+                    client_code: ADMIN_DATA.client_code,
+                    client_name: ADMIN_DATA.client_name,
+                    isAdmin: true,
+                });
+                await adminUser.save();
+                console.log('✅ Utilisateur admin créé.');
+            } else {
+                // S'assurer qu'il est bien admin
+                adminUser.isAdmin = true;
+                await adminUser.save();
+                console.log('✅ Utilisateur admin existant mis à jour.');
+            }
+
+            // 2. Créer le Account associé
+            const account = new Account({
+                email: ADMIN_DATA.email.toLowerCase(),
+                password: ADMIN_DATA.password,
+                actif: true,
+                user: adminUser._id
+            });
+            await account.save();
+
             console.log('✅ Compte administrateur créé avec succès !');
             console.log(`   Email: ${ADMIN_DATA.email}`);
             console.log(`   Mot de passe: ${ADMIN_DATA.password}`);

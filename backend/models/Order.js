@@ -31,6 +31,10 @@ const orderSchema = new mongoose.Schema({
         enum: ['stripe', 'livraison'],
         default: 'stripe'
     },
+    returnDeadline: {
+        type: Date,
+        default: null
+    },
     stripeSessionId: {
         type: String
     },
