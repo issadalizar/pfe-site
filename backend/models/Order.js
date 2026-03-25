@@ -49,7 +49,7 @@ const orderSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     }
-});
+}, { timestamps: true });
 
 // Index pour améliorer les performances
 orderSchema.index({ user: 1, createdAt: -1 });
