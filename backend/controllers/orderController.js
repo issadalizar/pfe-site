@@ -479,7 +479,7 @@ export const getAllOrders = async (req, res) => {
 // PATCH /api/orders/:id/status - Mettre à jour le statut (admin)
 export const updateOrderStatus = async (req, res) => {
     try {
-        const { orderStatus } = req.body;
+        const { orderStatus, returnDeadline, paymentStatus } = req.body;
         const validStatuses = ['en_attente', 'confirmee', 'expediee', 'livree', 'annulee'];
 
         if (!validStatuses.includes(orderStatus)) {
@@ -489,9 +489,17 @@ export const updateOrderStatus = async (req, res) => {
             });
         }
 
+        const updateData = { orderStatus };
+        if (returnDeadline !== undefined) {
+            updateData.returnDeadline = returnDeadline ? new Date(returnDeadline) : null;
+        }
+        if (paymentStatus && ['pending', 'paid', 'failed'].includes(paymentStatus)) {
+            updateData.paymentStatus = paymentStatus;
+        }
+
         const order = await Order.findByIdAndUpdate(
             req.params.id,
-            { orderStatus },
+            updateData,
             { new: true }
         );
 

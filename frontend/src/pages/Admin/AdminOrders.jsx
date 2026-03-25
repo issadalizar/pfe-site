@@ -83,6 +83,35 @@ export default function AdminOrders() {
         }
     };
 
+    const updatePaymentStatus = async (orderId, newPaymentStatus) => {
+        setUpdatingOrder(orderId);
+        try {
+            const token = localStorage.getItem('token');
+            const order = orders.find(o => o._id === orderId);
+            const res = await fetch(`${API_URL}/${orderId}/status`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    orderStatus: order?.orderStatus || 'en_attente',
+                    paymentStatus: newPaymentStatus
+                })
+            });
+            const data = await res.json();
+            if (data.success) {
+                setOrders(prev => prev.map(o =>
+                    o._id === orderId ? { ...o, paymentStatus: newPaymentStatus } : o
+                ));
+            }
+        } catch (err) {
+            console.error('Erreur mise a jour paiement:', err);
+        } finally {
+            setUpdatingOrder(null);
+        }
+    };
+
     const saveDeadline = async (orderId) => {
         const deadline = deadlines[orderId];
         if (!deadline) return;
@@ -270,9 +299,19 @@ export default function AdminOrders() {
                                                     </td>
                                                     <td><span className="fw-bold">{formatPrice(order.totalAmount)} DT</span></td>
                                                     <td>
-                                                        <span className="badge rounded-pill px-3" style={{ backgroundColor: ps.bg, color: ps.color, fontSize: '0.75rem' }}>
-                                                            {ps.label}
-                                                        </span>
+                                                        <select className="form-select form-select-sm" style={{
+                                                            width: '130px', fontSize: '0.8rem',
+                                                            backgroundColor: ps.bg, color: ps.color,
+                                                            border: 'none', fontWeight: 600
+                                                        }}
+                                                            value={order.paymentStatus}
+                                                            onClick={e => e.stopPropagation()}
+                                                            onChange={e => updatePaymentStatus(order._id, e.target.value)}
+                                                            disabled={updatingOrder === order._id}>
+                                                            <option value="pending">En attente</option>
+                                                            <option value="paid">Payé</option>
+                                                            <option value="failed">Échoué</option>
+                                                        </select>
                                                     </td>
                                                     <td>
                                                         <select className="form-select form-select-sm" style={{
