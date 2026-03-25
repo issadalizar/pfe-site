@@ -2708,6 +2708,164 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "_id": "69c2f6912e37e0b06d2b6786",
       "updatedAt": "2026-03-24T20:39:45.802Z"
+    },
+    "69c3a5183b605418014d84d3": {
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "_id": "69c3a5183b605418014d84d3",
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c3a5183b605418014d84d4"
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 7490,
+          "_id": "69c3a5183b605418014d84d5"
+        }
+      ],
+      "totalAmount": 12980,
+      "paymentMethod": "livraison",
+      "paymentStatus": "pending",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "updatedAt": "2026-03-25T09:04:53.836Z"
+    },
+    "69b3644bdbb2d90d9dc47a73": {
+      "shippingInfo": {
+        "fullName": "teeesttttt",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "paymentMethod": "stripe",
+      "stockUpdated": false,
+      "_id": "69b3644bdbb2d90d9dc47a73",
+      "user": "69a962aaca6c072acbba8669",
+      "items": [
+        {
+          "_id": "69c3ad7a7a3f8d6d507176ee",
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center.png",
+          "quantity": 1,
+          "price": 8990
+        },
+        {
+          "_id": "69c3ad7a7a3f8d6d507176ef",
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+          "quantity": 1,
+          "price": 5490
+        }
+      ],
+      "totalAmount": 14480,
+      "stripeSessionId": "cs_test_b1wVgsN23q16eQH2GLWlbZp8T5BMqP7CAaSKsHdh5D0EUDpMuNwWlKpek9",
+      "paymentStatus": "pending",
+      "orderStatus": "livree",
+      "createdAt": "2026-03-13T01:11:39.769Z",
+      "updatedAt": "2026-03-25T09:40:10.586Z"
+    },
+    "69c3ae8f0c0549a28c26d467": {
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c3ae8f0c0549a28c26d468"
+        },
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c3ae8f0c0549a28c26d469"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "totalAmount": 14480,
+      "paymentMethod": "livraison",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c3ae8f0c0549a28c26d467",
+      "updatedAt": "2026-03-25T09:44:47.502Z"
+    },
+    "69c3af2023276b03816a7b80": {
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c3af2023276b03816a7b81"
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 7490,
+          "_id": "69c3af2023276b03816a7b82"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "totalAmount": 12980,
+      "paymentMethod": "livraison",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c3af2023276b03816a7b80",
+      "updatedAt": "2026-03-25T09:47:12.350Z"
+    },
+    "69c3afac31a50a44d4b45180": {
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c3afac31a50a44d4b45181"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "livraison",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c3afac31a50a44d4b45180",
+      "updatedAt": "2026-03-25T09:49:32.822Z"
     }
   }
 };
