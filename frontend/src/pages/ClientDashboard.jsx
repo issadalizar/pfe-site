@@ -924,17 +924,48 @@ const ClientDashboard = () => {
 
                                                                 {/* ── Bouton Retour/Échange (livrée) ── */}
                                                                 {order.orderStatus === 'livree' && order.paymentStatus === 'paid' && (
-                                                                    <button
-                                                                        className="btn btn-sm rounded-pill px-3"
-                                                                        style={{
-                                                                            background: 'linear-gradient(145deg, #dc2626, #991b1b)',
-                                                                            border: 'none', color: 'white', fontSize: '0.75rem', fontWeight: 600
-                                                                        }}
-                                                                        onClick={(e) => { e.stopPropagation(); openReturnModal(order); }}
-                                                                    >
-                                                                        <FaExchangeAlt className="me-1" size={10} />
-                                                                        Retour/Échange
-                                                                    </button>
+                                                                    (() => {
+                                                                        const deadlinePassed = order.returnDeadline && new Date(order.returnDeadline) < new Date();
+                                                                        if (deadlinePassed) {
+                                                                            return (
+                                                                                <span style={{
+                                                                                    fontSize: '0.72rem', color: '#991b1b',
+                                                                                    backgroundColor: '#fee2e2', border: '1px solid #fecaca',
+                                                                                    borderRadius: '20px', padding: '3px 10px', fontWeight: 500
+                                                                                }}>
+                                                                                    <FaClock size={9} className="me-1" />Délai retour expiré
+                                                                                </span>
+                                                                            );
+                                                                        }
+                                                                        return (
+                                                                            <div className="d-flex align-items-center gap-2">
+                                                                                {order.returnDeadline && (
+                                                                                    <span style={{
+                                                                                        fontSize: '0.72rem', color: '#c2410c',
+                                                                                        backgroundColor: '#fff7ed', border: '1px solid #fed7aa',
+                                                                                        borderRadius: '20px', padding: '3px 10px', fontWeight: 500,
+                                                                                        display: 'flex', alignItems: 'center', gap: '4px'
+                                                                                    }}>
+                                                                                        <FaCalendarAlt size={9} />
+                                                                                        Avant le {new Date(order.returnDeadline).toLocaleDateString('fr-FR', {
+                                                                                            day: '2-digit', month: 'short'
+                                                                                        })}
+                                                                                    </span>
+                                                                                )}
+                                                                                <button
+                                                                                    className="btn btn-sm rounded-pill px-3"
+                                                                                    style={{
+                                                                                        background: 'linear-gradient(145deg, #dc2626, #991b1b)',
+                                                                                        border: 'none', color: 'white', fontSize: '0.75rem', fontWeight: 600
+                                                                                    }}
+                                                                                    onClick={(e) => { e.stopPropagation(); openReturnModal(order); }}
+                                                                                >
+                                                                                    <FaExchangeAlt className="me-1" size={10} />
+                                                                                    Retour/Échange
+                                                                                </button>
+                                                                            </div>
+                                                                        );
+                                                                    })()
                                                                 )}
 
                                                                 <span className="fw-bold" style={{ color: '#4361ee' }}>
