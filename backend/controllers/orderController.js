@@ -8,7 +8,7 @@ import notificationService from '../services/notificationService.js';
 
 const getStripe = () => {
     const key = process.env.STRIPE_SECRET_KEY;
-    if (!key || (typeof key === 'string' && key.trim() === '')) return null;
+    if (!key || key.trim() === '') return null; // ← returns null silently
     return new Stripe(key);
 };
 
@@ -86,7 +86,7 @@ export const createCheckoutSession = async (req, res) => {
     try {
         const stripe = getStripe();
         if (!stripe) {
-            return sendError(503, 'Paiement Stripe non configuré. Contactez l\'administrateur.');
+            return sendError(500, 'Paiement Stripe non configuré. Contactez l\'administrateur.');
         }
 
         const { items, shippingInfo } = req.body || {};

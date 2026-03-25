@@ -56,10 +56,7 @@ app.use(cors({
 
 // Webhook Stripe (doit etre AVANT express.json car Stripe a besoin du raw body)
 app.post('/api/orders/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
-
 app.use(express.json());
-// Route checkout explicite pour éviter 404 (POST /api/orders/checkout)
-app.post('/api/orders/checkout', protect, createCheckoutSession);
 app.use(express.urlencoded({ extended: true }));
 
 // ========== NOUVEAU: Configuration pour les fichiers 3D ==========
