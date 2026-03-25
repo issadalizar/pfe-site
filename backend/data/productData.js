@@ -2709,6 +2709,35 @@ export const cncProductDetails = {
       "_id": "69c2f6912e37e0b06d2b6786",
       "updatedAt": "2026-03-24T20:39:45.802Z"
     },
+<<<<<<< Updated upstream
+    "69c39dca8c3ef56541c7916e": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+=======
+<<<<<<< HEAD
+    "69c3a5183b605418014d84d3": {
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "_id": "69c3a5183b605418014d84d3",
+      "user": "69c323a5fd8d70d1bab2b6c3",
+>>>>>>> Stashed changes
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 7490,
+          "_id": "69c39dca8c3ef56541c7916f"
+        }
+      ],
+<<<<<<< Updated upstream
+=======
+      "totalAmount": 12980,
+=======
     "69c39dca8c3ef56541c7916e": {
       "user": "69b883e5d6e37dfe1f2e3418",
       "items": [
@@ -2719,6 +2748,7 @@ export const cncProductDetails = {
           "_id": "69c39dca8c3ef56541c7916f"
         }
       ],
+>>>>>>> Stashed changes
       "shippingInfo": {
         "fullName": "salma balgouthi",
         "email": "salmabalgouthi84@gmail.com",
@@ -2755,10 +2785,95 @@ export const cncProductDetails = {
         }
       ],
       "totalAmount": 7490,
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6d12bed (update visualisation)
+>>>>>>> Stashed changes
       "paymentMethod": "livraison",
       "paymentStatus": "pending",
       "orderStatus": "livree",
       "stockUpdated": false,
+<<<<<<< Updated upstream
+      "updatedAt": "2026-03-25T08:35:48.350Z"
+=======
+<<<<<<< HEAD
+      "updatedAt": "2026-03-25T09:04:53.836Z"
+>>>>>>> Stashed changes
+    },
+    "69c39f44e7d152c068e48364": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c39f44e7d152c068e48365"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c39f44e7d152c068e48364",
+      "updatedAt": "2026-03-25T08:39:32.430Z"
+    },
+    "69c3a0593310647ce5ecc527": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c3a0593310647ce5ecc528"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c3a0593310647ce5ecc527",
+      "updatedAt": "2026-03-25T08:44:10.044Z"
+    },
+    "69c3a328e42ceb6c5b54f580": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c3a328e42ceb6c5b54f581"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+<<<<<<< Updated upstream
+=======
+      "totalAmount": 5490,
+=======
       "updatedAt": "2026-03-25T08:35:48.350Z"
     },
     "69c39f44e7d152c068e48364": {
@@ -2831,6 +2946,7 @@ export const cncProductDetails = {
         "city": "tunis",
         "postalCode": "2000"
       },
+>>>>>>> Stashed changes
       "totalAmount": 8990,
       "paymentMethod": "stripe",
       "paymentStatus": "pending",
@@ -2936,12 +3052,26 @@ export const cncProductDetails = {
         "postalCode": "2000"
       },
       "totalAmount": 8990,
+<<<<<<< Updated upstream
+=======
+>>>>>>> 6d12bed (update visualisation)
+>>>>>>> Stashed changes
       "paymentMethod": "livraison",
       "paymentStatus": "pending",
       "orderStatus": "en_attente",
       "stockUpdated": false,
+<<<<<<< Updated upstream
       "_id": "69c3b21bf6f0ecf3b2048d7b",
       "updatedAt": "2026-03-25T09:59:55.276Z"
+=======
+<<<<<<< HEAD
+      "_id": "69c3afac31a50a44d4b45180",
+      "updatedAt": "2026-03-25T09:49:32.822Z"
+=======
+      "_id": "69c3b21bf6f0ecf3b2048d7b",
+      "updatedAt": "2026-03-25T09:59:55.276Z"
+>>>>>>> 6d12bed (update visualisation)
+>>>>>>> Stashed changes
     }
   }
 };
