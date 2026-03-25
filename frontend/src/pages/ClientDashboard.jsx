@@ -59,6 +59,7 @@ const ClientDashboard = () => {
     const [orderToCancel, setOrderToCancel] = useState(null);
     const [cancelLoading, setCancelLoading] = useState(false);
     const [cancelError, setCancelError] = useState('');
+    const [now, setNow] = useState(Date.now());
 
     // Sync editData quand user change
     useEffect(() => {
@@ -116,34 +117,42 @@ const ClientDashboard = () => {
         }
     }, [returnSuccess]);
 
+    // Compteur live pour les commandes COD (mise à jour chaque seconde)
+    useEffect(() => {
+        const interval = setInterval(() => setNow(Date.now()), 1000);
+        return () => clearInterval(interval);
+    }, []);
+
     // ─── Logique annulation ──────────────────────────────────────────────────
 
     /**
      * Retourne true si la commande a été passée il y a moins de 24h
      * et que son statut autorise encore l'annulation.
      */
-    const canCancelOrder = (order) => {
+    const canCancelOrder = (order) => {https://github.com/issadalizar/pfe-site/pull/2/conflict?name=frontend%252Fsrc%252Fpages%252FClientDashboard.jsx&ancestor_oid=ac40515552bde59bcca968e19ffdd056886a46d0&base_oid=f3530b5072c974446997c7acc5aa16904a019280&head_oid=7bdd1422afc9e92f1ef6f805daaa7ac83d0d585f
+        // Seulement les commandes COD (paiement à la livraison)
         // Seulement pour les commandes payées à la livraison (COD)
         if (order.paymentMethod !== 'livraison') return false;
         const cancellableStatuses = ['en_attente', 'confirmee'];
         if (!cancellableStatuses.includes(order.orderStatus)) return false;
         const hoursSinceCreation =
-            (Date.now() - new Date(order.createdAt).getTime()) / (1000 * 60 * 60);
+            (now - new Date(order.createdAt).getTime()) / (1000 * 60 * 60);
         return hoursSinceCreation < 24;
     };
 
     /**
-     * Calcule le temps restant avant expiration de la fenêtre d'annulation.
-     * Retourne une chaîne lisible, ex : "18h 34min restantes"
+     * Calcule le temps restant avec heures, minutes et secondes.
      */
     const getTimeRemaining = (createdAt) => {
         const msRemaining =
-            24 * 60 * 60 * 1000 - (Date.now() - new Date(createdAt).getTime());
+            24 * 60 * 60 * 1000 - (now - new Date(createdAt).getTime());
         if (msRemaining <= 0) return null;
         const hours = Math.floor(msRemaining / (1000 * 60 * 60));
         const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
-        if (hours > 0) return `${hours}h ${minutes}min restantes`;
-        return `${minutes}min restantes`;
+        const seconds = Math.floor((msRemaining % (1000 * 60)) / 1000);
+        if (hours > 0) return `${hours}h ${String(minutes).padStart(2, '0')}min ${String(seconds).padStart(2, '0')}s`;
+        if (minutes > 0) return `${minutes}min ${String(seconds).padStart(2, '0')}s`;
+        return `${seconds}s`;
     };
 
     const openCancelModal = (order) => {
@@ -846,6 +855,11 @@ const ClientDashboard = () => {
                                                                 </small>
                                                             </div>
                                                             <div className="d-flex gap-2 flex-wrap justify-content-end">
+                                                                {order.paymentMethod === 'livraison' && (
+                                                                    <span className="badge rounded-pill px-3 py-1" style={{ backgroundColor: '#f0fdf4', color: '#16a34a', fontSize: '0.75rem', border: '1px solid #bbf7d0' }}>
+                                                                        💰 À la livraison
+                                                                    </span>
+                                                                )}
                                                                 <span className="badge rounded-pill px-3 py-1" style={{ backgroundColor: ps.bg, color: ps.color, fontSize: '0.75rem' }}>
                                                                     <FaCreditCard className="me-1" size={10} />{ps.label}
                                                                 </span>

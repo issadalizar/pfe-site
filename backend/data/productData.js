@@ -2709,6 +2709,8 @@ export const cncProductDetails = {
       "_id": "69c2f6912e37e0b06d2b6786",
       "updatedAt": "2026-03-24T20:39:45.802Z"
     },
+    "69c431e28db6a6cce061f283": {
+      "user": "69c2eb03f88004e2c7807658",
     "69c3a5183b605418014d84d3": {
       "shippingInfo": {
         "fullName": "dalizar aissa ",
@@ -2725,12 +2727,14 @@ export const cncProductDetails = {
           "productName": "PC1 Baby CNC Lathe-Mach",
           "quantity": 1,
           "price": 5490,
+          "_id": "69c431e28db6a6cce061f284"
           "_id": "69c3a5183b605418014d84d4"
         },
         {
           "productName": "De4-Eco (KC4S) Bench CNC Lathe",
           "quantity": 1,
           "price": 7490,
+          "_id": "69c431e28db6a6cce061f285"
           "_id": "69c3a5183b605418014d84d5"
         }
       ],
@@ -2790,6 +2794,18 @@ export const cncProductDetails = {
           "productName": "De2-Ultra Mini CNC Turning Center",
           "quantity": 1,
           "price": 8990,
+          "_id": "69c431e28db6a6cce061f286"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "Seif",
+        "email": "boulabiarseif@gmail.com",
+        "phone": "+21625372382",
+        "address": "ggg",
+        "city": "Bardo",
+        "postalCode": "2000"
+      },
+      "totalAmount": 21970,
           "_id": "69c3ae8f0c0549a28c26d469"
         }
       ],
@@ -2806,6 +2822,20 @@ export const cncProductDetails = {
       "paymentStatus": "pending",
       "orderStatus": "en_attente",
       "stockUpdated": false,
+      "_id": "69c431e28db6a6cce061f283",
+      "updatedAt": "2026-03-25T19:05:06.382Z"
+    },
+    "69c4327e573bbb330410f0c4": {
+      "shippingInfo": {
+        "fullName": "Seif",
+        "email": "boulabiarseif@gmail.com",
+        "phone": "+21625372382",
+        "address": "ggg",
+        "city": "TUNIS",
+        "postalCode": "2052"
+      },
+      "_id": "69c4327e573bbb330410f0c4",
+      "user": "69c2eb03f88004e2c7807658",
       "_id": "69c3ae8f0c0549a28c26d467",
       "updatedAt": "2026-03-25T09:44:47.502Z"
     },
@@ -2816,6 +2846,22 @@ export const cncProductDetails = {
           "productName": "PC1 Baby CNC Lathe-Mach",
           "quantity": 1,
           "price": 5490,
+          "_id": "69c4327e573bbb330410f0c5"
+        },
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c4327e573bbb330410f0c6"
+        }
+      ],
+      "totalAmount": 14480,
+      "paymentMethod": "livraison",
+      "paymentStatus": "pending",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-03-25T19:07:42.250Z",
+      "updatedAt": "2026-03-25T19:07:59.312Z"
           "_id": "69c3af2023276b03816a7b81"
         },
         {
