@@ -2999,6 +2999,991 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "createdAt": "2026-03-25T21:59:56.231Z",
       "updatedAt": "2026-03-25T22:17:22.944Z"
+    },
+    "69c57b40604f933a4023e8d5": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c57b40604f933a4023e8d6"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c57b40604f933a4023e8d5",
+      "createdAt": "2026-03-26T18:30:24.316Z",
+      "updatedAt": "2026-03-26T18:30:24.358Z"
+    },
+    "69c57b621f2b2de66b8383f8": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c57b621f2b2de66b8383f9"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c57b621f2b2de66b8383f8",
+      "createdAt": "2026-03-26T18:30:58.192Z",
+      "updatedAt": "2026-03-26T18:30:58.218Z"
+    },
+    "69c57bac3f0f4aacfede8d9f": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 10,
+          "price": 8990,
+          "_id": "69c57bac3f0f4aacfede8da0"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 89900,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c57bac3f0f4aacfede8d9f",
+      "createdAt": "2026-03-26T18:32:12.527Z",
+      "updatedAt": "2026-03-26T18:32:12.766Z"
+    },
+    "69c57bcac73c4edc76abf620": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 9,
+          "price": 8990,
+          "_id": "69c57bcac73c4edc76abf621"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 80910,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c57bcac73c4edc76abf620",
+      "createdAt": "2026-03-26T18:32:42.981Z",
+      "updatedAt": "2026-03-26T18:32:43.009Z"
+    },
+    "69c57be2cd963d0b51e4d485": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c57be2cd963d0b51e4d486"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c57be2cd963d0b51e4d485",
+      "createdAt": "2026-03-26T18:33:06.259Z",
+      "updatedAt": "2026-03-26T18:33:06.283Z"
+    },
+    "69c57d0e299e335a2ce406c5": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c57d0e299e335a2ce406c6"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c57d0e299e335a2ce406c5",
+      "createdAt": "2026-03-26T18:38:06.629Z",
+      "updatedAt": "2026-03-26T18:38:06.656Z"
+    },
+    "69c58354757a8639ac292a8a": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c58354757a8639ac292a8b"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c58354757a8639ac292a8a",
+      "createdAt": "2026-03-26T19:04:52.898Z",
+      "updatedAt": "2026-03-26T19:04:52.924Z"
+    },
+    "69c58434cb42f2d26b5e3326": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c58434cb42f2d26b5e3327"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c58434cb42f2d26b5e3326",
+      "createdAt": "2026-03-26T19:08:36.330Z",
+      "updatedAt": "2026-03-26T19:08:36.355Z"
+    },
+    "69c5858a2759cce5315e57af": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c5858a2759cce5315e57b0"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c5858a2759cce5315e57af",
+      "createdAt": "2026-03-26T19:14:18.896Z",
+      "updatedAt": "2026-03-26T19:14:18.921Z"
+    },
+    "69c586751efb589e0cdf23ff": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c586751efb589e0cdf2400"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c586751efb589e0cdf23ff",
+      "createdAt": "2026-03-26T19:18:13.653Z",
+      "updatedAt": "2026-03-26T19:18:13.679Z"
+    },
+    "69c5878f0cf63e648b0e3bd0": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c5878f0cf63e648b0e3bd1"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c5878f0cf63e648b0e3bd0",
+      "createdAt": "2026-03-26T19:22:56.933Z",
+      "updatedAt": "2026-03-26T19:22:57.409Z"
+    },
+    "69c58795847910d6aa8ff069": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c58795847910d6aa8ff06a"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c58795847910d6aa8ff069",
+      "createdAt": "2026-03-26T19:23:01.639Z",
+      "updatedAt": "2026-03-26T19:23:01.657Z"
+    },
+    "69c58c11a0fec770128a5b63": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c58c11a0fec770128a5b64"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c58c11a0fec770128a5b63",
+      "createdAt": "2026-03-26T19:42:09.230Z",
+      "updatedAt": "2026-03-26T19:42:09.249Z"
+    },
+    "69c58f0d43235d7955cd55ad": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c58f0d43235d7955cd55ae"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c58f0d43235d7955cd55ad",
+      "createdAt": "2026-03-26T19:54:53.824Z",
+      "updatedAt": "2026-03-26T19:54:53.842Z"
+    },
+    "69c58f6cd97ef38990966a6d": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c58f6cd97ef38990966a6e"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c58f6cd97ef38990966a6d",
+      "createdAt": "2026-03-26T19:56:28.340Z",
+      "updatedAt": "2026-03-26T19:56:28.357Z"
+    },
+    "69c590fa4242b33d0b162626": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c590fa4242b33d0b162627"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c590fa4242b33d0b162626",
+      "createdAt": "2026-03-26T20:03:06.853Z",
+      "updatedAt": "2026-03-26T20:03:06.874Z"
+    },
+    "69c590fdfdf88c84d6d56671": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c590fdfdf88c84d6d56672"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c590fdfdf88c84d6d56671",
+      "createdAt": "2026-03-26T20:03:09.892Z",
+      "updatedAt": "2026-03-26T20:03:09.900Z"
+    },
+    "69c591a60518210327072b3c": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c591a60518210327072b3d"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c591a60518210327072b3c",
+      "createdAt": "2026-03-26T20:05:58.290Z",
+      "updatedAt": "2026-03-26T20:05:58.309Z"
+    },
+    "69c591f327deb351a723de6f": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c591f327deb351a723de70"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c591f327deb351a723de6f",
+      "createdAt": "2026-03-26T20:07:15.762Z",
+      "updatedAt": "2026-03-26T20:07:15.780Z"
+    },
+    "69c5931f44926967c9480f45": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c5931f44926967c9480f46"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c5931f44926967c9480f45",
+      "createdAt": "2026-03-26T20:12:15.338Z",
+      "updatedAt": "2026-03-26T20:12:15.355Z"
+    },
+    "69c59343d91360523da664d7": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c59343d91360523da664d8"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c59343d91360523da664d7",
+      "createdAt": "2026-03-26T20:12:51.301Z",
+      "updatedAt": "2026-03-26T20:12:51.321Z"
+    },
+    "69c5939c7cd8317c6d79c0a2": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c5939c7cd8317c6d79c0a3"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c5939c7cd8317c6d79c0a2",
+      "createdAt": "2026-03-26T20:14:20.341Z",
+      "updatedAt": "2026-03-26T20:14:20.359Z"
+    },
+    "69c594f7678f1b9f44ecc1ea": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c594f7678f1b9f44ecc1eb"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c594f7678f1b9f44ecc1ea",
+      "createdAt": "2026-03-26T20:20:07.082Z",
+      "updatedAt": "2026-03-26T20:20:07.101Z"
+    },
+    "69c5955b433d288a05aea42d": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c5955b433d288a05aea42e"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c5955b433d288a05aea42d",
+      "createdAt": "2026-03-26T20:21:47.102Z",
+      "updatedAt": "2026-03-26T20:21:47.120Z"
+    },
+    "69c595d0d62c15760217c6e2": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c595d0d62c15760217c6e3"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c595d0d62c15760217c6e2",
+      "createdAt": "2026-03-26T20:23:44.547Z",
+      "updatedAt": "2026-03-26T20:23:44.566Z"
+    },
+    "69c5965b7ac7ad6c5402b913": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c5965b7ac7ad6c5402b914"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c5965b7ac7ad6c5402b913",
+      "createdAt": "2026-03-26T20:26:03.807Z",
+      "updatedAt": "2026-03-26T20:26:03.828Z"
+    },
+    "69c59682775a60424a067793": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c59682775a60424a067794"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c59682775a60424a067793",
+      "createdAt": "2026-03-26T20:26:42.292Z",
+      "updatedAt": "2026-03-26T20:26:42.312Z"
+    },
+    "69c5972a5277732864f7002a": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c5972a5277732864f7002b"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c5972a5277732864f7002a",
+      "createdAt": "2026-03-26T20:29:30.485Z",
+      "updatedAt": "2026-03-26T20:29:30.505Z"
+    },
+    "69c5972b69598660d8b605e7": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c5972b69598660d8b605e8"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c5972b69598660d8b605e7",
+      "createdAt": "2026-03-26T20:29:31.987Z",
+      "updatedAt": "2026-03-26T20:29:31.997Z"
+    },
+    "69c597a3fab8fdc3e58d7225": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c597a3fab8fdc3e58d7226"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69c597a3fab8fdc3e58d7225",
+      "createdAt": "2026-03-26T20:31:31.531Z",
+      "updatedAt": "2026-03-26T20:31:32.590Z",
+      "stripeSessionId": "cs_test_a1Gt9xQ2Jons1iAbiSeFlk2A7hVyUyuY14zqaLNOyG9IhWL9oU3zRfOiiA"
+    },
+    "69c597d8fab8fdc3e58d724c": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "_id": "69c597d8fab8fdc3e58d724c",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c597d8fab8fdc3e58d724d"
+        }
+      ],
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-03-26T20:32:24.852Z",
+      "updatedAt": "2026-03-26T20:32:54.934Z",
+      "stripeSessionId": "cs_test_a1iBFZROVbTeQGnG5ZjiqU8tmovKxZT8ZHnWYalSWjvAU4dKnsA8BXY4dL"
+    },
+    "69c5980ffab8fdc3e58d7270": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "_id": "69c5980ffab8fdc3e58d7270",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c5980ffab8fdc3e58d7271"
+        }
+      ],
+      "totalAmount": 5490,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-03-26T20:33:19.556Z",
+      "updatedAt": "2026-03-26T20:35:58.350Z"
+    },
+    "69c59925fab8fdc3e58d7653": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "_id": "69c59925fab8fdc3e58d7653",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69c59925fab8fdc3e58d7654"
+        },
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69c59925fab8fdc3e58d7655"
+        }
+      ],
+      "totalAmount": 14480,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-03-26T20:37:57.160Z",
+      "updatedAt": "2026-03-26T20:39:29.083Z"
+    },
+    "69c5993dfab8fdc3e58d766f": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "_id": "69c5993dfab8fdc3e58d766f",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "DT-M002 – Mesure des Positions",
+          "quantity": 1,
+          "price": 1750,
+          "_id": "69c5993dfab8fdc3e58d7670"
+        }
+      ],
+      "totalAmount": 1750,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": true,
+      "createdAt": "2026-03-26T20:38:21.663Z",
+      "updatedAt": "2026-03-26T20:39:56.613Z",
+      "stripeSessionId": "cs_test_a1G4rYt77tf48touwGLHAde3Oq9iZcMCuZsoUxObyCJL96WBvUpevJwiEu"
     }
+  },
+  "moumou": {
+    "nom": "moumou",
+    "description": "nouveau",
+    "prix": 20,
+    "caracteristiques": [
+      "automatique"
+    ],
+    "images": [
+      "https://www.legrand.fr/guides/ce-quil-faut-savoir-sur-le-courant-electrique"
+    ],
+    "modele": "KC4S",
+    "categorie": "697f6df7a494e767414f116c",
+    "estActif": true,
+    "stock": 10,
+    "stockApres": 0,
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/products/moumou.png",
+    "nomFichierImage": "moumou.png",
+    "_id": "69c5a102fab8fdc3e58d7850",
+    "slug": "moumou",
+    "id": "69c5a102fab8fdc3e58d7850",
+    "createdAt": "2026-03-26T21:11:30.269Z",
+    "updatedAt": "2026-03-26T21:13:55.018Z"
   }
 };

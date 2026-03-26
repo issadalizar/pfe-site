@@ -25,6 +25,7 @@ import OrderSuccessPage from "./pages/OrderSuccessPage";
 import OrderCancelPage from "./pages/OrderCancelPage";
 import CategoryProductsView from "./components/Admin/CategoryProductsViewAdmin";
 import Product3DPage from './pages/Product3DPage';
+import { CartProvider } from './context/CartContext'; // Add this import
 
 function App() {
   return (

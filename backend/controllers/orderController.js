@@ -84,9 +84,15 @@ export const createCheckoutSession = async (req, res) => {
         }
     };
     try {
+        console.log('🚀 createCheckoutSession appelé');          // AJOUT
+        console.log('📦 Body reçu:', JSON.stringify(req.body));  // AJOUT
+        console.log('👤 User:', req.user?._id);                  // AJOUT
+
         const stripe = getStripe();
+        console.log('🔑 Stripe initialisé:', !!stripe);         // AJOUT
+
         if (!stripe) {
-            return sendError(500, 'Paiement Stripe non configuré. Contactez l\'administrateur.');
+            return sendError(500, 'Paiement Stripe non configuré.');
         }
 
         const { items, shippingInfo } = req.body || {};
