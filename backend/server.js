@@ -71,6 +71,10 @@ if (!fs.existsSync(uploadsDir)) {
 if (!fs.existsSync(models3dDir)) {
   fs.mkdirSync(models3dDir, { recursive: true });
 }
+const virementsDir = path.join(uploadsDir, 'virements');
+if (!fs.existsSync(virementsDir)) {
+  fs.mkdirSync(virementsDir, { recursive: true });
+}
 
 // Servir les fichiers statiques 3D
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

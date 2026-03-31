@@ -374,6 +374,36 @@ export default function AdminOrders() {
                                                                         </div>
                                                                     </div>
 
+                                                                    {/* Preuve de virement */}
+                                                                    {order.paymentMethod === 'virement' && (
+                                                                        <div className="col-md-4">
+                                                                            <h6 className="fw-bold mb-2" style={{ color: '#ea580c' }}>
+                                                                                <FaCreditCard className="me-2" />Preuve de virement
+                                                                            </h6>
+                                                                            {order.virementProof?.fileUrl ? (
+                                                                                <div>
+                                                                                    <a href={`${import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.replace('/api', '') : 'http://localhost:5000'}${order.virementProof.fileUrl}`}
+                                                                                        target="_blank" rel="noopener noreferrer"
+                                                                                        className="btn btn-sm btn-outline-warning mb-2"
+                                                                                        onClick={e => e.stopPropagation()}>
+                                                                                        Voir la preuve
+                                                                                    </a>
+                                                                                    <br />
+                                                                                    <small className="text-muted" style={{ fontSize: '0.78rem' }}>
+                                                                                        Envoyée le {new Date(order.virementProof.uploadedAt).toLocaleDateString('fr-FR', {
+                                                                                            day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                                                                                        })}
+                                                                                        {' '}via {order.virementProof.method === 'platform' ? 'la plateforme' : order.virementProof.method === 'email' ? 'email' : 'WhatsApp'}
+                                                                                    </small>
+                                                                                </div>
+                                                                            ) : (
+                                                                                <p className="text-muted mb-0" style={{ fontSize: '0.85rem', fontStyle: 'italic' }}>
+                                                                                    Aucune preuve reçue
+                                                                                </p>
+                                                                            )}
+                                                                        </div>
+                                                                    )}
+
                                                                     {/* Date limite retour/échange */}
                                                                     <div className="col-md-4">
                                                                         <h6 className="fw-bold mb-2"><FaCalendarAlt className="me-2 text-danger" />Date limite retour</h6>
@@ -484,7 +514,7 @@ export default function AdminOrders() {
                                                             <tr><td style="padding:4px 0;font-size:13px;color:#64748b;">N° de commande</td><td style="padding:4px 0;font-size:13px;color:#0f172a;font-weight:600;text-align:right;">#${orderNumber}</td></tr>
                                                             <tr><td style="padding:4px 0;font-size:13px;color:#64748b;">Date</td><td style="padding:4px 0;font-size:13px;color:#0f172a;text-align:right;">${orderDate}</td></tr>
                                                             <tr><td style="padding:4px 0;font-size:13px;color:#64748b;">Statut</td><td style="padding:4px 0;font-size:13px;color:#065f46;font-weight:600;text-align:right;">${statusMap[o.orderStatus] || o.orderStatus}</td></tr>
-                                                            <tr><td style="padding:4px 0;font-size:13px;color:#64748b;">Paiement</td><td style="padding:4px 0;font-size:13px;color:#065f46;font-weight:600;text-align:right;">${paymentMap[o.paymentStatus] || o.paymentStatus}${o.paymentMethod === 'livraison' ? ' (à la livraison)' : ''}</td></tr>
+                                                            <tr><td style="padding:4px 0;font-size:13px;color:#64748b;">Paiement</td><td style="padding:4px 0;font-size:13px;color:#065f46;font-weight:600;text-align:right;">${paymentMap[o.paymentStatus] || o.paymentStatus}${o.paymentMethod === 'livraison' ? ' (à la livraison)' : o.paymentMethod === 'virement' ? ' (virement bancaire)' : ''}</td></tr>
                                                         </table>
                                                     </div>
                                                     <h3 style="margin:0 0 12px;font-size:15px;color:#0f172a;font-weight:600;">Adresse de livraison</h3>
@@ -571,6 +601,7 @@ export default function AdminOrders() {
                                         <span style={{ fontSize: '0.82rem', fontWeight: 600, color: receiptOrder.paymentStatus === 'paid' ? '#065f46' : '#92400e' }}>
                                             {(paymentStatusMap[receiptOrder.paymentStatus] || paymentStatusMap.pending).label}
                                             {receiptOrder.paymentMethod === 'livraison' && ' (à la livraison)'}
+                                            {receiptOrder.paymentMethod === 'virement' && ' (virement bancaire)'}
                                         </span>
                                     </div>
                                 </div>

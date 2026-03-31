@@ -28,8 +28,13 @@ const orderSchema = new mongoose.Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ['stripe', 'livraison'],
+        enum: ['stripe', 'livraison', 'virement'],
         default: 'stripe'
+    },
+    virementProof: {
+        fileUrl: { type: String, default: null },
+        method: { type: String, enum: ['platform', 'email', 'whatsapp', null], default: null },
+        uploadedAt: { type: Date, default: null }
     },
     returnDeadline: {
         type: Date,

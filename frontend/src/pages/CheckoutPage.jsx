@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
-import { createCheckoutSession, createCodOrder } from '../services/orderService';
+import { createCheckoutSession, createCodOrder, createVirementOrder } from '../services/orderService';
 import {
     FaStore, FaArrowLeft, FaUser, FaEnvelope, FaPhone,
     FaMapMarkerAlt, FaCity, FaMailBulk, FaShoppingCart,
     FaCreditCard, FaLock, FaSpinner, FaCheckCircle,
-    FaChevronRight, FaBox, FaShieldAlt, FaTruck, FaMoneyBillWave
+    FaChevronRight, FaBox, FaShieldAlt, FaTruck, FaMoneyBillWave,
+    FaUniversity, FaCopy
 } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -123,9 +124,50 @@ const CheckoutPage = () => {
         }
     };
 
+    const handleVirementCheckout = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const items = cart.map(item => ({
+                productId: item.product._id,
+                productName: item.product.nom || item.product.name || item.product.title || 'Produit',
+                productImage: item.product.images?.[0] || '',
+                quantity: item.quantity,
+                price: parseFloat(item.product.prix || item.product.price) || 0
+            }));
+
+            const result = await createVirementOrder(items, shippingInfo);
+
+            if (result.success && result.orderId) {
+                clearCart();
+                navigate(`/order/success?payment=virement&order_id=${result.orderId}`);
+            } else {
+                setError('Erreur lors de la création de la commande.');
+            }
+        } catch (err) {
+            console.error('Virement checkout error:', err);
+            setError(err.response?.data?.error || 'Erreur lors de la commande. Veuillez réessayer.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const [ribCopied, setRibCopied] = useState(false);
+    const RIB_NUMBER = 'TN59 1000 0000 0000 1234 5678';
+    const WHATSAPP_NUMBER = '+21600000000';
+    const ADMIN_EMAIL = 'admin@univertechno.com';
+
+    const copyRib = () => {
+        navigator.clipboard.writeText(RIB_NUMBER.replace(/\s/g, ''));
+        setRibCopied(true);
+        setTimeout(() => setRibCopied(false), 2000);
+    };
+
     const handlePayment = () => {
         if (paymentMethod === 'livraison') {
             handleCodCheckout();
+        } else if (paymentMethod === 'virement') {
+            handleVirementCheckout();
         } else {
             handleCheckout();
         }
@@ -346,17 +388,17 @@ const CheckoutPage = () => {
                                     {/* Choix du mode de paiement */}
                                     <h6 className="fw-bold mb-3" style={{ color: '#0f172a' }}>Mode de paiement</h6>
                                     <div className="row g-3 mb-4">
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <div
                                                 onClick={() => setPaymentMethod('stripe')}
                                                 style={{
                                                     border: paymentMethod === 'stripe' ? '2px solid #4361ee' : '2px solid #e2e8f0',
                                                     borderRadius: '16px', padding: '20px', cursor: 'pointer',
                                                     background: paymentMethod === 'stripe' ? 'linear-gradient(145deg, #eef2ff, #e0e7ff)' : 'white',
-                                                    transition: 'all 0.3s ease'
+                                                    transition: 'all 0.3s ease', height: '100%'
                                                 }}
                                             >
-                                                <div className="d-flex align-items-center gap-3">
+                                                <div className="d-flex flex-column align-items-center text-center gap-2">
                                                     <div style={{
                                                         width: '44px', height: '44px', borderRadius: '12px',
                                                         background: paymentMethod === 'stripe' ? 'linear-gradient(145deg, #4361ee, #3a0ca3)' : '#f1f5f9',
@@ -366,26 +408,26 @@ const CheckoutPage = () => {
                                                         <FaCreditCard size={18} />
                                                     </div>
                                                     <div>
-                                                        <div className="fw-bold" style={{ color: '#0f172a', fontSize: '0.95rem' }}>Carte bancaire</div>
-                                                        <small className="text-muted">Paiement sécurisé via Stripe</small>
+                                                        <div className="fw-bold" style={{ color: '#0f172a', fontSize: '0.9rem' }}>Carte bancaire</div>
+                                                        <small className="text-muted" style={{ fontSize: '0.75rem' }}>Paiement sécurisé via Stripe</small>
                                                     </div>
                                                     {paymentMethod === 'stripe' && (
-                                                        <FaCheckCircle className="ms-auto" style={{ color: '#4361ee' }} />
+                                                        <FaCheckCircle style={{ color: '#4361ee' }} />
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="col-md-6">
+                                        <div className="col-md-4">
                                             <div
                                                 onClick={() => setPaymentMethod('livraison')}
                                                 style={{
                                                     border: paymentMethod === 'livraison' ? '2px solid #16a34a' : '2px solid #e2e8f0',
                                                     borderRadius: '16px', padding: '20px', cursor: 'pointer',
                                                     background: paymentMethod === 'livraison' ? 'linear-gradient(145deg, #f0fdf4, #dcfce7)' : 'white',
-                                                    transition: 'all 0.3s ease'
+                                                    transition: 'all 0.3s ease', height: '100%'
                                                 }}
                                             >
-                                                <div className="d-flex align-items-center gap-3">
+                                                <div className="d-flex flex-column align-items-center text-center gap-2">
                                                     <div style={{
                                                         width: '44px', height: '44px', borderRadius: '12px',
                                                         background: paymentMethod === 'livraison' ? 'linear-gradient(145deg, #16a34a, #15803d)' : '#f1f5f9',
@@ -395,16 +437,73 @@ const CheckoutPage = () => {
                                                         <FaMoneyBillWave size={18} />
                                                     </div>
                                                     <div>
-                                                        <div className="fw-bold" style={{ color: '#0f172a', fontSize: '0.95rem' }}>À la livraison</div>
-                                                        <small className="text-muted">Payez en espèces à la réception</small>
+                                                        <div className="fw-bold" style={{ color: '#0f172a', fontSize: '0.9rem' }}>À la livraison</div>
+                                                        <small className="text-muted" style={{ fontSize: '0.75rem' }}>Payez en espèces à la réception</small>
                                                     </div>
                                                     {paymentMethod === 'livraison' && (
-                                                        <FaCheckCircle className="ms-auto" style={{ color: '#16a34a' }} />
+                                                        <FaCheckCircle style={{ color: '#16a34a' }} />
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-4">
+                                            <div
+                                                onClick={() => setPaymentMethod('virement')}
+                                                style={{
+                                                    border: paymentMethod === 'virement' ? '2px solid #ea580c' : '2px solid #e2e8f0',
+                                                    borderRadius: '16px', padding: '20px', cursor: 'pointer',
+                                                    background: paymentMethod === 'virement' ? 'linear-gradient(145deg, #fff7ed, #ffedd5)' : 'white',
+                                                    transition: 'all 0.3s ease', height: '100%'
+                                                }}
+                                            >
+                                                <div className="d-flex flex-column align-items-center text-center gap-2">
+                                                    <div style={{
+                                                        width: '44px', height: '44px', borderRadius: '12px',
+                                                        background: paymentMethod === 'virement' ? 'linear-gradient(145deg, #ea580c, #c2410c)' : '#f1f5f9',
+                                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        color: paymentMethod === 'virement' ? 'white' : '#94a3b8'
+                                                    }}>
+                                                        <FaUniversity size={18} />
+                                                    </div>
+                                                    <div>
+                                                        <div className="fw-bold" style={{ color: '#0f172a', fontSize: '0.9rem' }}>Virement bancaire</div>
+                                                        <small className="text-muted" style={{ fontSize: '0.75rem' }}>Transférez sur notre compte</small>
+                                                    </div>
+                                                    {paymentMethod === 'virement' && (
+                                                        <FaCheckCircle style={{ color: '#ea580c' }} />
                                                     )}
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* Bloc info virement bancaire */}
+                                    {paymentMethod === 'virement' && (
+                                        <div className="p-3 rounded-3 mb-4" style={{ backgroundColor: '#fff7ed', border: '1px solid #fed7aa' }}>
+                                            <h6 className="fw-bold mb-3" style={{ color: '#ea580c' }}>
+                                                <FaUniversity className="me-2" />Informations de virement
+                                            </h6>
+                                            <p className="text-muted mb-2" style={{ fontSize: '0.85rem' }}>
+                                                Veuillez effectuer le virement du montant total sur le RIB suivant :
+                                            </p>
+                                            <div className="d-flex align-items-center gap-2 p-2 rounded-2 mb-3" style={{ backgroundColor: '#fff', border: '1px dashed #ea580c' }}>
+                                                <code style={{ fontSize: '1.05rem', color: '#ea580c', fontWeight: '700', letterSpacing: '1px' }}>
+                                                    {RIB_NUMBER}
+                                                </code>
+                                                <button className="btn btn-sm ms-auto" onClick={copyRib}
+                                                    style={{
+                                                        background: ribCopied ? '#16a34a' : 'linear-gradient(145deg, #ea580c, #c2410c)',
+                                                        color: 'white', border: 'none', borderRadius: '8px', padding: '4px 12px',
+                                                        fontSize: '0.8rem', fontWeight: '600'
+                                                    }}>
+                                                    <FaCopy className="me-1" />{ribCopied ? 'Copié !' : 'Copier'}
+                                                </button>
+                                            </div>
+                                            <p className="text-muted mb-0" style={{ fontSize: '0.8rem' }}>
+                                                Après le virement, envoyez la preuve (reçu) via l'une des options disponibles sur la page de confirmation.
+                                            </p>
+                                        </div>
+                                    )}
 
                                     {/* Articles */}
                                     <h6 className="fw-bold mb-3" style={{ color: '#0f172a' }}>Articles ({getCartCount()})</h6>
@@ -447,19 +546,25 @@ const CheckoutPage = () => {
                                             style={{
                                                 background: paymentMethod === 'livraison'
                                                     ? 'linear-gradient(145deg, #16a34a, #15803d)'
-                                                    : 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                                                    : paymentMethod === 'virement'
+                                                        ? 'linear-gradient(145deg, #ea580c, #c2410c)'
+                                                        : 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                                                 border: 'none', color: 'white', fontWeight: '700',
                                                 fontSize: '1.05rem',
                                                 boxShadow: paymentMethod === 'livraison'
                                                     ? '0 8px 25px rgba(22, 163, 74, 0.35)'
-                                                    : '0 8px 25px rgba(67, 97, 238, 0.35)'
+                                                    : paymentMethod === 'virement'
+                                                        ? '0 8px 25px rgba(234, 88, 12, 0.35)'
+                                                        : '0 8px 25px rgba(67, 97, 238, 0.35)'
                                             }}>
                                             {loading ? (
                                                 <><FaSpinner className="me-2" style={{ animation: 'spin 1s linear infinite' }} />
-                                                    {paymentMethod === 'livraison' ? 'Confirmation en cours...' : 'Redirection vers Stripe...'}
+                                                    {paymentMethod === 'livraison' ? 'Confirmation en cours...' : paymentMethod === 'virement' ? 'Confirmation en cours...' : 'Redirection vers Stripe...'}
                                                 </>
                                             ) : paymentMethod === 'livraison' ? (
                                                 <><FaMoneyBillWave className="me-2" />Confirmer - Paiement à la livraison</>
+                                            ) : paymentMethod === 'virement' ? (
+                                                <><FaUniversity className="me-2" />Confirmer - Virement bancaire</>
                                             ) : (
                                                 <><FaLock className="me-2" />Payer {formatPrice(subtotal)} DT</>
                                             )}
@@ -512,11 +617,13 @@ const CheckoutPage = () => {
 
                                 <div className="mt-4 text-center">
                                     <div className="d-flex align-items-center justify-content-center gap-2 mb-2">
-                                        <FaShieldAlt size={14} style={{ color: '#4361ee' }} />
+                                        <FaShieldAlt size={14} style={{ color: paymentMethod === 'virement' ? '#ea580c' : '#4361ee' }} />
                                         <small className="text-muted">
                                             {paymentMethod === 'livraison'
                                                 ? 'Paiement en espèces à la livraison'
-                                                : 'Paiement sécurisé par Stripe'}
+                                                : paymentMethod === 'virement'
+                                                    ? 'Virement bancaire'
+                                                    : 'Paiement sécurisé par Stripe'}
                                         </small>
                                     </div>
                                     {paymentMethod === 'stripe' && (
@@ -529,6 +636,12 @@ const CheckoutPage = () => {
                                         <div className="d-flex align-items-center justify-content-center gap-2">
                                             <FaMoneyBillWave size={16} style={{ color: '#16a34a' }} />
                                             <small style={{ color: '#16a34a', fontWeight: '600' }}>Espèces</small>
+                                        </div>
+                                    )}
+                                    {paymentMethod === 'virement' && (
+                                        <div className="d-flex align-items-center justify-content-center gap-2">
+                                            <FaUniversity size={16} style={{ color: '#ea580c' }} />
+                                            <small style={{ color: '#ea580c', fontWeight: '600' }}>Virement</small>
                                         </div>
                                     )}
                                 </div>
