@@ -101,4 +101,35 @@ export const createCodOrder = async (items, shippingInfo) => {
     return response.data;
 };
 
+// Créer une commande avec virement bancaire
+export const createVirementOrder = async (items, shippingInfo) => {
+    const itemsWithIds = items.map(item => ({
+        ...item,
+        productId: item.productId || item._id
+    }));
+
+    console.log('🏦 Envoi commande virement avec items:', itemsWithIds);
+
+    const response = await orderAPI.post('/checkout-virement', {
+        items: itemsWithIds,
+        shippingInfo
+    });
+    return response.data;
+};
+
+// Uploader la preuve de virement
+export const uploadVirementProof = async (orderId, file) => {
+    const formData = new FormData();
+    formData.append('proof', file);
+
+    const token = localStorage.getItem('token');
+    const response = await orderAPI.post(`/${orderId}/virement-proof`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`
+        }
+    });
+    return response.data;
+};
+
 export default orderAPI;

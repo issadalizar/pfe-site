@@ -296,6 +296,140 @@ export const createCodOrder = async (req, res) => {
     }
 };
 
+// POST /api/orders/checkout-virement - Créer une commande avec virement bancaire
+export const createVirementOrder = async (req, res) => {
+    try {
+        const { items, shippingInfo } = req.body || {};
+
+        if (!items || items.length === 0) {
+            return res.status(400).json({ success: false, error: 'Le panier est vide.' });
+        }
+
+        if (!shippingInfo || !shippingInfo.fullName || !shippingInfo.email ||
+            !shippingInfo.phone || !shippingInfo.address || !shippingInfo.city ||
+            !shippingInfo.postalCode) {
+            return res.status(400).json({ success: false, error: 'Informations de livraison incomplètes.' });
+        }
+
+        // Vérifier le stock
+        for (const item of items) {
+            const productName = item.productName || item.product?.nom || item.product?.name || item.product?.title || '';
+            const productPrice = parseFloat(item.price) || 0;
+            if (!productName || (productPrice <= 0 && !item.productId)) {
+                return res.status(400).json({
+                    success: false,
+                    error: `Item invalide: nom ou prix manquant pour "${productName || 'produit'}".`
+                });
+            }
+            let product = null;
+            if (item.productId) {
+                product = await Product.findById(item.productId);
+            }
+            if (!product && productName) {
+                product = await Product.findOne({ nom: productName }) || await Product.findOne({ slug: productName });
+            }
+            if (product) {
+                if (product.stock < (item.quantity || 0)) {
+                    return res.status(400).json({
+                        success: false,
+                        error: `Stock insuffisant pour "${productName}". Disponible: ${product.stock}, demandé: ${item.quantity}`
+                    });
+                }
+            }
+        }
+
+        const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+        const order = await Order.create({
+            user: req.user._id,
+            items,
+            shippingInfo,
+            totalAmount,
+            paymentMethod: 'virement',
+            paymentStatus: 'pending',
+            orderStatus: 'en_attente'
+        });
+
+        try {
+            await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
+        } catch (syncError) {
+            console.error('⚠️ Erreur sync order:', syncError);
+        }
+
+        sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
+
+        console.log(`🏦 Commande virement créée: ${order._id}`);
+
+        res.json({
+            success: true,
+            orderId: order._id
+        });
+
+    } catch (error) {
+        console.error('Erreur checkout virement:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la création de la commande.'
+        });
+    }
+};
+
+// POST /api/orders/:id/virement-proof - Uploader la preuve de virement
+export const uploadVirementProof = async (req, res) => {
+    try {
+        const order = await Order.findById(req.params.id);
+
+        if (!order) {
+            return res.status(404).json({ success: false, error: 'Commande non trouvée.' });
+        }
+
+        if (order.user.toString() !== req.user._id.toString() && !req.user.isAdmin) {
+            return res.status(403).json({ success: false, error: 'Accès non autorisé.' });
+        }
+
+        if (order.paymentMethod !== 'virement') {
+            return res.status(400).json({ success: false, error: 'Cette commande n\'est pas un virement bancaire.' });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({ success: false, error: 'Aucun fichier fourni.' });
+        }
+
+        const fileUrl = `/uploads/virements/${req.file.filename}`;
+
+        order.virementProof = {
+            fileUrl,
+            method: 'platform',
+            uploadedAt: new Date()
+        };
+        await order.save();
+
+        try {
+            await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
+        } catch (syncError) {
+            console.error('⚠️ Erreur sync order:', syncError);
+        }
+
+        // Notifier l'admin
+        sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
+
+        console.log(`📄 Preuve de virement uploadée pour commande: ${order._id}`);
+
+        res.json({
+            success: true,
+            fileUrl,
+            message: 'Preuve de virement envoyée avec succès.'
+        });
+
+    } catch (error) {
+        console.error('Erreur upload preuve virement:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de l\'envoi de la preuve.'
+        });
+    }
+};
+
 // POST /api/orders/webhook - Webhook Stripe
 export const handleStripeWebhook = async (req, res) => {
     const sig = req.headers['stripe-signature'];
