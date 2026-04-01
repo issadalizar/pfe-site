@@ -3481,6 +3481,45 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "createdAt": "2026-04-01T10:16:54.883Z",
       "updatedAt": "2026-04-01T10:19:46.732Z"
+    },
+    "69cda98b0870fcbe210a0320": {
+      "shippingInfo": {
+        "fullName": "Seif Boulabiar",
+        "email": "boulabiarseif60@gmail.com",
+        "phone": "25372382",
+        "address": "khaznadar",
+        "city": "khaznadar ",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": "/uploads/virements/virement-1775085973771-180353004.jpg",
+        "method": "platform",
+        "uploadedAt": "2026-04-01T23:26:13.789Z"
+      },
+      "_id": "69cda98b0870fcbe210a0320",
+      "user": "69cda9630870fcbe210a030f",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69cda98b0870fcbe210a0321"
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 7490,
+          "_id": "69cda98b0870fcbe210a0322"
+        }
+      ],
+      "totalAmount": 12980,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "createdAt": "2026-04-01T23:26:03.298Z",
+      "updatedAt": "2026-04-01T23:26:13.834Z"
     }
   }
 };

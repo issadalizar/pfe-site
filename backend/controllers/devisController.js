@@ -141,6 +141,17 @@ export const deleteDevis = async (req, res) => {
 // @desc    Récupérer les statistiques des devis
 // @route   GET /api/devis/stats
 // @access  Private (Admin)
+export const getDevisByProduct = async (req, res) => {
+    try {
+        const devis = await Devis.find({ product: req.params.productId })
+            .populate('product', 'nom prix description images categorie modele')
+            .sort({ createdAt: -1 });
+        res.json({ success: true, data: devis });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};
+
 export const getDevisStats = async (req, res) => {
     try {
         const total = await Devis.countDocuments();
