@@ -5,7 +5,8 @@ import {
     createDevis,
     updateDevisStatus,
     deleteDevis,
-    getDevisStats
+    getDevisStats,
+    getDevisByProduct  // AJOUT
 } from '../controllers/devisController.js';
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.post('/', createDevis);
 // Routes protégées (admin) - à mettre avec middleware d'auth plus tard
 router.get('/', getAllDevis);
 router.get('/stats', getDevisStats);
+router.get('/produit/:productId', getDevisByProduct); // AJOUT
 router.get('/:id', getDevisById);
 router.patch('/:id/status', updateDevisStatus);
 router.delete('/:id', deleteDevis);

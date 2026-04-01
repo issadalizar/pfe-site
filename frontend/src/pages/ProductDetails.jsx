@@ -76,391 +76,221 @@ const ProductDetails = () => {
   };
 
   // ========== FONCTION POUR GÉNÉRER LE PDF COMPLET ==========
-  const handleGeneratePDF = async () => {
+  // ========== REMPLACE LA FONCTION handleGeneratePDF DANS ProductDetails.jsx ==========
+// Copie tout ce bloc et remplace l'ancienne fonction handleGeneratePDF
+
+const handleGeneratePDF = async () => {
     if (!productDetails) return;
-    
+
     setPdfGenerating(true);
-    
+
     try {
-      // Afficher un indicateur de chargement
-      const loadingToast = document.createElement("div");
-      loadingToast.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div class="spinner-border spinner-border-sm" role="status"></div>
-          <span>Génération du PDF en cours...</span>
-        </div>
-      `;
-      loadingToast.style.cssText = `
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: linear-gradient(135deg, #4361ee, #3a0ca3);
-        color: white;
-        padding: 12px 24px;
-        border-radius: 12px;
-        z-index: 10000;
-        font-weight: 500;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        font-family: Arial, sans-serif;
-      `;
-      document.body.appendChild(loadingToast);
+        // Toast de chargement
+        const loadingToast = document.createElement("div");
+        loadingToast.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="spinner-border spinner-border-sm" role="status"></div>
+                <span>Génération du PDF en cours...</span>
+            </div>
+        `;
+        loadingToast.style.cssText = `
+            position: fixed; top: 20px; right: 20px;
+            background: linear-gradient(135deg, #4361ee, #3a0ca3);
+            color: white; padding: 12px 24px; border-radius: 12px;
+            z-index: 10000; font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+        `;
+        document.body.appendChild(loadingToast);
 
-      // Créer un élément temporaire pour capturer tout le contenu
-      const elementToCapture = document.createElement("div");
-      elementToCapture.style.cssText = `
-        position: absolute;
-        top: -10000px;
-        left: 0;
-        width: 1100px;
-        background: white;
-        padding: 40px;
-        font-family: 'Segoe UI', Arial, sans-serif;
-      `;
-      
-      // Récupérer toutes les informations du produit
-      const productName_ = productDetails.title;
-      const productCategory = productDetails.category;
-      const productMainCategory = productDetails.mainCategory;
-      const productDescription = productDetails.fullDescription;
-      const productFeatures = productDetails.features || [];
-      const specifications = productDetails.specifications || {};
-      const technicalSpecs = productDetails.technicalSpecs || {};
-      
-      // Récupérer les images du produit
-      const productImages = productDetails.images || [];
-      const validImages = productImages.filter(img => isValidImage(img) && !imageErrors[img]);
-      const mainImage = validImages.length > 0 ? validImages[0] : null;
-      
-      // Fonction pour échapper le HTML
-      const escapeHtml = (text) => {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-      };
-      
-      // Construire le HTML du PDF
-      elementToCapture.innerHTML = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>${escapeHtml(productName_)} - Fiche Technique</title>
-          <style>
-            * {
-              margin: 0;
-              padding: 0;
-              box-sizing: border-box;
-            }
-            body {
-              font-family: 'Segoe UI', Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              background: white;
-              padding: 20px;
-            }
-            .container {
-              max-width: 1000px;
-              margin: 0 auto;
-            }
-            .header {
-              display: flex;
-              justify-content: space-between;
-              align-items: flex-start;
-              border-bottom: 3px solid #4361ee;
-              padding-bottom: 25px;
-              margin-bottom: 35px;
-            }
-            .header-left {
-              flex: 1;
-            }
-            .header-left h1 {
-              color: #4361ee;
-              margin-bottom: 12px;
-              font-size: 32px;
-            }
-            .header-left .category {
-              color: #666;
-              font-size: 14px;
-              letter-spacing: 1px;
-            }
-            .header-right {
-              margin-left: 20px;
-              max-width: 200px;
-            }
-            .product-main-image {
-              width: 180px;
-              height: 180px;
-              object-fit: contain;
-              border: 1px solid #e9ecef;
-              border-radius: 12px;
-              padding: 10px;
-              background: #f8f9fa;
-            }
-            .badge {
-              display: inline-block;
-              padding: 4px 12px;
-              background: #e9ecef;
-              border-radius: 20px;
-              font-size: 12px;
-              margin-right: 8px;
-            }
-            .section {
-              margin-bottom: 35px;
-              page-break-inside: avoid;
-            }
-            .section-title {
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-              color: white;
-              padding: 12px 20px;
-              border-radius: 10px;
-              margin-bottom: 20px;
-              font-size: 20px;
-              font-weight: bold;
-            }
-            .description {
-              background: #f8f9fa;
-              padding: 25px;
-              border-radius: 12px;
-              margin-bottom: 20px;
-              line-height: 1.8;
-            }
-            .features-grid {
-              display: grid;
-              grid-template-columns: repeat(2, 1fr);
-              gap: 12px;
-              margin-bottom: 20px;
-            }
-            .feature-item {
-              display: flex;
-              align-items: center;
-              gap: 12px;
-              padding: 12px;
-              background: #f8f9fa;
-              border-radius: 8px;
-            }
-            .feature-item .check {
-              color: #28a745;
-              font-size: 18px;
-              font-weight: bold;
-            }
-            .specs-table {
-              width: 100%;
-              border-collapse: collapse;
-              margin-bottom: 20px;
-            }
-            .specs-table td {
-              padding: 12px 15px;
-              border: 1px solid #dee2e6;
-              vertical-align: top;
-            }
-            .specs-table td:first-child {
-              font-weight: bold;
-              background: #f8f9fa;
-              width: 35%;
-            }
-            .images-section {
-              margin-top: 35px;
-              page-break-before: avoid;
-            }
-            .images-grid {
-              display: grid;
-              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-              gap: 20px;
-              margin-top: 20px;
-            }
-            .image-item {
-              text-align: center;
-              border: 1px solid #dee2e6;
-              border-radius: 12px;
-              padding: 15px;
-              background: white;
-            }
-            .image-item img {
-              max-width: 100%;
-              max-height: 180px;
-              object-fit: contain;
-            }
-            .image-caption {
-              margin-top: 12px;
-              font-size: 12px;
-              color: #666;
-            }
-            .footer {
-              margin-top: 50px;
-              text-align: center;
-              font-size: 11px;
-              color: #999;
-              border-top: 1px solid #dee2e6;
-              padding-top: 20px;
-            }
-            @media print {
-              .page-break {
-                page-break-before: always;
-              }
-            }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <div class="header-left">
-                <h1>${escapeHtml(productName_)}</h1>
-                <div class="category">
-                  <span class="badge">${escapeHtml(productMainCategory)}</span>
-                  <span class="badge">${escapeHtml(productCategory)}</span>
+        // Données produit
+        const productName_    = productDetails.title || '';
+        const productCategory = productDetails.category || '';
+        const productMainCat  = productDetails.mainCategory || '';
+        const productDesc     = productDetails.fullDescription || '';
+        const productFeatures = productDetails.features || [];
+        const specifications  = productDetails.specifications || {};
+        const technicalSpecs  = productDetails.technicalSpecs || {};
+
+        // Images valides (max 3 pour la ligne du haut)
+        const validImages = (productDetails.images || [])
+            .filter(img => isValidImage(img) && !imageErrors[img])
+            .slice(0, 3);
+
+        const escapeHtml = (text) => {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        };
+
+        // Construction du HTML — une seule page A4
+        const el = document.createElement("div");
+        el.style.cssText = `
+            position: absolute; top: -10000px; left: 0;
+            width: 960px; background: white;
+            padding: 30px 36px; font-family: 'Segoe UI', Arial, sans-serif;
+            font-size: 13px; line-height: 1.5; color: #333;
+        `;
+
+        el.innerHTML = `
+            <!-- EN-TÊTE : nom à gauche, images à droite -->
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;
+                        border-bottom: 3px solid #4361ee; padding-bottom: 18px; margin-bottom: 20px;">
+                <div style="flex:1; padding-right:20px;">
+                    <div style="font-size:11px; color:#888; letter-spacing:1px; margin-bottom:6px; text-transform:uppercase;">
+                        ${escapeHtml(productMainCat)} › ${escapeHtml(productCategory)}
+                    </div>
+                    <h1 style="color:#4361ee; font-size:24px; margin:0 0 8px 0; line-height:1.2;">
+                        ${escapeHtml(productName_)}
+                    </h1>
+                    <p style="margin:0; color:#555; font-size:12.5px;">
+                        ${escapeHtml(productDesc)}
+                    </p>
                 </div>
-              </div>
-              ${mainImage ? `
-              <div class="header-right">
-                <img src="${mainImage}" alt="${escapeHtml(productName_)}" class="product-main-image" crossorigin="anonymous" />
-              </div>
-              ` : ''}
-            </div>
-            
-            <div class="section">
-              <div class="section-title">Description du produit</div>
-              <div class="description">
-                ${escapeHtml(productDescription) || "Aucune description disponible."}
-              </div>
-            </div>
-            
-            ${productFeatures.length > 0 ? `
-            <div class="section">
-              <div class="section-title">Caractéristiques principales</div>
-              <div class="features-grid">
-                ${productFeatures.map(feature => `
-                  <div class="feature-item">
-                    <span class="check">✓</span>
-                    <span>${escapeHtml(feature)}</span>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-            ` : ''}
-            
-            ${Object.keys(specifications).length > 0 ? `
-            <div class="section">
-              <div class="section-title">Spécifications générales</div>
-              <table class="specs-table">
-                ${Object.entries(specifications).map(([key, value]) => `
-                  <tr>
-                    <td><strong>${escapeHtml(key)}</strong></td>
-                    <td>${escapeHtml(String(value))}</td>
-                   </tr>
-                `).join('')}
-              </table>
-            </div>
-            ` : ''}
-            
-            ${Object.keys(technicalSpecs).length > 0 ? `
-            <div class="section">
-              <div class="section-title">Spécifications techniques avancées</div>
-              <table class="specs-table">
-                ${Object.entries(technicalSpecs).map(([key, value]) => `
-                  <tr>
-                    <td><strong>${escapeHtml(key)}</strong></td>
-                    <td>${escapeHtml(String(value))}</td>
-                   </tr>
-                `).join('')}
-              </table>
-            </div>
-            ` : ''}
-            
-            ${validImages.length > 0 ? `
-            <div class="images-section">
-              <div class="section-title">Galerie d'images</div>
-              <div class="images-grid">
-                ${validImages.map((img, idx) => `
-                  <div class="image-item">
-                    <img src="${img}" alt="Image ${idx + 1}" crossorigin="anonymous" />
-                    <div class="image-caption">${escapeHtml(productName_)} - Vue ${idx + 1}</div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-            ` : ''}
-            
-            <div class="footer">
-              <strong>Fiche technique générée le ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}</strong><br/>
-              Document généré automatiquement - ${window.location.origin}
-            </div>
-          </div>
-        </body>
-        </html>
-      `;
-      
-      document.body.appendChild(elementToCapture);
-      
-      // Attendre que toutes les images se chargent
-      const images = elementToCapture.querySelectorAll('img');
-      await Promise.all(Array.from(images).map(img => {
-        if (img.complete) return Promise.resolve();
-        return new Promise((resolve) => {
-          img.onload = resolve;
-          img.onerror = () => {
-            console.warn("Image non chargée:", img.src);
-            resolve();
-          };
-        });
-      }));
-      
-      // Attendre un peu pour s'assurer que tout est bien chargé
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Utiliser html2canvas pour capturer le contenu
-      const canvas = await html2canvas(elementToCapture, {
-        scale: 2.5,
-        useCORS: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        allowTaint: false,
-        foreignObjectRendering: false
-      });
-      
-      // Créer le PDF
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF({
-        orientation: 'portrait',
-        unit: 'mm',
-        format: 'a4'
-      });
-      
-      const imgWidth = 210;
-      const pageHeight = 297;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      let heightLeft = imgHeight;
-      let position = 0;
-      
-      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-      
-      while (heightLeft > 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-      }
-      
-      // Télécharger le PDF
-      const safeFileName = productName_.replace(/[^a-z0-9]/gi, '_').substring(0, 50);
-      pdf.save(`${safeFileName}_Fiche_Technique.pdf`);
-      
-      // Nettoyer
-      document.body.removeChild(elementToCapture);
-      document.body.removeChild(loadingToast);
-      
-    } catch (error) {
-      console.error("Erreur lors de la génération du PDF:", error);
-      alert("Une erreur est survenue lors de la génération du PDF. Veuillez réessayer.");
-      
-      const loadingToast = document.querySelector('[style*="Génération du PDF"]');
-      if (loadingToast && loadingToast.parentNode) loadingToast.remove();
-    } finally {
-      setPdfGenerating(false);
-    }
-  };
 
+                <!-- Images à droite du titre -->
+                ${validImages.length > 0 ? `
+                <div style="display:flex; gap:8px; flex-shrink:0;">
+                    ${validImages.map((img, i) => `
+                        <div style="width:${validImages.length === 1 ? '160px' : '110px'};
+                                    height:${validImages.length === 1 ? '160px' : '110px'};
+                                    border:1px solid #e0e0e0; border-radius:10px;
+                                    padding:6px; background:#f8f9fa;
+                                    display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                            <img src="${img}" alt="Vue ${i+1}" crossorigin="anonymous"
+                                 style="max-width:100%; max-height:100%; object-fit:contain;" />
+                        </div>
+                    `).join('')}
+                </div>
+                ` : ''}
+            </div>
+
+            <!-- CORPS : tableaux l'un sous l'autre -->
+
+            <!-- Caractéristiques principales -->
+            ${productFeatures.length > 0 ? `
+            <div style="margin-bottom:16px;">
+                <div style="background:linear-gradient(135deg,#4361ee,#3a0ca3); color:white;
+                            padding:8px 14px; border-radius:8px; font-size:13px;
+                            font-weight:700; margin-bottom:10px;">
+                    ✓ Caractéristiques principales
+                </div>
+                <div style="background:#f8f9fa; border-radius:8px; padding:12px;">
+                    ${productFeatures.map(f => `
+                        <div style="display:flex; align-items:flex-start; gap:8px; margin-bottom:5px;">
+                            <span style="color:#28a745; font-weight:bold; flex-shrink:0;">✓</span>
+                            <span style="font-size:12px;">${escapeHtml(f)}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+            ` : ''}
+
+            <!-- Spécifications générales -->
+            ${Object.keys(specifications).length > 0 ? `
+            <div style="margin-bottom:16px;">
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2); color:white;
+                            padding:8px 14px; border-radius:8px; font-size:13px;
+                            font-weight:700; margin-bottom:10px;">
+                    ⚙ Spécifications générales
+                </div>
+                <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                    ${Object.entries(specifications).map(([k,v]) => `
+                        <tr>
+                            <td style="padding:5px 8px; background:#f8f9fa; font-weight:600;
+                                       border:1px solid #dee2e6; width:35%;">${escapeHtml(k)}</td>
+                            <td style="padding:5px 8px; border:1px solid #dee2e6;">${escapeHtml(String(v))}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            </div>
+            ` : ''}
+
+            <!-- Spécifications techniques avancées -->
+            ${Object.keys(technicalSpecs).length > 0 ? `
+            <div style="margin-bottom:16px;">
+                <div style="background:linear-gradient(135deg,#667eea,#764ba2); color:white;
+                            padding:8px 14px; border-radius:8px; font-size:13px;
+                            font-weight:700; margin-bottom:10px;">
+                    🔧 Spécifications techniques avancées
+                </div>
+                <table style="width:100%; border-collapse:collapse; font-size:12px;">
+                    ${Object.entries(technicalSpecs).map(([k,v]) => `
+                        <tr>
+                            <td style="padding:5px 8px; background:#f8f9fa; font-weight:600;
+                                       border:1px solid #dee2e6; width:35%;">${escapeHtml(k)}</td>
+                            <td style="padding:5px 8px; border:1px solid #dee2e6;">${escapeHtml(String(v))}</td>
+                        </tr>
+                    `).join('')}
+                </table>
+            </div>
+            ` : ''}
+
+            <!-- FOOTER -->
+            <div style="margin-top:20px; text-align:center; font-size:10px; color:#999;
+                        border-top:1px solid #dee2e6; padding-top:12px;">
+                Fiche technique générée le ${new Date().toLocaleDateString('fr-FR')} 
+                à ${new Date().toLocaleTimeString('fr-FR')} — ${window.location.origin}
+            </div>
+        `;
+
+        document.body.appendChild(el);
+
+        // Attendre le chargement des images
+        const imgs = el.querySelectorAll('img');
+        await Promise.all(Array.from(imgs).map(img => {
+            if (img.complete) return Promise.resolve();
+            return new Promise(resolve => {
+                img.onload = resolve;
+                img.onerror = resolve;
+            });
+        }));
+
+        await new Promise(resolve => setTimeout(resolve, 400));
+
+        // Capture html2canvas
+        const canvas = await html2canvas(el, {
+            scale: 2.5,
+            useCORS: true,
+            logging: false,
+            backgroundColor: '#ffffff',
+            allowTaint: false,
+        });
+
+        // Génération PDF une seule page
+        const imgData  = canvas.toDataURL('image/png');
+        const pdf      = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        const imgWidth = 210;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        // Si le contenu dépasse une page A4 (297mm), on le scale pour tenir
+        const pageHeight = 297;
+        if (imgHeight <= pageHeight) {
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        } else {
+            // Scale down pour tenir sur une page
+            const scale    = pageHeight / imgHeight;
+            const newWidth = imgWidth * scale;
+            const xOffset  = (imgWidth - newWidth) / 2;
+            pdf.addImage(imgData, 'PNG', xOffset, 0, newWidth, pageHeight);
+        }
+
+        const safeFileName = productName_.replace(/[^a-z0-9]/gi, '_').substring(0, 50);
+        pdf.save(`${safeFileName}_Fiche_Technique.pdf`);
+
+        // Nettoyage
+        document.body.removeChild(el);
+        document.body.removeChild(loadingToast);
+
+    } catch (error) {
+        console.error("Erreur PDF:", error);
+        alert("Erreur lors de la génération du PDF. Veuillez réessayer.");
+        document.querySelectorAll('[style*="Génération du PDF"]').forEach(el => el.remove());
+    } finally {
+        setPdfGenerating(false);
+    }
+};
   // ========== FONCTION: Navigation vers la vue 3D ==========
   const handleView3D = () => {
     navigate(`/product3d/${encodeURIComponent(decodedProductName)}`);

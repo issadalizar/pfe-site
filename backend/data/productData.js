@@ -3083,6 +3083,404 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "createdAt": "2026-03-31T11:55:47.350Z",
       "updatedAt": "2026-03-31T11:56:22.467Z"
+    },
+    "69cce00fb365e667f704da70": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
+          "quantity": 1,
+          "price": 3490,
+          "_id": "69cce00fb365e667f704da71"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 3490,
+      "paymentMethod": "virement",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce00fb365e667f704da70",
+      "createdAt": "2026-04-01T09:06:23.937Z",
+      "updatedAt": "2026-04-01T09:06:23.960Z"
+    },
+    "69cce02f74786ac91f4d0824": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69cce02f74786ac91f4d0825"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "stripe",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce02f74786ac91f4d0824",
+      "createdAt": "2026-04-01T09:06:55.678Z",
+      "updatedAt": "2026-04-01T09:06:55.697Z"
+    },
+    "69cce2f22299db58d304767a": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69cce2f22299db58d304767b"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "stripe",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce2f22299db58d304767a",
+      "createdAt": "2026-04-01T09:18:42.526Z",
+      "updatedAt": "2026-04-01T09:18:42.555Z"
+    },
+    "69cce41771d859d3edc1178f": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69cce41771d859d3edc11790"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "stripe",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce41771d859d3edc1178f",
+      "createdAt": "2026-04-01T09:23:35.282Z",
+      "updatedAt": "2026-04-01T09:23:35.301Z"
+    },
+    "69cce47866c661348ed805d2": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69cce47866c661348ed805d3"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "stripe",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce47866c661348ed805d2",
+      "createdAt": "2026-04-01T09:25:12.332Z",
+      "updatedAt": "2026-04-01T09:25:12.352Z"
+    },
+    "69cce5703b24d6d13fe14721": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69cce5703b24d6d13fe14722"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "stripe",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce5703b24d6d13fe14721",
+      "createdAt": "2026-04-01T09:29:20.214Z",
+      "updatedAt": "2026-04-01T09:29:20.236Z"
+    },
+    "69cce5b8e467f8ea10988c96": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69cce5b8e467f8ea10988c97"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "stripe",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce5b8e467f8ea10988c96",
+      "createdAt": "2026-04-01T09:30:32.237Z",
+      "updatedAt": "2026-04-01T09:30:33.287Z",
+      "stripeSessionId": "cs_test_a1zwqIyjtICXC4hWpCTs3yQ1BUycgsfTF9i5tdQdp8suqFyAN0ALfX6crp"
+    },
+    "69cce6797dbb994ba516c3f0": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69cce6797dbb994ba516c3f0",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69cce6797dbb994ba516c3f1"
+        }
+      ],
+      "totalAmount": 5490,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-01T09:33:45.206Z",
+      "updatedAt": "2026-04-01T09:34:18.342Z",
+      "stripeSessionId": "cs_test_a1smoQppxYOoYhgXE59jumrArtvjA1OZNvTOWQNMe9IcAIhIYDO8C5HRGQ"
+    },
+    "69cce6b07dbb994ba516c41c": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69cce6b07dbb994ba516c41d"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "livraison",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce6b07dbb994ba516c41c",
+      "createdAt": "2026-04-01T09:34:40.957Z",
+      "updatedAt": "2026-04-01T09:34:40.972Z"
+    },
+    "69cce6c57dbb994ba516c432": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69cce6c57dbb994ba516c433"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "virement",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69cce6c57dbb994ba516c432",
+      "createdAt": "2026-04-01T09:35:01.591Z",
+      "updatedAt": "2026-04-01T09:35:01.601Z"
+    },
+    "69ccf0507dbb994ba516c4ce": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69ccf0507dbb994ba516c4cf"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 8990,
+      "paymentMethod": "virement",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69ccf0507dbb994ba516c4ce",
+      "createdAt": "2026-04-01T10:15:44.311Z",
+      "updatedAt": "2026-04-01T10:15:44.329Z"
+    },
+    "69ccf0967dbb994ba516c556": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": "/uploads/virements/virement-1775038687272-997911692.png",
+        "method": "platform",
+        "uploadedAt": "2026-04-01T10:18:07.282Z"
+      },
+      "_id": "69ccf0967dbb994ba516c556",
+      "user": "69a4c1b16bd3caaeb26c53f9",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69ccf0967dbb994ba516c557"
+        }
+      ],
+      "totalAmount": 8990,
+      "paymentMethod": "virement",
+      "returnDeadline": "2026-04-03T00:00:00.000Z",
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-01T10:16:54.883Z",
+      "updatedAt": "2026-04-01T10:19:46.732Z"
     }
   }
 };
