@@ -10,10 +10,13 @@ import {
     FaBox, FaChevronRight, FaCalendarAlt, FaUserCircle,
     FaLock, FaKey, FaExclamationTriangle, FaSpinner,
     FaTruck, FaCreditCard, FaExchangeAlt, FaUndoAlt, FaSyncAlt,
-    FaBan, FaClock, FaPrint, FaTimesCircle
+    FaBan, FaClock, FaPrint, FaTimesCircle, FaDownload
 } from 'react-icons/fa';
 import { getMyOrders, cancelOrder } from '../services/orderService';
 import { createReturnRequest, getMyReturnRequests } from '../services/returnRequestService';
+import { createFacture, getMyFactures } from '../services/factureService';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ClientDashboard = () => {
@@ -61,6 +64,8 @@ const ClientDashboard = () => {
     const [cancelError, setCancelError] = useState('');
     const [now, setNow] = useState(Date.now());
     const [receiptOrder, setReceiptOrder] = useState(null);
+    const [factures, setFactures] = useState([]);
+    const [facturesLoading, setFacturesLoading] = useState(false);
 
     // Sync editData quand user change
     useEffect(() => {
@@ -90,12 +95,45 @@ const ClientDashboard = () => {
 
     // Charger les commandes quand on ouvre l'onglet
     useEffect(() => {
-        if (activeTab === 'orders' || activeTab === 'invoices') {
+        if (activeTab === 'orders') {
             setOrdersLoading(true);
             getMyOrders()
                 .then(data => setOrders(data.orders || []))
                 .catch(err => console.error('Erreur chargement commandes:', err))
                 .finally(() => setOrdersLoading(false));
+        }
+    }, [activeTab]);
+
+    // Charger les factures : récupérer les commandes, créer les factures manquantes, puis afficher
+    useEffect(() => {
+        if (activeTab === 'invoices') {
+            setFacturesLoading(true);
+            (async () => {
+                try {
+                    // 1. Récupérer les commandes du client
+                    const ordersData = await getMyOrders();
+                    const myOrders = ordersData.orders || [];
+                    console.log('Commandes trouvées:', myOrders.length);
+
+                    // 2. Créer une facture pour chaque commande séquentiellement
+                    for (const order of myOrders) {
+                        try {
+                            await createFacture(order._id);
+                        } catch (err) {
+                            console.error('Erreur création facture pour', order._id, err.response?.data || err.message);
+                        }
+                    }
+
+                    // 3. Récupérer toutes les factures
+                    const facturesData = await getMyFactures();
+                    console.log('Factures récupérées:', facturesData.data?.length);
+                    setFactures(facturesData.data || []);
+                } catch (err) {
+                    console.error('Erreur chargement factures:', err);
+                } finally {
+                    setFacturesLoading(false);
+                }
+            })();
         }
     }, [activeTab]);
 
@@ -322,6 +360,125 @@ const ClientDashboard = () => {
             month: 'long',
             year: 'numeric'
         });
+    };
+
+    // Générer et télécharger le PDF d'une facture
+    const generatePDF = (facture) => {
+        const doc = new jsPDF();
+        const orderNumber = facture.factureNumber || facture._id.slice(-8).toUpperCase();
+
+        // Header gradient
+        doc.setFillColor(67, 97, 238);
+        doc.rect(0, 0, 210, 45, 'F');
+        doc.setTextColor(255, 255, 255);
+        doc.setFontSize(22);
+        doc.setFont('helvetica', 'bold');
+        doc.text('UniVerTechno+', 105, 22, { align: 'center' });
+        doc.setFontSize(11);
+        doc.setFont('helvetica', 'normal');
+        doc.text('Facture', 105, 32, { align: 'center' });
+
+        // Infos facture
+        doc.setTextColor(15, 23, 42);
+        let y = 55;
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'bold');
+        doc.text(`Facture N°: ${orderNumber}`, 14, y);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Date: ${new Date(facture.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}`, 14, y + 7);
+
+        const methodLabel = facture.paymentMethod === 'livraison' ? 'Paiement à la livraison'
+            : facture.paymentMethod === 'virement' ? 'Virement bancaire' : 'Carte bancaire';
+        doc.text(`Paiement: ${methodLabel}`, 14, y + 14);
+
+        const statusLabel = ({ pending: 'En attente', paid: 'Payé', failed: 'Échoué' })[facture.paymentStatus] || facture.paymentStatus;
+        doc.text(`Statut paiement: ${statusLabel}`, 14, y + 21);
+
+        // Adresse de livraison
+        y = 90;
+        doc.setFillColor(240, 249, 255);
+        doc.roundedRect(14, y - 5, 182, 38, 3, 3, 'F');
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.text('Adresse de livraison', 18, y + 2);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(9);
+        const s = facture.shippingInfo || {};
+        doc.text(`${s.fullName || ''}`, 18, y + 10);
+        doc.text(`${s.address || ''}, ${s.postalCode || ''} ${s.city || ''}`, 18, y + 17);
+        doc.text(`Tél: ${s.phone || ''} | Email: ${s.email || ''}`, 18, y + 24);
+
+        // Tableau articles
+        y = 135;
+        const tableData = (facture.items || []).map(item => [
+            item.productName,
+            item.quantity,
+            `${formatPrice(item.price)} DT`,
+            `${formatPrice(item.price * item.quantity)} DT`
+        ]);
+
+        const table = autoTable(doc, {
+            startY: y,
+            head: [['Produit', 'Qté', 'Prix unit.', 'Total']],
+            body: tableData,
+            theme: 'grid',
+            headStyles: {
+                fillColor: [67, 97, 238],
+                textColor: 255,
+                fontSize: 9,
+                fontStyle: 'bold'
+            },
+            bodyStyles: { fontSize: 9, textColor: [51, 65, 85] },
+            columnStyles: {
+                0: { cellWidth: 80 },
+                1: { cellWidth: 25, halign: 'center' },
+                2: { cellWidth: 35, halign: 'right' },
+                3: { cellWidth: 35, halign: 'right', fontStyle: 'bold' }
+            },
+            margin: { left: 14, right: 14 }
+        });
+
+        // Totaux
+        const finalY = doc.lastAutoTable.finalY + 10;
+        doc.setDrawColor(226, 232, 240);
+        doc.line(14, finalY, 196, finalY);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100, 116, 139);
+        doc.text('Sous-total:', 120, finalY + 10);
+        doc.setTextColor(51, 65, 85);
+        doc.text(`${formatPrice(facture.totalAmount)} DT`, 196, finalY + 10, { align: 'right' });
+
+        doc.setTextColor(100, 116, 139);
+        doc.text('Livraison:', 120, finalY + 18);
+        doc.setTextColor(22, 163, 74);
+        doc.text('Gratuite', 196, finalY + 18, { align: 'right' });
+
+        doc.line(120, finalY + 23, 196, finalY + 23);
+        doc.setFontSize(13);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(15, 23, 42);
+        doc.text('Total:', 120, finalY + 32);
+        doc.setTextColor(67, 97, 238);
+        doc.text(`${formatPrice(facture.totalAmount)} DT`, 196, finalY + 32, { align: 'right' });
+
+        // Footer
+        doc.setFontSize(8);
+        doc.setTextColor(148, 163, 184);
+        doc.setFont('helvetica', 'normal');
+        doc.text('UniVerTechno+ - Équipements CNC & Éducation', 105, 285, { align: 'center' });
+
+        doc.save(`Facture_${orderNumber}.pdf`);
+    };
+
+    // Créer une facture en DB puis télécharger le PDF
+    const handleDownloadFacture = async (order) => {
+        try {
+            const result = await createFacture(order._id);
+            generatePDF(result.data);
+        } catch (err) {
+            console.error('Erreur génération facture:', err);
+        }
     };
 
     const tabs = [
@@ -1131,12 +1288,12 @@ const ClientDashboard = () => {
                                         Mes Factures
                                     </h4>
 
-                                    {ordersLoading ? (
+                                    {facturesLoading ? (
                                         <div className="text-center py-5">
                                             <FaSpinner size={32} style={{ color: '#4361ee', animation: 'spin 1s linear infinite' }} />
                                             <p className="text-muted mt-3">Chargement des factures...</p>
                                         </div>
-                                    ) : orders.length === 0 ? (
+                                    ) : factures.length === 0 ? (
                                         <div className="text-center py-5">
                                             <FaFileInvoice size={48} style={{ color: '#cbd5e1' }} />
                                             <h5 className="text-muted mt-3">Aucune facture</h5>
@@ -1144,56 +1301,51 @@ const ClientDashboard = () => {
                                         </div>
                                     ) : (
                                         <div>
-                                            {orders.map((order) => {
-                                                const statusColors = {
-                                                    en_attente: { bg: '#fef3c7', color: '#92400e', label: 'En attente' },
-                                                    confirmee: { bg: '#d1fae5', color: '#065f46', label: 'Confirmee' },
-                                                    expediee: { bg: '#dbeafe', color: '#1e40af', label: 'Expediee' },
-                                                    livree: { bg: '#d1fae5', color: '#065f46', label: 'Livree' },
-                                                    annulee: { bg: '#fee2e2', color: '#991b1b', label: 'Annulee' },
-                                                };
-                                                const paymentColors = {
-                                                    pending: { bg: '#fef3c7', color: '#92400e', label: 'En attente' },
-                                                    paid: { bg: '#d1fae5', color: '#065f46', label: 'Paye' },
-                                                    failed: { bg: '#fee2e2', color: '#991b1b', label: 'Echoue' },
-                                                };
-                                                const os = statusColors[order.orderStatus] || statusColors.en_attente;
-                                                const ps = paymentColors[order.paymentStatus] || paymentColors.pending;
-
-                                                return (
-                                                    <div key={order._id} className="d-flex justify-content-between align-items-center p-3 mb-2 rounded-3"
-                                                        style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}>
-                                                        <div>
-                                                            <span className="fw-bold" style={{ color: '#0f172a', fontSize: '0.95rem' }}>
-                                                                #{order._id.slice(-8).toUpperCase()}
-                                                            </span>
-                                                            <br />
-                                                            <small className="text-muted">
-                                                                {new Date(order.createdAt).toLocaleDateString('fr-FR', {
-                                                                    day: '2-digit', month: 'long', year: 'numeric'
-                                                                })}
-                                                            </small>
-                                                        </div>
-                                                        <div className="d-flex align-items-center gap-2">
-                                                            <span className="fw-bold" style={{ color: '#4361ee', fontSize: '0.95rem' }}>
-                                                                {formatPrice(order.totalAmount)} DT
-                                                            </span>
-                                                            <button
-                                                                className="btn btn-sm rounded-pill px-3"
-                                                                style={{
-                                                                    background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
-                                                                    border: 'none', color: 'white',
-                                                                    fontSize: '0.75rem', fontWeight: 600
-                                                                }}
-                                                                onClick={() => setReceiptOrder(order)}
-                                                            >
-                                                                <FaPrint className="me-1" size={10} />
-                                                                Voir
-                                                            </button>
-                                                        </div>
+                                            {factures.map((facture) => (
+                                                <div key={facture._id} className="d-flex justify-content-between align-items-center p-3 mb-2 rounded-3"
+                                                    style={{ backgroundColor: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                                                    <div>
+                                                        <span className="fw-bold" style={{ color: '#0f172a', fontSize: '0.95rem' }}>
+                                                            {facture.factureNumber}
+                                                        </span>
+                                                        <br />
+                                                        <small className="text-muted">
+                                                            {new Date(facture.createdAt).toLocaleDateString('fr-FR', {
+                                                                day: '2-digit', month: 'long', year: 'numeric'
+                                                            })}
+                                                        </small>
                                                     </div>
-                                                );
-                                            })}
+                                                    <div className="d-flex align-items-center gap-2">
+                                                        <span className="fw-bold" style={{ color: '#4361ee', fontSize: '0.95rem' }}>
+                                                            {formatPrice(facture.totalAmount)} DT
+                                                        </span>
+                                                        <button
+                                                            className="btn btn-sm rounded-pill px-3"
+                                                            style={{
+                                                                background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                                                                border: 'none', color: 'white',
+                                                                fontSize: '0.75rem', fontWeight: 600
+                                                            }}
+                                                            onClick={() => setReceiptOrder(facture)}
+                                                        >
+                                                            <FaPrint className="me-1" size={10} />
+                                                            Voir
+                                                        </button>
+                                                        <button
+                                                            className="btn btn-sm rounded-pill px-3"
+                                                            style={{
+                                                                background: 'linear-gradient(145deg, #16a34a, #15803d)',
+                                                                border: 'none', color: 'white',
+                                                                fontSize: '0.75rem', fontWeight: 600
+                                                            }}
+                                                            onClick={() => generatePDF(facture)}
+                                                        >
+                                                            <FaDownload className="me-1" size={10} />
+                                                            PDF
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </div>
@@ -1640,6 +1792,11 @@ const ClientDashboard = () => {
                                 >
                                     <FaPrint className="me-1" /> Imprimer
                                 </button>
+                                <button className="btn btn-sm rounded-pill px-3"
+                                    style={{ background: 'linear-gradient(145deg, #16a34a, #15803d)', border: 'none', color: 'white' }}
+                                    onClick={() => generatePDF(receiptOrder)}>
+                                    <FaDownload className="me-1" /> PDF
+                                </button>
                                 <button className="btn btn-sm btn-outline-secondary rounded-pill px-3"
                                     onClick={() => setReceiptOrder(null)}>
                                     <FaTimesCircle className="me-1" /> Fermer
@@ -1666,8 +1823,8 @@ const ClientDashboard = () => {
                                 {/* Order info */}
                                 <div style={{ backgroundColor: '#f8fafc', borderRadius: '12px', padding: '18px', marginBottom: '24px' }}>
                                     <div className="d-flex justify-content-between mb-1">
-                                        <span style={{ fontSize: '0.82rem', color: '#64748b' }}>N° de commande</span>
-                                        <span style={{ fontSize: '0.82rem', color: '#0f172a', fontWeight: 600 }}>#{receiptOrder._id.slice(-8).toUpperCase()}</span>
+                                        <span style={{ fontSize: '0.82rem', color: '#64748b' }}>{receiptOrder.factureNumber ? 'N° Facture' : 'N° de commande'}</span>
+                                        <span style={{ fontSize: '0.82rem', color: '#0f172a', fontWeight: 600 }}>{receiptOrder.factureNumber || `#${receiptOrder._id.slice(-8).toUpperCase()}`}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-1">
                                         <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Date</span>

@@ -3520,6 +3520,177 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "createdAt": "2026-04-01T23:26:03.298Z",
       "updatedAt": "2026-04-01T23:26:13.834Z"
+    },
+    "69d436adc55862587ac4a092": {
+      "shippingInfo": {
+        "fullName": "Seif Boulabiar",
+        "email": "boulabiarseif60@gmail.com",
+        "phone": "25372382",
+        "address": "khaznadar",
+        "city": "khaznadar ",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d436adc55862587ac4a092",
+      "user": "69cda9630870fcbe210a030f",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69d436adc55862587ac4a093"
+        },
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d436adc55862587ac4a094"
+        },
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 7490,
+          "_id": "69d436adc55862587ac4a095"
+        },
+        {
+          "productName": "De4-Pro (iKC4) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 10990,
+          "_id": "69d436adc55862587ac4a096"
+        }
+      ],
+      "totalAmount": 32960,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-06T22:41:49.085Z",
+      "updatedAt": "2026-04-06T22:44:44.111Z"
+    },
+    "69d43ce346599e39c4edcf94": {
+      "shippingInfo": {
+        "fullName": "Seif Boulabiar",
+        "email": "boulabiarseif60@gmail.com",
+        "phone": "25372382",
+        "address": "khaznadar",
+        "city": "khaznadar ",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d43ce346599e39c4edcf94",
+      "user": "69cda9630870fcbe210a030f",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69d43ce346599e39c4edcf95"
+        },
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d43ce346599e39c4edcf96"
+        }
+      ],
+      "totalAmount": 14480,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-06T23:08:19.528Z",
+      "updatedAt": "2026-04-06T23:08:46.726Z",
+      "stripeSessionId": "cs_test_b1zi1wxYpzXsG8PMixtWjCpCrRlZqoCFutrB5ALXDF5CjerMo3qIvOOMVF"
+    },
+    "69d43e13223a893c043f67d5": {
+      "shippingInfo": {
+        "fullName": "Seif Boulabiar",
+        "email": "boulabiarseif60@gmail.com",
+        "phone": "25372382",
+        "address": "khaznadar",
+        "city": "khaznadar ",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d43e13223a893c043f67d5",
+      "user": "69cda9630870fcbe210a030f",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69d43e13223a893c043f67d6"
+        },
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d43e13223a893c043f67d7"
+        }
+      ],
+      "totalAmount": 14480,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-06T23:13:23.146Z",
+      "updatedAt": "2026-04-06T23:13:46.790Z",
+      "stripeSessionId": "cs_test_b1XzMGWwxbiQK7rDiNpwdyKkMrt9pjZIvBZN1ek6aqDItBLkK5CfMHcyUP"
+    },
+    "69d43f4b34c09d4ca7bef453": {
+      "shippingInfo": {
+        "fullName": "Seif Boulabiar",
+        "email": "boulabiarseif60@gmail.com",
+        "phone": "25372382",
+        "address": "khaznadar",
+        "city": "khaznadar",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d43f4b34c09d4ca7bef453",
+      "user": "69cda9630870fcbe210a030f",
+      "items": [
+        {
+          "productName": "De4-Pro (iKC4) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 10990,
+          "_id": "69d43f4b34c09d4ca7bef454"
+        },
+        {
+          "productName": "De6 (iKC6S) CNC Turning Machine",
+          "quantity": 1,
+          "price": 12990,
+          "_id": "69d43f4b34c09d4ca7bef455"
+        }
+      ],
+      "totalAmount": 23980,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-06T23:18:35.497Z",
+      "updatedAt": "2026-04-06T23:18:58.698Z",
+      "stripeSessionId": "cs_test_b1KuCAOg1VHDYCdajMzcOhpgCOalsV3fUMmAaXPIKoanoHYRJ2ky9uNJqx"
     }
   }
 };

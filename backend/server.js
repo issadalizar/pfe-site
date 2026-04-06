@@ -19,6 +19,7 @@ import productDataRoutes from './routes/productDataRoutes.js';
 // AJOUT: Routes de synchronisation
 import syncRoutes from './routes/syncRoutes.js';
 import returnRequestRoutes from './routes/returnRequestRoutes.js';
+import factureRoutes from './routes/factureRoutes.js';
 // AJOUT: Service de synchronisation
 import dataSyncService from './services/dataSyncService.js';
 
@@ -203,6 +204,7 @@ app.use('/api/notifications', notificationRoutes);
 // AJOUT: Routes de synchronisation
 app.use('/api/sync', syncRoutes);
 app.use('/api/return-requests', returnRequestRoutes);
+app.use('/api/factures', factureRoutes);
 
 // ========== NOUVEAU: Routes 3D ==========
 app.use('/api/models3d', product3dRoutes);
