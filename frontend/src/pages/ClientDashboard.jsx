@@ -56,6 +56,8 @@ const ClientDashboard = () => {
     const [returnSubmitting, setReturnSubmitting] = useState(false);
     const [returnSuccess, setReturnSuccess] = useState('');
     const [returnError, setReturnError] = useState('');
+    const [returnFilterStatus, setReturnFilterStatus] = useState('all');
+    const [returnFilterType, setReturnFilterType] = useState('all');
 
     // Annulation de commande
     const [showCancelModal, setShowCancelModal] = useState(false);
@@ -1361,6 +1363,50 @@ const ClientDashboard = () => {
                                         Mes Demandes de Retour / Échange
                                     </h4>
 
+                                    {/* Filtres */}
+                                    <div className="d-flex flex-wrap gap-2 mb-4">
+                                        {/* Filtre par type */}
+                                        {[
+                                            { value: 'all', label: 'Tous', icon: null },
+                                            { value: 'retour', label: 'Retours', icon: <FaUndoAlt size={10} /> },
+                                            { value: 'echange', label: 'Échanges', icon: <FaSyncAlt size={10} /> }
+                                        ].map(f => (
+                                            <button key={f.value}
+                                                className="btn btn-sm rounded-pill px-3"
+                                                style={{
+                                                    background: returnFilterType === f.value ? 'linear-gradient(145deg, #4361ee, #3a0ca3)' : 'white',
+                                                    color: returnFilterType === f.value ? 'white' : '#64748b',
+                                                    border: returnFilterType === f.value ? 'none' : '1px solid #e2e8f0',
+                                                    fontSize: '0.8rem', fontWeight: 600
+                                                }}
+                                                onClick={() => setReturnFilterType(f.value)}
+                                            >
+                                                {f.icon && <span className="me-1">{f.icon}</span>}{f.label}
+                                            </button>
+                                        ))}
+                                        <div style={{ width: '1px', backgroundColor: '#e2e8f0', margin: '0 4px' }} />
+                                        {/* Filtre par statut */}
+                                        {[
+                                            { value: 'all', label: 'Tous statuts', bg: '#f1f5f9', color: '#64748b' },
+                                            { value: 'en_attente', label: 'En attente', bg: '#fef3c7', color: '#92400e' },
+                                            { value: 'acceptee', label: 'Acceptée', bg: '#d1fae5', color: '#065f46' },
+                                            { value: 'refusee', label: 'Refusée', bg: '#fee2e2', color: '#991b1b' }
+                                        ].map(f => (
+                                            <button key={f.value}
+                                                className="btn btn-sm rounded-pill px-3"
+                                                style={{
+                                                    background: returnFilterStatus === f.value ? f.bg : 'white',
+                                                    color: returnFilterStatus === f.value ? f.color : '#64748b',
+                                                    border: returnFilterStatus === f.value ? `1.5px solid ${f.color}` : '1px solid #e2e8f0',
+                                                    fontSize: '0.8rem', fontWeight: 600
+                                                }}
+                                                onClick={() => setReturnFilterStatus(f.value)}
+                                            >
+                                                {f.label}
+                                            </button>
+                                        ))}
+                                    </div>
+
                                     {returnsLoading ? (
                                         <div className="text-center py-5">
                                             <FaSpinner size={32} style={{ color: '#4361ee', animation: 'spin 1s linear infinite' }} />
@@ -1381,9 +1427,20 @@ const ClientDashboard = () => {
                                                 Vous pouvez demander un retour ou échange depuis l'onglet Commandes
                                             </p>
                                         </div>
-                                    ) : (
+                                    ) : (() => {
+                                        const filtered = returnRequests.filter(r =>
+                                            (returnFilterType === 'all' || r.type === returnFilterType) &&
+                                            (returnFilterStatus === 'all' || r.status === returnFilterStatus)
+                                        );
+                                        if (filtered.length === 0) return (
+                                            <div className="text-center py-4">
+                                                <FaExchangeAlt size={32} style={{ color: '#cbd5e1' }} />
+                                                <p className="text-muted mt-2">Aucune demande ne correspond aux filtres</p>
+                                            </div>
+                                        );
+                                        return (
                                         <div>
-                                            {returnRequests.map((req) => {
+                                            {filtered.map((req) => {
                                                 const statusMap = {
                                                     en_attente: { bg: '#fef3c7', color: '#92400e', label: 'En attente' },
                                                     acceptee: { bg: '#d1fae5', color: '#065f46', label: 'Acceptée' },
@@ -1444,7 +1501,8 @@ const ClientDashboard = () => {
                                                 );
                                             })}
                                         </div>
-                                    )}
+                                        );
+                                    })()}
                                 </div>
                             </div>
                         )}
