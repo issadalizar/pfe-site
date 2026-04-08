@@ -32,11 +32,12 @@ export const cncProductDetails = {
     }
   },
   "PC1 Baby CNC Lathe-Mach": {
-    "title": "PC1 Baby CNC Lathe-Mach",
-    "category": "CNC Turning Machine",
-    "mainCategory": "CNC for Education",
-    "price": 5490,
-    "features": [
+    "_id": "697f55259e5f50c871efa21f",
+    "nom": "PC1 Baby CNC Lathe-Mach",
+    "slug": "pc1-baby-cnc-lathe-mach",
+    "description": "PC1 Baby CNC Lathe-Mach. Tour micro-CNC piloté par PC, faible coût, volant manuel préinstallé. Arrêt automatique de l'alimentation à l'ouverture de la porte. Idéal pour l'enseignement et la formation. Combine les modes CNC et manuel (2 en 1).",
+    "prix": 97.99,
+    "caracteristiques": [
       "Faible coût",
       "Volant manuel préinstallé",
       "Tour micro-CNC piloté par PC",
@@ -45,18 +46,23 @@ export const cncProductDetails = {
       "Combine les modes CNC et manuel",
       "2 en 1 (CNC et manuel)"
     ],
-    "fullDescription": "Le PC1 Baby CNC Lathe-Mach est une solution économique et pédagogique par excellence. Ce tour micro-CNC piloté par PC offre la flexibilité de fonctionner à la fois en mode CNC et en mode manuel, ce qui en fait un outil polyvalent pour l'apprentissage progressif de l'usinage CNC.",
-    "specifications": {
-      "Type": "Tour micro-CNC piloté par PC",
-      "Modes": "CNC et Manuel (2 en 1)",
-      "Sécurité": "Arrêt auto à l'ouverture de porte",
-      "Volant": "Manuel préinstallé",
-      "Application": "Enseignement et formation"
-    },
     "images": [
-      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach-2.png"
-    ]
+      "/images/products/CNC EDUCATION/CNC Turning Machine/pc1_baby_cnc_lathe-mach.png"
+    ],
+    "modele": "PC1",
+    "categorie": "697f4c69a494e767414f0e2e",
+    "estActif": true,
+    "stock": 9,
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/CNC EDUCATION/CNC Turning Machine/pc1_baby_cnc_lathe-mach.png",
+    "nomFichierImage": "pc1_baby_cnc_lathe-mach.png",
+    "stockApres": 10,
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+    },
+    "id": "697f55259e5f50c871efa21f",
+    "createdAt": "2026-04-08T14:31:17.179Z",
+    "updatedAt": "2026-04-08T14:38:40.183Z"
   },
   "De4-Eco (KC4S) Bench CNC Lathe": {
     "title": "De4-Eco (KC4S) Bench CNC Lathe",
@@ -3691,6 +3697,139 @@ export const cncProductDetails = {
       "createdAt": "2026-04-06T23:18:35.497Z",
       "updatedAt": "2026-04-06T23:18:58.698Z",
       "stripeSessionId": "cs_test_b1KuCAOg1VHDYCdajMzcOhpgCOalsV3fUMmAaXPIKoanoHYRJ2ky9uNJqx"
+    },
+    "69d6649f2b0019e335b2a782": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 7490,
+          "_id": "69d6649f2b0019e335b2a783"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 7490,
+      "paymentMethod": "livraison",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69d6649f2b0019e335b2a782",
+      "createdAt": "2026-04-08T14:22:23.932Z",
+      "updatedAt": "2026-04-08T14:22:23.972Z"
+    },
+    "69d666282b0019e335b2a8b0": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d666282b0019e335b2a8b1"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 5490,
+      "paymentMethod": "virement",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69d666282b0019e335b2a8b0",
+      "createdAt": "2026-04-08T14:28:56.864Z",
+      "updatedAt": "2026-04-08T14:28:56.879Z"
+    },
+    "69d666692b0019e335b2a920": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d666692b0019e335b2a920",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 9,
+          "price": 5490,
+          "_id": "69d666692b0019e335b2a921"
+        }
+      ],
+      "totalAmount": 49410,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-08T14:30:01.833Z",
+      "updatedAt": "2026-04-08T14:30:32.314Z",
+      "stripeSessionId": "cs_test_a1ZTd1QnH6GXAfxhZ4IjtOErBYlTwIdB7djVODks5ckKIWgpxb3CR5VLQh"
+    },
+    "69d668972b0019e335b2aa3c": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d668972b0019e335b2aa3c",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 9,
+          "price": 5490,
+          "_id": "69d668972b0019e335b2aa3d"
+        }
+      ],
+      "totalAmount": 49410,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-08T14:39:19.009Z",
+      "updatedAt": "2026-04-08T14:40:05.295Z"
     }
   }
 };

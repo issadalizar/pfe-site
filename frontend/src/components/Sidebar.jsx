@@ -25,9 +25,9 @@ export default function Sidebar() {
 
   const menuItems = [
     {
-      path: "/dashboard",
-      icon: <FaHome className="me-2" style={{ color: "#4dc0ff" }} />,
-      label: "Dashboard"
+      path: "/bi/orders",  // Changé de "/dashboard" à "/bi/orders"
+      icon: <FaChartLine className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: "Tableau de Bord BI"
     },
     {
       path: "/users",
@@ -78,7 +78,6 @@ export default function Sidebar() {
             <span style={{ color: "#4dc0ff" }}>Administration  </span>
             <span style={{ color: "#ffffff" }}>Space</span>
           </h4>
-
         </div>
       </div>
 
