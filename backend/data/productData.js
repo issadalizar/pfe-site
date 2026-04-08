@@ -3830,6 +3830,72 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "createdAt": "2026-04-08T14:39:19.009Z",
       "updatedAt": "2026-04-08T14:40:05.295Z"
+    },
+    "69d682bc2b0019e335b2b6cc": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d682bc2b0019e335b2b6cc",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69d682bc2b0019e335b2b6cd"
+        }
+      ],
+      "totalAmount": 8990,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-08T16:30:52.052Z",
+      "updatedAt": "2026-04-08T16:33:31.381Z"
+    },
+    "69d683aa2b0019e335b2b971": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": "/uploads/virements/virement-1775666119026-21602100.jpg",
+        "method": "platform",
+        "uploadedAt": "2026-04-08T16:35:19.045Z"
+      },
+      "_id": "69d683aa2b0019e335b2b971",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d683aa2b0019e335b2b972"
+        }
+      ],
+      "totalAmount": 5490,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-08T16:34:50.778Z",
+      "updatedAt": "2026-04-08T16:35:57.903Z"
     }
   }
 };
