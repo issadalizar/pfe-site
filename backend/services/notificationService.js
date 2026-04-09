@@ -45,6 +45,9 @@ class NotificationService {
     } else if (ancienStock === 0 && nouveauStock > 0) {
       type = 'reapprovisionnement';
       description = `✅ Réapprovisionnement: 0 → ${nouveauStock}`;
+    } else if (nouveauStock > 0 && nouveauStock < 5) {
+      type = 'faible';
+      description = `⚠️ Stock faible: ${ancienStock} → ${nouveauStock}`;
     }
     
     return this.creerNotification({

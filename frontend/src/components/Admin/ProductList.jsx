@@ -91,17 +91,29 @@ export default function ProductList({
   onSelectProduct,
   onSelectAll,
 }) {
-  const getStockStatus = (stock) => {
-    if (stock === 0) {
+  const getStockStatus = (product) => {
+    const stock = Number(product.stock || 0);
+    const status = product.status || (stock === 0 ? 'rupture' : stock < 5 ? 'faible' : 'available');
+
+    if (status === 'rupture') {
       return {
-        badge: "danger",
-        text: "Rupture",
+        badge: 'danger',
+        text: 'Rupture',
         icon: <FaTimesCircle className="me-1" />,
       };
     }
+
+    if (status === 'faible') {
+      return {
+        badge: 'warning',
+        text: 'Stock faible',
+        icon: <FaBox className="me-1" />,
+      };
+    }
+
     return {
-      badge: "success",
-      text: "Disponible",
+      badge: 'success',
+      text: 'Disponible',
       icon: <FaCheckCircle className="me-1" />,
     };
   };
@@ -202,7 +214,7 @@ export default function ProductList({
         </thead>
         <tbody>
           {products.map((product) => {
-            const stockStatus = getStockStatus(product.stock || 0);
+            const stockStatus = getStockStatus(product);
             const categoryInfo = getCategoryInfo(product);
 
             return (

@@ -4,7 +4,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
 import ProtectedRoute from "./components/ProtectedRoute";
-import Dashboard from "./pages/Admin/Dashboard";
+import OrdersBI from './pages/BI/OrdersBI';
 import Categories from "./pages/Admin/Categories";
 import Products from "./pages/Admin/Products";
 import UsersPage from "./pages/Admin/UsersPage";
@@ -37,7 +37,6 @@ function App() {
       <Route path="/sector/:sectorId" element={<SectorPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/cart" element={<CartPage />} />
-      {/* ========== NOUVELLE ROUTE: Visualisation 3D ========== */}
       <Route path="/product3d/:productId" element={<Product3DPage />} />
       <Route path="/client/dashboard" element={
         <ProtectedRoute>
@@ -71,11 +70,13 @@ function App() {
                 <main className="flex-grow-1 p-4 overflow-auto">
                   <div className="container-fluid">
                     <Routes>
+                      {/* Redirection par défaut vers OrdersBI */}
                       <Route
                         path="/"
-                        element={<Navigate to="/dashboard" replace />}
+                        element={<Navigate to="/bi/orders" replace />}
                       />
-                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/dashboard" element={<Navigate to="/bi/orders" replace />} />
+                      <Route path="/bi/orders" element={<OrdersBI />} />
                       <Route path="/categories" element={<Categories />} />
                       <Route path="/products" element={<Products />} />
                       <Route
