@@ -1,9 +1,15 @@
 export const cncProductDetails = {
   "De2-Ultra Mini CNC Turning Center": {
+    "_id": "697f52a224a8af8ebf1647f3",
+    "nom": "De2-Ultra Mini CNC Turning Center",
     "title": "De2-Ultra Mini CNC Turning Center",
+    "slug": "de2-ultra-mini-cnc-turning-center",
     "category": "CNC Turning Machine",
     "mainCategory": "CNC for Education",
-    "price": 8990,
+    "price": 115.5,
+    "prix": 115.5,
+    "stock": 20,
+    "estActif": true,
     "features": [
       "Trois modes sont disponibles : De2, De2-Pro, De2-Ultra",
       "Banc incliné avec changeur d'outils automatique à 4 positions",
@@ -29,13 +35,47 @@ export const cncProductDetails = {
       "Vitesse de broche": "0-3000 tr/min",
       "Puissance moteur": "1.5 kW",
       "Précision": "±0.005 mm"
+    },
+    "modele": "De2-Ultra",
+    "categorie": "697f4c69a494e767414f0e2e",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "PC1 Baby CNC Lathe-Mach": {
+<<<<<<< HEAD
     "title": "PC1 Baby CNC Lathe-Mach",
     "category": "CNC Turning Machine",
     "mainCategory": "CNC for Education",
     "price": 5490,
+    "features": [
+=======
+    "_id": "697f55259e5f50c871efa21f",
+    "nom": "PC1 Baby CNC Lathe-Mach",
+    "title": "PC1 Baby CNC Lathe-Mach",
+    "slug": "pc1-baby-cnc-lathe-mach",
+    "description": "PC1 Baby CNC Lathe-Mach. Tour micro-CNC piloté par PC, faible coût, volant manuel préinstallé. Arrêt automatique de l'alimentation à l'ouverture de la porte. Idéal pour l'enseignement et la formation. Combine les modes CNC et manuel (2 en 1).",
+    "prix": 97.99,
+    "price": 97.99,
+    "caracteristiques": [
+>>>>>>> f91ff486f19cab37875a1828c103013426db2764
+      "Faible coût",
+      "Volant manuel préinstallé",
+      "Tour micro-CNC piloté par PC",
+      "Arrêt automatique de l'alimentation à l'ouverture de la porte",
+      "Idéal pour l'enseignement et la formation",
+      "Combine les modes CNC et manuel",
+      "2 en 1 (CNC et manuel)"
+    ],
+<<<<<<< HEAD
+    "fullDescription": "Le PC1 Baby CNC Lathe-Mach est une solution économique et pédagogique par excellence. Ce tour micro-CNC piloté par PC offre la flexibilité de fonctionner à la fois en mode CNC et en mode manuel, ce qui en fait un outil polyvalent pour l'apprentissage progressif de l'usinage CNC.",
+    "specifications": {
+      "Type": "Tour micro-CNC piloté par PC",
+      "Modes": "CNC et Manuel (2 en 1)",
+      "Sécurité": "Arrêt auto à l'ouverture de porte",
+      "Volant": "Manuel préinstallé",
+      "Application": "Enseignement et formation"
+=======
     "features": [
       "Faible coût",
       "Volant manuel préinstallé",
@@ -45,13 +85,21 @@ export const cncProductDetails = {
       "Combine les modes CNC et manuel",
       "2 en 1 (CNC et manuel)"
     ],
-    "fullDescription": "Le PC1 Baby CNC Lathe-Mach est une solution économique et pédagogique par excellence. Ce tour micro-CNC piloté par PC offre la flexibilité de fonctionner à la fois en mode CNC et en mode manuel, ce qui en fait un outil polyvalent pour l'apprentissage progressif de l'usinage CNC.",
-    "specifications": {
-      "Type": "Tour micro-CNC piloté par PC",
-      "Modes": "CNC et Manuel (2 en 1)",
-      "Sécurité": "Arrêt auto à l'ouverture de porte",
-      "Volant": "Manuel préinstallé",
-      "Application": "Enseignement et formation"
+    "fullDescription": "PC1 Baby CNC Lathe-Mach. Tour micro-CNC piloté par PC, faible coût, volant manuel préinstallé. Arrêt automatique de l'alimentation à l'ouverture de la porte. Idéal pour l'enseignement et la formation. Combine les modes CNC et manuel (2 en 1).",
+    "images": [
+      "/images/products/CNC EDUCATION/CNC Turning Machine/pc1_baby_cnc_lathe-mach.png"
+    ],
+    "modele": "PC1",
+    "categorie": "697f4c69a494e767414f0e2e",
+    "estActif": true,
+    "stock": 9,
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/CNC EDUCATION/CNC Turning Machine/pc1_baby_cnc_lathe-mach.png",
+    "nomFichierImage": "pc1_baby_cnc_lathe-mach.png",
+    "stockApres": 10,
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+>>>>>>> f91ff486f19cab37875a1828c103013426db2764
     },
     "images": [
       "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
@@ -59,10 +107,16 @@ export const cncProductDetails = {
     ]
   },
   "De4-Eco (KC4S) Bench CNC Lathe": {
+    "_id": "697f545c9e5f50c871efa21e",
+    "nom": "De4-Eco (KC4S) Bench CNC Lathe",
     "title": "De4-Eco (KC4S) Bench CNC Lathe",
+    "slug": "de4-eco-kc4s-bench-cnc-lathe",
     "category": "CNC Turning Machine",
     "mainCategory": "CNC for Education",
-    "price": 7490,
+    "price": 103.9,
+    "prix": 103.9,
+    "stock": 4,
+    "estActif": true,
     "features": [
       "Système CNC basé sur PC, haute fiabilité, utilisation simple",
       "Connexion au PC via câble réseau",
@@ -81,13 +135,23 @@ export const cncProductDetails = {
     },
     "images": [
       "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png"
-    ]
+    ],
+    "modele": "KC4S",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+    }
   },
   "De6 (iKC6S) CNC Turning Machine": {
+    "_id": "697f55549e5f50c871efa220",
+    "nom": "De6 (iKC6S) CNC Turning Machine",
     "title": "De6 (iKC6S) CNC Turning Machine",
+    "slug": "de6-ikc6s-cnc-turning-machine",
     "category": "CNC Turning Machine",
     "mainCategory": "CNC for Education",
-    "price": 12990,
+    "price": 93.89,
+    "prix": 93.89,
+    "stock": 1999,
+    "estActif": true,
     "features": [
       "Changeur d'outils automatique à 8 positions",
       "Banc incliné avec couvercle de protection",
@@ -104,13 +168,23 @@ export const cncProductDetails = {
     },
     "images": [
       "/images/products/CNC EDUCATION/CNC Turing Machine/De6 (iKC6S) CNC Turning Machine.png"
-    ]
+    ],
+    "modele": "iKC6S",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+    }
   },
   "De4-Pro (iKC4) Bench CNC Lathe": {
+    "_id": "697f55969e5f50c871efa221",
+    "nom": "De4-Pro (iKC4) Bench CNC Lathe",
     "title": "De4-Pro (iKC4) Bench CNC Lathe",
+    "slug": "de4-pro-ikc4-bench-cnc-lathe",
     "category": "CNC Turning Machine",
     "mainCategory": "CNC for Education",
-    "price": 10990,
+    "price": 87.9,
+    "prix": 87.9,
+    "stock": 70,
+    "estActif": true,
     "features": [
       "Changeur d'outils à 8 stations",
       "Glissière inclinée",
@@ -126,13 +200,23 @@ export const cncProductDetails = {
     },
     "images": [
       "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Pro (iKC4) Bench CNC Lathe.png"
-    ]
+    ],
+    "modele": "iKC4",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+    }
   },
   "De8 (iKC8) CNC Turning Machine": {
+    "_id": "697f55e79e5f50c871efa223",
+    "nom": "De8 (iKC8) CNC Turning Machine",
     "title": "De8 (iKC8) CNC Turning Machine",
+    "slug": "de8-ikc8-cnc-turning-machine",
     "category": "CNC Turning Machine",
     "mainCategory": "CNC for Education",
-    "price": 18990,
+    "price": 117,
+    "prix": 117,
+    "stock": 10,
+    "estActif": false,
     "features": [
       "Bâti monobloc en fonte",
       "Structure de broche A2-5 et moteur de broche de 4 kW",
@@ -152,13 +236,23 @@ export const cncProductDetails = {
     },
     "images": [
       "/images/products/CNC EDUCATION/CNC Turing Machine/De8 (iKC8) CNC Turning Machine.png"
-    ]
+    ],
+    "modele": "iKC8",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+    }
   },
   "Fa2-Ultra Mini CNC Milling Center": {
+    "_id": "697f6813a494e767414f10c5",
+    "nom": "Fa2-Ultra Mini CNC Milling Center",
     "title": "Fa2-Ultra Mini CNC Milling Center",
+    "slug": "fa2-ultra-mini-cnc-milling-center",
     "category": "CNC Milling Machine",
     "mainCategory": "CNC for Education",
-    "price": 8490,
+    "price": 20,
+    "prix": 20,
+    "stock": 10,
+    "estActif": false,
     "features": [
       "Trois modes sont disponibles : Fa2, Fa2-Pro, Fa2-Ultra",
       "Usinage à grande vitesse de 5000 tr/min pour une surface lisse",
@@ -176,13 +270,23 @@ export const cncProductDetails = {
     },
     "images": [
       "/images/products/CNC EDUCATION/CNC Milling Machine/Fa2-Ultra Mini CNC Milling Center.png"
-    ]
+    ],
+    "modele": "",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+    }
   },
   "PX1 Baby CNC Milling Machine": {
+    "_id": "697f69499e5f50c871efa229",
+    "nom": "PX1 Baby CNC Milling Machine",
     "title": "PX1 Baby CNC Milling Machine",
+    "slug": "px1-baby-cnc-milling-machine",
     "category": "CNC Milling Machine",
     "mainCategory": "CNC for Education",
-    "price": 5990,
+    "price": 30,
+    "prix": 30,
+    "stock": 10,
+    "estActif": false,
     "features": [
       "Machine CNC 2 en 1 (mode automatique et manuel)",
       "Boîtier transparent",
@@ -202,13 +306,23 @@ export const cncProductDetails = {
     },
     "images": [
       "/images/products/CNC EDUCATION/CNC Milling Machine/PX1 Baby CNC Milling Machine.png"
-    ]
+    ],
+    "modele": "PX1",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+    }
   },
   "Fa4-Eco (KX1S) CNC Milling Machine": {
+    "_id": "697f69869e5f50c871efa22a",
+    "nom": "Fa4-Eco (KX1S) CNC Milling Machine",
     "title": "Fa4-Eco (KX1S) CNC Milling Machine",
+    "slug": "fa4-eco-kx1s-cnc-milling-machine",
     "category": "CNC Milling Machine",
     "mainCategory": "CNC for Education",
-    "price": 6990,
+    "price": 120,
+    "prix": 120,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Système CNC basé sur PC, haute fiabilité, utilisation simple",
       "Connexion au PC via câble réseau",
@@ -227,13 +341,23 @@ export const cncProductDetails = {
     },
     "images": [
       "/images/products/CNC EDUCATION/CNC Milling Machine/Fa4-Eco (KX1S) CNC Milling Machine.png"
-    ]
+    ],
+    "modele": "KX1S",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
+    }
   },
   "DT-M002 – Mesure des Positions": {
+    "_id": "697f6f9b9e5f50c871efa22f",
+    "nom": "DT-M002 – Mesure des Positions",
     "title": "DT-M002 – Mesure des Positions",
+    "slug": "dt-m002-mesure-des-positions",
     "category": "CAPTEURS ET ACTIONNEURS",
     "mainCategory": "Voitures",
-    "price": 1750,
+    "price": 120.99,
+    "prix": 120.99,
+    "stock": 4,
+    "estActif": true,
     "features": [
       "Étude des capteurs de position (pédale d'accélérateur, papillon, etc.)",
       "Capteurs potentiométriques et à effet Hall",
@@ -258,13 +382,23 @@ export const cncProductDetails = {
       "Durée de vie": "> 10 millions de cycles",
       "Température": "-40°C à +85°C",
       "Connectique": "Connecteur automobile 3 voies"
+    },
+    "modele": "DT-M002",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "DT-M001 – Mesure d'Angle de Volant": {
+    "_id": "697f6f609e5f50c871efa22e",
+    "nom": "DT-M001 – Mesure d'Angle de Volant",
     "title": "DT-M001 – Mesure d'Angle de Volant",
+    "slug": "dt-m001-mesure-angle-volant",
     "category": "CAPTEURS ET ACTIONNEURS",
     "mainCategory": "Voitures",
-    "price": 1950,
+    "price": 86.5,
+    "prix": 86.5,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Capteur d'angle de volant pour étude des systèmes de direction",
       "Technologie à effet Hall pour mesure sans contact",
@@ -289,13 +423,23 @@ export const cncProductDetails = {
       "Taux de rafraîchissement": "100 Hz",
       "Protection": "IP54",
       "Température": "-40°C à +85°C"
+    },
+    "modele": "DT-M001",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "DT-E001 – Unité de Contrôle Électronique": {
+    "_id": "697f6e3c9e5f50c871efa22d",
+    "nom": "DT-E001 – Unité de Contrôle Électronique",
     "title": "DT-E001 – Unité de Contrôle Électronique",
+    "slug": "dt-e001-unite-de-controle-electronique",
     "category": "CAPTEURS ET ACTIONNEURS",
     "mainCategory": "Voitures",
-    "price": 2450,
+    "price": 87,
+    "prix": 87,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Calculateur moteur didactique avec accès aux signaux",
       "Interface de programmation et diagnostic",
@@ -321,13 +465,23 @@ export const cncProductDetails = {
       "Tension d'alimentation": "9-16V DC",
       "Consommation": "< 500 mA",
       "Température": "-20°C à +70°C"
+    },
+    "modele": "DT-E001",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "DTM7020 – Modules Essuie-Glaces": {
+    "_id": "697f93e49e5f50c871efa235",
+    "nom": "DTM7020 – Modules Essuie-Glaces",
     "title": "DTM7020 – Modules Essuie-Glaces",
+    "slug": "dtm7020-modules-essuie-glaces",
     "category": "ÉLECTRICITÉ",
     "mainCategory": "Voitures",
-    "price": 1290,
+    "price": 120.95,
+    "prix": 120.95,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Système complet d'essuie-glaces avant/arrière",
       "Moteurs pas à pas avec retour de position",
@@ -352,13 +506,23 @@ export const cncProductDetails = {
       "Cycle de fonctionnement": "Continu",
       "Connectique": "Connecteurs automobile ISO",
       "Dimensions": "400 x 300 x 150 mm"
+    },
+    "modele": "DTM7020",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "DTM7000 – Modules Éclairage et Signalisation": {
+    "_id": "697f93b69e5f50c871efa234",
+    "nom": "DTM7000 – Modules Éclairage et Signalisation",
     "title": "DTM7000 – Modules Éclairage et Signalisation",
+    "slug": "dtm7000-modules-eclairage-signalisation",
     "category": "ÉLECTRICITÉ",
     "mainCategory": "Voitures",
-    "price": 1490,
+    "price": 150.99,
+    "prix": 150.99,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Système complet d'éclairage automobile",
       "Feux de position, croisement, route, clignotants",
@@ -383,13 +547,23 @@ export const cncProductDetails = {
       "Circuit imprimé": "Double face, sérigraphié",
       "Points de test": "32",
       "Dimensions": "600 x 400 x 100 mm"
+    },
+    "modele": "DTM7000",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "DT-M005 – Mesure des Courants et des Tensions": {
+    "_id": "697f91fe9e5f50c871efa233",
+    "nom": "DT-M005 – Mesure des Courants et des Tensions",
     "title": "DT-M005 – Mesure des Courants et des Tensions",
+    "slug": "dt-m005-mesure-courants-tensions",
     "category": "ÉLECTRICITÉ",
     "mainCategory": "Voitures",
-    "price": 1690,
+    "price": 750.5,
+    "prix": 750.5,
+    "stock": 50,
+    "estActif": true,
     "features": [
       "Système de mesure de grandeurs électriques automobiles",
       "Capteurs de courant à effet Hall",
@@ -414,13 +588,23 @@ export const cncProductDetails = {
       "Entrées isolées": "Oui",
       "Alimentation": "12V DC ou USB",
       "Logiciel inclus": "Acquisition, analyse, génération de rapports"
+    },
+    "modele": "DT-M005",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "MT-4002V – Maquette de Charge Démarrage 12V": {
+    "_id": "697f91119e5f50c871efa231",
+    "nom": "MT-4002V – Maquette de Charge Démarrage 12V",
     "title": "MT-4002V – Maquette de Charge Démarrage 12V",
+    "slug": "mt-4002v-maquette-charge-demarrage-12v",
     "category": "ÉLECTRICITÉ",
     "mainCategory": "Voitures",
-    "price": 2190,
+    "price": 900.5,
+    "prix": 900.5,
+    "stock": 15,
+    "estActif": true,
     "features": [
       "Maquette pédagogique charge-démarrage",
       "Alternateur et démarreur sectionnés pour visualisation",
@@ -445,13 +629,23 @@ export const cncProductDetails = {
       "Sérigraphie": "Couleurs selon normes",
       "Accessoires inclus": "Câbles, manuel TP",
       "Garantie": "2 ans"
+    },
+    "modele": "MT-4002V",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur": {
+    "_id": "697f95159e5f50c871efa238",
+    "nom": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
     "title": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
+    "slug": "mt-moteur-meca-diagnostic-mecanique-moteur",
     "category": "RÉSEAUX MULTIPLEXÉS",
     "mainCategory": "Voitures",
-    "price": 3490,
+    "price": 110.98,
+    "prix": 110.98,
+    "stock": 25,
+    "estActif": true,
     "features": [
       "Maquette de moteur avec capteurs et actionneurs",
       "Interface CAN pour communication",
@@ -476,13 +670,23 @@ export const cncProductDetails = {
       "Codes défauts simulés": "24",
       "Points de test": "48",
       "Alimentation": "12V DC / 230V AC"
+    },
+    "modele": "MT-MOTEUR-MECA",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "MT-E5000 – Maquette d'Injection Essence Séquentielle": {
+    "_id": "697f94e89e5f50c871efa237",
+    "nom": "MT-E5000 – Maquette d'Injection Essence Séquentielle",
     "title": "MT-E5000 – Maquette d'Injection Essence Séquentielle",
+    "slug": "mt-e5000-maquette-injection-essence-sequentielle",
     "category": "RÉSEAUX MULTIPLEXÉS",
     "mainCategory": "Voitures",
-    "price": 3290,
+    "price": 160.99,
+    "prix": 160.99,
+    "stock": 20,
+    "estActif": true,
     "features": [
       "Système d'injection essence séquentielle",
       "Calculateur moteur programmable",
@@ -507,13 +711,23 @@ export const cncProductDetails = {
       "Régime max simulé": "7000 tr/min",
       "Logiciel": "Cartographie, calibration",
       "Interface": "USB, Ethernet"
+    },
+    "modele": "MT-E5000",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "MT-H9000 – Maquette d'Injection Diesel Common Rail": {
+    "_id": "697f94b79e5f50c871efa236",
+    "nom": "MT-H9000 – Maquette d'Injection Diesel Common Rail",
     "title": "MT-H9000 – Maquette d'Injection Diesel Common Rail",
+    "slug": "mt-h9000-maquette-injection-diesel-common-rail",
     "category": "RÉSEAUX MULTIPLEXÉS",
     "mainCategory": "Voitures",
-    "price": 3890,
+    "price": 260.33,
+    "prix": 260.33,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Système d'injection diesel Common Rail",
       "Pompe haute pression et rampe commune",
@@ -538,13 +752,23 @@ export const cncProductDetails = {
       "Communication": "CAN bus",
       "Logiciel": "Diagnostic, paramétrage",
       "Alimentation": "12V DC / 230V AC"
+    },
+    "modele": "MT-H9000",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "PTL908-2H – High Voltage Safety Test Lead 10kV": {
+    "_id": "697f96479e5f50c871efa23a",
+    "nom": "PTL908-2H – High Voltage Safety Test Lead 10kV",
     "title": "PTL908-2H – High Voltage Safety Test Lead 10kV",
+    "slug": "ptl908-2h-high-voltage-test-lead-10kv",
     "category": "Accessoires",
     "mainCategory": "MCP lab electronics",
-    "price": 89,
+    "price": 40,
+    "prix": 40,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Câble de test haute tension 10kV",
       "Double isolation de sécurité",
@@ -570,13 +794,23 @@ export const cncProductDetails = {
       "Température": "-20°C à +80°C",
       "Section conducteur": "1.5 mm²",
       "Couleur": "Rouge/Noir"
+    },
+    "modele": "PTL908-2H",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "PTL970 – Oscilloscope Probe 5kV": {
+    "_id": "697f96799e5f50c871efa23d",
+    "nom": "PTL970 – Oscilloscope Probe 5kV",
     "title": "PTL970 – Oscilloscope Probe 5kV",
+    "slug": "ptl970-oscilloscope-probe-5kv",
     "category": "Accessoires",
     "mainCategory": "MCP lab electronics",
-    "price": 129,
+    "price": 78.4,
+    "prix": 78.4,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Sonde oscilloscope haute tension 5kV",
       "Atténuation x100",
@@ -602,13 +836,23 @@ export const cncProductDetails = {
       "Connecteur": "BNC mâle",
       "Compensation": "10-30pF",
       "Sécurité": "CAT II 5kV"
+    },
+    "modele": "PTL970",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "PTL955 – Oscilloscope Probe 40kV": {
+    "_id": "697f968b9e5f50c871efa23e",
+    "nom": "PTL955 – Oscilloscope Probe 40kV",
     "title": "PTL955 – Oscilloscope Probe 40kV",
+    "slug": "ptl955-oscilloscope-probe-40kv",
     "category": "Accessoires",
     "mainCategory": "MCP lab electronics",
-    "price": 299,
+    "price": 300,
+    "prix": 300,
+    "stock": 9,
+    "estActif": true,
     "features": [
       "Sonde oscilloscope très haute tension 40kV",
       "Atténuation x1000",
@@ -634,13 +878,23 @@ export const cncProductDetails = {
       "Isolation": "Silicone haute tension",
       "Sécurité": "CAT I 40kV",
       "Poids": "350g"
+    },
+    "modele": "PTL955",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "PTL908-8 – Test Lead 4mm 20A": {
+    "_id": "697f965c9e5f50c871efa23b",
+    "nom": "PTL908-8 – Test Lead 4mm 20A",
     "title": "PTL908-8 – Test Lead 4mm 20A",
+    "slug": "ptl908-8-test-lead-4mm-20a",
     "category": "Accessoires",
     "mainCategory": "MCP lab electronics",
-    "price": 29,
+    "price": 4,
+    "prix": 4,
+    "stock": 30,
+    "estActif": true,
     "features": [
       "Câbles de test 4mm pour courant jusqu'à 20A",
       "Connecteurs de sécurité empilables",
@@ -666,13 +920,23 @@ export const cncProductDetails = {
       "Gaine": "Silicone souple",
       "Température": "-20°C à +90°C",
       "Normes": "IEC 61010, CAT III"
+    },
+    "modele": "PTL908-8",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "PTL940 – Oscilloscope Probe 100MHz": {
+    "_id": "697f966a9e5f50c871efa23c",
+    "nom": "PTL940 – Oscilloscope Probe 100MHz",
     "title": "PTL940 – Oscilloscope Probe 100MHz",
+    "slug": "ptl940-oscilloscope-probe-100mhz",
     "category": "Accessoires",
     "mainCategory": "MCP lab electronics",
-    "price": 49,
+    "price": 45.99,
+    "prix": 45.99,
+    "stock": 5,
+    "estActif": true,
     "features": [
       "Sonde oscilloscope standard 100MHz",
       "Atténuation x1/x10 commutable",
@@ -698,13 +962,23 @@ export const cncProductDetails = {
       "Compensation": "10-30pF",
       "Accessoires": "Embout fin, embout isolé, prise de terre",
       "Poids": "80g"
+    },
+    "modele": "PTL940",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "PTL960 – Oscilloscope Probe 500MHz": {
+    "_id": "697f96139e5f50c871efa239",
+    "nom": "PTL960 – Oscilloscope Probe 500MHz",
     "title": "PTL960 – Oscilloscope Probe 500MHz",
+    "slug": "ptl960-oscilloscope-probe-500mhz",
     "category": "Accessoires",
     "mainCategory": "MCP lab electronics",
-    "price": 189,
+    "price": 96.45,
+    "prix": 96.45,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Sonde oscilloscope haute fréquence 500MHz",
       "Atténuation fixe x10",
@@ -730,13 +1004,23 @@ export const cncProductDetails = {
       "Compensation": "Intégrée",
       "Sécurité": "CAT I 300V",
       "Poids": "60g"
+    },
+    "modele": "PTL960",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "ACL-7000 – Analogue Training System": {
+    "_id": "697f978e9e5f50c871efa240",
+    "nom": "ACL-7000 – Analogue Training System",
     "title": "ACL-7000 – Analogue Training System",
+    "slug": "acl-7000-analogue-training-system",
     "category": "EDUCATION EQUIPMENT",
     "mainCategory": "MCP lab electronics",
-    "price": 1290,
+    "price": 1450.57,
+    "prix": 1450.57,
+    "stock": 18,
+    "estActif": true,
     "features": [
       "Système complet pour l'apprentissage de l'électronique analogique",
       "Amplificateurs opérationnels, transistors, diodes",
@@ -763,6 +1047,10 @@ export const cncProductDetails = {
       "Entrées/Sorties": "BNC, connecteurs 4mm",
       "Accessoires inclus": "Câbles, manuel TP, alimentation secteur",
       "Poids": "2.5kg"
+    },
+    "modele": "ACL-7000",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
   },
   "M21-7100 – Digital & Analogue Training System": {
@@ -800,10 +1088,16 @@ export const cncProductDetails = {
     }
   },
   "F1-3 – Basic Logic Circuit Training System": {
+    "_id": "697f97e09e5f50c871efa242",
+    "nom": "F1-3 – Basic Logic Circuit Training System",
     "title": "F1-3 – Basic Logic Circuit Training System",
+    "slug": "f1-3-basic-logic-circuit-training-system",
     "category": "EDUCATION EQUIPMENT",
     "mainCategory": "MCP lab electronics",
-    "price": 890,
+    "price": 1356,
+    "prix": 1356,
+    "stock": 10,
+    "estActif": true,
     "features": [
       "Système d'apprentissage des circuits logiques de base",
       "Portes AND, OR, NOT, NAND, NOR, XOR",
@@ -831,30 +1125,11 @@ export const cncProductDetails = {
       "Dimensions": "250 x 200 x 60mm",
       "Poids": "1.2kg",
       "Accessoires": "Câbles, manuel TP"
+    },
+    "modele": "F1-3",
+    "metadata": {
+      "migratedAt": "2026-03-16T22:00:34.663Z"
     }
-  },
-  "BALGOUTHI": {
-    "nom": "BALGOUTHI",
-    "description": "nouveau produit",
-    "prix": 20,
-    "caracteristiques": [
-      "bien mouteur"
-    ],
-    "images": [
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkfGarXUgae6vpm-uMC24C9jhvlLMzhG1Xog&s"
-    ],
-    "modele": "BALGOUTHI",
-    "categorie": "697f6df7a494e767414f116c",
-    "estActif": true,
-    "stock": 10,
-    "ordre": 0,
-    "cheminImageAuto": "/images/products/products/balgouthi.png",
-    "nomFichierImage": "balgouthi.png",
-    "_id": "69b08a343964a3dfaec5d34b",
-    "slug": "balgouthi",
-    "id": "69b08a343964a3dfaec5d34b",
-    "createdAt": "2026-03-10T21:16:36.593Z",
-    "updatedAt": "2026-03-10T21:18:45.002Z"
   },
   "_orders": {
     "69b2c62e18b12803dcd93277": {
@@ -3855,8 +4130,113 @@ export const cncProductDetails = {
       "paymentStatus": "paid",
       "orderStatus": "livree",
       "stockUpdated": false,
+<<<<<<< HEAD
       "createdAt": "2026-04-09T10:26:34.226Z",
       "updatedAt": "2026-04-09T10:27:33.395Z"
+=======
+      "createdAt": "2026-04-08T14:39:19.009Z",
+      "updatedAt": "2026-04-08T14:40:05.295Z"
+    },
+    "69d682bc2b0019e335b2b6cc": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d682bc2b0019e335b2b6cc",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69d682bc2b0019e335b2b6cd"
+        }
+      ],
+      "totalAmount": 8990,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-08T16:30:52.052Z",
+      "updatedAt": "2026-04-08T16:33:31.381Z"
+    },
+    "69d683aa2b0019e335b2b971": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": "/uploads/virements/virement-1775666119026-21602100.jpg",
+        "method": "platform",
+        "uploadedAt": "2026-04-08T16:35:19.045Z"
+      },
+      "_id": "69d683aa2b0019e335b2b971",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d683aa2b0019e335b2b972"
+        }
+      ],
+      "totalAmount": 5490,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-08T16:34:50.778Z",
+      "updatedAt": "2026-04-09T10:53:57.072Z"
+    },
+    "69dbd76759e281307d53d7e0": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69dbd76759e281307d53d7e0",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De8 (iKC8) CNC Turning Machine",
+          "quantity": 1,
+          "price": 18990,
+          "_id": "69dbd76759e281307d53d7e1"
+        }
+      ],
+      "totalAmount": 18990,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": true,
+      "createdAt": "2026-04-12T17:33:27.192Z",
+      "updatedAt": "2026-04-12T17:35:23.270Z",
+      "stripeSessionId": "cs_test_a1gG0CjgEuLNkf7isGTDkKSdztDSc2gxLGfzYbvIdJ1DmisbpSnR8IAymI"
+>>>>>>> f91ff486f19cab37875a1828c103013426db2764
     }
   }
 };

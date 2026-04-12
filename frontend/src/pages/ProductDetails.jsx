@@ -48,52 +48,60 @@ const ProductDetails = () => {
 
   //  FONCTION : Valider si une URL d'image est valide
   const isValidImage = (url) => {
-    if (!url || typeof url !== 'string') return false;
-    
-    const validExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.svg', '.webp', '.bmp'];
-    const hasValidExtension = validExtensions.some(ext => 
-      url.toLowerCase().endsWith(ext)
+    if (!url || typeof url !== "string") return false;
+
+    const validExtensions = [
+      ".jpg",
+      ".jpeg",
+      ".png",
+      ".gif",
+      ".svg",
+      ".webp",
+      ".bmp",
+    ];
+    const hasValidExtension = validExtensions.some((ext) =>
+      url.toLowerCase().endsWith(ext),
     );
-    
-    if (url === '.PNG' || url === '.JPG' || url === '.JPEG' || url.length < 5) {
+
+    if (url === ".PNG" || url === ".JPG" || url === ".JPEG" || url.length < 5) {
       return false;
     }
-    
-    if (!url.startsWith('http') && !url.startsWith('/images')) {
+
+    if (!url.startsWith("http") && !url.startsWith("/images")) {
       return false;
     }
-    
+
     return hasValidExtension;
   };
 
   //  FONCTION : Gérer les erreurs de chargement d'images
   const handleImageError = (imageUrl) => {
     console.warn(` Erreur de chargement d'image: ${imageUrl}`);
-    setImageErrors(prev => ({
+    setImageErrors((prev) => ({
       ...prev,
-      [imageUrl]: true
+      [imageUrl]: true,
     }));
   };
 
   // ========== FONCTION POUR GÉNÉRER LE PDF COMPLET ==========
   // ========== REMPLACE LA FONCTION handleGeneratePDF DANS ProductDetails.jsx ==========
-// Copie tout ce bloc et remplace l'ancienne fonction handleGeneratePDF
+  // Copie tout ce bloc et remplace l'ancienne fonction handleGeneratePDF
 
-const handleGeneratePDF = async () => {
+  const handleGeneratePDF = async () => {
     if (!productDetails) return;
 
     setPdfGenerating(true);
 
     try {
-        // Toast de chargement
-        const loadingToast = document.createElement("div");
-        loadingToast.innerHTML = `
+      // Toast de chargement
+      const loadingToast = document.createElement("div");
+      loadingToast.innerHTML = `
             <div style="display: flex; align-items: center; gap: 12px;">
                 <div class="spinner-border spinner-border-sm" role="status"></div>
                 <span>Génération du PDF en cours...</span>
             </div>
         `;
-        loadingToast.style.cssText = `
+      loadingToast.style.cssText = `
             position: fixed; top: 20px; right: 20px;
             background: linear-gradient(135deg, #4361ee, #3a0ca3);
             color: white; padding: 12px 24px; border-radius: 12px;
@@ -101,39 +109,39 @@ const handleGeneratePDF = async () => {
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             font-family: Arial, sans-serif;
         `;
-        document.body.appendChild(loadingToast);
+      document.body.appendChild(loadingToast);
 
-        // Données produit
-        const productName_    = productDetails.title || '';
-        const productCategory = productDetails.category || '';
-        const productMainCat  = productDetails.mainCategory || '';
-        const productDesc     = productDetails.fullDescription || '';
-        const productFeatures = productDetails.features || [];
-        const specifications  = productDetails.specifications || {};
-        const technicalSpecs  = productDetails.technicalSpecs || {};
+      // Données produit
+      const productName_ = productDetails.title || "";
+      const productCategory = productDetails.category || "";
+      const productMainCat = productDetails.mainCategory || "";
+      const productDesc = productDetails.fullDescription || "";
+      const productFeatures = productDetails.features || [];
+      const specifications = productDetails.specifications || {};
+      const technicalSpecs = productDetails.technicalSpecs || {};
 
-        // Images valides (max 3 pour la ligne du haut)
-        const validImages = (productDetails.images || [])
-            .filter(img => isValidImage(img) && !imageErrors[img])
-            .slice(0, 3);
+      // Images valides (max 3 pour la ligne du haut)
+      const validImages = (productDetails.images || [])
+        .filter((img) => isValidImage(img) && !imageErrors[img])
+        .slice(0, 3);
 
-        const escapeHtml = (text) => {
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = String(text);
-            return div.innerHTML;
-        };
+      const escapeHtml = (text) => {
+        if (!text) return "";
+        const div = document.createElement("div");
+        div.textContent = String(text);
+        return div.innerHTML;
+      };
 
-        // Construction du HTML — une seule page A4
-        const el = document.createElement("div");
-        el.style.cssText = `
+      // Construction du HTML — une seule page A4
+      const el = document.createElement("div");
+      el.style.cssText = `
             position: absolute; top: -10000px; left: 0;
             width: 960px; background: white;
             padding: 30px 36px; font-family: 'Segoe UI', Arial, sans-serif;
             font-size: 13px; line-height: 1.5; color: #333;
         `;
 
-        el.innerHTML = `
+      el.innerHTML = `
             <!-- EN-TÊTE : nom à gauche, images à droite -->
             <div style="display:flex; justify-content:space-between; align-items:flex-start;
                         border-bottom: 3px solid #4361ee; padding-bottom: 18px; margin-bottom: 20px;">
@@ -150,26 +158,36 @@ const handleGeneratePDF = async () => {
                 </div>
 
                 <!-- Images à droite du titre -->
-                ${validImages.length > 0 ? `
+                ${
+                  validImages.length > 0
+                    ? `
                 <div style="display:flex; gap:8px; flex-shrink:0;">
-                    ${validImages.map((img, i) => `
-                        <div style="width:${validImages.length === 1 ? '160px' : '110px'};
-                                    height:${validImages.length === 1 ? '160px' : '110px'};
+                    ${validImages
+                      .map(
+                        (img, i) => `
+                        <div style="width:${validImages.length === 1 ? "160px" : "110px"};
+                                    height:${validImages.length === 1 ? "160px" : "110px"};
                                     border:1px solid #e0e0e0; border-radius:10px;
                                     padding:6px; background:#f8f9fa;
                                     display:flex; align-items:center; justify-content:center; overflow:hidden;">
-                            <img src="${img}" alt="Vue ${i+1}" crossorigin="anonymous"
+                            <img src="${img}" alt="Vue ${i + 1}" crossorigin="anonymous"
                                  style="max-width:100%; max-height:100%; object-fit:contain;" />
                         </div>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
-                ` : ''}
+                `
+                    : ""
+                }
             </div>
 
             <!-- CORPS : tableaux l'un sous l'autre -->
 
             <!-- Caractéristiques principales -->
-            ${productFeatures.length > 0 ? `
+            ${
+              productFeatures.length > 0
+                ? `
             <div style="margin-bottom:16px;">
                 <div style="background:linear-gradient(135deg,#4361ee,#3a0ca3); color:white;
                             padding:8px 14px; border-radius:8px; font-size:13px;
@@ -177,18 +195,26 @@ const handleGeneratePDF = async () => {
                     ✓ Caractéristiques principales
                 </div>
                 <div style="background:#f8f9fa; border-radius:8px; padding:12px;">
-                    ${productFeatures.map(f => `
+                    ${productFeatures
+                      .map(
+                        (f) => `
                         <div style="display:flex; align-items:flex-start; gap:8px; margin-bottom:5px;">
                             <span style="color:#28a745; font-weight:bold; flex-shrink:0;">✓</span>
                             <span style="font-size:12px;">${escapeHtml(f)}</span>
                         </div>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </div>
             </div>
-            ` : ''}
+            `
+                : ""
+            }
 
             <!-- Spécifications générales -->
-            ${Object.keys(specifications).length > 0 ? `
+            ${
+              Object.keys(specifications).length > 0
+                ? `
             <div style="margin-bottom:16px;">
                 <div style="background:linear-gradient(135deg,#667eea,#764ba2); color:white;
                             padding:8px 14px; border-radius:8px; font-size:13px;
@@ -196,19 +222,27 @@ const handleGeneratePDF = async () => {
                     ⚙ Spécifications générales
                 </div>
                 <table style="width:100%; border-collapse:collapse; font-size:12px;">
-                    ${Object.entries(specifications).map(([k,v]) => `
+                    ${Object.entries(specifications)
+                      .map(
+                        ([k, v]) => `
                         <tr>
                             <td style="padding:5px 8px; background:#f8f9fa; font-weight:600;
                                        border:1px solid #dee2e6; width:35%;">${escapeHtml(k)}</td>
                             <td style="padding:5px 8px; border:1px solid #dee2e6;">${escapeHtml(String(v))}</td>
                         </tr>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </table>
             </div>
-            ` : ''}
+            `
+                : ""
+            }
 
             <!-- Spécifications techniques avancées -->
-            ${Object.keys(technicalSpecs).length > 0 ? `
+            ${
+              Object.keys(technicalSpecs).length > 0
+                ? `
             <div style="margin-bottom:16px;">
                 <div style="background:linear-gradient(135deg,#667eea,#764ba2); color:white;
                             padding:8px 14px; border-radius:8px; font-size:13px;
@@ -216,81 +250,96 @@ const handleGeneratePDF = async () => {
                     🔧 Spécifications techniques avancées
                 </div>
                 <table style="width:100%; border-collapse:collapse; font-size:12px;">
-                    ${Object.entries(technicalSpecs).map(([k,v]) => `
+                    ${Object.entries(technicalSpecs)
+                      .map(
+                        ([k, v]) => `
                         <tr>
                             <td style="padding:5px 8px; background:#f8f9fa; font-weight:600;
                                        border:1px solid #dee2e6; width:35%;">${escapeHtml(k)}</td>
                             <td style="padding:5px 8px; border:1px solid #dee2e6;">${escapeHtml(String(v))}</td>
                         </tr>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </table>
             </div>
-            ` : ''}
+            `
+                : ""
+            }
 
             <!-- FOOTER -->
             <div style="margin-top:20px; text-align:center; font-size:10px; color:#999;
                         border-top:1px solid #dee2e6; padding-top:12px;">
-                Fiche technique générée le ${new Date().toLocaleDateString('fr-FR')} 
-                à ${new Date().toLocaleTimeString('fr-FR')} — ${window.location.origin}
+                Fiche technique générée le ${new Date().toLocaleDateString("fr-FR")} 
+                à ${new Date().toLocaleTimeString("fr-FR")} — ${window.location.origin}
             </div>
         `;
 
-        document.body.appendChild(el);
+      document.body.appendChild(el);
 
-        // Attendre le chargement des images
-        const imgs = el.querySelectorAll('img');
-        await Promise.all(Array.from(imgs).map(img => {
-            if (img.complete) return Promise.resolve();
-            return new Promise(resolve => {
-                img.onload = resolve;
-                img.onerror = resolve;
-            });
-        }));
+      // Attendre le chargement des images
+      const imgs = el.querySelectorAll("img");
+      await Promise.all(
+        Array.from(imgs).map((img) => {
+          if (img.complete) return Promise.resolve();
+          return new Promise((resolve) => {
+            img.onload = resolve;
+            img.onerror = resolve;
+          });
+        }),
+      );
 
-        await new Promise(resolve => setTimeout(resolve, 400));
+      await new Promise((resolve) => setTimeout(resolve, 400));
 
-        // Capture html2canvas
-        const canvas = await html2canvas(el, {
-            scale: 2.5,
-            useCORS: true,
-            logging: false,
-            backgroundColor: '#ffffff',
-            allowTaint: false,
-        });
+      // Capture html2canvas
+      const canvas = await html2canvas(el, {
+        scale: 2.5,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        allowTaint: false,
+      });
 
-        // Génération PDF une seule page
-        const imgData  = canvas.toDataURL('image/png');
-        const pdf      = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-        const imgWidth = 210;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      // Génération PDF une seule page
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4",
+      });
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        // Si le contenu dépasse une page A4 (297mm), on le scale pour tenir
-        const pageHeight = 297;
-        if (imgHeight <= pageHeight) {
-            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-        } else {
-            // Scale down pour tenir sur une page
-            const scale    = pageHeight / imgHeight;
-            const newWidth = imgWidth * scale;
-            const xOffset  = (imgWidth - newWidth) / 2;
-            pdf.addImage(imgData, 'PNG', xOffset, 0, newWidth, pageHeight);
-        }
+      // Si le contenu dépasse une page A4 (297mm), on le scale pour tenir
+      const pageHeight = 297;
+      if (imgHeight <= pageHeight) {
+        pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      } else {
+        // Scale down pour tenir sur une page
+        const scale = pageHeight / imgHeight;
+        const newWidth = imgWidth * scale;
+        const xOffset = (imgWidth - newWidth) / 2;
+        pdf.addImage(imgData, "PNG", xOffset, 0, newWidth, pageHeight);
+      }
 
-        const safeFileName = productName_.replace(/[^a-z0-9]/gi, '_').substring(0, 50);
-        pdf.save(`${safeFileName}_Fiche_Technique.pdf`);
+      const safeFileName = productName_
+        .replace(/[^a-z0-9]/gi, "_")
+        .substring(0, 50);
+      pdf.save(`${safeFileName}_Fiche_Technique.pdf`);
 
-        // Nettoyage
-        document.body.removeChild(el);
-        document.body.removeChild(loadingToast);
-
+      // Nettoyage
+      document.body.removeChild(el);
+      document.body.removeChild(loadingToast);
     } catch (error) {
-        console.error("Erreur PDF:", error);
-        alert("Erreur lors de la génération du PDF. Veuillez réessayer.");
-        document.querySelectorAll('[style*="Génération du PDF"]').forEach(el => el.remove());
+      console.error("Erreur PDF:", error);
+      alert("Erreur lors de la génération du PDF. Veuillez réessayer.");
+      document
+        .querySelectorAll('[style*="Génération du PDF"]')
+        .forEach((el) => el.remove());
     } finally {
-        setPdfGenerating(false);
+      setPdfGenerating(false);
     }
-};
+  };
   // ========== FONCTION: Navigation vers la vue 3D ==========
   const handleView3D = () => {
     navigate(`/product3d/${encodeURIComponent(decodedProductName)}`);
@@ -307,7 +356,7 @@ const handleGeneratePDF = async () => {
         const details = await getProductDetails(decodedProductName);
         setProductDetails(details);
         if (details) {
-          const validImage = details.images?.find(img => isValidImage(img));
+          const validImage = details.images?.find((img) => isValidImage(img));
           setSelectedImage(validImage || "");
         }
       } catch (error) {
@@ -461,7 +510,7 @@ const handleGeneratePDF = async () => {
           </div>
         </div>
       )}
-      
+
       {/* Navigation */}
       <div className="bg-light border-bottom">
         <div className="container py-3">
@@ -513,7 +562,9 @@ const handleGeneratePDF = async () => {
                 className="main-image-container bg-light rounded-3 mb-3 d-flex align-items-center justify-content-center"
                 style={{ height: "400px", border: "1px solid #dee2e6" }}
               >
-                {selectedImage && isValidImage(selectedImage) && !imageErrors[selectedImage] ? (
+                {selectedImage &&
+                isValidImage(selectedImage) &&
+                !imageErrors[selectedImage] ? (
                   <img
                     src={selectedImage}
                     alt={productDetails.title}
@@ -600,32 +651,35 @@ const handleGeneratePDF = async () => {
 
               {/* Bouton Voir en 3D */}
               <div className="mb-4">
-                <button 
+                <button
                   onClick={handleView3D}
                   className="btn btn-3d-view w-100"
                   style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    border: 'none',
-                    padding: '15px 20px',
-                    borderRadius: '12px',
-                    color: 'white',
-                    cursor: 'pointer',
-                    fontSize: '1.1rem',
-                    fontWeight: '600',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '10px',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)'
+                    background:
+                      "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+                    border: "none",
+                    padding: "15px 20px",
+                    borderRadius: "12px",
+                    color: "white",
+                    cursor: "pointer",
+                    fontSize: "1.1rem",
+                    fontWeight: "600",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
+                    transition: "transform 0.2s, box-shadow 0.2s",
+                    boxShadow: "0 4px 15px rgba(102, 126, 234, 0.4)",
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)';
+                    e.target.style.transform = "translateY(-2px)";
+                    e.target.style.boxShadow =
+                      "0 6px 20px rgba(102, 126, 234, 0.6)";
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
+                    e.target.style.transform = "translateY(0)";
+                    e.target.style.boxShadow =
+                      "0 4px 15px rgba(102, 126, 234, 0.4)";
                   }}
                 >
                   <FaCube size={24} />
@@ -641,7 +695,7 @@ const handleGeneratePDF = async () => {
                   Caractéristiques principales
                 </h5>
                 <ul className="list-unstyled mb-0">
-                  {productDetails.features.map((feature, index) => (
+                  {(productDetails.features || []).map((feature, index) => (
                     <li key={index} className="mb-2 d-flex align-items-start">
                       <FaCheck
                         size={16}
@@ -676,7 +730,10 @@ const handleGeneratePDF = async () => {
                       title="Télécharger la fiche technique PDF"
                     >
                       {pdfGenerating ? (
-                        <span className="spinner-border spinner-border-sm me-2" role="status" />
+                        <span
+                          className="spinner-border spinner-border-sm me-2"
+                          role="status"
+                        />
                       ) : (
                         <FaFilePdf size={20} />
                       )}
@@ -698,7 +755,7 @@ const handleGeneratePDF = async () => {
 
               {/* Documents techniques */}
               <div className="d-flex gap-3 flex-wrap">
-                <button 
+                <button
                   className="btn btn-outline-secondary"
                   onClick={handleGeneratePDF}
                   disabled={pdfGenerating}
