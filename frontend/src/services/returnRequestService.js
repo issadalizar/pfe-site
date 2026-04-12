@@ -36,6 +36,12 @@ export const getAllReturnRequests = async () => {
     return response.data;
 };
 
+// Récupérer les analytics retour/échange par produit (admin)
+export const getReturnRequestAnalytics = async () => {
+    const response = await returnRequestAPI.get('/analytics/products');
+    return response.data;
+};
+
 // Mettre à jour le statut (admin)
 export const updateReturnRequestStatus = async (id, status, adminNote) => {
     const response = await returnRequestAPI.patch(`/${id}/status`, { status, adminNote });

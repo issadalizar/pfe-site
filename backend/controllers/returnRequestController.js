@@ -7,7 +7,6 @@ export const createReturnRequest = async (req, res) => {
     try {
         const { orderId, type, reason, items } = req.body;
 
-        // Validations
         if (!orderId || !type || !reason || !items || items.length === 0) {
             return res.status(400).json({
                 success: false,
@@ -22,7 +21,6 @@ export const createReturnRequest = async (req, res) => {
             });
         }
 
-        // Vérifier que la commande existe et appartient au user
         const order = await Order.findById(orderId);
         if (!order) {
             return res.status(404).json({ success: false, error: 'Commande non trouvée.' });
@@ -32,7 +30,6 @@ export const createReturnRequest = async (req, res) => {
             return res.status(403).json({ success: false, error: 'Accès non autorisé.' });
         }
 
-        // Vérifier que la commande est livrée et payée
         if (order.orderStatus !== 'livree') {
             return res.status(400).json({
                 success: false,
@@ -47,7 +44,6 @@ export const createReturnRequest = async (req, res) => {
             });
         }
 
-        // Vérifier la date limite de retour
         if (order.returnDeadline && new Date() > new Date(order.returnDeadline)) {
             return res.status(400).json({
                 success: false,
@@ -55,7 +51,6 @@ export const createReturnRequest = async (req, res) => {
             });
         }
 
-        // Vérifier qu'il n'y a pas déjà une demande en cours pour cette commande
         const existingRequest = await ReturnRequest.findOne({
             order: orderId,
             status: 'en_attente'
@@ -68,7 +63,6 @@ export const createReturnRequest = async (req, res) => {
             });
         }
 
-        // Créer la demande
         const returnRequest = await ReturnRequest.create({
             order: orderId,
             user: req.user._id,
@@ -77,7 +71,6 @@ export const createReturnRequest = async (req, res) => {
             items
         });
 
-        // Envoyer notification email à l'admin
         sendReturnRequestNotificationEmail(returnRequest, order)
             .catch(err => console.error('Erreur email notification retour:', err));
 
@@ -119,6 +112,116 @@ export const getAllReturnRequests = async (req, res) => {
     } catch (error) {
         console.error('Erreur liste demandes retour:', error);
         res.status(500).json({ success: false, error: 'Erreur lors de la récupération des demandes.' });
+    }
+};
+
+// GET /api/return-requests/analytics/products - Taux de retour / échange par produit (admin)
+export const getReturnRequestAnalytics = async (req, res) => {
+    try {
+        // DEBUG: compter toutes les commandes
+        const totalOrders = await Order.countDocuments({});
+        const paidOrders = await Order.countDocuments({ paymentStatus: 'paid' });
+        console.log(`📊 Total commandes: ${totalOrders}, Payées: ${paidOrders}`);
+
+        const soldProducts = await Order.aggregate([
+            { $match: { paymentStatus: 'paid' } },
+            { $unwind: '$items' },
+            {
+                $group: {
+                    _id: '$items.productName',
+                    totalSoldQuantity: { $sum: '$items.quantity' }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    productName: '$_id',
+                    totalSoldQuantity: 1
+                }
+            }
+        ]);
+
+        console.log('✅ soldProducts:', JSON.stringify(soldProducts));
+
+        const returnCounts = await ReturnRequest.aggregate([
+            { $unwind: '$items' },
+            {
+                $group: {
+                    _id: {
+                        productName: '$items.productName',
+                        type: '$type'
+                    },
+                    quantity: { $sum: '$items.quantity' }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id.productName',
+                    items: {
+                        $push: {
+                            type: '$_id.type',
+                            quantity: '$quantity'
+                        }
+                    },
+                    totalReturnExchangeQuantity: { $sum: '$quantity' }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    productName: '$_id',
+                    totalReturnExchangeQuantity: 1,
+                    items: 1
+                }
+            }
+        ]);
+
+        console.log('✅ returnCounts:', JSON.stringify(returnCounts));
+
+        const soldMap = new Map(soldProducts.map(item => [item.productName, item.totalSoldQuantity]));
+        const returnMap = new Map(returnCounts.map(item => [item.productName, item]));
+
+        const allProductNames = new Set([
+            ...soldProducts.map(item => item.productName),
+            ...returnCounts.map(item => item.productName)
+        ]);
+
+        console.log('✅ allProductNames:', [...allProductNames]);
+
+        const productsWithRates = Array.from(allProductNames).map((productName) => {
+            const soldQty = soldMap.get(productName) || 0;
+            const returnItem = returnMap.get(productName);
+            const returnQty = returnItem?.items.find(i => i.type === 'retour')?.quantity || 0;
+            const exchangeQty = returnItem?.items.find(i => i.type === 'echange')?.quantity || 0;
+            const totalReturnExchangeQty = returnItem?.totalReturnExchangeQuantity || 0;
+
+            const totalRate = soldQty > 0 ? (totalReturnExchangeQty / soldQty) * 100 : 0;
+            const returnRate = soldQty > 0 ? (returnQty / soldQty) * 100 : 0;
+            const exchangeRate = soldQty > 0 ? (exchangeQty / soldQty) * 100 : 0;
+
+            return {
+                productName,
+                totalSoldQuantity: soldQty,
+                returnQuantity: returnQty,
+                exchangeQuantity: exchangeQty,
+                totalReturnExchangeQuantity: totalReturnExchangeQty,
+                totalRate: Number(totalRate.toFixed(1)),
+                returnRate: Number(returnRate.toFixed(1)),
+                exchangeRate: Number(exchangeRate.toFixed(1))
+            };
+        })
+            .sort((a, b) => {
+                if (b.totalRate !== a.totalRate) return b.totalRate - a.totalRate;
+                return b.totalSoldQuantity - a.totalSoldQuantity;
+            })
+            .slice(0, 8);
+
+        console.log('✅ productsWithRates:', JSON.stringify(productsWithRates));
+
+        res.json({ success: true, products: productsWithRates });
+    } catch (error) {
+        console.error('Erreur analytics retour/échange produits:', error);
+        res.status(500).json({ success: false, error: 'Erreur lors de la récupération des analytics de retour/échange.' });
     }
 };
 

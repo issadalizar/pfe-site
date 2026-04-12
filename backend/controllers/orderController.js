@@ -765,3 +765,147 @@ export const cancelOrder = async (req, res) => {
         });
     }
 };
+
+// GET /api/orders/analytics/monthly-orders - Nombre de commandes payées par mois
+export const getMonthlyOrderCounts = async (req, res) => {
+    try {
+        const monthlyOrders = await Order.aggregate([
+            { $match: { paymentStatus: 'paid' } },
+            {
+                $group: {
+                    _id: {
+                        year: { $year: '$createdAt' },
+                        month: { $month: '$createdAt' }
+                    },
+                    orderCount: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    monthKey: {
+                        $concat: [
+                            { $toString: '$_id.year' },
+                            '-',
+                            {
+                                $cond: [
+                                    { $lt: ['$_id.month', 10] },
+                                    { $concat: ['0', { $toString: '$_id.month' }] },
+                                    { $toString: '$_id.month' }
+                                ]
+                            }
+                        ]
+                    },
+                    month: {
+                        $let: {
+                            vars: {
+                                months: [
+                                    'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+                                    'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+                                ]
+                            },
+                            in: {
+                                $concat: [
+                                    { $arrayElemAt: ['$$months', { $subtract: ['$_id.month', 1] }] },
+                                    ' ',
+                                    { $toString: '$_id.year' }
+                                ]
+                            }
+                        }
+                    },
+                    orderCount: 1
+                }
+            },
+            { $sort: { monthKey: 1 } }
+        ]);
+
+        res.json({
+            success: true,
+            monthlyOrders
+        });
+    } catch (error) {
+        console.error('Erreur statistiques commandes mensuelles :', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération des statistiques de commandes mensuelles.'
+        });
+    }
+};
+
+// GET /api/orders/analytics/categories - Analytique des catégories les plus vendues
+export const getCategoryAnalytics = async (req, res) => {
+    try {
+        // Agréger les données des commandes payées
+        const categoryStats = await Order.aggregate([
+            // Filtrer seulement les commandes payées
+            { $match: { paymentStatus: 'paid' } },
+            // Déplier les items de chaque commande
+            { $unwind: '$items' },
+            // Joindre avec la collection Product par nom de produit
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'items.productName',
+                    foreignField: 'nom',
+                    as: 'product'
+                }
+            },
+            // Déplier le produit (chaque item a un produit)
+            { $unwind: { path: '$product', preserveNullAndEmptyArrays: false } },
+            // Joindre avec la collection Category
+            {
+                $lookup: {
+                    from: 'categories',
+                    localField: 'product.categorie',
+                    foreignField: '_id',
+                    as: 'category'
+                }
+            },
+            // Déplier la catégorie
+            { $unwind: { path: '$category', preserveNullAndEmptyArrays: false } },
+            // Grouper par catégorie
+            {
+                $group: {
+                    _id: '$category._id',
+                    categoryName: { $first: '$category.name' },
+                    totalRevenue: {
+                        $sum: { $multiply: ['$items.quantity', '$items.price'] }
+                    },
+                    totalQuantity: { $sum: '$items.quantity' },
+                    orderCount: { $addToSet: '$_id' }
+                }
+            },
+            // Calculer le nombre de commandes uniques
+            {
+                $addFields: {
+                    uniqueOrders: { $size: '$orderCount' }
+                }
+            },
+            // Trier par revenu total décroissant
+            { $sort: { totalRevenue: -1 } },
+            // Limiter aux 10 meilleures catégories
+            { $limit: 10 },
+            // Projeter les champs finaux
+            {
+                $project: {
+                    _id: 1,
+                    categoryName: 1,
+                    totalRevenue: 1,
+                    totalQuantity: 1,
+                    uniqueOrders: 1
+                }
+            }
+        ]);
+
+        res.json({
+            success: true,
+            categories: categoryStats
+        });
+    } catch (error) {
+        console.error('Erreur analytique catégories:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération des statistiques de catégories.'
+        });
+    }
+};

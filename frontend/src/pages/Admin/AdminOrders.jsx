@@ -50,7 +50,8 @@ export default function AdminOrders() {
                 headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
-            if (data.success) setOrders(data.orders || []);
+            // FIX: filter out any order missing _id to prevent crash
+            if (data.success) setOrders((data.orders || []).filter(o => o && o._id));
         } catch (err) {
             console.error('Erreur chargement commandes:', err);
         } finally {
@@ -143,7 +144,6 @@ export default function AdminOrders() {
         }
     };
 
-    // Filtres
     const filtered = orders.filter(order => {
         const matchSearch = searchTerm === '' ||
             order._id.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -154,7 +154,6 @@ export default function AdminOrders() {
         return matchSearch && matchStatus && matchPayment;
     });
 
-    // Stats
     const totalRevenue = orders.filter(o => o.paymentStatus === 'paid').reduce((s, o) => s + o.totalAmount, 0);
     const pendingCount = orders.filter(o => o.orderStatus === 'en_attente').length;
     const paidCount = orders.filter(o => o.paymentStatus === 'paid').length;
@@ -465,7 +464,7 @@ export default function AdminOrders() {
                 }
             `}</style>
 
-            {/* ── Modal Reçu de Commande ── */}
+            {/* Modal Reçu de Commande */}
             {receiptOrder && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -490,7 +489,7 @@ export default function AdminOrders() {
                                         const printWindow = window.open('', '_blank');
                                         const o = receiptOrder;
                                         const orderDate = new Date(o.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' });
-                                        const orderNumber = o._id.slice(-8).toUpperCase();
+                                        const orderNumber = o._id?.slice(-8).toUpperCase() ?? 'N/A';
                                         const statusMap = { en_attente: 'En attente', confirmee: 'Confirmée', expediee: 'Expédiée', livree: 'Livrée', annulee: 'Annulée' };
                                         const paymentMap = { pending: 'En attente', paid: 'Payé', failed: 'Échoué' };
                                         const itemsHTML = o.items.map(item => `
@@ -565,7 +564,6 @@ export default function AdminOrders() {
 
                         {/* Receipt content */}
                         <div style={{ padding: '16px 24px 24px' }}>
-                            {/* Header gradient */}
                             <div style={{
                                 background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                                 borderRadius: '16px 16px 0 0', padding: '32px 24px', textAlign: 'center'
@@ -574,7 +572,6 @@ export default function AdminOrders() {
                                 <p style={{ margin: '6px 0 0', color: 'rgba(255,255,255,0.85)', fontSize: '13px' }}>Reçu de commande</p>
                             </div>
 
-                            {/* Body */}
                             <div style={{
                                 backgroundColor: 'white', padding: '28px',
                                 borderRadius: '0 0 16px 16px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
@@ -583,7 +580,7 @@ export default function AdminOrders() {
                                 <div style={{ backgroundColor: '#f8fafc', borderRadius: '12px', padding: '18px', marginBottom: '24px' }}>
                                     <div className="d-flex justify-content-between mb-1">
                                         <span style={{ fontSize: '0.82rem', color: '#64748b' }}>N° de commande</span>
-                                        <span style={{ fontSize: '0.82rem', color: '#0f172a', fontWeight: 600 }}>#{receiptOrder._id.slice(-8).toUpperCase()}</span>
+                                        <span style={{ fontSize: '0.82rem', color: '#0f172a', fontWeight: 600 }}>#{receiptOrder._id?.slice(-8).toUpperCase() ?? 'N/A'}</span>
                                     </div>
                                     <div className="d-flex justify-content-between mb-1">
                                         <span style={{ fontSize: '0.82rem', color: '#64748b' }}>Date</span>

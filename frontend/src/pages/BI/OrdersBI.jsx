@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { MonthlyBarChart, MonthComparisonTable } from '../../components/BI';
+import { MonthlyBarChart, MonthlyOrdersChart, MonthComparisonTable, CategorySalesChart, ReturnExchangeRateCircle } from '../../components/BI';
 import { FaChartLine, FaChartBar, FaTable, FaTrophy, FaMedal } from 'react-icons/fa';
+import { getReturnRequestAnalytics } from '../../services/returnRequestService';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api') + '/orders';
 
 export default function OrdersBI() {
     const [loading, setLoading] = useState(true);
     const [monthlyData, setMonthlyData] = useState([]);
+    const [categoryData, setCategoryData] = useState([]);
+    const [returnAnalytics, setReturnAnalytics] = useState([]);
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('fr-TN', {
@@ -64,8 +67,36 @@ export default function OrdersBI() {
         }
     };
 
+    const fetchCategoryData = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/analytics/categories`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success && data.categories) {
+                setCategoryData(data.categories);
+            }
+        } catch (err) {
+            console.error('Erreur chargement données catégories:', err);
+        }
+    };
+
+    const fetchReturnAnalytics = async () => {
+        try {
+            const data = await getReturnRequestAnalytics();
+            if (data.success && data.products) {
+                setReturnAnalytics(data.products);
+            }
+        } catch (err) {
+            console.error('Erreur chargement données retour/échange:', err);
+        }
+    };
+
     useEffect(() => {
         fetchOrders();
+        fetchCategoryData();
+        fetchReturnAnalytics();
     }, []);
 
     if (loading) {
@@ -149,6 +180,46 @@ export default function OrdersBI() {
                     </div>
                 </div>
 
+                {/* Commandes payées par mois */}
+                <div className="row g-4 mb-4">
+                    <div className="col-12">
+                        <MonthlyOrdersChart data={monthlyData} title="Commandes payées par mois" />
+                    </div>
+                </div>
+
+                {/* Taux de retour / échange par produit */}
+                <div className="row g-4 mb-4">
+                    <div className="col-12">
+                        <div className="card shadow-sm border-0">
+                            <div className="card-header bg-white border-0 pt-3 pb-0">
+                                <div className="d-flex align-items-center gap-2">
+                                    <FaMedal size={20} style={{ color: '#9333ea' }} />
+                                    <h5 className="fw-bold mb-0" style={{ color: '#0f172a' }}>Taux de retour / échange par produit</h5>
+                                    <span className="badge rounded-pill" style={{ backgroundColor: '#8b5cf6', color: '#ffffff' }}>Statistiques produit</span>
+                                </div>
+                                <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
+                                    Visualisation rapide des produits dont le taux de retour / échange est le plus élevé.
+                                </p>
+                            </div>
+                            <div className="card-body">
+                                {returnAnalytics.length > 0 ? (
+                                    <div className="row g-3">
+                                        {returnAnalytics.slice(0, 3).map((product) => (
+                                            <div key={product.productName} className="col-md-4">
+                                                <ReturnExchangeRateCircle product={product} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-4">
+                                        <p className="text-muted mb-0">Aucune donnée de retour/échange disponible pour le moment.</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Layout à 2 colonnes: Tableau à gauche, Graphique à droite */}
                 <div className="row g-4">
                     {/* Colonne gauche: Tableau comparatif */}
@@ -219,6 +290,38 @@ export default function OrdersBI() {
                                 ) : (
                                     <div className="text-center py-5">
                                         <p className="text-muted">Données insuffisantes pour afficher l'évolution (minimum 2 mois requis)</p>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Section Catégories les plus vendues */}
+                <div className="row g-4 mt-4">
+                    <div className="col-12">
+                        <div className="card shadow-sm border-0">
+                            <div className="card-header bg-white border-0 pt-3 pb-0">
+                                <div className="d-flex align-items-center gap-2">
+                                    <FaTrophy size={20} style={{ color: '#f59e0b' }} />
+                                    <h5 className="fw-bold mb-0" style={{ color: '#0f172a' }}>Catégories les plus vendues</h5>
+                                    <span className="badge bg-warning rounded-pill">Top 10 catégories</span>
+                                </div>
+                                <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
+                                    Analyse des performances par catégorie - Chiffre d'affaires et quantité vendue
+                                </p>
+                            </div>
+                            <div className="card-body" style={{ minHeight: '500px' }}>
+                                {categoryData.length > 0 ? (
+                                    <div style={{ width: '100%', height: '450px' }}>
+                                        <CategorySalesChart
+                                            data={categoryData}
+                                            title=""
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="text-center py-5">
+                                        <p className="text-muted">Aucune donnée de vente disponible pour les catégories</p>
                                     </div>
                                 )}
                             </div>

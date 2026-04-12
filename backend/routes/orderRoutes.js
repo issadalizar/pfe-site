@@ -11,7 +11,9 @@ import {
     getOrderById,
     getAllOrders,
     updateOrderStatus,
-    cancelOrder
+    cancelOrder,
+    getCategoryAnalytics,
+    getMonthlyOrderCounts
 } from '../controllers/orderController.js';
 import multer from 'multer';
 import path from 'path';
@@ -59,6 +61,8 @@ router.patch('/:id/status', protect, adminOnly, updateOrderStatus);
 router.get('/:id', protect, getOrderById);
 
 // Routes admin
+router.get('/analytics/categories', protect, adminOnly, getCategoryAnalytics);
+router.get('/analytics/monthly-orders', protect, adminOnly, getMonthlyOrderCounts);
 router.get('/', protect, adminOnly, getAllOrders);
 
 export default router;

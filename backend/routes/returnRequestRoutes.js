@@ -4,6 +4,7 @@ import {
     createReturnRequest,
     getMyReturnRequests,
     getAllReturnRequests,
+    getReturnRequestAnalytics,
     updateReturnRequestStatus
 } from '../controllers/returnRequestController.js';
 
@@ -15,6 +16,7 @@ router.get('/my-requests', protect, getMyReturnRequests);
 
 // Routes admin
 router.get('/', protect, adminOnly, getAllReturnRequests);
+router.get('/analytics/products', protect, adminOnly, getReturnRequestAnalytics);
 router.patch('/:id/status', protect, adminOnly, updateReturnRequestStatus);
 
 export default router;

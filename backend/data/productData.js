@@ -3691,6 +3691,172 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "createdAt": "2026-04-07T00:13:38.957Z",
       "updatedAt": "2026-04-07T00:14:05.979Z"
+    },
+    "69d77e556a23ea6d73eac945": {
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "virementProof": {
+        "fileUrl": "/uploads/virements/virement-1775730271914-329790703.png",
+        "method": "platform",
+        "uploadedAt": "2026-04-09T10:24:31.926Z"
+      },
+      "_id": "69d77e556a23ea6d73eac945",
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 2,
+          "price": 7490,
+          "_id": "69d77e556a23ea6d73eac946"
+        }
+      ],
+      "totalAmount": 14980,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-09T10:24:21.649Z",
+      "updatedAt": "2026-04-09T10:29:22.590Z"
+    },
+    "69d77e7b6a23ea6d73eac96c": {
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d77e7b6a23ea6d73eac96c",
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "PX1 Baby CNC Milling Machine",
+          "quantity": 3,
+          "price": 5990,
+          "_id": "69d77e7b6a23ea6d73eac96d"
+        }
+      ],
+      "totalAmount": 17970,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-09T10:24:59.371Z",
+      "updatedAt": "2026-04-09T10:29:24.593Z"
+    },
+    "69d77e876a23ea6d73eac97a": {
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d77e876a23ea6d73eac97a",
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "DT-M002 – Mesure des Positions",
+          "quantity": 2,
+          "price": 1750,
+          "_id": "69d77e876a23ea6d73eac97b"
+        }
+      ],
+      "totalAmount": 3500,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-09T10:25:11.736Z",
+      "updatedAt": "2026-04-09T10:26:04.688Z",
+      "stripeSessionId": "cs_test_a1Zi45ZSqNVNacD6MXsDiE5trzv8DPwLvuRijSuYdmOSzIV44Hfws6RPVE"
+    },
+    "69d77ec96a23ea6d73eac99e": {
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "PX1 Baby CNC Milling Machine",
+          "quantity": 1,
+          "price": 5990,
+          "_id": "69d77ec96a23ea6d73eac99f"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "totalAmount": 5990,
+      "paymentMethod": "livraison",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69d77ec96a23ea6d73eac99e",
+      "createdAt": "2026-04-09T10:26:17.179Z",
+      "updatedAt": "2026-04-09T10:26:17.186Z"
+    },
+    "69d77eda6a23ea6d73eac9b4": {
+      "shippingInfo": {
+        "fullName": "dalizar aissa ",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21652115980",
+        "address": "rue salah louhichi zeramdine monastir5040",
+        "city": "MONASTIR",
+        "postalCode": "5040"
+      },
+      "virementProof": {
+        "fileUrl": "/uploads/virements/virement-1775730400569-277158443.png",
+        "method": "platform",
+        "uploadedAt": "2026-04-09T10:26:40.578Z"
+      },
+      "_id": "69d77eda6a23ea6d73eac9b4",
+      "user": "69c323a5fd8d70d1bab2b6c3",
+      "items": [
+        {
+          "productName": "De6 (iKC6S) CNC Turning Machine",
+          "quantity": 1,
+          "price": 12990,
+          "_id": "69d77eda6a23ea6d73eac9b5"
+        }
+      ],
+      "totalAmount": 12990,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-09T10:26:34.226Z",
+      "updatedAt": "2026-04-09T10:27:33.395Z"
     }
   }
 };
