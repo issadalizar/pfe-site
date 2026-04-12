@@ -607,4 +607,3 @@ export default function AdminOrders() {
         </div>
     );
 }
-gi

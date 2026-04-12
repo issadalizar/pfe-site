@@ -43,22 +43,18 @@ export const cncProductDetails = {
     }
   },
   "PC1 Baby CNC Lathe-Mach": {
-<<<<<<< HEAD
-    "title": "PC1 Baby CNC Lathe-Mach",
-    "category": "CNC Turning Machine",
-    "mainCategory": "CNC for Education",
-    "price": 5490,
-    "features": [
-=======
     "_id": "697f55259e5f50c871efa21f",
     "nom": "PC1 Baby CNC Lathe-Mach",
     "title": "PC1 Baby CNC Lathe-Mach",
     "slug": "pc1-baby-cnc-lathe-mach",
-    "description": "PC1 Baby CNC Lathe-Mach. Tour micro-CNC piloté par PC, faible coût, volant manuel préinstallé. Arrêt automatique de l'alimentation à l'ouverture de la porte. Idéal pour l'enseignement et la formation. Combine les modes CNC et manuel (2 en 1).",
-    "prix": 97.99,
+    "category": "CNC Turning Machine",
+    "mainCategory": "CNC for Education",
     "price": 97.99,
-    "caracteristiques": [
->>>>>>> f91ff486f19cab37875a1828c103013426db2764
+    "prix": 97.99,
+    "stock": 9,
+    "estActif": true,
+    "description": "PC1 Baby CNC Lathe-Mach. Tour micro-CNC piloté par PC, faible coût, volant manuel préinstallé. Arrêt automatique de l'alimentation à l'ouverture de la porte. Idéal pour l'enseignement et la formation. Combine les modes CNC et manuel (2 en 1).",
+    "features": [
       "Faible coût",
       "Volant manuel préinstallé",
       "Tour micro-CNC piloté par PC",
@@ -67,7 +63,6 @@ export const cncProductDetails = {
       "Combine les modes CNC et manuel",
       "2 en 1 (CNC et manuel)"
     ],
-<<<<<<< HEAD
     "fullDescription": "Le PC1 Baby CNC Lathe-Mach est une solution économique et pédagogique par excellence. Ce tour micro-CNC piloté par PC offre la flexibilité de fonctionner à la fois en mode CNC et en mode manuel, ce qui en fait un outil polyvalent pour l'apprentissage progressif de l'usinage CNC.",
     "specifications": {
       "Type": "Tour micro-CNC piloté par PC",
@@ -75,36 +70,20 @@ export const cncProductDetails = {
       "Sécurité": "Arrêt auto à l'ouverture de porte",
       "Volant": "Manuel préinstallé",
       "Application": "Enseignement et formation"
-=======
-    "features": [
-      "Faible coût",
-      "Volant manuel préinstallé",
-      "Tour micro-CNC piloté par PC",
-      "Arrêt automatique de l'alimentation à l'ouverture de la porte",
-      "Idéal pour l'enseignement et la formation",
-      "Combine les modes CNC et manuel",
-      "2 en 1 (CNC et manuel)"
-    ],
-    "fullDescription": "PC1 Baby CNC Lathe-Mach. Tour micro-CNC piloté par PC, faible coût, volant manuel préinstallé. Arrêt automatique de l'alimentation à l'ouverture de la porte. Idéal pour l'enseignement et la formation. Combine les modes CNC et manuel (2 en 1).",
+    },
     "images": [
-      "/images/products/CNC EDUCATION/CNC Turning Machine/pc1_baby_cnc_lathe-mach.png"
+      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach-2.png"
     ],
     "modele": "PC1",
     "categorie": "697f4c69a494e767414f0e2e",
-    "estActif": true,
-    "stock": 9,
     "ordre": 0,
     "cheminImageAuto": "/images/products/CNC EDUCATION/CNC Turning Machine/pc1_baby_cnc_lathe-mach.png",
     "nomFichierImage": "pc1_baby_cnc_lathe-mach.png",
     "stockApres": 10,
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
->>>>>>> f91ff486f19cab37875a1828c103013426db2764
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach-2.png"
-    ]
+    }
   },
   "De4-Eco (KC4S) Bench CNC Lathe": {
     "_id": "697f545c9e5f50c871efa21e",
@@ -4124,18 +4103,14 @@ export const cncProductDetails = {
           "_id": "69d77eda6a23ea6d73eac9b5"
         }
       ],
-      "totalAmount": 12990,
+    "totalAmount": 12990,
       "paymentMethod": "virement",
       "returnDeadline": null,
       "paymentStatus": "paid",
       "orderStatus": "livree",
       "stockUpdated": false,
-<<<<<<< HEAD
       "createdAt": "2026-04-09T10:26:34.226Z",
       "updatedAt": "2026-04-09T10:27:33.395Z"
-=======
-      "createdAt": "2026-04-08T14:39:19.009Z",
-      "updatedAt": "2026-04-08T14:40:05.295Z"
     },
     "69d682bc2b0019e335b2b6cc": {
       "shippingInfo": {
@@ -4236,7 +4211,6 @@ export const cncProductDetails = {
       "createdAt": "2026-04-12T17:33:27.192Z",
       "updatedAt": "2026-04-12T17:35:23.270Z",
       "stripeSessionId": "cs_test_a1gG0CjgEuLNkf7isGTDkKSdztDSc2gxLGfzYbvIdJ1DmisbpSnR8IAymI"
->>>>>>> f91ff486f19cab37875a1828c103013426db2764
     }
   }
 };
