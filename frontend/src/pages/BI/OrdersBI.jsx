@@ -16,6 +16,7 @@ const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api') + 
 export default function OrdersBI() {
     const [loading, setLoading] = useState(true);
     const [exporting, setExporting] = useState(false);
+    const [printing, setPrinting] = useState(false);
     const [monthlyData, setMonthlyData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [returnAnalytics, setReturnAnalytics] = useState([]);
@@ -40,7 +41,6 @@ export default function OrdersBI() {
         return formatPrice(price);
     };
 
-    // Extraire les années disponibles des données
     const extractAvailableYears = (orders) => {
         const years = new Set();
         orders.forEach(order => {
@@ -60,7 +60,6 @@ export default function OrdersBI() {
                 const date = new Date(order.createdAt);
                 const orderYear = date.getFullYear();
                 
-                // Filtrer par année si spécifiée
                 if (year && orderYear !== year) return;
                 
                 const monthKey = `${orderYear}-${date.getMonth() + 1}`;
@@ -96,10 +95,11 @@ export default function OrdersBI() {
         try {
             const element = dashboardRef.current;
             const canvas = await html2canvas(element, {
-                scale: 2,
-                backgroundColor: '#f5f7fa',
+                scale: 3,
+                backgroundColor: '#ffffff',
                 logging: false,
-                useCORS: true
+                useCORS: true,
+                allowTaint: false
             });
             
             const imgData = canvas.toDataURL('image/png');
@@ -109,8 +109,8 @@ export default function OrdersBI() {
                 format: 'a4'
             });
             
-            const imgWidth = 210; // A4 width in mm
-            const pageHeight = 297; // A4 height in mm
+            const imgWidth = 210;
+            const pageHeight = 297;
             const imgHeight = (canvas.height * imgWidth) / canvas.width;
             let heightLeft = imgHeight;
             let position = 0;
@@ -134,22 +134,131 @@ export default function OrdersBI() {
         }
     };
 
-    // Fonction d'impression
-    const handlePrint = () => {
+    // Fonction d'impression avec capture des graphiques
+    const handlePrint = async () => {
         setShowExportMenu(false);
-        window.print();
-    };
-
-    // Fermer le menu quand on clique en dehors
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
-                setShowExportMenu(false);
+        setPrinting(true);
+        
+        try {
+            // Afficher un indicateur de chargement
+            const loadingDiv = document.createElement('div');
+            loadingDiv.innerHTML = `
+                <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                            background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                            z-index: 10000; text-align: center;">
+                    <div class="spinner-border text-primary mb-2" role="status"></div>
+                    <p>Préparation de l'impression...</p>
+                </div>
+            `;
+            document.body.appendChild(loadingDiv);
+            
+            // Capturer le dashboard entier
+            const element = dashboardRef.current;
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true,
+                allowTaint: false,
+                onclone: (clonedDoc, element) => {
+                    // S'assurer que tous les graphiques sont bien clonés
+                    console.log('Clonage terminé');
+                }
+            });
+            
+            // Supprimer l'indicateur de chargement
+            document.body.removeChild(loadingDiv);
+            
+            // Créer une nouvelle fenêtre pour l'impression
+            const printWindow = window.open('', '_blank');
+            if (!printWindow) {
+                alert('Veuillez autoriser les popups pour cette application');
+                setPrinting(false);
+                return;
             }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+            
+            // Créer le HTML pour l'impression
+            const imageData = canvas.toDataURL('image/png');
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <title>Dashboard BI - ${selectedYear}</title>
+                        <meta charset="UTF-8">
+                        <style>
+                            body {
+                                margin: 0;
+                                padding: 20px;
+                                font-family: Arial, sans-serif;
+                            }
+                            .print-container {
+                                text-align: center;
+                            }
+                            .dashboard-image {
+                                max-width: 100%;
+                                height: auto;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            }
+                            .print-header {
+                                margin-bottom: 20px;
+                                text-align: center;
+                            }
+                            .print-header h1 {
+                                margin: 0;
+                                color: #1a1a2e;
+                            }
+                            .print-header p {
+                                color: #666;
+                                margin-top: 5px;
+                            }
+                            @media print {
+                                body {
+                                    padding: 0;
+                                    margin: 0;
+                                }
+                                .no-print {
+                                    display: none;
+                                }
+                                .dashboard-image {
+                                    box-shadow: none;
+                                }
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="print-container">
+                            <div class="print-header">
+                                <h1>Tableau de Bord Business Intelligence</h1>
+                                <p>Année: ${selectedYear} - Généré le ${new Date().toLocaleDateString('fr-FR')} à ${new Date().toLocaleTimeString('fr-FR')}</p>
+                            </div>
+                            <img src="${imageData}" class="dashboard-image" alt="Dashboard BI" />
+                            <div class="print-footer" style="margin-top: 20px; text-align: center; font-size: 12px; color: #999;">
+                                <p>Document généré automatiquement - Tous droits réservés</p>
+                            </div>
+                        </div>
+                        <script>
+                            window.onload = function() {
+                                setTimeout(function() {
+                                    window.print();
+                                    window.onafterprint = function() {
+                                        window.close();
+                                    };
+                                }, 500);
+                            };
+                        <\/script>
+                    </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+        } catch (error) {
+            console.error('Erreur lors de la préparation de l\'impression:', error);
+            alert('Une erreur est survenue lors de la préparation de l\'impression');
+        } finally {
+            setPrinting(false);
+        }
+    };
 
     const fetchOrders = async () => {
         setLoading(true);
@@ -160,11 +269,8 @@ export default function OrdersBI() {
             });
             const data = await res.json();
             if (data.success && data.orders) {
-                // Extraire les années disponibles
                 const years = extractAvailableYears(data.orders);
                 setAvailableYears(years);
-                
-                // Filtrer par année sélectionnée
                 const monthly = processMonthlyData(data.orders, selectedYear);
                 setMonthlyData(monthly);
             }
@@ -211,7 +317,6 @@ export default function OrdersBI() {
         }
     };
 
-    // Recharger les données quand l'année change
     useEffect(() => {
         fetchOrders();
     }, [selectedYear]);
@@ -267,8 +372,8 @@ export default function OrdersBI() {
         <div style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', minHeight: '100vh' }}>
             <div className="container-fluid p-4">
                 
-                {/* Header Moderne */}
-                <div className="mb-5">
+                {/* Header - caché à l'impression */}
+                <div className="mb-5 no-print">
                     <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
                         <div>
                             <div className="d-flex align-items-center gap-3 mb-2">
@@ -284,17 +389,16 @@ export default function OrdersBI() {
                         </div>
                         
                         <div className="d-flex gap-2">
-                            {/* Menu déroulant pour l'export */}
                             <div className="position-relative" ref={exportMenuRef}>
                                 <button 
                                     className="btn btn-light shadow-sm px-4"
                                     onClick={() => setShowExportMenu(!showExportMenu)}
-                                    disabled={exporting}
+                                    disabled={exporting || printing}
                                 >
-                                    {exporting ? (
+                                    {exporting || printing ? (
                                         <>
                                             <FaSpinner className="me-2 spin" />
-                                            Export en cours...
+                                            {exporting ? 'Export en cours...' : 'Préparation...'}
                                         </>
                                     ) : (
                                         <>
@@ -304,7 +408,7 @@ export default function OrdersBI() {
                                     )}
                                 </button>
                                 
-                                {showExportMenu && !exporting && (
+                                {showExportMenu && !exporting && !printing && (
                                     <div className="position-absolute top-100 end-0 mt-2" style={{ zIndex: 1000 }}>
                                         <div className="card border-0 shadow-lg rounded-3" style={{ minWidth: '200px' }}>
                                             <div className="list-group list-group-flush">
@@ -334,7 +438,6 @@ export default function OrdersBI() {
                                 )}
                             </div>
                             
-                            {/* Sélecteur d'année dynamique */}
                             <div className="dropdown">
                                 <button className="btn btn-outline-secondary shadow-sm dropdown-toggle" data-bs-toggle="dropdown">
                                     <FaRegCalendarAlt className="me-2" />
@@ -357,9 +460,9 @@ export default function OrdersBI() {
                     </div>
                 </div>
 
-                {/* Contenu du Dashboard à exporter */}
+                {/* Contenu à imprimer/exporter */}
                 <div ref={dashboardRef}>
-                    {/* Cartes KPI - Design simple et sobre */}
+                    {/* Cartes KPI */}
                     <div className="row g-4 mb-5">
                         <div className="col-md-3">
                             <div className="card border-0 shadow-sm rounded-4 h-100">
@@ -438,7 +541,7 @@ export default function OrdersBI() {
                                     <div className="pt-2 border-top">
                                         <div className="d-flex justify-content-between align-items-center">
                                             <span className="text-muted small">Meilleur mois</span>
-                                            <span className="fw-semibold text-success" style={{ color: '#1a1a2e' }}>
+                                            <span className="fw-semibold text-success">
                                                 +{bestGrowth.toFixed(1)}%
                                             </span>
                                         </div>
@@ -541,7 +644,7 @@ export default function OrdersBI() {
                         </div>
                     </div>
 
-                    {/* Section Clients: Analyse Géographique */}
+                    {/* Section Clients */}
                     <div className="row g-4 mb-5">
                         <div className="col-12">
                             <div className="card border-0 shadow-sm rounded-4">
@@ -689,27 +792,6 @@ export default function OrdersBI() {
                 </div>
 
             </div>
-
-            {/* Styles d'impression */}
-            <style jsx>{`
-                @media print {
-                    body * {
-                        visibility: hidden;
-                    }
-                    #dashboard-to-print, #dashboard-to-print * {
-                        visibility: visible;
-                    }
-                    #dashboard-to-print {
-                        position: absolute;
-                        left: 0;
-                        top: 0;
-                        width: 100%;
-                    }
-                    .btn, .dropdown, button {
-                        display: none !important;
-                    }
-                }
-            `}</style>
         </div>
     );
 }
