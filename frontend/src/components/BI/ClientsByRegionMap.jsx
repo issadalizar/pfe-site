@@ -8,13 +8,15 @@ import {
     Title,
     Tooltip,
     Legend,
-    ArcElement
+    ArcElement,
+    LineElement,
+    PointElement
 } from 'chart.js';
 import { Bar, Pie } from 'react-chartjs-2';
+import { FaMapMarkerAlt, FaUsers, FaUserCheck, FaUserTimes, FaCity, FaChartLine, FaCalendarAlt, FaList } from 'react-icons/fa';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {  FaMapMarkerAlt,FaUsers, FaUserCheck, FaUserTimes, FaCity } from 'react-icons/fa';
 
-// Enregistrer le plugin pour afficher les pourcentages sur le graphique
+// Enregistrer les composants Chart.js et le plugin
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -22,15 +24,22 @@ ChartJS.register(
     Title,
     Tooltip,
     Legend,
-    ArcElement
+    ArcElement,
+    LineElement,
+    PointElement,
+    ChartDataLabels
 );
 
 export default function ClientsByRegionMap({ users = [] }) {
     const [regionData, setRegionData] = useState([]);
     const [selectedRegion, setSelectedRegion] = useState(null);
-    const [viewType, setViewType] = useState('bar'); // 'bar' ou 'stats'
+    const [viewType, setViewType] = useState('bar');
     const [topActiveCities, setTopActiveCities] = useState([]);
     const [topInactiveCities, setTopInactiveCities] = useState([]);
+    const [newClientsByMonthAndRegion, setNewClientsByMonthAndRegion] = useState({});
+    const [availableMonths, setAvailableMonths] = useState([]);
+    const [selectedMonthForChart, setSelectedMonthForChart] = useState(null);
+    const [showAllMonths, setShowAllMonths] = useState(false);
 
     // Liste exhaustive des villes tunisiennes par gouvernorat
     const tunisianCities = [
@@ -88,42 +97,6 @@ export default function ClientsByRegionMap({ users = [] }) {
         'Kébili': ['Kébili', 'Douz', 'El Faouar', 'Rjim Maatoug', 'Souk Lahad', 'Bechri', 'Jemna', 'Kebili Sud', 'Nouail']
     };
 
-    // Fonction pour générer des dégradés de couleurs
-    const generateGradient = (ctx, centerX, centerY, radius, startColor, endColor) => {
-        const gradient = ctx.createLinearGradient(centerX - radius, centerY - radius, centerX + radius, centerY + radius);
-        gradient.addColorStop(0, startColor);
-        gradient.addColorStop(1, endColor);
-        return gradient;
-    };
-
-    // Dégradés de vert pour les actifs
-    const greenGradients = [
-        ['#22c55e', '#15803d'], // vert clair -> vert foncé
-        ['#4ade80', '#166534'],
-        ['#86efac', '#14532d'],
-        ['#bbf7d0', '#166534'],
-        ['#22c55e', '#14532d'],
-        ['#4ade80', '#15803d'],
-        ['#86efac', '#166534'],
-        ['#bbf7d0', '#14532d'],
-        ['#22c55e', '#15803d'],
-        ['#4ade80', '#166534']
-    ];
-
-    // Dégradés de rouge pour les inactifs
-    const redGradients = [
-        ['#ef4444', '#991b1b'], // rouge clair -> rouge foncé
-        ['#f87171', '#7f1d1d'],
-        ['#fca5a5', '#991b1b'],
-        ['#fee2e2', '#7f1d1d'],
-        ['#ef4444', '#991b1b'],
-        ['#f87171', '#7f1d1d'],
-        ['#fca5a5', '#991b1b'],
-        ['#fee2e2', '#7f1d1d'],
-        ['#ef4444', '#991b1b'],
-        ['#f87171', '#7f1d1d']
-    ];
-
     // Fonction pour extraire la ville à partir de l'adresse
     const extractCity = (adresse) => {
         if (!adresse) return null;
@@ -139,9 +112,7 @@ export default function ClientsByRegionMap({ users = [] }) {
     // Fonction pour extraire la région à partir de l'adresse
     const extractRegion = (adresse) => {
         if (!adresse) return 'Non spécifié';
-        
         const adresseLower = adresse.toLowerCase();
-        
         for (const [region, cities] of Object.entries(regionGroups)) {
             for (const city of cities) {
                 if (adresseLower.includes(city.toLowerCase())) {
@@ -149,20 +120,57 @@ export default function ClientsByRegionMap({ users = [] }) {
                 }
             }
         }
-        
         return 'Autre';
     };
 
-    // Traiter les données par région et par ville
+    // Traiter les données par région et par ville + nouveaux clients par mois/région
     useEffect(() => {
         const regionMap = new Map();
         const cityActiveMap = new Map();
         const cityInactiveMap = new Map();
-        
-        users.forEach(user => {
+        const newClientsByMonth = new Map();
+        const monthsSet = new Set();
+
+        users.forEach((user) => {
             const region = extractRegion(user.adresse);
             const isActive = user.actif === true;
             const city = extractCity(user.adresse);
+            
+            let createdAt = null;
+            
+            if (user.createdAt) {
+                if (typeof user.createdAt === 'object' && user.createdAt.$date) {
+                    createdAt = new Date(user.createdAt.$date);
+                }
+                else if (typeof user.createdAt === 'string') {
+                    createdAt = new Date(user.createdAt);
+                }
+                else if (user.createdAt instanceof Date) {
+                    createdAt = user.createdAt;
+                }
+            }
+            
+            if ((!createdAt || isNaN(createdAt.getTime())) && user._id) {
+                const idString = user._id.toString();
+                if (idString.length >= 24) {
+                    const timestamp = parseInt(idString.substring(0, 8), 16);
+                    if (!isNaN(timestamp) && timestamp > 0) {
+                        createdAt = new Date(timestamp * 1000);
+                    }
+                }
+            }
+            
+            let monthKey = null;
+            if (createdAt && !isNaN(createdAt.getTime())) {
+                const year = createdAt.getFullYear();
+                const month = createdAt.getMonth() + 1;
+                monthKey = `${year}-${month.toString().padStart(2, '0')}`;
+                monthsSet.add(monthKey);
+                
+                const regionMonthKey = `${region}|${monthKey}`;
+                const currentCount = newClientsByMonth.get(regionMonthKey) || 0;
+                newClientsByMonth.set(regionMonthKey, currentCount + 1);
+            }
             
             if (!regionMap.has(region)) {
                 regionMap.set(region, {
@@ -206,15 +214,321 @@ export default function ClientsByRegionMap({ users = [] }) {
             .sort((a, b) => b.count - a.count)
             .slice(0, 10);
         setTopInactiveCities(topInactive);
+        
+        const monthsSorted = Array.from(monthsSet).sort();
+        setAvailableMonths(monthsSorted);
+        
+        const regionMonthData = {};
+        sortedData.forEach(regionInfo => {
+            const regionName = regionInfo.region;
+            regionMonthData[regionName] = {};
+            monthsSorted.forEach(month => {
+                const key = `${regionName}|${month}`;
+                regionMonthData[regionName][month] = newClientsByMonth.get(key) || 0;
+            });
+        });
+        
+        setNewClientsByMonthAndRegion(regionMonthData);
+        
+        if (monthsSorted.length > 0 && !selectedMonthForChart && !showAllMonths) {
+            setSelectedMonthForChart(monthsSorted[monthsSorted.length - 1]);
+        }
     }, [users]);
 
-    // Calculer les statistiques globales
+    // Données pour le graphique des nouveaux clients par région pour un mois spécifique
+    const getNewClientsChartData = () => {
+        if (!selectedMonthForChart || !newClientsByMonthAndRegion) {
+            return { labels: [], datasets: [] };
+        }
+        
+        const regions = regionData.map(r => r.region);
+        const newClientsCounts = regions.map(region => 
+            newClientsByMonthAndRegion[region]?.[selectedMonthForChart] || 0
+        );
+        
+        const filteredRegions = [];
+        const filteredCounts = [];
+        for (let i = 0; i < regions.length; i++) {
+            if (newClientsCounts[i] > 0) {
+                filteredRegions.push(regions[i]);
+                filteredCounts.push(newClientsCounts[i]);
+            }
+        }
+        
+        return {
+            labels: filteredRegions,
+            datasets: [
+                {
+                    label: `Nouveaux clients - ${formatMonthName(selectedMonthForChart)}`,
+                    data: filteredCounts,
+                    backgroundColor: 'rgba(99, 102, 241, 0.7)',
+                    borderColor: '#4f46e5',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.7
+                }
+            ]
+        };
+    };
+
+    // Données pour le graphique de tous les mois
+    const getAllMonthsChartData = () => {
+        if (availableMonths.length === 0) {
+            return { labels: [], datasets: [] };
+        }
+        
+        const totalByMonth = availableMonths.map(month => {
+            let total = 0;
+            regionData.forEach(region => {
+                total += newClientsByMonthAndRegion[region]?.[month] || 0;
+            });
+            return total;
+        });
+        
+        return {
+            labels: availableMonths.map(month => formatMonthName(month)),
+            datasets: [
+                {
+                    label: 'Nouveaux clients',
+                    data: totalByMonth,
+                    backgroundColor: 'rgba(99, 102, 241, 0.5)',
+                    borderColor: '#4f46e5',
+                    borderWidth: 2,
+                    borderRadius: 8,
+                    barPercentage: 0.6,
+                    categoryPercentage: 0.7
+                }
+            ]
+        };
+    };
+
+    // Options POUR LE GRAPHIQUE DES NOUVEAUX CLIENTS UNIQUEMENT (avec datalabels)
+    const newClientsChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    boxWidth: 8,
+                    font: { size: 11 }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `${context.dataset.label}: ${context.parsed.y} client${context.parsed.y > 1 ? 's' : ''}`;
+                    }
+                }
+            },
+            datalabels: {
+                anchor: 'end',
+                align: 'top',
+                offset: 6,
+                color: '#1e293b',
+                backgroundColor: '#f8fafc',
+                borderRadius: 6,
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 4,
+                    bottom: 4
+                },
+                font: {
+                    weight: 'bold',
+                    size: 12
+                },
+                formatter: function(value) {
+                    if (value === 0) return '';
+                    return value;
+                },
+                borderWidth: 1,
+                borderColor: '#cbd5e1',
+                shadowOffsetX: 1,
+                shadowOffsetY: 1,
+                shadowBlur: 2,
+                shadowColor: 'rgba(0,0,0,0.1)'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Nombre de nouveaux clients",
+                    font: { size: 11 }
+                },
+                ticks: {
+                    stepSize: 1,
+                    font: { size: 10 }
+                },
+                grid: {
+                    color: '#e2e8f0'
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Régions',
+                    font: { size: 11 }
+                },
+                ticks: {
+                    font: { size: 10 },
+                    maxRotation: 45,
+                    minRotation: 45
+                },
+                grid: {
+                    display: false
+                }
+            }
+        }
+    };
+
+    // Options pour le graphique "Tous les mois" (AVEC datalabels aussi car c'est aussi un graphique de nouveaux clients)
+    const allMonthsChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    boxWidth: 8,
+                    font: { size: 11 }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return `${context.dataset.label}: ${context.parsed.y} client${context.parsed.y > 1 ? 's' : ''}`;
+                    }
+                }
+            },
+            datalabels: {
+                anchor: 'end',
+                align: 'top',
+                offset: 6,
+                color: '#1e293b',
+                backgroundColor: '#f8fafc',
+                borderRadius: 6,
+                padding: {
+                    left: 8,
+                    right: 8,
+                    top: 4,
+                    bottom: 4
+                },
+                font: {
+                    weight: 'bold',
+                    size: 12
+                },
+                formatter: function(value) {
+                    if (value === 0) return '';
+                    return value;
+                },
+                borderWidth: 1,
+                borderColor: '#cbd5e1',
+                shadowOffsetX: 1,
+                shadowOffsetY: 1,
+                shadowBlur: 2,
+                shadowColor: 'rgba(0,0,0,0.1)'
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Nombre de nouveaux clients",
+                    font: { size: 11 }
+                },
+                ticks: {
+                    stepSize: 1,
+                    font: { size: 10 }
+                },
+                grid: {
+                    color: '#e2e8f0'
+                }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Mois',
+                    font: { size: 11 }
+                },
+                ticks: {
+                    font: { size: 10 },
+                    maxRotation: 45,
+                    minRotation: 45
+                },
+                grid: {
+                    display: false
+                }
+            }
+        }
+    };
+
+    const formatMonthName = (monthKey) => {
+        if (!monthKey) return '';
+        const [year, month] = monthKey.split('-');
+        const date = new Date(parseInt(year), parseInt(month) - 1, 1);
+        return date.toLocaleString('fr-FR', { month: 'long', year: 'numeric' });
+    };
+
     const totalActifs = regionData.reduce((sum, r) => sum + r.actifs, 0);
     const totalInactifs = regionData.reduce((sum, r) => sum + r.inactifs, 0);
     const totalUsers = totalActifs + totalInactifs;
     const tauxActifs = totalUsers > 0 ? (totalActifs / totalUsers * 100).toFixed(1) : 0;
 
-    // Données pour le graphique à barres
+    // Options pour le graphique Actifs vs Inactifs (SANS datalabels)
+    const barChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    boxWidth: 8,
+                    font: { size: 11 }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        if (label) label += ': ';
+                        label += context.parsed.y;
+                        return label;
+                    }
+                }
+            }
+            // PAS de datalabels ici
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                title: {
+                    display: true,
+                    text: "Nombre d'utilisateurs",
+                    font: { size: 11 }
+                },
+                ticks: { stepSize: 1, font: { size: 10 } },
+                grid: { color: '#e2e8f0' }
+            },
+            x: {
+                title: {
+                    display: true,
+                    text: 'Régions',
+                    font: { size: 11 }
+                },
+                ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 45 },
+                grid: { display: false }
+            }
+        }
+    };
+
     const barChartData = {
         labels: regionData.map(r => r.region),
         datasets: [
@@ -241,8 +555,7 @@ export default function ClientsByRegionMap({ users = [] }) {
         ]
     };
 
-    // Configuration du Pie Chart avec pourcentages affichés sur les sections et effet 3D
-    const createPieOptions = (data, isActive = true) => ({
+    const createPieOptions = () => ({
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
@@ -272,21 +585,6 @@ export default function ClientsByRegionMap({ users = [] }) {
                 bodyColor: '#cbd5e1',
                 padding: 10,
                 cornerRadius: 8
-            },
-            datalabels: {
-                display: true,
-                color: '#ffffff',
-                font: {
-                    weight: 'bold',
-                    size: 13
-                },
-                formatter: (value, context) => {
-                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                    const percentage = total > 0 ? ((value / total) * 100).toFixed(1) : 0;
-                    return `${percentage}%`;
-                },
-                textShadowBlur: 4,
-                textShadowColor: 'rgba(0, 0, 0, 0.5)'
             }
         },
         layout: {
@@ -297,7 +595,6 @@ export default function ClientsByRegionMap({ users = [] }) {
                 right: 10
             }
         },
-        // Effet 3D : ombre portée
         elements: {
             arc: {
                 shadowOffsetX: 3,
@@ -306,148 +603,49 @@ export default function ClientsByRegionMap({ users = [] }) {
                 shadowColor: 'rgba(0, 0, 0, 0.3)'
             }
         },
-        cutout: '0%', // Pie chart complet (pas de trou au centre)
-        rotation: -0.5 * Math.PI, // Rotation pour un meilleur effet visuel
+        cutout: '0%',
+        rotation: -0.5 * Math.PI,
         circumference: 360
     });
 
-    // Données pour le Pie Chart des villes actives avec dégradés de vert
+    const greenColors = ['#22c55e', '#4ade80', '#86efac', '#bbf7d0', '#22c55e', '#4ade80', '#86efac', '#bbf7d0', '#22c55e', '#4ade80'];
+    const redColors = ['#ef4444', '#f87171', '#fca5a5', '#fee2e2', '#ef4444', '#f87171', '#fca5a5', '#fee2e2', '#ef4444', '#f87171'];
+
     const activeCitiesPieData = {
         labels: topActiveCities.map(item => item.city),
-        datasets: [
-            {
-                data: topActiveCities.map(item => item.count),
-                backgroundColor: (context) => {
-                    const chart = context.chart;
-                    const { ctx, chartArea } = chart;
-                    if (!chartArea) return greenGradients[context.dataIndex % greenGradients.length][0];
-                    
-                    const centerX = (chartArea.left + chartArea.right) / 2;
-                    const centerY = (chartArea.top + chartArea.bottom) / 2;
-                    const radius = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
-                    
-                    const [startColor, endColor] = greenGradients[context.dataIndex % greenGradients.length];
-                    return generateGradient(ctx, centerX, centerY, radius, startColor, endColor);
-                },
-                borderColor: '#ffffff',
-                borderWidth: 3,
-                hoverOffset: 15,
-                offset: 5 // Effet 3D : les sections sont légèrement séparées au hover
-            }
-        ]
+        datasets: [{
+            data: topActiveCities.map(item => item.count),
+            backgroundColor: greenColors.slice(0, topActiveCities.length),
+            borderColor: '#ffffff',
+            borderWidth: 3,
+            hoverOffset: 15
+        }]
     };
 
-    // Données pour le Pie Chart des villes inactives avec dégradés de rouge
     const inactiveCitiesPieData = {
         labels: topInactiveCities.map(item => item.city),
-        datasets: [
-            {
-                data: topInactiveCities.map(item => item.count),
-                backgroundColor: (context) => {
-                    const chart = context.chart;
-                    const { ctx, chartArea } = chart;
-                    if (!chartArea) return redGradients[context.dataIndex % redGradients.length][0];
-                    
-                    const centerX = (chartArea.left + chartArea.right) / 2;
-                    const centerY = (chartArea.top + chartArea.bottom) / 2;
-                    const radius = Math.min(chartArea.right - chartArea.left, chartArea.bottom - chartArea.top) / 2;
-                    
-                    const [startColor, endColor] = redGradients[context.dataIndex % redGradients.length];
-                    return generateGradient(ctx, centerX, centerY, radius, startColor, endColor);
-                },
-                borderColor: '#ffffff',
-                borderWidth: 3,
-                hoverOffset: 15,
-                offset: 5
-            }
-        ]
-    };
-
-    const options = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'top',
-                labels: {
-                    usePointStyle: true,
-                    boxWidth: 8,
-                    font: { size: 11 }
-                }
-            },
-            tooltip: {
-                callbacks: {
-                    label: function(context) {
-                        let label = context.dataset.label || '';
-                        if (label) {
-                            label += ': ';
-                        }
-                        label += context.parsed.y;
-                        return label;
-                    }
-                }
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text: "Nombre d'utilisateurs",
-                    font: { size: 11 }
-                },
-                ticks: {
-                    stepSize: 1,
-                    font: { size: 10 }
-                },
-                grid: {
-                    color: '#e2e8f0'
-                }
-            },
-            x: {
-                title: {
-                    display: true,
-                    text: 'Régions',
-                    font: { size: 11 }
-                },
-                ticks: {
-                    font: { size: 10 },
-                    maxRotation: 45,
-                    minRotation: 45
-                },
-                grid: {
-                    display: false
-                }
-            }
-        },
-        onClick: (event, activeElements) => {
-            if (activeElements.length > 0) {
-                const index = activeElements[0].dataIndex;
-                setSelectedRegion(selectedRegion === index ? null : index);
-            }
-        }
+        datasets: [{
+            data: topInactiveCities.map(item => item.count),
+            backgroundColor: redColors.slice(0, topInactiveCities.length),
+            borderColor: '#ffffff',
+            borderWidth: 3,
+            hoverOffset: 15
+        }]
     };
 
     return (
         <div className="card shadow-sm border-0">
             <div className="card-header bg-white border-0 pt-3 pb-0">
                 <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                   
-                    
                     <div className="btn-group" role="group">
-                        <button
-                            className={`btn btn-sm ${viewType === 'bar' ? 'btn-primary' : 'btn-outline-primary'}`}
-                            onClick={() => setViewType('bar')}
-                        >
-                            <i className="bi bi-bar-chart me-1"></i>
-                            Graphique
+                        <button className={`btn btn-sm ${viewType === 'bar' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setViewType('bar')}>
+                            <i className="bi bi-bar-chart me-1"></i> Actifs vs Inactifs
                         </button>
-                        <button
-                            className={`btn btn-sm ${viewType === 'stats' ? 'btn-primary' : 'btn-outline-primary'}`}
-                            onClick={() => setViewType('stats')}
-                        >
-                            <i className="bi bi-table me-1"></i>
-                            Tableau
+                        <button className={`btn btn-sm ${viewType === 'stats' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setViewType('stats')}>
+                            <i className="bi bi-table me-1"></i> Tableau
+                        </button>
+                        <button className={`btn btn-sm ${viewType === 'newClients' ? 'btn-primary' : 'btn-outline-primary'}`} onClick={() => setViewType('newClients')}>
+                            <FaChartLine className="me-1" /> Nouveaux clients
                         </button>
                     </div>
                 </div>
@@ -499,58 +697,41 @@ export default function ClientsByRegionMap({ users = [] }) {
                     </div>
                 </div>
 
-                {/* Vue Graphique à Barres */}
+                {/* Vue Graphique à Barres Actifs vs Inactifs - SANS datalabels */}
                 {viewType === 'bar' && (
                     <>
                         <div style={{ height: '450px' }}>
                             {regionData.length > 0 ? (
-                                <Bar data={barChartData} options={options} />
+                                <Bar data={barChartData} options={barChartOptions} />
                             ) : (
-                                <div className="text-center py-5">
-                                    <p className="text-muted">Aucune donnée de région disponible</p>
-                                </div>
+                                <div className="text-center py-5"><p className="text-muted">Aucune donnée de région disponible</p></div>
                             )}
                         </div>
-
                         {selectedRegion !== null && regionData[selectedRegion] && (
                             <div className="mt-4 p-3 bg-light rounded-3">
-                                <h6 className="fw-bold mb-3">
-                                    Détails pour la région: {regionData[selectedRegion].region}
-                                </h6>
+                                <h6 className="fw-bold mb-3">Détails pour la région: {regionData[selectedRegion].region}</h6>
                                 <div className="row">
                                     <div className="col-md-4">
                                         <div className="text-center">
-                                            <div className="h4 fw-bold text-success">
-                                                {regionData[selectedRegion].actifs}
-                                            </div>
+                                            <div className="h4 fw-bold text-success">{regionData[selectedRegion].actifs}</div>
                                             <small className="text-muted">Comptes Actifs</small>
                                             <div className="progress mt-2" style={{ height: '8px' }}>
-                                                <div 
-                                                    className="progress-bar bg-success" 
-                                                    style={{ width: `${(regionData[selectedRegion].actifs / regionData[selectedRegion].total * 100)}%` }}
-                                                ></div>
+                                                <div className="progress-bar bg-success" style={{ width: `${(regionData[selectedRegion].actifs / regionData[selectedRegion].total * 100)}%` }}></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <div className="text-center">
-                                            <div className="h4 fw-bold text-danger">
-                                                {regionData[selectedRegion].inactifs}
-                                            </div>
+                                            <div className="h4 fw-bold text-danger">{regionData[selectedRegion].inactifs}</div>
                                             <small className="text-muted">Comptes Inactifs</small>
                                             <div className="progress mt-2" style={{ height: '8px' }}>
-                                                <div 
-                                                    className="progress-bar bg-danger" 
-                                                    style={{ width: `${(regionData[selectedRegion].inactifs / regionData[selectedRegion].total * 100)}%` }}
-                                                ></div>
+                                                <div className="progress-bar bg-danger" style={{ width: `${(regionData[selectedRegion].inactifs / regionData[selectedRegion].total * 100)}%` }}></div>
                                             </div>
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <div className="text-center">
-                                            <div className="h4 fw-bold text-primary">
-                                                {regionData[selectedRegion].total}
-                                            </div>
+                                            <div className="h4 fw-bold text-primary">{regionData[selectedRegion].total}</div>
                                             <small className="text-muted">Total Clients</small>
                                         </div>
                                     </div>
@@ -565,13 +746,7 @@ export default function ClientsByRegionMap({ users = [] }) {
                     <div className="table-responsive">
                         <table className="table table-hover">
                             <thead className="table-light">
-                                <tr>
-                                    <th>Région</th>
-                                    <th className="text-center">Actifs</th>
-                                    <th className="text-center">Inactifs</th>
-                                    <th className="text-center">Total</th>
-                                    <th className="text-center">Taux d'activité</th>
-                                </tr>
+                                <tr><th>Région</th><th className="text-center">Actifs</th><th className="text-center">Inactifs</th><th className="text-center">Total</th><th className="text-center">Taux d'activité</th></tr>
                             </thead>
                             <tbody>
                                 {regionData.map((region, idx) => {
@@ -585,10 +760,7 @@ export default function ClientsByRegionMap({ users = [] }) {
                                             <td className="text-center">
                                                 <div className="d-flex align-items-center justify-content-center gap-2">
                                                     <div className="progress flex-grow-1" style={{ height: '6px', maxWidth: '100px' }}>
-                                                        <div 
-                                                            className="progress-bar bg-success" 
-                                                            style={{ width: `${taux}%` }}
-                                                        ></div>
+                                                        <div className="progress-bar bg-success" style={{ width: `${taux}%` }}></div>
                                                     </div>
                                                     <span className="small fw-semibold">{taux}%</span>
                                                 </div>
@@ -601,99 +773,162 @@ export default function ClientsByRegionMap({ users = [] }) {
                     </div>
                 )}
 
-                {/* SECTION DES PIE CHARTS - Style 3D avec dégradés */}
+                {/* Vue Nouveaux Clients - AVEC datalabels et SANS le bloc "Total" */}
+                {viewType === 'newClients' && (
+                    <div>
+                        {availableMonths.length > 0 && (
+                            <div className="mb-4">
+                                <div className="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3">
+                                    <label className="form-label fw-semibold mb-0">
+                                        <FaCalendarAlt className="me-2" /> Sélectionner un mois :
+                                    </label>
+                                    <button 
+                                        className={`btn btn-sm ${showAllMonths ? 'btn-primary' : 'btn-outline-primary'}`} 
+                                        onClick={() => { setShowAllMonths(true); setSelectedMonthForChart(null); }}
+                                    >
+                                        <FaList className="me-1" /> Tous les mois
+                                    </button>
+                                </div>
+                                <div className="d-flex flex-wrap gap-2">
+                                    {availableMonths.map(month => (
+                                        <button 
+                                            key={month} 
+                                            className={`btn btn-sm ${!showAllMonths && selectedMonthForChart === month ? 'btn-primary' : 'btn-outline-secondary'}`} 
+                                            onClick={() => { setShowAllMonths(false); setSelectedMonthForChart(month); }}
+                                        >
+                                            {formatMonthName(month)}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {showAllMonths ? (
+                            <>
+                                <div style={{ height: '500px' }}>
+                                    {getAllMonthsChartData().labels.length > 0 ? (
+                                        <Bar data={getAllMonthsChartData()} options={allMonthsChartOptions} />
+                                    ) : (
+                                        <div className="text-center py-5">
+                                            <p className="text-muted">Aucune donnée disponible</p>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="mt-3 text-center">
+                                    <small className="text-muted">Évolution mensuelle du nombre de nouveaux clients (toutes régions confondues)</small>
+                                </div>
+                                {getAllMonthsChartData().labels.length > 0 && (
+                                    <div className="mt-4">
+                                        <h6 className="fw-semibold mb-3">Récapitulatif mensuel</h6>
+                                        <div className="table-responsive">
+                                            <table className="table table-sm table-bordered">
+                                                <thead className="table-light">
+                                                    <tr>
+                                                        <th>Mois</th>
+                                                        <th className="text-center">Nouveaux clients</th>
+                                                        <th className="text-center">% du total</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {getAllMonthsChartData().labels.map((label, index) => {
+                                                        const count = getAllMonthsChartData().datasets[0].data[index];
+                                                        const total = getAllMonthsChartData().datasets[0].data.reduce((a, b) => a + b, 0);
+                                                        const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+                                                        return (
+                                                            <tr key={index}>
+                                                                <td>{label}</td>
+                                                                <td className="text-center fw-semibold">{count}</td>
+                                                                <td className="text-center">
+                                                                    <div className="d-flex align-items-center justify-content-center gap-2">
+                                                                        <div className="progress flex-grow-1" style={{ height: '5px', maxWidth: '80px' }}>
+                                                                            <div className="progress-bar" style={{ width: `${percentage}%`, backgroundColor: '#4f46e5' }}></div>
+                                                                        </div>
+                                                                        <span className="small">{percentage}%</span>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <>
+                                {/* Le bloc "Total des nouveaux clients" a été SUPPRIMÉ - plus de carte avec le total */}
+                                <div style={{ height: '500px' }}>
+                                    {getNewClientsChartData().labels.length > 0 ? (
+                                        <Bar data={getNewClientsChartData()} options={newClientsChartOptions} />
+                                    ) : (
+                                        <div className="text-center py-5">
+                                            <p className="text-muted">
+                                                Aucun nouveau client pour {selectedMonthForChart ? formatMonthName(selectedMonthForChart) : 'cette période'}
+                                            </p>
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="mt-3 text-center">
+                                    <small className="text-muted">
+                                        Nombre de nouveaux clients inscrits par région pour le mois sélectionné
+                                        {selectedMonthForChart && ` (${formatMonthName(selectedMonthForChart)})`}
+                                    </small>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                )}
+
+                {/* SECTION DES PIE CHARTS */}
                 <div className="mt-5 pt-3">
                     <hr className="mb-4" />
                     <div className="d-flex align-items-center gap-2 mb-4">
                         <FaCity size={22} style={{ color: '#4361ee' }} />
-                        <h5 className="fw-bold mb-0" style={{ color: '#0f172a' }}>
-                            Analyse par Ville
-                        </h5>
+                        <h5 className="fw-bold mb-0" style={{ color: '#0f172a' }}>Analyse par Ville</h5>
                         <span className="badge rounded-pill bg-secondary">Top 10</span>
                     </div>
-                    
                     <div className="row g-4">
-                        {/* Pie Chart 1: Villes avec clients actifs - Dégradés de vert */}
                         <div className="col-md-6">
-                            <div className="card h-100 border-0 shadow-lg" style={{ 
-                                borderRadius: '16px',
-                                background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
-                            }}>
+                            <div className="card h-100 border-0 shadow-lg" style={{ borderRadius: '16px', background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)' }}>
                                 <div className="card-header bg-white border-0 pt-3 pb-0" style={{ background: 'transparent' }}>
                                     <div className="d-flex align-items-center gap-2">
-                                        <div className="rounded-circle p-2" style={{ 
-                                            backgroundColor: '#22c55e20',
-                                            boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)'
-                                        }}>
+                                        <div className="rounded-circle p-2" style={{ backgroundColor: '#22c55e20', boxShadow: '0 2px 8px rgba(34, 197, 94, 0.2)' }}>
                                             <FaUserCheck size={18} className="text-success" />
                                         </div>
-                                        <h6 className="fw-bold mb-0" style={{ 
-                                            background: 'linear-gradient(135deg, #22c55e, #15803d)',
-                                            WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent'
-                                        }}>
+                                        <h6 className="fw-bold mb-0" style={{ background: 'linear-gradient(135deg, #22c55e, #15803d)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                                             Top Villes - Clients Actifs
                                         </h6>
                                     </div>
-                                    <p className="text-muted small mt-1 mb-0">
-                                        Répartition des comptes actifs par ville (Top 10)
-                                    </p>
+                                    <p className="text-muted small mt-1 mb-0">Répartition des comptes actifs par ville (Top 10)</p>
                                 </div>
                                 <div className="card-body">
                                     {topActiveCities.length > 0 ? (
-                                        <div style={{ height: '400px' }}>
-                                            <Pie 
-                                                data={activeCitiesPieData} 
-                                                options={createPieOptions(activeCitiesPieData, true)}
-                                            />
-                                        </div>
+                                        <div style={{ height: '400px' }}><Pie data={activeCitiesPieData} options={createPieOptions()} /></div>
                                     ) : (
-                                        <div className="text-center py-5">
-                                            <p className="text-muted">Aucune donnée de ville active disponible</p>
-                                        </div>
+                                        <div className="text-center py-5"><p className="text-muted">Aucune donnée de ville active disponible</p></div>
                                     )}
                                 </div>
                             </div>
                         </div>
-
-                        {/* Pie Chart 2: Villes avec clients inactifs - Dégradés de rouge */}
                         <div className="col-md-6">
-                            <div className="card h-100 border-0 shadow-lg" style={{ 
-                                borderRadius: '16px',
-                                background: 'linear-gradient(135deg, #ffffff 0%, #fef2f2 100%)'
-                            }}>
+                            <div className="card h-100 border-0 shadow-lg" style={{ borderRadius: '16px', background: 'linear-gradient(135deg, #ffffff 0%, #fef2f2 100%)' }}>
                                 <div className="card-header bg-white border-0 pt-3 pb-0" style={{ background: 'transparent' }}>
                                     <div className="d-flex align-items-center gap-2">
-                                        <div className="rounded-circle p-2" style={{ 
-                                            backgroundColor: '#ef444420',
-                                            boxShadow: '0 2px 8px rgba(239, 68, 68, 0.2)'
-                                        }}>
+                                        <div className="rounded-circle p-2" style={{ backgroundColor: '#ef444420', boxShadow: '0 2px 8px rgba(239, 68, 68, 0.2)' }}>
                                             <FaUserTimes size={18} className="text-danger" />
                                         </div>
-                                        <h6 className="fw-bold mb-0" style={{ 
-                                            background: 'linear-gradient(135deg, #ef4444, #991b1b)',
-                                            WebkitBackgroundClip: 'text',
-                                            WebkitTextFillColor: 'transparent'
-                                        }}>
+                                        <h6 className="fw-bold mb-0" style={{ background: 'linear-gradient(135deg, #ef4444, #991b1b)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                                             Top Villes - Clients Inactifs
                                         </h6>
                                     </div>
-                                    <p className="text-muted small mt-1 mb-0">
-                                        Répartition des comptes inactifs par ville (Top 10)
-                                    </p>
+                                    <p className="text-muted small mt-1 mb-0">Répartition des comptes inactifs par ville (Top 10)</p>
                                 </div>
                                 <div className="card-body">
                                     {topInactiveCities.length > 0 ? (
-                                        <div style={{ height: '400px' }}>
-                                            <Pie 
-                                                data={inactiveCitiesPieData} 
-                                                options={createPieOptions(inactiveCitiesPieData, false)}
-                                            />
-                                        </div>
+                                        <div style={{ height: '400px' }}><Pie data={inactiveCitiesPieData} options={createPieOptions()} /></div>
                                     ) : (
-                                        <div className="text-center py-5">
-                                            <p className="text-muted">Aucune donnée de ville inactive disponible</p>
-                                        </div>
+                                        <div className="text-center py-5"><p className="text-muted">Aucune donnée de ville inactive disponible</p></div>
                                     )}
                                 </div>
                             </div>

@@ -98,6 +98,7 @@ export const bulkCreateUsers = async (req, res) => {
 };
 
 // GET - Récupérer tous les utilisateurs avec leurs comptes associés
+// GET - Récupérer tous les utilisateurs avec leurs comptes associés
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().sort({ createdAt: -1 });
@@ -106,8 +107,24 @@ export const getAllUsers = async (req, res) => {
     const usersWithAccounts = await Promise.all(
       users.map(async (user) => {
         const account = await Account.findOne({ user: user._id });
+        
+        // FORCER une date valide pour createdAt
+        let validCreatedAt = user.createdAt;
+        
+        // Si createdAt n'existe pas ou est invalide, utiliser la date actuelle
+        if (!validCreatedAt || isNaN(new Date(validCreatedAt).getTime())) {
+          validCreatedAt = new Date(); // Date actuelle comme fallback
+          console.log(`⚠️ Date invalide pour ${user.client_name}, utilisation de la date actuelle`);
+        }
+        
         return {
-          ...user.toJSON(),
+          _id: user._id,
+          client_code: user.client_code,
+          client_name: user.client_name,
+          adresse: user.adresse,
+          telephone: user.telephone,
+          isAdmin: user.isAdmin,
+          createdAt: validCreatedAt,  // Date garantie valide
           email: account?.email || null,
           actif: account?.actif || false
         };

@@ -19,9 +19,18 @@ userAPI.interceptors.request.use((config) => {
   return config;
 });
 
+// Dans userService.js, assurez-vous que getAllUsers retourne bien les dates
 export const getAllUsers = async () => {
   try {
     const response = await userAPI.get('/');
+    console.log('Données utilisateurs reçues:', response.data.length);
+    if (response.data.length > 0) {
+      console.log('Premier utilisateur:', {
+        name: response.data[0].client_name,
+        createdAt: response.data[0].createdAt,
+        type: typeof response.data[0].createdAt
+      });
+    }
     return response.data;
   } catch (error) {
     console.error('Erreur getAllUsers:', error);

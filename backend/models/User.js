@@ -23,8 +23,12 @@ const userSchema = new mongoose.Schema({
   isAdmin: {
     type: Boolean,
     default: false
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
   }
-});
+});  // ← Fermeture correcte du schéma
 
 // MIDDLEWARE: Après la suppression d'un utilisateur
 userSchema.post('findOneAndDelete', async function(doc) {

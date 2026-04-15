@@ -308,15 +308,24 @@ export default function OrdersBI() {
     };
 
     const fetchUsers = async () => {
-        try {
-            const data = await getAllUsers();
-            setUsers(Array.isArray(data) ? data : []);
-        } catch (err) {
-            console.error('Erreur chargement des utilisateurs:', err);
-            setUsers([]);
-        }
-    };
-
+    try {
+        const data = await getAllUsers();
+        console.log('=== UTILISATEURS REÇUS ===');
+        console.log('Nombre:', data.length);
+        console.log('Premier utilisateur:', data[0]);
+        console.log('createdAt présent?', data[0]?.createdAt);
+        // Afficher les dates de création
+        data.forEach(u => {
+            if (u.createdAt) {
+                console.log(`${u.client_name}: ${new Date(u.createdAt).toLocaleDateString()}`);
+            }
+        });
+        setUsers(Array.isArray(data) ? data : []);
+    } catch (err) {
+        console.error('Erreur chargement des utilisateurs:', err);
+        setUsers([]);
+    }
+};
     useEffect(() => {
         fetchOrders();
     }, [selectedYear]);
@@ -326,7 +335,42 @@ export default function OrdersBI() {
         fetchReturnAnalytics();
         fetchUsers();
     }, []);
-
+// Dans OrdersBI.jsx, après fetchUsers
+useEffect(() => {
+    if (users.length > 0) {
+        console.log('=== VÉRIFICATION DES DATES UTILISATEURS ===');
+        const usersWithDates = users.filter(u => {
+            let hasDate = false;
+            if (u.createdAt) {
+                if (typeof u.createdAt === 'object' && u.createdAt.$date) {
+                    hasDate = true;
+                } else if (typeof u.createdAt === 'string') {
+                    hasDate = true;
+                }
+            }
+            return hasDate;
+        });
+        console.log(`Utilisateurs avec date valide: ${usersWithDates.length}/${users.length}`);
+        
+        // Grouper par mois
+        const monthGroups = {};
+        users.forEach(user => {
+            let date = null;
+            if (user.createdAt) {
+                if (typeof user.createdAt === 'object' && user.createdAt.$date) {
+                    date = new Date(user.createdAt.$date);
+                } else if (typeof user.createdAt === 'string') {
+                    date = new Date(user.createdAt);
+                }
+            }
+            if (date && !isNaN(date.getTime())) {
+                const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+                monthGroups[monthKey] = (monthGroups[monthKey] || 0) + 1;
+            }
+        });
+        console.log('Répartition par mois:', monthGroups);
+    }
+}, [users]);
     if (loading) {
         return (
             <div className="d-flex justify-content-center align-items-center min-vh-100" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
