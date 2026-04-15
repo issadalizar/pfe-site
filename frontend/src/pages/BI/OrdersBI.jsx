@@ -1,15 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import { MonthlyBarChart, MonthlyOrdersChart, MonthComparisonTable, CategorySalesChart, ReturnExchangeRateCircle } from '../../components/BI';
-import { FaChartLine, FaChartBar, FaTable, FaTrophy, FaMedal } from 'react-icons/fa';
+import React, { useState, useEffect, useRef } from 'react';
+import { MonthlyBarChart, MonthlyOrdersChart, MonthComparisonTable, CategorySalesChart, ReturnExchangeRateCircle, ClientsByRegionMap, ClientMapCluster } from '../../components/BI';
+import { 
+  FaChartLine, FaChartBar, FaTable, FaTrophy, FaMedal, 
+  FaMapMarkerAlt, FaShoppingCart, FaWallet, FaPercentage, 
+  FaRocket, FaUsers, FaArrowUp, FaArrowDown, FaRegCalendarAlt,
+  FaDownload, FaFilter, FaEllipsisH, FaFilePdf, FaSpinner, FaPrint
+} from 'react-icons/fa';
 import { getReturnRequestAnalytics } from '../../services/returnRequestService';
+import { getAllUsers } from '../../services/userService';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api') + '/orders';
 
 export default function OrdersBI() {
     const [loading, setLoading] = useState(true);
+    const [exporting, setExporting] = useState(false);
     const [monthlyData, setMonthlyData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [returnAnalytics, setReturnAnalytics] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [availableYears, setAvailableYears] = useState([]);
+    const [showExportMenu, setShowExportMenu] = useState(false);
+    
+    const dashboardRef = useRef(null);
+    const exportMenuRef = useRef(null);
 
     const formatPrice = (price) => {
         return new Intl.NumberFormat('fr-TN', {
@@ -18,13 +34,36 @@ export default function OrdersBI() {
         }).format(price);
     };
 
-    const processMonthlyData = (orders) => {
+    const formatCompactPrice = (price) => {
+        if (price >= 1000000) return (price / 1000000).toFixed(1) + 'M';
+        if (price >= 1000) return (price / 1000).toFixed(1) + 'k';
+        return formatPrice(price);
+    };
+
+    // Extraire les années disponibles des données
+    const extractAvailableYears = (orders) => {
+        const years = new Set();
+        orders.forEach(order => {
+            if (order.paymentStatus === 'paid') {
+                const year = new Date(order.createdAt).getFullYear();
+                years.add(year);
+            }
+        });
+        return Array.from(years).sort((a, b) => b - a);
+    };
+
+    const processMonthlyData = (orders, year = null) => {
         const monthlyMap = new Map();
         
         orders.forEach(order => {
             if (order.paymentStatus === 'paid') {
                 const date = new Date(order.createdAt);
-                const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+                const orderYear = date.getFullYear();
+                
+                // Filtrer par année si spécifiée
+                if (year && orderYear !== year) return;
+                
+                const monthKey = `${orderYear}-${date.getMonth() + 1}`;
                 const monthName = date.toLocaleString('fr-FR', { month: 'long', year: 'numeric' });
                 
                 if (!monthlyMap.has(monthKey)) {
@@ -48,6 +87,70 @@ export default function OrdersBI() {
         return monthlyArray;
     };
 
+    // Exporter en PDF
+    const exportToPDF = async () => {
+        if (!dashboardRef.current) return;
+        
+        setExporting(true);
+        setShowExportMenu(false);
+        try {
+            const element = dashboardRef.current;
+            const canvas = await html2canvas(element, {
+                scale: 2,
+                backgroundColor: '#f5f7fa',
+                logging: false,
+                useCORS: true
+            });
+            
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+            
+            const imgWidth = 210; // A4 width in mm
+            const pageHeight = 297; // A4 height in mm
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            let heightLeft = imgHeight;
+            let position = 0;
+            
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+            
+            while (heightLeft >= 0) {
+                position = heightLeft - imgHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= pageHeight;
+            }
+            
+            pdf.save(`dashboard_bi_${selectedYear}_${new Date().toISOString().split('T')[0]}.pdf`);
+        } catch (error) {
+            console.error('Erreur lors de l\'export PDF:', error);
+            alert('Une erreur est survenue lors de l\'export PDF');
+        } finally {
+            setExporting(false);
+        }
+    };
+
+    // Fonction d'impression
+    const handlePrint = () => {
+        setShowExportMenu(false);
+        window.print();
+    };
+
+    // Fermer le menu quand on clique en dehors
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (exportMenuRef.current && !exportMenuRef.current.contains(event.target)) {
+                setShowExportMenu(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     const fetchOrders = async () => {
         setLoading(true);
         try {
@@ -57,7 +160,12 @@ export default function OrdersBI() {
             });
             const data = await res.json();
             if (data.success && data.orders) {
-                const monthly = processMonthlyData(data.orders);
+                // Extraire les années disponibles
+                const years = extractAvailableYears(data.orders);
+                setAvailableYears(years);
+                
+                // Filtrer par année sélectionnée
+                const monthly = processMonthlyData(data.orders, selectedYear);
                 setMonthlyData(monthly);
             }
         } catch (err) {
@@ -93,242 +201,515 @@ export default function OrdersBI() {
         }
     };
 
+    const fetchUsers = async () => {
+        try {
+            const data = await getAllUsers();
+            setUsers(Array.isArray(data) ? data : []);
+        } catch (err) {
+            console.error('Erreur chargement des utilisateurs:', err);
+            setUsers([]);
+        }
+    };
+
+    // Recharger les données quand l'année change
     useEffect(() => {
         fetchOrders();
+    }, [selectedYear]);
+
+    useEffect(() => {
         fetchCategoryData();
         fetchReturnAnalytics();
+        fetchUsers();
     }, []);
 
     if (loading) {
         return (
-            <div className="text-center py-5">
-                <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden">Chargement...</span>
+            <div className="d-flex justify-content-center align-items-center min-vh-100" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                <div className="text-center">
+                    <div className="spinner-border text-white mb-3" style={{ width: '3rem', height: '3rem' }} role="status">
+                        <span className="visually-hidden">Chargement...</span>
+                    </div>
+                    <h5 className="text-white">Chargement des données analytiques...</h5>
                 </div>
-                <p className="text-muted mt-3">Chargement des données...</p>
             </div>
         );
     }
 
     // Calcul des statistiques globales
     const totalRevenue = monthlyData.reduce((sum, month) => sum + month.revenue, 0);
+    const totalOrders = monthlyData.reduce((sum, month) => sum + month.orderCount, 0);
     const averageRevenue = monthlyData.length > 0 ? totalRevenue / monthlyData.length : 0;
-    const bestMonth = monthlyData.reduce((best, month) => month.revenue > best.revenue ? month : best, monthlyData[0] || { revenue: 0 });
-    const worstMonth = monthlyData.reduce((worst, month) => month.revenue < worst.revenue ? month : worst, monthlyData[0] || { revenue: 0 });
+    const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
 
-    // Calculer l'évolution moyenne
     let totalEvolution = 0;
     let evolutionCount = 0;
+    let bestGrowth = 0;
+    let worstGrowth = 0;
+    
     for (let i = 1; i < monthlyData.length; i++) {
         if (monthlyData[i-1].revenue > 0) {
-            totalEvolution += ((monthlyData[i].revenue - monthlyData[i-1].revenue) / monthlyData[i-1].revenue * 100);
+            const growth = ((monthlyData[i].revenue - monthlyData[i-1].revenue) / monthlyData[i-1].revenue * 100);
+            totalEvolution += growth;
             evolutionCount++;
+            if (growth > bestGrowth) bestGrowth = growth;
+            if (growth < worstGrowth) worstGrowth = growth;
         }
     }
     const averageEvolution = evolutionCount > 0 ? totalEvolution / evolutionCount : 0;
 
+    const lastMonth = monthlyData[monthlyData.length - 1];
+    const previousMonth = monthlyData[monthlyData.length - 2];
+    const monthlyGrowth = previousMonth && previousMonth.revenue > 0 
+        ? ((lastMonth?.revenue - previousMonth.revenue) / previousMonth.revenue * 100)
+        : 0;
+
     return (
-        <div style={{ backgroundColor: '#f1f5f9', minHeight: '100vh' }}>
+        <div style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', minHeight: '100vh' }}>
             <div className="container-fluid p-4">
-                {/* Header */}
-                <div className="mb-4">
-                    <h1 className="fw-bold" style={{ color: '#0f172a' }}>
-                        <FaChartLine className="me-2" style={{ color: '#4361ee' }} />
-                        Analyse de Croissance - Chiffre d'Affaires
-                    </h1>
-                    <p className="text-muted">Suivi de l'évolution mensuelle et comparaison mois par mois</p>
-                </div>
-
-                {/* Statistiques rapides */}
-                <div className="row g-3 mb-4">
-                    <div className="col-md-3">
-                        <div className="card shadow-sm border-0 text-center p-3">
-                            <small className="text-muted">CA Total</small>
-                            <h4 className="fw-bold text-primary mb-0">{formatPrice(totalRevenue)} DT</h4>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card shadow-sm border-0 text-center p-3">
-                            <small className="text-muted">Moyenne Mensuelle</small>
-                            <h4 className="fw-bold text-success mb-0">{formatPrice(averageRevenue)} DT</h4>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card shadow-sm border-0 text-center p-3">
-                            <small className="text-muted">Évolution Moyenne</small>
-                            <h4 className={`fw-bold mb-0 ${averageEvolution >= 0 ? 'text-success' : 'text-danger'}`}>
-                                {averageEvolution >= 0 ? '+' : ''}{averageEvolution.toFixed(1)}%
-                            </h4>
-                        </div>
-                    </div>
-                    <div className="col-md-3">
-                        <div className="card shadow-sm border-0 text-center p-3">
-                            <small className="text-muted">Meilleure Croissance</small>
-                            <h4 className="fw-bold text-info mb-0">
-                                {(() => {
-                                    let bestGrowth = 0;
-                                    for (let i = 1; i < monthlyData.length; i++) {
-                                        if (monthlyData[i-1].revenue > 0) {
-                                            const growth = ((monthlyData[i].revenue - monthlyData[i-1].revenue) / monthlyData[i-1].revenue * 100);
-                                            if (growth > bestGrowth) bestGrowth = growth;
-                                        }
-                                    }
-                                    return `+${bestGrowth.toFixed(1)}%`;
-                                })()}
-                            </h4>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Commandes payées par mois */}
-                <div className="row g-4 mb-4">
-                    <div className="col-12">
-                        <MonthlyOrdersChart data={monthlyData} title="Commandes payées par mois" />
-                    </div>
-                </div>
-
-                {/* Taux de retour / échange par produit */}
-                <div className="row g-4 mb-4">
-                    <div className="col-12">
-                        <div className="card shadow-sm border-0">
-                            <div className="card-header bg-white border-0 pt-3 pb-0">
-                                <div className="d-flex align-items-center gap-2">
-                                    <FaMedal size={20} style={{ color: '#9333ea' }} />
-                                    <h5 className="fw-bold mb-0" style={{ color: '#0f172a' }}>Taux de retour / échange par produit</h5>
-                                    <span className="badge rounded-pill" style={{ backgroundColor: '#8b5cf6', color: '#ffffff' }}>Statistiques produit</span>
+                
+                {/* Header Moderne */}
+                <div className="mb-5">
+                    <div className="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        <div>
+                            <div className="d-flex align-items-center gap-3 mb-2">
+                                <div className="p-3 rounded-3 shadow-sm" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+                                    <FaChartLine size={28} className="text-white" />
                                 </div>
-                                <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
-                                    Visualisation rapide des produits dont le taux de retour / échange est le plus élevé.
-                                </p>
-                            </div>
-                            <div className="card-body">
-                                {returnAnalytics.length > 0 ? (
-                                    <div className="row g-3">
-                                        {returnAnalytics.slice(0, 3).map((product) => (
-                                            <div key={product.productName} className="col-md-4">
-                                                <ReturnExchangeRateCircle product={product} />
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="text-center py-4">
-                                        <p className="text-muted mb-0">Aucune donnée de retour/échange disponible pour le moment.</p>
-                                    </div>
-                                )}
+                                <div>
+                                    <h1 className="display-5 fw-bold mb-0" style={{ color: '#1a1a2e' }}>
+                                        Data Analysis
+                                    </h1>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                {/* Layout à 2 colonnes: Tableau à gauche, Graphique à droite */}
-                <div className="row g-4">
-                    {/* Colonne gauche: Tableau comparatif */}
-                    <div className="col-lg-5">
-                        <div className="card shadow-sm border-0 h-100">
-                            <div className="card-header bg-white border-0 pt-3 pb-0">
-                                <div className="d-flex align-items-center gap-2">
-                                    <FaTable size={20} style={{ color: '#f59e0b' }} />
-                                    <h5 className="fw-bold mb-0" style={{ color: '#0f172a' }}>Comparaison Mois par Mois</h5>
-                                    <span className="badge bg-warning rounded-pill">Tableau comparatif</span>
-                                </div>
-                                <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
-                                    Comparaison détaillée du chiffre d'affaires de chaque mois par rapport au mois précédent
-                                </p>
-                            </div>
-                            <div className="card-body">
-                                {monthlyData.length > 0 ? (
-                                    <MonthComparisonTable
-                                        data={monthlyData}
-                                        formatPrice={formatPrice}
-                                    />
-                                ) : (
-                                    <div className="text-center py-5">
-                                        <p className="text-muted">Aucune donnée disponible</p>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Colonne droite: Graphique de croissance (plus large) */}
-                    <div className="col-lg-7">
-                        <div className="card shadow-sm border-0 h-100">
-                            <div className="card-header bg-white border-0 pt-3 pb-0">
-                                <div className="d-flex align-items-center gap-2">
-                                    <FaChartBar size={20} style={{ color: '#4361ee' }} />
-                                    <h5 className="fw-bold mb-0" style={{ color: '#0f172a' }}>Croissance Mensuelle</h5>
-                                    <span className="badge bg-primary rounded-pill">Bar Chart - Évolution en %</span>
-                                </div>
-                                <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
-                                    Évolution en pourcentage du chiffre d'affaires par rapport au mois précédent
-                                </p>
-                            </div>
-                            <div className="card-body" style={{ minHeight: '500px' }}>
-                                {monthlyData.length > 1 ? (
-                                    <>
-                                        <div style={{ width: '100%', height: '450px' }}>
-                                            <MonthlyBarChart
-                                                data={monthlyData}
-                                                title=""
-                                            />
-                                        </div>
-                                        <div className="mt-3 d-flex justify-content-center gap-4">
-                                            <div className="d-flex align-items-center gap-2">
-                                                <div style={{ width: '20px', height: '20px', backgroundColor: '#16a34a', borderRadius: '4px' }}></div>
-                                                <small className="text-muted">Croissance positive</small>
-                                            </div>
-                                            <div className="d-flex align-items-center gap-2">
-                                                <div style={{ width: '20px', height: '20px', backgroundColor: '#dc2626', borderRadius: '4px' }}></div>
-                                                <small className="text-muted">Baisse</small>
-                                            </div>
-                                            <div className="d-flex align-items-center gap-2">
-                                                <div style={{ width: '20px', height: '20px', backgroundColor: '#6b7280', borderRadius: '4px' }}></div>
-                                                <small className="text-muted">Stable</small>
+                        
+                        <div className="d-flex gap-2">
+                            {/* Menu déroulant pour l'export */}
+                            <div className="position-relative" ref={exportMenuRef}>
+                                <button 
+                                    className="btn btn-light shadow-sm px-4"
+                                    onClick={() => setShowExportMenu(!showExportMenu)}
+                                    disabled={exporting}
+                                >
+                                    {exporting ? (
+                                        <>
+                                            <FaSpinner className="me-2 spin" />
+                                            Export en cours...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaDownload className="me-2" />
+                                            Télécharger
+                                        </>
+                                    )}
+                                </button>
+                                
+                                {showExportMenu && !exporting && (
+                                    <div className="position-absolute top-100 end-0 mt-2" style={{ zIndex: 1000 }}>
+                                        <div className="card border-0 shadow-lg rounded-3" style={{ minWidth: '200px' }}>
+                                            <div className="list-group list-group-flush">
+                                                <button 
+                                                    className="list-group-item list-group-item-action d-flex align-items-center gap-3 border-0 rounded-top-3"
+                                                    onClick={exportToPDF}
+                                                >
+                                                    <FaFilePdf className="text-danger" size={18} />
+                                                    <div className="text-start">
+                                                        <div className="fw-semibold small">Télécharger PDF</div>
+                                                        <div className="text-muted" style={{ fontSize: '0.7rem' }}>Exporter le dashboard au format PDF</div>
+                                                    </div>
+                                                </button>
+                                                <button 
+                                                    className="list-group-item list-group-item-action d-flex align-items-center gap-3 border-0 rounded-bottom-3"
+                                                    onClick={handlePrint}
+                                                >
+                                                    <FaPrint className="text-primary" size={18} />
+                                                    <div className="text-start">
+                                                        <div className="fw-semibold small">Imprimer</div>
+                                                        <div className="text-muted" style={{ fontSize: '0.7rem' }}>Imprimer le dashboard</div>
+                                                    </div>
+                                                </button>
                                             </div>
                                         </div>
-                                    </>
-                                ) : (
-                                    <div className="text-center py-5">
-                                        <p className="text-muted">Données insuffisantes pour afficher l'évolution (minimum 2 mois requis)</p>
                                     </div>
                                 )}
+                            </div>
+                            
+                            {/* Sélecteur d'année dynamique */}
+                            <div className="dropdown">
+                                <button className="btn btn-outline-secondary shadow-sm dropdown-toggle" data-bs-toggle="dropdown">
+                                    <FaRegCalendarAlt className="me-2" />
+                                    {selectedYear}
+                                </button>
+                                <ul className="dropdown-menu">
+                                    {availableYears.map(year => (
+                                        <li key={year}>
+                                            <button 
+                                                className={`dropdown-item ${selectedYear === year ? 'active' : ''}`}
+                                                onClick={() => setSelectedYear(year)}
+                                            >
+                                                {year}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Section Catégories les plus vendues */}
-                <div className="row g-4 mt-4">
-                    <div className="col-12">
-                        <div className="card shadow-sm border-0">
-                            <div className="card-header bg-white border-0 pt-3 pb-0">
-                                <div className="d-flex align-items-center gap-2">
-                                    <FaTrophy size={20} style={{ color: '#f59e0b' }} />
-                                    <h5 className="fw-bold mb-0" style={{ color: '#0f172a' }}>Catégories les plus vendues</h5>
-                                    <span className="badge bg-warning rounded-pill">Top 10 catégories</span>
+                {/* Contenu du Dashboard à exporter */}
+                <div ref={dashboardRef}>
+                    {/* Cartes KPI - Design simple et sobre */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-md-3">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-body p-4">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <p className="text-muted mb-1 small text-uppercase fw-semibold">Chiffre d'affaires</p>
+                                            <h2 className="fw-bold mb-0" style={{ color: '#1a1a2e', fontSize: '1.8rem' }}>
+                                                {formatCompactPrice(totalRevenue)} <span style={{ fontSize: '1rem' }}>DT</span>
+                                            </h2>
+                                        </div>
+                                        <div className="rounded-3 p-2" style={{ backgroundColor: '#f0fdf4' }}>
+                                            <FaWallet size={20} style={{ color: '#22c55e' }} />
+                                        </div>
+                                    </div>
+                                    <div className="pt-2 border-top">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <span className="text-muted small">Moyenne mensuelle</span>
+                                            <span className="fw-semibold" style={{ color: '#1a1a2e' }}>
+                                                {formatCompactPrice(averageRevenue)} DT
+                                            </span>
+                                        </div>
+                                        <div className="d-flex justify-content-between align-items-center mt-1">
+                                            <span className="text-muted small">Total {selectedYear}</span>
+                                            <span className="small text-success">{totalOrders} commandes</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                <p className="text-muted mt-2" style={{ fontSize: '0.8rem' }}>
-                                    Analyse des performances par catégorie - Chiffre d'affaires et quantité vendue
-                                </p>
                             </div>
-                            <div className="card-body" style={{ minHeight: '500px' }}>
-                                {categoryData.length > 0 ? (
-                                    <div style={{ width: '100%', height: '450px' }}>
-                                        <CategorySalesChart
-                                            data={categoryData}
-                                            title=""
+                        </div>
+
+                        <div className="col-md-3">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-body p-4">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <p className="text-muted mb-1 small text-uppercase fw-semibold">Commandes</p>
+                                            <h2 className="fw-bold mb-0" style={{ color: '#1a1a2e', fontSize: '1.8rem' }}>
+                                                {totalOrders.toLocaleString()}
+                                            </h2>
+                                        </div>
+                                        <div className="rounded-3 p-2" style={{ backgroundColor: '#eff6ff' }}>
+                                            <FaShoppingCart size={20} style={{ color: '#3b82f6' }} />
+                                        </div>
+                                    </div>
+                                    <div className="pt-2 border-top">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <span className="text-muted small">Panier moyen</span>
+                                            <span className="fw-semibold" style={{ color: '#1a1a2e' }}>
+                                                {formatCompactPrice(averageOrderValue)} DT
+                                            </span>
+                                        </div>
+                                        <div className="d-flex justify-content-between align-items-center mt-1">
+                                            <span className="text-muted small">Commandes payées</span>
+                                            <span className="small text-success">+12% vs année préc.</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-md-3">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-body p-4">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <p className="text-muted mb-1 small text-uppercase fw-semibold">Croissance moyenne</p>
+                                            <h2 className="fw-bold mb-0" style={{ color: averageEvolution >= 0 ? '#22c55e' : '#ef4444', fontSize: '1.8rem' }}>
+                                                {averageEvolution >= 0 ? '+' : ''}{averageEvolution.toFixed(1)}%
+                                            </h2>
+                                        </div>
+                                        <div className="rounded-3 p-2" style={{ backgroundColor: '#fef3c7' }}>
+                                            <FaPercentage size={20} style={{ color: '#f59e0b' }} />
+                                        </div>
+                                    </div>
+                                    <div className="pt-2 border-top">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <span className="text-muted small">Meilleur mois</span>
+                                            <span className="fw-semibold text-success" style={{ color: '#1a1a2e' }}>
+                                                +{bestGrowth.toFixed(1)}%
+                                            </span>
+                                        </div>
+                                        <div className="d-flex justify-content-between align-items-center mt-1">
+                                            <span className="text-muted small">Pire mois</span>
+                                            <span className="small text-danger">{worstGrowth.toFixed(1)}%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-md-3">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-body p-4">
+                                    <div className="d-flex justify-content-between align-items-start mb-3">
+                                        <div>
+                                            <p className="text-muted mb-1 small text-uppercase fw-semibold">Performance Mois</p>
+                                            <h2 className="fw-bold mb-0" style={{ color: monthlyGrowth >= 0 ? '#22c55e' : '#ef4444', fontSize: '1.8rem' }}>
+                                                {monthlyGrowth >= 0 ? '+' : ''}{monthlyGrowth.toFixed(1)}%
+                                            </h2>
+                                        </div>
+                                        <div className="rounded-3 p-2" style={{ backgroundColor: '#f3e8ff' }}>
+                                            {monthlyGrowth >= 0 ? <FaArrowUp size={20} style={{ color: '#a855f7' }} /> : <FaArrowDown size={20} style={{ color: '#a855f7' }} />}
+                                        </div>
+                                    </div>
+                                    <div className="pt-2 border-top">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <span className="text-muted small">Dernier mois</span>
+                                            <span className="fw-semibold" style={{ color: '#1a1a2e' }}>
+                                                {formatCompactPrice(lastMonth?.revenue || 0)} DT
+                                            </span>
+                                        </div>
+                                        <div className="d-flex justify-content-between align-items-center mt-1">
+                                            <span className="text-muted small">vs mois précédent</span>
+                                            <span className={`small ${monthlyGrowth >= 0 ? 'text-success' : 'text-danger'}`}>
+                                                {monthlyGrowth >= 0 ? '↑' : '↓'} {Math.abs(monthlyGrowth).toFixed(1)}%
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Section Principale: Comparaison + Croissance */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-lg-6">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaTable className="me-2" style={{ color: '#f59e0b' }} />
+                                                Analyse Mensuelle
+                                            </h5>
+                                            <p className="text-muted small mb-0">Comparaison détaillée mois par mois</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    {monthlyData.length > 0 ? (
+                                        <MonthComparisonTable
+                                            data={monthlyData}
+                                            formatPrice={formatPrice}
+                                            showDonut={true}
                                         />
+                                    ) : (
+                                        <div className="text-center py-5">
+                                            <p className="text-muted">Aucune donnée disponible pour {selectedYear}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-6">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaRocket className="me-2" style={{ color: '#4361ee' }} />
+                                                Croissance Mensuelle
+                                            </h5>
+                                            <p className="text-muted small mb-0">Évolution en pourcentage du CA</p>
+                                        </div>
                                     </div>
-                                ) : (
-                                    <div className="text-center py-5">
-                                        <p className="text-muted">Aucune donnée de vente disponible pour les catégories</p>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    {monthlyData.length > 1 ? (
+                                        <MonthlyBarChart data={monthlyData} title="" />
+                                    ) : (
+                                        <div className="text-center py-5">
+                                            <p className="text-muted">Données insuffisantes pour {selectedYear}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Section Clients: Analyse Géographique */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-12">
+                            <div className="card border-0 shadow-sm rounded-4">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaUsers className="me-2" style={{ color: '#10b981' }} />
+                                                Répartition Géographique des Clients
+                                            </h5>
+                                            <p className="text-muted small mb-0">Analyse par région - Actifs vs Inactifs</p>
+                                        </div>
+                                        <div className="d-flex gap-2">
+                                            <div className="d-flex align-items-center gap-2">
+                                                <div className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: '#22c55e' }}></div>
+                                                <small className="text-muted">Actifs</small>
+                                            </div>
+                                            <div className="d-flex align-items-center gap-2">
+                                                <div className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: '#ef4444' }}></div>
+                                                <small className="text-muted">Inactifs</small>
+                                            </div>
+                                        </div>
                                     </div>
-                                )}
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    <ClientsByRegionMap users={users} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Section Carte Interactive */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-12">
+                            <div className="card border-0 shadow-sm rounded-4">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaMapMarkerAlt className="me-2" style={{ color: '#ef4444' }} />
+                                                Visualisation Cartographique
+                                            </h5>
+                                            <p className="text-muted small mb-0">Localisation des clients sur le territoire tunisien</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    <ClientMapCluster users={users} centerLat={36.8065} centerLng={10.1815} zoom={7} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Section Produits */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-lg-6">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaMedal className="me-2" style={{ color: '#8b5cf6' }} />
+                                                Taux de Retour / Échange
+                                            </h5>
+                                            <p className="text-muted small mb-0">Top produits concernés</p>
+                                        </div>
+                                        <span className="badge bg-light text-dark px-3 py-2 rounded-pill border">
+                                            Qualité
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    {returnAnalytics.length > 0 ? (
+                                        <div className="row g-3">
+                                            {returnAnalytics.slice(0, 3).map((product) => (
+                                                <div key={product.productName} className="col-md-12">
+                                                    <ReturnExchangeRateCircle product={product} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-4">
+                                            <p className="text-muted mb-0">Aucune donnée de retour/échange disponible</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-6">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaShoppingCart className="me-2" style={{ color: '#4361ee' }} />
+                                                Évolution des Commandes
+                                            </h5>
+                                            <p className="text-muted small mb-0">Nombre de commandes payées par mois</p>
+                                        </div>
+                                        <span className="badge bg-light text-dark px-3 py-2 rounded-pill border">
+                                            Tendance
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    <MonthlyOrdersChart data={monthlyData} title="" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Section Catégories */}
+                    <div className="row g-4">
+                        <div className="col-12">
+                            <div className="card border-0 shadow-sm rounded-4">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaTrophy className="me-2" style={{ color: '#f59e0b' }} />
+                                                Top Catégories
+                                            </h5>
+                                            <p className="text-muted small mb-0">Performance par catégorie de produits</p>
+                                        </div>
+                                        <span className="badge bg-light text-dark px-3 py-2 rounded-pill border">
+                                            Meilleures ventes
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    {categoryData.length > 0 ? (
+                                        <div style={{ width: '100%', height: '450px' }}>
+                                            <CategorySalesChart data={categoryData} title="" />
+                                        </div>
+                                    ) : (
+                                        <div className="text-center py-5">
+                                            <p className="text-muted">Aucune donnée de vente disponible</p>
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
+
+            {/* Styles d'impression */}
+            <style jsx>{`
+                @media print {
+                    body * {
+                        visibility: hidden;
+                    }
+                    #dashboard-to-print, #dashboard-to-print * {
+                        visibility: visible;
+                    }
+                    #dashboard-to-print {
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                    }
+                    .btn, .dropdown, button {
+                        display: none !important;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

@@ -4211,6 +4211,40 @@ export const cncProductDetails = {
       "createdAt": "2026-04-12T17:33:27.192Z",
       "updatedAt": "2026-04-12T17:35:23.270Z",
       "stripeSessionId": "cs_test_a1gG0CjgEuLNkf7isGTDkKSdztDSc2gxLGfzYbvIdJ1DmisbpSnR8IAymI"
+    },
+    "69dcda0f0269db7f8d154f19": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productId": "697f55969e5f50c871efa221",
+          "productName": "De4-Pro (iKC4) Bench CNC Lathe",
+          "quantity": 3,
+          "price": 87.9,
+          "_id": "69dcda0f0269db7f8d154f1a"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 263.70000000000005,
+      "paymentMethod": "livraison",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69dcda0f0269db7f8d154f19",
+      "createdAt": "2026-04-13T11:57:03.341Z",
+      "updatedAt": "2026-04-13T11:57:03.367Z"
     }
   }
 };

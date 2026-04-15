@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getAllUsers, toggleUserStatus } from "../../services/userService";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { ClientsByRegionMap } from '../../components/BI'; // Ajouter en haut
 
 export default function UserList() {
   // States (variables dynamiques)
@@ -374,7 +375,7 @@ export default function UserList() {
           </div>
         </div>
       </div>
-
+      
       {/* Barre de recherche et filtres améliorés */}
       <div className="card shadow-sm border-0 mb-4">
         <div className="card-header bg-white py-3">
