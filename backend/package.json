@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "dev":  "node server.js",
-   "migrate:specs": "node scripts/migrateSpecifications.js"
+   "migrate:specs": "node scripts/migrateSpecifications.js",
+   "seed:products": "node scripts/seedProducts.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

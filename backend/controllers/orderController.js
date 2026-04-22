@@ -271,6 +271,9 @@ export const createCodOrder = async (req, res) => {
             orderStatus: 'en_attente'
         });
 
+        // Décrémenter le stock dès la création (paiement à la livraison = commande ferme)
+        await updateStockAfterPayment(order._id);
+
         try {
             await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
         } catch (syncError) {
@@ -349,6 +352,9 @@ export const createVirementOrder = async (req, res) => {
             paymentStatus: 'pending',
             orderStatus: 'en_attente'
         });
+
+        // Décrémenter le stock dès la création (virement = commande ferme, stock réservé)
+        await updateStockAfterPayment(order._id);
 
         try {
             await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
@@ -706,8 +712,8 @@ export const cancelOrder = async (req, res) => {
             });
         }
 
-        // Restaurer le stock si la commande était payée
-        if (order.paymentStatus === 'paid' && order.stockUpdated) {
+        // Restaurer le stock si celui-ci avait été décrémenté (Stripe payé, COD, ou virement)
+        if (order.stockUpdated) {
             console.log(`🔄 Restauration du stock pour la commande annulée ${order._id}`);
 
             for (const item of order.items) {
