@@ -33,6 +33,9 @@ export default function MonthlyBarChart({ data, title }) {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+            datalabels: {
+                display: false
+            },
             legend: {
                 position: 'top',
                 labels: {
@@ -113,7 +116,10 @@ export default function MonthlyBarChart({ data, title }) {
                 borderWidth: 2,
                 borderRadius: 8,
                 barPercentage: 0.6,
-                categoryPercentage: 0.7
+                categoryPercentage: 0.7,
+                datalabels: {
+                    display: false
+                }
             }
         ]
     };

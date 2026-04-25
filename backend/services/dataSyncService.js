@@ -1,5 +1,4 @@
-// backend/services/dataSyncService.js
-import fs from 'fs';
+import fs from 'fs';// Import du module fs pour la gestion des fichiers
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -7,22 +6,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PRODUCT_DATA_PATH = path.join(__dirname, '../data/productData.js');
 
-/**
- * Service pour synchroniser les données avec productData.js
- */
+// Service pour synchroniser les données avec productData.js
 class DataSyncService {
   constructor() {
     this.isSyncing = false;
   }
 
-  /**
-   * Lire le fichier productData.js actuel
-   */
+  
   async readProductData() {
     try {
       // Vérifier si le fichier existe
       if (!fs.existsSync(PRODUCT_DATA_PATH)) {
-        console.log('📝 Fichier productData.js non trouvé, création...');
+        console.log(' Fichier productData.js non trouvé, création...');
         const initialContent = 'export const cncProductDetails = {};\n';
         fs.writeFileSync(PRODUCT_DATA_PATH, initialContent, 'utf8');
         return {};
@@ -32,18 +27,16 @@ class DataSyncService {
       const data = await import('file://' + PRODUCT_DATA_PATH + '?update=' + Date.now());
       return data.cncProductDetails || {};
     } catch (error) {
-      console.error('❌ Erreur lecture productData.js:', error);
+      console.error(' Erreur lecture productData.js:', error);
       return {};
     }
   }
 
-  /**
-   * Écrire dans le fichier productData.js
-   */
+  // Écrire les données dans productData.js à partir de MongoDB
   async writeProductData(data) {
-    // Éviter les écritures concurrentes
+    // Si une synchronisation est déjà en cours, attendre un peu pour éviter les conflits
     if (this.isSyncing) {
-      console.log('⏳ Synchronisation déjà en cours, attente...');
+      console.log(' Synchronisation déjà en cours, attente...');
       await new Promise(resolve => setTimeout(resolve, 100));
       return this.writeProductData(data);
     }
@@ -66,26 +59,24 @@ class DataSyncService {
       fs.writeFileSync(tempPath, content, 'utf8');
       fs.renameSync(tempPath, PRODUCT_DATA_PATH);
       
-      console.log('✅ productData.js mis à jour avec succès');
+      console.log(' productData.js mis à jour avec succès');
       return true;
     } catch (error) {
-      console.error('❌ Erreur écriture productData.js:', error);
+      console.error(' Erreur écriture productData.js:', error);
       return false;
     } finally {
       this.isSyncing = false;
     }
   }
 
-  /**
-   * Mettre à jour un produit spécifique
-   */
+  // Mettre à jour un produit
   async updateProductInFile(productId, productData) {
     const data = await this.readProductData();
     
-    // Convertir l'ID ObjectId en string si nécessaire
+    
     const id = productId?.toString?.() || productId;
     
-    // Chercher le produit par ID dans les données
+    
     let found = false;
     for (const [key, value] of Object.entries(data)) {
       if (value._id === id || value._id?.toString?.() === id || key === id) {
@@ -97,7 +88,7 @@ class DataSyncService {
           updatedAt: new Date().toISOString()
         };
         found = true;
-        console.log(`🔄 Produit "${key}" mis à jour dans productData.js`);
+        console.log(` Produit "${key}" mis à jour dans productData.js`);
         break;
       }
     }
@@ -111,16 +102,14 @@ class DataSyncService {
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
-      console.log(`➕ Nouveau produit "${key}" ajouté dans productData.js`);
+      console.log(` Nouveau produit "${key}" ajouté dans productData.js`);
     }
     
     await this.writeProductData(data);
     return data;
   }
 
-  /**
-   * Ajouter un nouveau produit
-   */
+  // Ajouter un nouveau produit
   async addProductToFile(productData) {
     const data = await this.readProductData();
     
@@ -134,14 +123,12 @@ class DataSyncService {
       updatedAt: new Date().toISOString()
     };
     
-    console.log(`➕ Produit "${key}" ajouté dans productData.js`);
+    console.log(` Produit "${key}" ajouté dans productData.js`);
     await this.writeProductData(data);
     return data;
   }
 
-  /**
-   * Supprimer un produit
-   */
+ // Supprimer un produit
   async deleteProductFromFile(productId) {
     const data = await this.readProductData();
     
@@ -151,7 +138,7 @@ class DataSyncService {
     for (const [key, value] of Object.entries(data)) {
       if (value._id === id || value._id?.toString?.() === id || key === id) {
         delete data[key];
-        console.log(`🗑️ Produit "${key}" supprimé de productData.js`);
+        console.log(` Produit "${key}" supprimé de productData.js`);
         deleted = true;
         break;
       }
@@ -164,9 +151,7 @@ class DataSyncService {
     return data;
   }
 
-  /**
-   * Mettre à jour une catégorie
-   */
+  // Mettre à jour une catégorie
   async updateCategoryInFile(categoryId, categoryData) {
     const data = await this.readProductData();
     
@@ -191,14 +176,12 @@ class DataSyncService {
       }
     }
     
-    console.log(`🔄 Catégorie "${categoryData.name}" mise à jour dans productData.js`);
+    console.log(` Catégorie "${categoryData.name}" mise à jour dans productData.js`);
     await this.writeProductData(data);
     return data;
   }
 
-  /**
-   * Supprimer une catégorie
-   */
+  // Supprimer une catégorie
   async deleteCategoryFromFile(categoryId) {
     const data = await this.readProductData();
     
@@ -206,16 +189,14 @@ class DataSyncService {
     
     if (data._categories && data._categories[id]) {
       delete data._categories[id];
-      console.log(`🗑️ Catégorie ID ${id} supprimée de productData.js`);
+      console.log(`Catégorie ID ${id} supprimée de productData.js`);
       await this.writeProductData(data);
     }
     
     return data;
   }
 
-  /**
-   * Mettre à jour une commande
-   */
+  // Mettre à jour une commande
   async updateOrderInFile(orderId, orderData) {
     const data = await this.readProductData();
     
@@ -232,14 +213,12 @@ class DataSyncService {
       updatedAt: new Date().toISOString()
     };
     
-    console.log(`🔄 Commande ${id} mise à jour dans productData.js`);
+    console.log(`Commande ${id} mise à jour dans productData.js`);
     await this.writeProductData(data);
     return data;
   }
 
-  /**
-   * Supprimer une commande
-   */
+  // Supprimer une commande
   async deleteOrderFromFile(orderId) {
     const data = await this.readProductData();
     
@@ -247,16 +226,14 @@ class DataSyncService {
     
     if (data._orders && data._orders[id]) {
       delete data._orders[id];
-      console.log(`🗑️ Commande ${id} supprimée de productData.js`);
+      console.log(` Commande ${id} supprimée de productData.js`);
       await this.writeProductData(data);
     }
     
     return data;
   }
 
-  /**
-   * Mettre à jour une spécification
-   */
+  // Mettre à jour une spécification
   async updateSpecificationInFile(specId, specData) {
     const data = await this.readProductData();
     
@@ -273,14 +250,12 @@ class DataSyncService {
       updatedAt: new Date().toISOString()
     };
     
-    console.log(`🔄 Spécification ${id} mise à jour dans productData.js`);
+    console.log(` Spécification ${id} mise à jour dans productData.js`);
     await this.writeProductData(data);
     return data;
   }
 
-  /**
-   * Supprimer une spécification
-   */
+  // Supprimer une spécification
   async deleteSpecificationFromFile(specId) {
     const data = await this.readProductData();
     
@@ -288,19 +263,17 @@ class DataSyncService {
     
     if (data._specifications && data._specifications[id]) {
       delete data._specifications[id];
-      console.log(`🗑️ Spécification ${id} supprimée de productData.js`);
+      console.log(` Spécification ${id} supprimée de productData.js`);
       await this.writeProductData(data);
     }
     
     return data;
   }
 
-  /**
-   * Synchroniser toutes les données depuis MongoDB
-   */
+  // Synchroniser toutes les données depuis MongoDB vers productData.js
   async syncAllFromMongoDB() {
     try {
-      console.log('🔄 Début synchronisation complète avec productData.js...');
+      console.log(' Début synchronisation complète avec productData.js...');
       
       // Importer les modèles
       const Product = (await import('../models/Product.js')).default;
@@ -316,7 +289,7 @@ class DataSyncService {
         Specification.find().lean()
       ]);
       
-      console.log(`📊 Données récupérées: ${products.length} produits, ${categories.length} catégories, ${orders.length} commandes, ${specifications.length} spécifications`);
+      console.log(` Données récupérées: ${products.length} produits, ${categories.length} catégories, ${orders.length} commandes, ${specifications.length} spécifications`);
       
       // Construire la structure pour productData.js
       const productData = {};
@@ -329,7 +302,7 @@ class DataSyncService {
           _id: product._id.toString(),
           category: product.categorie?.nom || product.categorie,
           categoryId: product.categorie?._id?.toString(),
-          __v: undefined,
+          //__v: undefined,
           password: undefined,
           salt: undefined
         };
@@ -341,7 +314,7 @@ class DataSyncService {
         productData._categories[cat._id.toString()] = {
           ...cat,
           _id: cat._id.toString(),
-          __v: undefined
+          //__v: undefined
         };
       });
       
@@ -351,7 +324,7 @@ class DataSyncService {
         productData._orders[order._id.toString()] = {
           ...order,
           _id: order._id.toString(),
-          __v: undefined
+          //__v: undefined
         };
       });
       
@@ -361,12 +334,12 @@ class DataSyncService {
         productData._specifications[spec._id.toString()] = {
           ...spec,
           _id: spec._id.toString(),
-          __v: undefined
+          //__v: undefined
         };
       });
       
       await this.writeProductData(productData);
-      console.log('✅ Synchronisation complète terminée avec succès');
+      console.log(' Synchronisation complète terminée avec succès');
       
       return {
         success: true,
@@ -378,27 +351,25 @@ class DataSyncService {
         }
       };
     } catch (error) {
-      console.error('❌ Erreur synchronisation:', error);
+      console.error(' Erreur synchronisation:', error);
       throw error;
     }
   }
 
-  /**
-   * Initialiser le fichier productData.js au démarrage
-   */
+  // Initialiser la synchronisation au démarrage du serveur
   async initializeOnStartup() {
     try {
       const data = await this.readProductData();
       
       // Si le fichier est vide, synchroniser depuis MongoDB
       if (Object.keys(data).length === 0) {
-        console.log('🚀 productData.js vide, synchronisation initiale...');
+        console.log(' productData.js vide, synchronisation initiale...');
         await this.syncAllFromMongoDB();
       } else {
-        console.log(`📁 productData.js chargé avec ${Object.keys(data).filter(k => !k.startsWith('_')).length} produits`);
+        console.log(` productData.js chargé avec ${Object.keys(data).filter(k => !k.startsWith('_')).length} produits`);
       }
     } catch (error) {
-      console.error('❌ Erreur initialisation:', error);
+      console.error(' Erreur initialisation:', error);
     }
   }
 }

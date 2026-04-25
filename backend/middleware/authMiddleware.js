@@ -1,4 +1,4 @@
-// middleware/authMiddleware.js
+//jsonwebtoken est utilisé pour vérifier les tokens d'authentification et protéger les routes.
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import Account from '../models/Account.js';
@@ -6,7 +6,7 @@ import Account from '../models/Account.js';
 export const protect = async (req, res, next) => {
   try {
     let token;
-
+// Vérifier que le token est présent dans les headers(les en-têtes de la requête) et commence par "Bearer"
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
     }
@@ -21,7 +21,6 @@ export const protect = async (req, res, next) => {
     // Vérifier le token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // MODIFICATION: Chercher l'utilisateur et son compte
     const user = await User.findById(decoded.id);
     
     if (!user) {

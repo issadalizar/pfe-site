@@ -1,17 +1,15 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';// Charger les variables d'environnement depuis le fichier .env
+import dotenv from 'dotenv';// Charger les variables d'environnement sont variables sensibles depuis le fichier .env
 
 dotenv.config();
-
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/pfe_db';
-
 console.log(' URI de connexion MongoDB:', MONGODB_URI);
 //connexion à mongodb
 export const connectDB = async () => {
-  //focntion aysnchrone pour gérer les opérations de connexion et les erreurs de manière efficace
+  //on utlise fonction asynchrone pour connecter à MongoDB puisque la connexion est une opération qui peut prendre du temps et nous voulons gérer les erreurs de manière efficace.
   try {
     await mongoose.connect(MONGODB_URI);
-    //await est utilisé pour attendre que la connexion à MongoDB soit établie avant de continuer l'exécution du code. Cela garantit que les opérations de base de données ne sont pas tentées avant que la connexion ne soit prête.
+    //await est utilisé pour attendre que la connexion à MongoDB soit établie avant de continuer l'exécution du code.
     console.log(' Connecté à MongoDB avec succès!');
     console.log(` Base de données: ${mongoose.connection.name}`);
     console.log(` Hôte: ${mongoose.connection.host}`);
@@ -19,7 +17,7 @@ export const connectDB = async () => {
     return true;
   } catch (error) {
     console.error(' Erreur de connexion à MongoDB:', error.message);
-    console.error('');
+    console.error('');//séparation entre les lignes 
     console.error(' SOLUTIONS:');
     console.error('1. Assurez-vous que MongoDB est démarré:');
     console.error('   Windows: net start MongoDB');

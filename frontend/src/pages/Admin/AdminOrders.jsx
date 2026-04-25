@@ -472,6 +472,7 @@ export default function AdminOrders() {
                 }
             `}</style>
 
+            {/* Modal de reçu de commande avec style complet */}
             {receiptOrder && receiptOrder._id && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -568,7 +569,9 @@ export default function AdminOrders() {
                             </div>
                         </div>
 
+                        {/* Style de facture élégant pour l'affichage dans la modale */}
                         <div style={{ padding: '16px 24px 24px' }}>
+                            {/* Bandeau d'entête facture */}
                             <div style={{
                                 background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                                 borderRadius: '16px 16px 0 0', padding: '32px 24px', textAlign: 'center'
@@ -576,10 +579,13 @@ export default function AdminOrders() {
                                 <h2 style={{ margin: 0, color: 'white', fontSize: '22px', fontWeight: 700 }}>UniVerTechno+</h2>
                                 <p style={{ margin: '6px 0 0', color: 'rgba(255,255,255,0.85)', fontSize: '13px' }}>Reçu de commande</p>
                             </div>
+                            
+                            {/* Corps de la facture */}
                             <div style={{
                                 backgroundColor: 'white', padding: '28px',
                                 borderRadius: '0 0 16px 16px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
                             }}>
+                                {/* Informations récapitulatives */}
                                 <div style={{ backgroundColor: '#f8fafc', borderRadius: '12px', padding: '18px', marginBottom: '24px' }}>
                                     <div className="d-flex justify-content-between mb-1">
                                         <span style={{ fontSize: '0.82rem', color: '#64748b' }}>N° de commande</span>
@@ -596,7 +602,79 @@ export default function AdminOrders() {
                                         </span>
                                     </div>
                                 </div>
-                                <div style={{ textAlign: 'center', padding: '16px 0 0', fontSize: '0.75rem', color: '#94a3b8' }}>
+
+                                {/* Adresse de livraison */}
+                                <div style={{ marginBottom: '24px' }}>
+                                    <h6 className="fw-bold mb-2" style={{ color: '#0f172a', fontSize: '0.9rem' }}>
+                                        <FaMapMarkerAlt className="me-2" style={{ color: '#4361ee' }} />
+                                        Adresse de livraison
+                                    </h6>
+                                    <div style={{
+                                        backgroundColor: '#f0f9ff', border: '1px solid #bae6fd',
+                                        borderRadius: '10px', padding: '14px', fontSize: '0.85rem'
+                                    }}>
+                                        <strong>{receiptOrder.shippingInfo?.fullName || 'N/A'}</strong><br />
+                                        {receiptOrder.shippingInfo?.address || 'N/A'}<br />
+                                        {receiptOrder.shippingInfo?.postalCode || ''} {receiptOrder.shippingInfo?.city || ''}<br />
+                                        Tél: {receiptOrder.shippingInfo?.phone || 'N/A'}<br />
+                                        Email: {receiptOrder.shippingInfo?.email || 'N/A'}
+                                    </div>
+                                </div>
+
+                                {/* Liste des articles */}
+                                <div style={{ marginBottom: '24px' }}>
+                                    <h6 className="fw-bold mb-2" style={{ color: '#0f172a', fontSize: '0.9rem' }}>
+                                        <FaBox className="me-2" style={{ color: '#4361ee' }} />
+                                        Articles commandés
+                                    </h6>
+                                    <div style={{ border: '1px solid #e2e8f0', borderRadius: '10px', overflow: 'hidden' }}>
+                                        <table style={{ width: '100%', fontSize: '0.85rem', borderCollapse: 'collapse' }}>
+                                            <thead style={{ backgroundColor: '#f8fafc' }}>
+                                                <tr>
+                                                    <th style={{ padding: '10px 12px', textAlign: 'left', color: '#64748b', fontWeight: 600 }}>Produit</th>
+                                                    <th style={{ padding: '10px 12px', textAlign: 'center', color: '#64748b', fontWeight: 600 }}>Qté</th>
+                                                    <th style={{ padding: '10px 12px', textAlign: 'right', color: '#64748b', fontWeight: 600 }}>Prix unit.</th>
+                                                    <th style={{ padding: '10px 12px', textAlign: 'right', color: '#64748b', fontWeight: 600 }}>Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {receiptOrder.items && receiptOrder.items.length > 0 ? (
+                                                    receiptOrder.items.map((item, idx) => (
+                                                        <tr key={idx} style={{ borderTop: '1px solid #f1f5f9' }}>
+                                                            <td style={{ padding: '10px 12px', color: '#334155' }}>{item.productName || 'Produit'}</td>
+                                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#64748b' }}>{item.quantity || 1}</td>
+                                                            <td style={{ padding: '10px 12px', textAlign: 'right', color: '#334155' }}>{formatPrice(item.price || 0)} DT</td>
+                                                            <td style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600, color: '#0f172a' }}>{formatPrice((item.price || 0) * (item.quantity || 1))} DT</td>
+                                                        </tr>
+                                                    ))
+                                                ) : (
+                                                    <tr>
+                                                        <td colSpan="4" style={{ padding: '20px', textAlign: 'center', color: '#94a3b8' }}>Aucun article</td>
+                                                    </tr>
+                                                )}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                {/* Total */}
+                                <div style={{ borderTop: '2px solid #e2e8f0', paddingTop: '16px' }}>
+                                    <div className="d-flex justify-content-between align-items-center">
+                                        <span style={{ color: '#64748b' }}>Sous-total</span>
+                                        <span>{formatPrice(receiptOrder.totalAmount || 0)} DT</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between align-items-center mt-1">
+                                        <span style={{ color: '#64748b' }}>Livraison</span>
+                                        <span style={{ color: '#16a34a', fontWeight: 500 }}>Gratuite</span>
+                                    </div>
+                                    <div className="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                                        <strong style={{ fontSize: '1rem' }}>Total</strong>
+                                        <strong style={{ fontSize: '1.2rem', color: '#4361ee' }}>{formatPrice(receiptOrder.totalAmount || 0)} DT</strong>
+                                    </div>
+                                </div>
+
+                                {/* Pied de page */}
+                                <div style={{ textAlign: 'center', marginTop: '24px', paddingTop: '16px', borderTop: '1px solid #f1f5f9', fontSize: '0.75rem', color: '#94a3b8' }}>
                                     UniVerTechno+ - Équipements CNC & Éducation
                                 </div>
                             </div>

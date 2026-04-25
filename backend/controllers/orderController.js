@@ -1,4 +1,3 @@
-// controllers/orderController.js
 import Stripe from 'stripe';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
@@ -8,30 +7,30 @@ import notificationService from '../services/notificationService.js';
 
 const getStripe = () => {
     const key = process.env.STRIPE_SECRET_KEY;
-    if (!key || key.trim() === '') return null; // ← returns null silently
+    if (!key || key.trim() === '') return null; //.trim() pour éviter les espaces accidentels
     return new Stripe(key);
 };
 
-// ✅ Fonction utilitaire pour mettre à jour le stock
+//  mettre à jour le stock
 const updateStockAfterPayment = async (orderId) => {
     try {
         const order = await Order.findById(orderId);
         if (!order) {
-            console.error(`❌ Commande ${orderId} non trouvée`);
+            console.error(` Commande ${orderId} non trouvée`);
             return false;
         }
 
         if (order.stockUpdated) {
-            console.log(`ℹ️ Stock déjà mis à jour pour la commande ${orderId}`);
+            console.log(`ℹ Stock déjà mis à jour pour la commande ${orderId}`);
             return true;
         }
 
-        console.log(`🔄 Mise à jour du stock pour la commande ${orderId}`);
+        console.log(` Mise à jour du stock pour la commande ${orderId}`);
 
-        for (const item of order.items) {
+        for (const item of order.items) {//les articles de panier
             const product = await Product.findById(item.productId);
             if (!product) {
-                console.error(`❌ Produit ${item.productId} non trouvé`);
+                console.error(` Produit ${item.productId} non trouvé`);
                 continue;
             }
 
@@ -41,7 +40,7 @@ const updateStockAfterPayment = async (orderId) => {
             product.stock = nouveauStock;
             await product.save();
 
-            console.log(`📦 ${item.productName}: ${ancienStock} → ${nouveauStock}`);
+            console.log(` ${item.productName}: ${ancienStock} → ${nouveauStock}`);
 
             // Notifications
             if (ancienStock > 0 && nouveauStock === 0) {
@@ -58,23 +57,23 @@ const updateStockAfterPayment = async (orderId) => {
                     product.toObject()
                 );
             } catch (syncError) {
-                console.error('⚠️ Erreur sync product:', syncError);
+                console.error(' Erreur sync product:', syncError);
             }
         }
 
         order.stockUpdated = true;
         await order.save();
 
-        console.log(`✅ Stock mis à jour pour la commande ${orderId}`);
+        console.log(` Stock mis à jour pour la commande ${orderId}`);
         return true;
 
     } catch (error) {
-        console.error('❌ Erreur mise à jour stock:', error);
+        console.error(' Erreur mise à jour stock:', error);
         return false;
     }
 };
 
-// POST /api/orders/checkout - Créer une session Stripe Checkout
+//  Créer une session Stripe Checkout
 export const createCheckoutSession = async (req, res) => {
     const sendError = (status, message) => {
         try {
@@ -107,7 +106,7 @@ export const createCheckoutSession = async (req, res) => {
             });
         }
 
-        // Vérifier le stock avant de créer la commande (produits MongoDB) ; accepter aussi les produits catalogue sans _id
+        // Vérifier le stock avant de créer la commande 
         for (const item of items) {
             const productName = item.productName || item.product?.nom || item.product?.name || item.product?.title || '';
             const productPrice = parseFloat(item.price) || 0;
@@ -117,6 +116,7 @@ export const createCheckoutSession = async (req, res) => {
                     error: `Item invalide: nom ou prix manquant pour "${productName || 'produit'}".`
                 });
             }
+            // Tenter de trouver le produit en base pour vérifier le stock
             let product = null;
             if (item.productId) {
                 product = await Product.findById(item.productId);
@@ -132,7 +132,6 @@ export const createCheckoutSession = async (req, res) => {
                     });
                 }
             }
-            // Si pas trouvé en base : produit catalogue uniquement (productData), on accepte sans vérif stock
         }
 
         const totalAmount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);

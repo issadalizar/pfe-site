@@ -1,10 +1,7 @@
-// controllers/categoryController.js
 import Category from '../models/Category.js';
-import dataSyncService from '../services/dataSyncService.js'; // AJOUT
+import dataSyncService from '../services/dataSyncService.js';
 
-// @desc    Récupérer toutes les catégories
-// @route   GET /api/categories
-// @access  Public
+
 export const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find().populate('parent');
@@ -25,9 +22,7 @@ export const getAllCategories = async (req, res) => {
   }
 };
 
-// @desc    Récupérer une catégorie par ID
-// @route   GET /api/categories/:id
-// @access  Public
+
 export const getCategoryById = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id).populate('parent');
@@ -39,13 +34,13 @@ export const getCategoryById = async (req, res) => {
       });
     }
     
-    console.log(`✅ Catégorie "${category.name}" récupérée`);
+    console.log(` Catégorie "${category.name}" récupérée`);
     res.json({
       success: true,
       data: category
     });
   } catch (error) {
-    console.error('❌ Erreur dans getCategoryById:', error);
+    console.error(' Erreur dans getCategoryById:', error);
     res.status(500).json({ 
       success: false,
       error: 'Erreur serveur',
@@ -54,14 +49,11 @@ export const getCategoryById = async (req, res) => {
   }
 };
 
-// @desc    Créer une nouvelle catégorie
-// @route   POST /api/categories
-// @access  Public (à protéger plus tard)
+//   Créer une nouvelle catégorie
 export const createCategory = async (req, res) => {
   try {
     const { name, description, parent, level } = req.body;
     
-    // Validation basique
     if (!name) {
       return res.status(400).json({ 
         success: false,
@@ -78,17 +70,17 @@ export const createCategory = async (req, res) => {
     
     const category = await Category.create(categoryData);
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    //SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.updateCategoryInFile(
         category._id.toString(),
         category.toObject()
       );
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
+      console.error(' Erreur sync productData:', syncError);
     }
     
-    console.log(`✅ Catégorie créée: ${category.name}`);
+    console.log(` Catégorie créée: ${category.name}`);
     res.status(201).json({
       success: true,
       message: 'Catégorie créée avec succès',
@@ -113,9 +105,7 @@ export const createCategory = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour une catégorie
-// @route   PUT /api/categories/:id
-// @access  Public (à protéger plus tard)
+//    Mettre à jour une catégorie
 export const updateCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
@@ -127,7 +117,6 @@ export const updateCategory = async (req, res) => {
       });
     }
     
-    // Mise à jour des champs autorisés
     const allowedUpdates = ['name', 'description', 'parent', 'level', 'isActive'];
     const updates = {};
     
@@ -140,14 +129,14 @@ export const updateCategory = async (req, res) => {
     Object.assign(category, updates);
     await category.save();
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    //SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.updateCategoryInFile(
         req.params.id,
         category.toObject()
       );
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
+      console.error(' Erreur sync productData:', syncError);
     }
     
     console.log(` Catégorie mise à jour: ${category.name}`);
@@ -166,9 +155,7 @@ export const updateCategory = async (req, res) => {
   }
 };
 
-// @desc    Supprimer une catégorie
-// @route   DELETE /api/categories/:id
-// @access  Public (à protéger plus tard)
+//    Supprimer une catégorie
 export const deleteCategory = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id);
@@ -182,11 +169,11 @@ export const deleteCategory = async (req, res) => {
     
     await category.deleteOne();
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    //SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.deleteCategoryFromFile(req.params.id);
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
+      console.error(' Erreur sync productData:', syncError);
     }
     
     console.log(` Catégorie supprimée: ${category.name}`);

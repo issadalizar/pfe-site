@@ -1,8 +1,6 @@
 import Contact from '../models/Contact.js';
 
-// @desc    Créer un nouveau message de contact
-// @route   POST /api/contact
-// @access  Public
+//  Créer un message de contact
 export const createContact = async (req, res) => {
     try {
         const { name, email, subject, message } = req.body;
@@ -27,9 +25,7 @@ export const createContact = async (req, res) => {
     }
 };
 
-// @desc    Obtenir tous les messages (pour admin futur)
-// @route   GET /api/contact
-// @access  Private (TODO: protect)
+//   Récupérer tous les messages de contact 
 export const getContacts = async (req, res) => {
     try {
         const contacts = await Contact.find().sort({ createdAt: -1 });
@@ -47,9 +43,8 @@ export const getContacts = async (req, res) => {
     }
 };
 
-// @desc    Mettre a jour le statut d'un message
-// @route   PATCH /api/contact/:id/status
-// @access  Private (admin)
+//   Mettre à jour le statut d'un message
+//  Private (admin)
 export const updateContactStatus = async (req, res) => {
     try {
         const { status } = req.body;
@@ -75,9 +70,8 @@ export const updateContactStatus = async (req, res) => {
     }
 };
 
-// @desc    Supprimer un message
-// @route   DELETE /api/contact/:id
-// @access  Private (admin)
+//   Supprimer un message de contact
+//  Private (admin)
 export const deleteContact = async (req, res) => {
     try {
         const contact = await Contact.findByIdAndDelete(req.params.id);

@@ -74,6 +74,7 @@ function DonutPair({ current, previous, formatPrice, onFilterChange, activeFilte
         cutout: '68%',
         onClick: handleClick,
         plugins: {
+             datalabels: { display: false }, 
             legend: { display: false },
             tooltip: {
                 callbacks: {

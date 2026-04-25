@@ -24,6 +24,7 @@ export default function MonthlyOrdersChart({ data, title }) {
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+             datalabels: { display: false }, 
             legend: {
                 position: 'top',
                 labels: {

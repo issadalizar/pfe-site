@@ -60,6 +60,8 @@ import { getAllCncProducts } from "../services/productDataService";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import ChatBot from "../components/ChatBot";
+import { QRCodeSVG } from "qrcode.react";
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -1617,6 +1619,61 @@ const Home = () => {
 
       {/* ChatBot Component */}
       <ChatBot />
+      {/* Section QR Code - Télécharger l'app */}
+<section className="py-6" style={{ background: "linear-gradient(145deg, #0f172a, #1e293b)" }}>
+  <div className="container">
+    <div className="row align-items-center g-5">
+      
+      {/* Texte gauche */}
+      <div className="col-lg-6 text-white">
+        <span className="badge px-4 py-2 rounded-pill mb-4"
+          style={{ background: "rgba(67,97,238,0.3)", color: "#a5b4fc", border: "1px solid #4361ee" }}>
+          📱 APPLICATION MOBILE
+        </span>
+        <h2 className="display-5 fw-bold mb-4">
+          Emportez UniverTechno+ <br />
+          <span style={{ color: "#4361ee" }}>partout avec vous</span>
+        </h2>
+        <p style={{ color: "#94a3b8", fontSize: "1.1rem" }} className="mb-4">
+          Scannez le QR Code avec votre téléphone Android ou iPhone. 
+          Le site s'ouvre directement et vous pouvez l'installer 
+          comme une application sur votre écran d'accueil.
+        </p>
+        <ul className="list-unstyled" style={{ color: "#94a3b8" }}>
+          {[
+            "✅ Aucun App Store requis",
+            "✅ Fonctionne sur Android et iPhone",
+            "✅ S'installe en 2 secondes",
+            "✅ Accès rapide depuis l'écran d'accueil",
+          ].map((item, i) => (
+            <li key={i} className="mb-2">{item}</li>
+          ))}
+        </ul>
+      </div>
+
+      {/* QR Code droite */}
+      <div className="col-lg-6 text-center">
+        <div className="d-inline-block p-4 rounded-4 bg-white shadow-lg">
+          <QRCodeSVG
+            value="https://iridescent-pixie-56880a.netlify.app"
+            size={220}
+            fgColor="#4361ee"
+            bgColor="#ffffff"
+            level="H"
+            includeMargin={true}
+          />
+          <p className="mt-3 mb-0 fw-semibold" style={{ color: "#0f172a" }}>
+            Scanner pour ouvrir le site
+          </p>
+          <p className="small text-muted mb-0">
+            univertechno.tn
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
 
       {/* Styles additionnels */}
       <style>{`
@@ -1664,6 +1721,25 @@ const Home = () => {
             transform: translateY(0);
           }
         }
+          /* Viewport mobile */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 1.8rem !important;
+  }
+
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
+
+  .product-card {
+    margin-bottom: 1rem;
+  }
+
+  /* Cacher éléments lourds sur mobile */
+  .desktop-only {
+    display: none !important;
+  }
+}
       `}</style>
     </div>
   );

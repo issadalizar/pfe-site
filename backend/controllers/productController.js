@@ -2,7 +2,7 @@
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 import notificationService from '../services/notificationService.js';
-import dataSyncService from '../services/dataSyncService.js'; // AJOUT
+import dataSyncService from '../services/dataSyncService.js';
 
 // @desc    Récupérer tous les produits
 // @route   GET /api/products

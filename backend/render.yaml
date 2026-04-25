@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: univertechno-backend
+    runtime: node
+    repo: https://github.com/votre-repo/backend-node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGODB_URI
+        value: mongodb+srv://salma:salma2026@cluster0.egfn7dl.mongodb.net/pfe_db?retryWrites=true&w=majority&appName=Cluster0
+      - key: JWT_SECRET
+        value: pfe_univertechno_jwt_secret_key_2026_secure
+      - key: NODE_ENV
+        value: production
+      - key: FRONTEND_URL
+        value: https://iridescent-pixie-56880a.netlify.app
+      - key: PORT
+        value: 5000

@@ -56,8 +56,6 @@ const ClientDashboard = () => {
     const [returnSubmitting, setReturnSubmitting] = useState(false);
     const [returnSuccess, setReturnSuccess] = useState('');
     const [returnError, setReturnError] = useState('');
-    const [returnFilterStatus, setReturnFilterStatus] = useState('all');
-    const [returnFilterType, setReturnFilterType] = useState('all');
 
     // Annulation de commande
     const [showCancelModal, setShowCancelModal] = useState(false);
@@ -115,20 +113,18 @@ const ClientDashboard = () => {
                     // 1. Récupérer les commandes du client
                     const ordersData = await getMyOrders();
                     const myOrders = ordersData.orders || [];
-                    console.log('Commandes trouvées:', myOrders.length);
 
                     // 2. Créer une facture pour chaque commande séquentiellement
                     for (const order of myOrders) {
                         try {
                             await createFacture(order._id);
                         } catch (err) {
-                            console.error('Erreur création facture pour', order._id, err.response?.data || err.message);
+                            console.error('Erreur création facture pour', order._id);
                         }
                     }
 
                     // 3. Récupérer toutes les factures
                     const facturesData = await getMyFactures();
-                    console.log('Factures récupérées:', facturesData.data?.length);
                     setFactures(facturesData.data || []);
                 } catch (err) {
                     console.error('Erreur chargement factures:', err);
@@ -166,27 +162,16 @@ const ClientDashboard = () => {
 
     // ─── Logique annulation ──────────────────────────────────────────────────
 
-    /**
-     * Retourne true si la commande a été passée il y a moins de 24h
-     * et que son statut autorise encore l'annulation.
-     */
-    const canCancelOrder = (order) => {https://github.com/issadalizar/pfe-site/pull/2/conflict?name=frontend%252Fsrc%252Fpages%252FClientDashboard.jsx&ancestor_oid=ac40515552bde59bcca968e19ffdd056886a46d0&base_oid=f3530b5072c974446997c7acc5aa16904a019280&head_oid=7bdd1422afc9e92f1ef6f805daaa7ac83d0d585f
-        // Seulement les commandes COD (paiement à la livraison)
-        // Seulement pour les commandes payées à la livraison (COD)
+    const canCancelOrder = (order) => {
         if (order.paymentMethod !== 'livraison') return false;
         const cancellableStatuses = ['en_attente', 'confirmee'];
         if (!cancellableStatuses.includes(order.orderStatus)) return false;
-        const hoursSinceCreation =
-            (now - new Date(order.createdAt).getTime()) / (1000 * 60 * 60);
+        const hoursSinceCreation = (now - new Date(order.createdAt).getTime()) / (1000 * 60 * 60);
         return hoursSinceCreation < 24;
     };
 
-    /**
-     * Calcule le temps restant avec heures, minutes et secondes.
-     */
     const getTimeRemaining = (createdAt) => {
-        const msRemaining =
-            24 * 60 * 60 * 1000 - (now - new Date(createdAt).getTime());
+        const msRemaining = 24 * 60 * 60 * 1000 - (now - new Date(createdAt).getTime());
         if (msRemaining <= 0) return null;
         const hours = Math.floor(msRemaining / (1000 * 60 * 60));
         const minutes = Math.floor((msRemaining % (1000 * 60 * 60)) / (1000 * 60));
@@ -208,7 +193,6 @@ const ClientDashboard = () => {
         setCancelError('');
         try {
             await cancelOrder(orderToCancel._id);
-            // Mettre à jour localement pour éviter un rechargement complet
             setOrders(prev =>
                 prev.map(o =>
                     o._id === orderToCancel._id
@@ -227,8 +211,6 @@ const ClientDashboard = () => {
             setCancelLoading(false);
         }
     };
-
-    // ────────────────────────────────────────────────────────────────────────
 
     const openReturnModal = (order) => {
         setSelectedOrder(order);
@@ -369,7 +351,6 @@ const ClientDashboard = () => {
         const doc = new jsPDF();
         const orderNumber = facture.factureNumber || facture._id.slice(-8).toUpperCase();
 
-        // Header gradient
         doc.setFillColor(67, 97, 238);
         doc.rect(0, 0, 210, 45, 'F');
         doc.setTextColor(255, 255, 255);
@@ -380,7 +361,6 @@ const ClientDashboard = () => {
         doc.setFont('helvetica', 'normal');
         doc.text('Facture', 105, 32, { align: 'center' });
 
-        // Infos facture
         doc.setTextColor(15, 23, 42);
         let y = 55;
         doc.setFontSize(10);
@@ -396,7 +376,6 @@ const ClientDashboard = () => {
         const statusLabel = ({ pending: 'En attente', paid: 'Payé', failed: 'Échoué' })[facture.paymentStatus] || facture.paymentStatus;
         doc.text(`Statut paiement: ${statusLabel}`, 14, y + 21);
 
-        // Adresse de livraison
         y = 90;
         doc.setFillColor(240, 249, 255);
         doc.roundedRect(14, y - 5, 182, 38, 3, 3, 'F');
@@ -410,7 +389,6 @@ const ClientDashboard = () => {
         doc.text(`${s.address || ''}, ${s.postalCode || ''} ${s.city || ''}`, 18, y + 17);
         doc.text(`Tél: ${s.phone || ''} | Email: ${s.email || ''}`, 18, y + 24);
 
-        // Tableau articles
         y = 135;
         const tableData = (facture.items || []).map(item => [
             item.productName,
@@ -419,7 +397,7 @@ const ClientDashboard = () => {
             `${formatPrice(item.price * item.quantity)} DT`
         ]);
 
-        const table = autoTable(doc, {
+        autoTable(doc, {
             startY: y,
             head: [['Produit', 'Qté', 'Prix unit.', 'Total']],
             body: tableData,
@@ -440,7 +418,6 @@ const ClientDashboard = () => {
             margin: { left: 14, right: 14 }
         });
 
-        // Totaux
         const finalY = doc.lastAutoTable.finalY + 10;
         doc.setDrawColor(226, 232, 240);
         doc.line(14, finalY, 196, finalY);
@@ -464,23 +441,12 @@ const ClientDashboard = () => {
         doc.setTextColor(67, 97, 238);
         doc.text(`${formatPrice(facture.totalAmount)} DT`, 196, finalY + 32, { align: 'right' });
 
-        // Footer
         doc.setFontSize(8);
         doc.setTextColor(148, 163, 184);
         doc.setFont('helvetica', 'normal');
         doc.text('UniVerTechno+ - Équipements CNC & Éducation', 105, 285, { align: 'center' });
 
         doc.save(`Facture_${orderNumber}.pdf`);
-    };
-
-    // Créer une facture en DB puis télécharger le PDF
-    const handleDownloadFacture = async (order) => {
-        try {
-            const result = await createFacture(order._id);
-            generatePDF(result.data);
-        } catch (err) {
-            console.error('Erreur génération facture:', err);
-        }
     };
 
     const tabs = [
@@ -494,7 +460,6 @@ const ClientDashboard = () => {
 
     return (
         <div className="min-vh-100" style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)' }}>
-            {/* Success toast */}
             {(successMsg || passwordSuccess) && (
                 <div style={{
                     position: 'fixed', top: '90px', right: '30px', zIndex: 9999,
@@ -512,7 +477,6 @@ const ClientDashboard = () => {
                 </div>
             )}
 
-            {/* Header */}
             <header className="py-3 sticky-top" style={{
                 backgroundColor: 'rgba(255,255,255,0.95)',
                 backdropFilter: 'blur(10px)',
@@ -573,7 +537,6 @@ const ClientDashboard = () => {
             </header>
 
             <div className="container py-4">
-                {/* Welcome Banner */}
                 <div className="card border-0 rounded-4 mb-4 overflow-hidden" style={{
                     background: 'linear-gradient(135deg, #4361ee 0%, #3a0ca3 50%, #7209b7 100%)',
                     boxShadow: '0 10px 40px rgba(67, 97, 238, 0.3)'
@@ -633,7 +596,6 @@ const ClientDashboard = () => {
                 </div>
 
                 <div className="row g-4">
-                    {/* Sidebar Navigation */}
                     <div className="col-lg-3">
                         <div className="card border-0 rounded-4 shadow-sm">
                             <div className="card-body p-3">
@@ -686,9 +648,7 @@ const ClientDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Main Content */}
                     <div className="col-lg-9">
-                        {/* Tab: Mon Profil */}
                         {activeTab === 'profile' && (
                             <div className="card border-0 rounded-4 shadow-sm">
                                 <div className="card-body p-4">
@@ -833,7 +793,6 @@ const ClientDashboard = () => {
                             </div>
                         )}
 
-                        {/* Tab: Mon Panier */}
                         {activeTab === 'cart' && (
                             <div className="card border-0 rounded-4 shadow-sm">
                                 <div className="card-body p-4">
@@ -959,7 +918,6 @@ const ClientDashboard = () => {
                             </div>
                         )}
 
-                        {/* Tab: Mes Commandes */}
                         {activeTab === 'orders' && (
                             <div className="card border-0 rounded-4 shadow-sm">
                                 <div className="card-body p-4">
@@ -1062,7 +1020,6 @@ const ClientDashboard = () => {
                                                             </div>
                                                         </div>
 
-                                                        {/* ── Alerte date limite retour/échange ── */}
                                                         {order.orderStatus === 'livree' && order.returnDeadline && (() => {
                                                             const deadline = new Date(order.returnDeadline);
                                                             const now = new Date();
@@ -1104,10 +1061,8 @@ const ClientDashboard = () => {
                                                             </span>
 
                                                             <div className="d-flex align-items-center gap-2 flex-wrap">
-                                                                {/* ── Bouton Annuler (≤ 24h) ── */}
                                                                 {cancellable && (
                                                                     <div className="d-flex align-items-center gap-2">
-                                                                        {/* Minuteur */}
                                                                         {timeLeft && (
                                                                             <span style={{
                                                                                 fontSize: '0.72rem',
@@ -1151,7 +1106,6 @@ const ClientDashboard = () => {
                                                                     </div>
                                                                 )}
 
-                                                                {/* ── Bouton Retour/Échange (livrée) ── */}
                                                                 {order.orderStatus === 'livree' && order.paymentStatus === 'paid' && (
                                                                     (() => {
                                                                         const deadlinePassed = order.returnDeadline && new Date(order.returnDeadline) < new Date();
@@ -1211,7 +1165,6 @@ const ClientDashboard = () => {
                             </div>
                         )}
 
-                        {/* ── Modal de confirmation d'annulation ── */}
                         {showCancelModal && orderToCancel && (
                             <div style={{
                                 position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -1222,7 +1175,6 @@ const ClientDashboard = () => {
                                     style={{ maxWidth: '440px', width: '95%' }}
                                     onClick={e => e.stopPropagation()}>
                                     <div className="card-body p-4 text-center">
-                                        {/* Icône */}
                                         <div style={{
                                             width: '64px', height: '64px', borderRadius: '50%',
                                             background: '#fef2f2', display: 'flex', alignItems: 'center',
@@ -1244,7 +1196,6 @@ const ClientDashboard = () => {
                                             le remboursement sera traité sous 3 à 5 jours ouvrables.
                                         </p>
 
-                                        {/* Alerte d'erreur */}
                                         {cancelError && (
                                             <div className="alert alert-danger d-flex align-items-center rounded-3 mb-3 py-2 text-start">
                                                 <FaExclamationTriangle className="me-2 flex-shrink-0" />
@@ -1281,7 +1232,6 @@ const ClientDashboard = () => {
                             </div>
                         )}
 
-                        {/* Tab: Factures */}
                         {activeTab === 'invoices' && (
                             <div className="card border-0 rounded-4 shadow-sm">
                                 <div className="card-body p-4">
@@ -1354,7 +1304,6 @@ const ClientDashboard = () => {
                             </div>
                         )}
 
-                        {/* Tab: Retours/Échanges */}
                         {activeTab === 'returns' && (
                             <div className="card border-0 rounded-4 shadow-sm">
                                 <div className="card-body p-4">
@@ -1362,50 +1311,6 @@ const ClientDashboard = () => {
                                         <FaExchangeAlt className="me-2" style={{ color: '#dc2626' }} />
                                         Mes Demandes de Retour / Échange
                                     </h4>
-
-                                    {/* Filtres */}
-                                    <div className="d-flex flex-wrap gap-2 mb-4">
-                                        {/* Filtre par type */}
-                                        {[
-                                            { value: 'all', label: 'Tous', icon: null },
-                                            { value: 'retour', label: 'Retours', icon: <FaUndoAlt size={10} /> },
-                                            { value: 'echange', label: 'Échanges', icon: <FaSyncAlt size={10} /> }
-                                        ].map(f => (
-                                            <button key={f.value}
-                                                className="btn btn-sm rounded-pill px-3"
-                                                style={{
-                                                    background: returnFilterType === f.value ? 'linear-gradient(145deg, #4361ee, #3a0ca3)' : 'white',
-                                                    color: returnFilterType === f.value ? 'white' : '#64748b',
-                                                    border: returnFilterType === f.value ? 'none' : '1px solid #e2e8f0',
-                                                    fontSize: '0.8rem', fontWeight: 600
-                                                }}
-                                                onClick={() => setReturnFilterType(f.value)}
-                                            >
-                                                {f.icon && <span className="me-1">{f.icon}</span>}{f.label}
-                                            </button>
-                                        ))}
-                                        <div style={{ width: '1px', backgroundColor: '#e2e8f0', margin: '0 4px' }} />
-                                        {/* Filtre par statut */}
-                                        {[
-                                            { value: 'all', label: 'Tous statuts', bg: '#f1f5f9', color: '#64748b' },
-                                            { value: 'en_attente', label: 'En attente', bg: '#fef3c7', color: '#92400e' },
-                                            { value: 'acceptee', label: 'Acceptée', bg: '#d1fae5', color: '#065f46' },
-                                            { value: 'refusee', label: 'Refusée', bg: '#fee2e2', color: '#991b1b' }
-                                        ].map(f => (
-                                            <button key={f.value}
-                                                className="btn btn-sm rounded-pill px-3"
-                                                style={{
-                                                    background: returnFilterStatus === f.value ? f.bg : 'white',
-                                                    color: returnFilterStatus === f.value ? f.color : '#64748b',
-                                                    border: returnFilterStatus === f.value ? `1.5px solid ${f.color}` : '1px solid #e2e8f0',
-                                                    fontSize: '0.8rem', fontWeight: 600
-                                                }}
-                                                onClick={() => setReturnFilterStatus(f.value)}
-                                            >
-                                                {f.label}
-                                            </button>
-                                        ))}
-                                    </div>
 
                                     {returnsLoading ? (
                                         <div className="text-center py-5">
@@ -1427,20 +1332,9 @@ const ClientDashboard = () => {
                                                 Vous pouvez demander un retour ou échange depuis l'onglet Commandes
                                             </p>
                                         </div>
-                                    ) : (() => {
-                                        const filtered = returnRequests.filter(r =>
-                                            (returnFilterType === 'all' || r.type === returnFilterType) &&
-                                            (returnFilterStatus === 'all' || r.status === returnFilterStatus)
-                                        );
-                                        if (filtered.length === 0) return (
-                                            <div className="text-center py-4">
-                                                <FaExchangeAlt size={32} style={{ color: '#cbd5e1' }} />
-                                                <p className="text-muted mt-2">Aucune demande ne correspond aux filtres</p>
-                                            </div>
-                                        );
-                                        return (
+                                    ) : (
                                         <div>
-                                            {filtered.map((req) => {
+                                            {returnRequests.map((req) => {
                                                 const statusMap = {
                                                     en_attente: { bg: '#fef3c7', color: '#92400e', label: 'En attente' },
                                                     acceptee: { bg: '#d1fae5', color: '#065f46', label: 'Acceptée' },
@@ -1501,13 +1395,11 @@ const ClientDashboard = () => {
                                                 );
                                             })}
                                         </div>
-                                        );
-                                    })()}
+                                    )}
                                 </div>
                             </div>
                         )}
 
-                        {/* Modal: Demande de retour/échange */}
                         {showReturnModal && selectedOrder && (
                             <div style={{
                                 position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -1606,7 +1498,6 @@ const ClientDashboard = () => {
                             </div>
                         )}
 
-                        {/* Tab: Parametres */}
                         {activeTab === 'settings' && (
                             <div className="card border-0 rounded-4 shadow-sm">
                                 <div className="card-body p-4">
@@ -1758,7 +1649,6 @@ const ClientDashboard = () => {
                 }
             `}</style>
 
-            {/* ── Modal Facture / Reçu de Commande ── */}
             {receiptOrder && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
@@ -1771,7 +1661,6 @@ const ClientDashboard = () => {
                         width: '100%', maxHeight: '90vh', overflow: 'auto',
                         boxShadow: '0 25px 50px rgba(0,0,0,0.25)'
                     }} onClick={e => e.stopPropagation()}>
-                        {/* Header actions */}
                         <div className="d-flex justify-content-between align-items-center px-4 pt-3 pb-2">
                             <h5 className="mb-0 fw-bold" style={{ color: '#0f172a' }}>
                                 <FaFileInvoice className="me-2" style={{ color: '#4361ee' }} />
@@ -1862,9 +1751,7 @@ const ClientDashboard = () => {
                             </div>
                         </div>
 
-                        {/* Receipt content */}
                         <div style={{ padding: '16px 24px 24px' }}>
-                            {/* Header gradient */}
                             <div style={{
                                 background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
                                 borderRadius: '16px 16px 0 0', padding: '32px 24px', textAlign: 'center'
@@ -1873,12 +1760,10 @@ const ClientDashboard = () => {
                                 <p style={{ margin: '6px 0 0', color: 'rgba(255,255,255,0.85)', fontSize: '13px' }}>Facture</p>
                             </div>
 
-                            {/* Body */}
                             <div style={{
                                 backgroundColor: 'white', padding: '28px',
                                 borderRadius: '0 0 16px 16px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
                             }}>
-                                {/* Order info */}
                                 <div style={{ backgroundColor: '#f8fafc', borderRadius: '12px', padding: '18px', marginBottom: '24px' }}>
                                     <div className="d-flex justify-content-between mb-1">
                                         <span style={{ fontSize: '0.82rem', color: '#64748b' }}>{receiptOrder.factureNumber ? 'N° Facture' : 'N° de commande'}</span>
@@ -1913,7 +1798,6 @@ const ClientDashboard = () => {
                                     </div>
                                 </div>
 
-                                {/* Shipping */}
                                 <h6 className="fw-bold mb-2" style={{ fontSize: '0.9rem', color: '#0f172a' }}>
                                     <FaMapMarkerAlt className="me-2 text-primary" />Adresse de livraison
                                 </h6>
@@ -1929,7 +1813,6 @@ const ClientDashboard = () => {
                                     <FaEnvelope size={10} className="me-1" />{receiptOrder.shippingInfo?.email}
                                 </div>
 
-                                {/* Items */}
                                 <h6 className="fw-bold mb-2" style={{ fontSize: '0.9rem', color: '#0f172a' }}>
                                     <FaBox className="me-2 text-primary" />Articles commandés
                                 </h6>
@@ -1954,7 +1837,6 @@ const ClientDashboard = () => {
                                     </tbody>
                                 </table>
 
-                                {/* Totals */}
                                 <div style={{ borderTop: '2px solid #e2e8f0', paddingTop: '14px' }}>
                                     <div className="d-flex justify-content-between mb-1">
                                         <span style={{ fontSize: '0.85rem', color: '#64748b' }}>Sous-total</span>
@@ -1971,7 +1853,6 @@ const ClientDashboard = () => {
                                 </div>
                             </div>
 
-                            {/* Footer */}
                             <div style={{ textAlign: 'center', padding: '16px 0 0', fontSize: '0.75rem', color: '#94a3b8' }}>
                                 UniVerTechno+ - Équipements CNC & Éducation
                             </div>

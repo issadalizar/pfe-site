@@ -4103,7 +4103,7 @@ export const cncProductDetails = {
           "_id": "69d77eda6a23ea6d73eac9b5"
         }
       ],
-    "totalAmount": 12990,
+      "totalAmount": 12990,
       "paymentMethod": "virement",
       "returnDeadline": null,
       "paymentStatus": "paid",
@@ -4245,6 +4245,40 @@ export const cncProductDetails = {
       "_id": "69dcda0f0269db7f8d154f19",
       "createdAt": "2026-04-13T11:57:03.341Z",
       "updatedAt": "2026-04-13T11:57:03.367Z"
+    },
+    "69e6522240db2cd023b9ec84": {
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productId": "697f545c9e5f50c871efa21e",
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 103.9,
+          "_id": "69e6522240db2cd023b9ec85"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "salouma",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "totalAmount": 103.9,
+      "paymentMethod": "livraison",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69e6522240db2cd023b9ec84",
+      "createdAt": "2026-04-20T16:19:46.472Z",
+      "updatedAt": "2026-04-20T16:19:46.629Z"
     }
   }
 };

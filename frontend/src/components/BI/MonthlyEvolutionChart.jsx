@@ -28,6 +28,7 @@ export default function MonthlyEvolutionChart({ data, title, yAxisLabel = "Monta
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
+             datalabels: { display: false }, 
             legend: {
                 position: 'top',
                 labels: {
