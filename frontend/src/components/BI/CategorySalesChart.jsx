@@ -1,4 +1,5 @@
 // CategorySalesChart.jsx - Version avec graphique agrandi et donut chart interactif
+// Palette de couleurs féminine (tons pastel, roses, lavande, corail)
 import React, { useMemo, useState } from 'react';
 import {
     Chart as ChartJS,
@@ -26,12 +27,43 @@ ChartJS.register(
     ArcElement
 );
 
-// Palette de couleurs globale harmonisée
+// Palette de couleurs féminine harmonisée
 const COLOR_PALETTE = [
-    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-    '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1',
-    '#14b8a6', '#d946ef', '#f43f5e', '#22c55e', '#eab308'
+    '#FFB5C2', // Rose pastel
+    '#D4A5D9', // Lavande
+    '#FF9F9F', // Corail tendre
+    '#B8E4F0', // Bleu ciel pastel
+    '#C5E99B', // Vert menthe doux
+    '#FFD6A5', // Pêche
+    '#E8C3E5', // Mauve clair
+    '#A7D0CD', // Menthe bleutée
+    '#FBC8B5', // Abricot
+    '#E2B1B1', // Rose poudré
+    '#C9B1E8', // Lavande claire
+    '#FFC8C8', // Rose blush
+    '#B5D8E8', // Bleu glacier
+    '#FFD9B0', // Crème pêche
+    '#D5B9DF'  // Violet clair
 ];
+
+// Couleurs pour les barres et lignes
+const CHART_COLORS = {
+    revenue: {
+        background: 'rgba(255, 181, 194, 0.7)',   // Rose pastel transparent
+        border: '#FFB5C2',
+        hover: 'rgba(255, 181, 194, 0.9)'
+    },
+    quantity: {
+        background: 'rgba(212, 165, 217, 0.7)',   // Lavande transparent
+        border: '#D4A5D9',
+        hover: 'rgba(212, 165, 217, 0.9)'
+    },
+    percentage: {
+        line: '#FF9F9F',      // Corail
+        point: '#FF9F9F',
+        pointBorder: '#FFFFFF'
+    }
+};
 
 // Structure hiérarchique des catégories (basée sur pfe_db.categories.json)
 const CATEGORY_HIERARCHY = {
@@ -302,7 +334,7 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
         setProductsData([]);
     };
 
-    // Configuration du donut chart avec la palette harmonisée
+    // Configuration du donut chart avec la palette féminine
     const getDonutChartData = () => {
         if (!productsData.length) return null;
 
@@ -347,7 +379,7 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
         }
     };
 
-    // Configuration du graphique avec tailles agrandies
+    // Configuration du graphique avec tailles agrandies et couleurs féminines
     const options = {
         responsive: true,
         maintainAspectRatio: false,
@@ -410,7 +442,7 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                         return value;
                     }
                 },
-                grid: { color: '#e2e8f0' }
+                grid: { color: '#F5E6E8' }  // Grille plus douce
             },
             y1: {
                 position: 'right',
@@ -464,8 +496,8 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
             {
                 label: "Chiffre d'affaires (DT)",
                 data: aggregatedData.map(item => item.totalRevenue ?? 0),
-                backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                borderColor: '#3b82f6',
+                backgroundColor: CHART_COLORS.revenue.background,
+                borderColor: CHART_COLORS.revenue.border,
                 borderWidth: 2,
                 borderRadius: 8,
                 barPercentage: 0.65,
@@ -476,8 +508,8 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
             {
                 label: 'Quantité vendue',
                 data: aggregatedData.map(item => item.totalQuantity ?? 0),
-                backgroundColor: 'rgba(16, 185, 129, 0.8)',
-                borderColor: '#10b981',
+                backgroundColor: CHART_COLORS.quantity.background,
+                borderColor: CHART_COLORS.quantity.border,
                 borderWidth: 2,
                 borderRadius: 8,
                 barPercentage: 0.65,
@@ -488,13 +520,13 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
             {
                 label: 'Pourcentage du CA (%)',
                 data: percentages.map(p => parseFloat(p)),
-                borderColor: '#f59e0b',
-                backgroundColor: '#f59e0b',
+                borderColor: CHART_COLORS.percentage.line,
+                backgroundColor: CHART_COLORS.percentage.line,
                 borderWidth: 3,
                 pointRadius: 7,
                 pointHoverRadius: 10,
-                pointBackgroundColor: '#f59e0b',
-                pointBorderColor: '#fff',
+                pointBackgroundColor: CHART_COLORS.percentage.point,
+                pointBorderColor: CHART_COLORS.percentage.pointBorder,
                 pointBorderWidth: 2,
                 tension: 0.3,
                 fill: false,
@@ -544,7 +576,7 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                                                     onClick={() => handleCategoryClick(item)}
                                                     style={{ cursor: 'pointer' }}
                                                     className="category-row"
-                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FFF0F2'}
                                                     onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}
                                                 >
                                                     <td style={{ fontSize: '0.7rem' }}>
@@ -556,21 +588,21 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                                                     <td className="text-end" style={{ 
                                                         fontSize: '0.7rem', 
                                                         fontWeight: revenue > 0 ? 600 : 400,
-                                                        color: revenue > 0 ? '#3b82f6' : '#9ca3af' 
+                                                        color: revenue > 0 ? '#FF9F9F' : '#D4A5D9' 
                                                     }}>
                                                         {formatPrice(revenue)}
                                                     </td>
                                                     <td className="text-end" style={{ 
                                                         fontSize: '0.7rem', 
                                                         fontWeight: quantity > 0 ? 600 : 400,
-                                                        color: quantity > 0 ? '#10b981' : '#9ca3af' 
+                                                        color: quantity > 0 ? '#C5E99B' : '#D4A5D9' 
                                                     }}>
                                                         {formatNumber(quantity)}
                                                     </td>
                                                     <td className="text-end" style={{ 
                                                         fontSize: '0.7rem', 
                                                         fontWeight: parseFloat(percentage) > 0 ? 600 : 400,
-                                                        color: parseFloat(percentage) > 0 ? '#f59e0b' : '#9ca3af' 
+                                                        color: parseFloat(percentage) > 0 ? '#FFB5C2' : '#D4A5D9' 
                                                     }}>
                                                         {percentage}%
                                                     </td>
@@ -581,10 +613,10 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                                     <tfoot className="table-light">
                                         <tr>
                                             <td className="fw-bold" style={{ fontSize: '0.7rem' }}>Total</td>
-                                            <td className="text-end fw-bold" style={{ fontSize: '0.7rem', color: '#3b82f6' }}>
+                                            <td className="text-end fw-bold" style={{ fontSize: '0.7rem', color: '#FF9F9F' }}>
                                                 {formatPrice(totalRevenue)}
                                             </td>
-                                            <td className="text-end fw-bold" style={{ fontSize: '0.7rem', color: '#10b981' }}>
+                                            <td className="text-end fw-bold" style={{ fontSize: '0.7rem', color: '#C5E99B' }}>
                                                 {formatNumber(aggregatedData.reduce((sum, item) => sum + (item.totalQuantity ?? 0), 0))}
                                             </td>
                                             <td className="text-end fw-bold" style={{ fontSize: '0.7rem' }}>100%</td>
@@ -597,12 +629,12 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                 </div>
             </div>
 
-            {/* Modal pour le Donut Chart avec couleurs harmonisées */}
+            {/* Modal pour le Donut Chart avec couleurs féminines */}
             {selectedCategory && productsData.length > 0 && (
                 <div 
                     className="modal show d-block" 
                     tabIndex="-1" 
-                    style={{ backgroundColor: 'rgba(0,0,0,0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}
+                    style={{ backgroundColor: 'rgba(0,0,0,0.3)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}
                     onClick={closeModal}
                 >
                     <div 
@@ -611,9 +643,9 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="modal-content shadow-lg">
-                            <div className="modal-header" style={{ backgroundColor: '#f8f9fa' }}>
+                            <div className="modal-header" style={{ backgroundColor: '#FFF5F6' }}>
                                 <h5 className="modal-title fw-bold">
-                                    <i className="fas fa-chart-pie me-2" style={{ color: '#3b82f6' }}></i>
+                                    <i className="fas fa-chart-pie me-2" style={{ color: '#FFB5C2' }}></i>
                                     Détail des produits - {selectedCategory.displayName}
                                 </h5>
                                 <button 
@@ -626,7 +658,7 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                             <div className="modal-body p-4">
                                 <div className="row">
                                     <div className="col-md-12 text-center mb-3">
-                                        <div className="alert alert-info py-2" style={{ backgroundColor: '#e0f2fe', border: 'none' }}>
+                                        <div className="alert py-2" style={{ backgroundColor: '#FFF0F2', border: 'none', borderRadius: '12px' }}>
                                             <small>
                                                 <strong>Chiffre d'affaires total de la catégorie :</strong> {formatPrice(selectedCategory.totalRevenue)} DT
                                                 <br />
@@ -644,7 +676,7 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                                     <div className="col-md-6">
                                         <div className="table-responsive" style={{ maxHeight: '350px', overflowY: 'auto' }}>
                                             <table className="table table-sm table-hover">
-                                                <thead className="table-light sticky-top">
+                                                <thead className="sticky-top" style={{ backgroundColor: '#FFF5F6' }}>
                                                     <tr>
                                                         <th>Produit</th>
                                                         <th className="text-end">CA (DT)</th>
@@ -673,10 +705,10 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                                                                     ></span>
                                                                     {product.productName.length > 35 ? product.productName.substring(0, 32) + '...' : product.productName}
                                                                 </td>
-                                                                <td className="text-end" style={{ fontSize: '0.8rem', fontWeight: 500, color: '#3b82f6' }}>
+                                                                <td className="text-end" style={{ fontSize: '0.8rem', fontWeight: 500, color: '#FF9F9F' }}>
                                                                     {formatPrice(product.totalRevenue)}
                                                                 </td>
-                                                                <td className="text-end" style={{ fontSize: '0.8rem', fontWeight: 500, color: '#f59e0b' }}>
+                                                                <td className="text-end" style={{ fontSize: '0.8rem', fontWeight: 500, color: '#D4A5D9' }}>
                                                                     {productPercentage}%
                                                                 </td>
                                                             </tr>
@@ -688,11 +720,14 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                                     </div>
                                 </div>
                             </div>
-                            <div className="modal-footer">
+                            <div className="modal-footer" style={{ backgroundColor: '#FFF5F6' }}>
                                 <button 
                                     type="button" 
-                                    className="btn btn-secondary btn-sm" 
+                                    className="btn btn-sm" 
                                     onClick={closeModal}
+                                    style={{ backgroundColor: '#FFB5C2', border: 'none', color: '#fff' }}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#FF9F9F'}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#FFB5C2'}
                                 >
                                     Fermer
                                 </button>
@@ -710,6 +745,9 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                 }
                 .category-row:active {
                     transform: scale(0.98);
+                }
+                .table-hover tbody tr:hover {
+                    background-color: #FFF0F2 !important;
                 }
             `}</style>
         </>

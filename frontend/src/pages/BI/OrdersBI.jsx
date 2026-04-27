@@ -636,7 +636,7 @@ export default function OrdersBI() {
                         </div>
                     </div>
 
-                    {/* Clients Section */}
+                    {/* Clients Section - Répartition Géographique */}
                     <div className="row g-4 mb-5">
                         <div className="col-12">
                             <div className="card border-0 shadow-sm rounded-4">
@@ -668,7 +668,29 @@ export default function OrdersBI() {
                         </div>
                     </div>
 
-                    {/* New Clients Analysis */}
+                    {/* Map Visualization - Visualisation Cartographique (déplacée ICI avant Nouveaux Clients) */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-12">
+                            <div className="card border-0 shadow-sm rounded-4">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaMapMarkerAlt className="me-2" style={{ color: '#ef4444' }} />
+                                                Visualisation Cartographique
+                                            </h5>
+                                            <p className="text-muted small mb-0">Localisation des clients sur le territoire tunisien</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    <ClientMapCluster users={users} centerLat={36.8065} centerLng={10.1815} zoom={7} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* New Clients Analysis (après la visualisation cartographique) */}
                     <div className="row g-4 mb-5">
                         <div className="col-12">
                             <div className="card border-0 shadow-sm rounded-4">
@@ -690,28 +712,6 @@ export default function OrdersBI() {
                                         hideOtherTabs={true}
                                         hideNewClientsTab={true}
                                     />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Map Visualization */}
-                    <div className="row g-4 mb-5">
-                        <div className="col-12">
-                            <div className="card border-0 shadow-sm rounded-4">
-                                <div className="card-header bg-transparent border-0 pt-4 px-4">
-                                    <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                                        <div>
-                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
-                                                <FaMapMarkerAlt className="me-2" style={{ color: '#ef4444' }} />
-                                                Visualisation Cartographique
-                                            </h5>
-                                            <p className="text-muted small mb-0">Localisation des clients sur le territoire tunisien</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="card-body p-4 pt-0">
-                                    <ClientMapCluster users={users} centerLat={36.8065} centerLng={10.1815} zoom={7} />
                                 </div>
                             </div>
                         </div>
@@ -817,7 +817,6 @@ export default function OrdersBI() {
                                             </h5>
                                             <p className="text-muted small mb-0">Répartition par statut (toutes les commandes)</p>
                                         </div>
-                                    
                                     </div>
                                 </div>
                                 <div className="card-body p-4 pt-0">
@@ -837,7 +836,6 @@ export default function OrdersBI() {
                                             </h5>
                                             <p className="text-muted small mb-0">Répartition par méthode de paiement</p>
                                         </div>
-                                        
                                     </div>
                                 </div>
                                 <div className="card-body p-4 pt-0">
