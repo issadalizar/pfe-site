@@ -62,7 +62,9 @@ router.get('/:id', protect, getOrderById);
 
 // Routes admin
 router.get('/analytics/categories', protect, adminOnly, getCategoryAnalytics);
-router.get('/analytics/monthly-orders', protect, adminOnly, getMonthlyOrderCounts);
+router.get('/analytics/monthly-orders', protect, adminOnly, getMonthlyOrderCounts)
+router.get('/analytics/order-status', protect, adminOnly, getOrderStatusStats);
+router.get('/analytics/payment-methods', protect, adminOnly, getPaymentMethodStats);
 router.get('/', protect, adminOnly, getAllOrders);
 
 export default router;

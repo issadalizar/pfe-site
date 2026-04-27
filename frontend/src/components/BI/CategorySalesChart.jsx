@@ -1,5 +1,5 @@
-// CategorySalesChart.jsx - Version avec suppression garantie des data labels
-import React, { useMemo } from 'react';
+// CategorySalesChart.jsx - Version avec graphique agrandi et donut chart interactif
+import React, { useMemo, useState } from 'react';
 import {
     Chart as ChartJS,
     CategoryScale,
@@ -9,14 +9,10 @@ import {
     Tooltip,
     Legend,
     LineElement,
-    PointElement
+    PointElement,
+    ArcElement
 } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
-
-// Désactiver globalement les data labels si le plugin est installé
-// Décommentez ces lignes si vous utilisez chartjs-plugin-datalabels
-// import ChartDataLabels from 'chartjs-plugin-datalabels';
-// ChartJS.unregister(ChartDataLabels);
+import { Bar, Doughnut } from 'react-chartjs-2';
 
 ChartJS.register(
     CategoryScale,
@@ -26,18 +22,253 @@ ChartJS.register(
     Tooltip,
     Legend,
     LineElement,
-    PointElement
+    PointElement,
+    ArcElement
 );
 
+// Palette de couleurs globale harmonisée
+const COLOR_PALETTE = [
+    '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
+    '#ec4899', '#06b6d4', '#84cc16', '#f97316', '#6366f1',
+    '#14b8a6', '#d946ef', '#f43f5e', '#22c55e', '#eab308'
+];
+
+// Structure hiérarchique des catégories (basée sur pfe_db.categories.json)
+const CATEGORY_HIERARCHY = {
+    'CNC for Education': {
+        displayName: 'CNC for Education',
+        parent: null,
+        children: ['CNC Turning Machine', 'CNC Milling Machine'],
+        order: 1
+    },
+    'CNC Turning Machine': {
+        displayName: 'CNC Turning Machine',
+        parent: 'CNC for Education',
+        order: 1
+    },
+    'CNC Milling Machine': {
+        displayName: 'CNC Milling Machine',
+        parent: 'CNC for Education',
+        order: 2
+    },
+    'Voiture': {
+        displayName: 'Voiture',
+        parent: null,
+        children: ['CAPTEURS ET ACTIONNEURS', 'ÉLECTRICITÉ', 'RÉSEAUX MULTIPLEXÉS'],
+        order: 2
+    },
+    'CAPTEURS ET ACTIONNEURS': {
+        displayName: 'CAPTEURS ET ACTIONNEURS',
+        parent: 'Voiture',
+        order: 1
+    },
+    'ÉLECTRICITÉ': {
+        displayName: 'ÉLECTRICITÉ',
+        parent: 'Voiture',
+        order: 2
+    },
+    'RÉSEAUX MULTIPLEXÉS': {
+        displayName: 'RÉSEAUX MULTIPLEXÉS',
+        parent: 'Voiture',
+        order: 3
+    },
+    'MCP lab electronics': {
+        displayName: 'MCP lab electronics',
+        parent: null,
+        children: ['Accessoires', 'EDUCATION EQUIPMENT'],
+        order: 3
+    },
+    'Accessoires': {
+        displayName: 'Accessoires',
+        parent: 'MCP lab electronics',
+        order: 1
+    },
+    'EDUCATION EQUIPMENT': {
+        displayName: 'EDUCATION EQUIPMENT',
+        parent: 'MCP lab electronics',
+        order: 2
+    },
+    'Autres Produits': {
+        displayName: 'Autres Produits',
+        parent: null,
+        order: 4
+    }
+};
+
+// Liste plate de TOUTES les sous-catégories pour l'affichage
+const ALL_SUB_CATEGORIES = [
+    { name: 'CNC Turning Machine', parent: 'CNC for Education', order: 1 },
+    { name: 'CNC Milling Machine', parent: 'CNC for Education', order: 2 },
+    { name: 'CAPTEURS ET ACTIONNEURS', parent: 'Voiture', order: 3 },
+    { name: 'ÉLECTRICITÉ', parent: 'Voiture', order: 4 },
+    { name: 'RÉSEAUX MULTIPLEXÉS', parent: 'Voiture', order: 5 },
+    { name: 'Accessoires', parent: 'MCP lab electronics', order: 6 },
+    { name: 'EDUCATION EQUIPMENT', parent: 'MCP lab electronics', order: 7 },
+    { name: 'Autres Produits', parent: null, order: 8 }
+];
+
+// Mapping des noms de produits vers catégories
+const getProductCategory = (productName) => {
+    if (!productName) return 'Autres Produits';
+    
+    const productLower = productName.toLowerCase();
+    
+    const categoryMapping = [
+        { category: 'CNC Turning Machine', keywords: ['pc1 baby', 'de2-ultra', 'de4-eco', 'de4-pro', 'de6', 'de8', 'baby cnc', 'mini cnc turning', 'turning center'] },
+        { category: 'CNC Milling Machine', keywords: ['fa2-ultra', 'px1 baby', 'fa4-eco', 'xk7136', 'desktop cnc mill', '5-axis', 'fraiseuse', 'milling'] },
+        { category: 'CAPTEURS ET ACTIONNEURS', keywords: ['dt-m002', 'mesure des positions', 'dt-m001', 'angle de volant', 'capteur', 'actionneur'] },
+        { category: 'ÉLECTRICITÉ', keywords: ['dtm7020', 'essuie-glaces', 'dtm7000', 'éclairage', 'signalisation', 'mt-4002v', 'charge démarrage', 'electricite'] },
+        { category: 'RÉSEAUX MULTIPLEXÉS', keywords: ['dt-m005', 'courants', 'tensions', 'multiplexe', 'can bus', 'lin bus'] },
+        { category: 'Accessoires', keywords: ['accessoire', 'sonde', 'cordon', 'test', 'diagnostic'] },
+        { category: 'EDUCATION EQUIPMENT', keywords: ['ptl', 'acl-7000', 'm21-7100', 'f1-3', 'équipement pédagogique', 'banc didactique'] }
+    ];
+    
+    for (const mapping of categoryMapping) {
+        for (const keyword of mapping.keywords) {
+            if (productLower.includes(keyword)) {
+                return mapping.category;
+            }
+        }
+    }
+    
+    return 'Autres Produits';
+};
+
+const getDisplayName = (categoryName) => {
+    const category = CATEGORY_HIERARCHY[categoryName];
+    if (!category) return categoryName;
+    
+    if (category.parent) {
+        return `${category.displayName}`;
+    }
+    return category.displayName;
+};
+
+// Fonction pour agréger les produits par catégorie
+const aggregateProductsByCategory = (orders, categoryName) => {
+    const productMap = new Map();
+
+    orders.forEach(order => {
+        const isValidOrder = order.paymentStatus === 'paid' || 
+                             order.orderStatus === 'livree' || 
+                             order.orderStatus === 'confirmee';
+        
+        if (!isValidOrder) return;
+        if (!order.items || !Array.isArray(order.items)) return;
+
+        order.items.forEach(item => {
+            const productName = item.productName || item.product?.name || '';
+            const quantity = item.quantity || 1;
+            const price = item.price || 0;
+            const revenue = quantity * price;
+            
+            const category = getProductCategory(productName);
+            
+            if (category === categoryName) {
+                if (productMap.has(productName)) {
+                    const existing = productMap.get(productName);
+                    existing.totalRevenue += revenue;
+                    existing.totalQuantity += quantity;
+                } else {
+                    productMap.set(productName, {
+                        productName: productName,
+                        totalRevenue: revenue,
+                        totalQuantity: quantity
+                    });
+                }
+            }
+        });
+    });
+
+    let result = Array.from(productMap.values());
+    // Trier par chiffre d'affaires décroissant
+    result.sort((a, b) => b.totalRevenue - a.totalRevenue);
+    // Garder seulement les top 10 produits pour le donut chart
+    return result.slice(0, 10);
+};
+
+const aggregateOrdersByCategory = (orders, allCategories) => {
+    const categoryMap = new Map();
+    allCategories.forEach(cat => {
+        categoryMap.set(cat.name, {
+            categoryName: cat.name,
+            displayName: getDisplayName(cat.name),
+            parent: CATEGORY_HIERARCHY[cat.name]?.parent || null,
+            totalRevenue: 0,
+            totalQuantity: 0,
+            order: cat.order
+        });
+    });
+
+    orders.forEach(order => {
+        const isValidOrder = order.paymentStatus === 'paid' || 
+                             order.orderStatus === 'livree' || 
+                             order.orderStatus === 'confirmee';
+        
+        if (!isValidOrder) return;
+        if (!order.items || !Array.isArray(order.items)) return;
+
+        order.items.forEach(item => {
+            const productName = item.productName || item.product?.name || '';
+            const quantity = item.quantity || 1;
+            const price = item.price || 0;
+            const revenue = quantity * price;
+            
+            const category = getProductCategory(productName);
+            
+            if (categoryMap.has(category)) {
+                const existing = categoryMap.get(category);
+                existing.totalRevenue += revenue;
+                existing.totalQuantity += quantity;
+            }
+        });
+    });
+
+    let result = Array.from(categoryMap.values());
+    result.sort((a, b) => a.order - b.order);
+    
+    return result;
+};
+
 export default function CategorySalesChart({ data = [], orders = [], title }) {
+    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [productsData, setProductsData] = useState([]);
+
     const aggregatedData = useMemo(() => {
         if (data && data.length > 0 && data[0]?.categoryName) {
-            return data;
+            const dataMap = new Map(data.map(item => [item.categoryName, item]));
+            const completeData = ALL_SUB_CATEGORIES.map(cat => {
+                if (dataMap.has(cat.name)) {
+                    return {
+                        ...dataMap.get(cat.name),
+                        displayName: getDisplayName(cat.name),
+                        parent: CATEGORY_HIERARCHY[cat.name]?.parent || null,
+                        order: cat.order
+                    };
+                }
+                return {
+                    categoryName: cat.name,
+                    displayName: getDisplayName(cat.name),
+                    parent: CATEGORY_HIERARCHY[cat.name]?.parent || null,
+                    totalRevenue: 0,
+                    totalQuantity: 0,
+                    order: cat.order
+                };
+            });
+            completeData.sort((a, b) => a.order - b.order);
+            return completeData;
         }
         if (orders && orders.length > 0) {
-            return aggregateOrdersByCategory(orders);
+            return aggregateOrdersByCategory(orders, ALL_SUB_CATEGORIES);
         }
-        return [];
+        return ALL_SUB_CATEGORIES.map(cat => ({
+            categoryName: cat.name,
+            displayName: getDisplayName(cat.name),
+            parent: CATEGORY_HIERARCHY[cat.name]?.parent || null,
+            totalRevenue: 0,
+            totalQuantity: 0,
+            order: cat.order
+        })).sort((a, b) => a.order - b.order);
     }, [data, orders]);
 
     const formatPrice = (price) => {
@@ -56,6 +287,67 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
         totalRevenue > 0 ? ((item.totalRevenue ?? 0) / totalRevenue * 100).toFixed(1) : 0
     );
 
+    // Fonction pour gérer le clic sur une ligne du tableau
+    const handleCategoryClick = (category) => {
+        if (orders && orders.length > 0) {
+            const products = aggregateProductsByCategory(orders, category.categoryName);
+            setSelectedCategory(category);
+            setProductsData(products);
+        }
+    };
+
+    // Fonction pour fermer le modal du donut chart
+    const closeModal = () => {
+        setSelectedCategory(null);
+        setProductsData([]);
+    };
+
+    // Configuration du donut chart avec la palette harmonisée
+    const getDonutChartData = () => {
+        if (!productsData.length) return null;
+
+        return {
+            labels: productsData.map(p => p.productName.length > 30 ? p.productName.substring(0, 27) + '...' : p.productName),
+            datasets: [
+                {
+                    data: productsData.map(p => p.totalRevenue),
+                    backgroundColor: COLOR_PALETTE.slice(0, productsData.length),
+                    borderColor: '#ffffff',
+                    borderWidth: 2,
+                    hoverOffset: 10,
+                }
+            ]
+        };
+    };
+
+    const donutOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                position: 'right',
+                labels: {
+                    font: { size: 11 },
+                    boxWidth: 10,
+                    padding: 8,
+                    usePointStyle: true,
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const label = context.label || '';
+                        const value = context.raw || 0;
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = ((value / total) * 100).toFixed(1);
+                        return `${label}: ${formatPrice(value)} (${percentage}%)`;
+                    }
+                }
+            }
+        }
+    };
+
+    // Configuration du graphique avec tailles agrandies
     const options = {
         responsive: true,
         maintainAspectRatio: false,
@@ -64,25 +356,23 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
             intersect: false,
         },
         plugins: {
-            // Désactiver explicitement les data labels
-            datalabels: {
-                display: false
-            },
+            datalabels: { display: false },
             legend: {
                 position: 'top',
                 labels: {
                     usePointStyle: true,
-                    boxWidth: 8,
-                    font: { size: 11 }
+                    boxWidth: 12,
+                    font: { size: 12, weight: 'bold' },
+                    padding: 15
                 }
             },
             tooltip: {
+                bodyFont: { size: 12 },
+                titleFont: { size: 13, weight: 'bold' },
                 callbacks: {
                     label: function(context) {
                         let label = context.dataset.label || '';
-                        if (label) {
-                            label += ': ';
-                        }
+                        if (label) label += ': ';
                         if (context.parsed.y !== null) {
                             if (context.dataset.label === "Chiffre d'affaires (DT)") {
                                 label += formatPrice(context.parsed.y);
@@ -99,7 +389,8 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
             title: {
                 display: Boolean(title),
                 text: title,
-                font: { size: 14 }
+                font: { size: 16, weight: 'bold' },
+                padding: { bottom: 20 }
             }
         },
         scales: {
@@ -107,20 +398,19 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                 beginAtZero: true,
                 title: {
                     display: true,
-                    text: 'Chiffre d\'affaires (DT) / Quantité',
-                    font: { size: 11 }
+                    text: "Chiffre d'affaires (DT) / Quantité",
+                    font: { size: 12, weight: 'bold' },
+                    padding: { bottom: 10 }
                 },
                 ticks: {
-                    font: { size: 10 },
+                    font: { size: 11 },
                     callback: function(value) {
                         if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M';
                         if (value >= 1000) return (value / 1000).toFixed(0) + 'k';
                         return value;
                     }
                 },
-                grid: {
-                    color: '#e2e8f0'
-                }
+                grid: { color: '#e2e8f0' }
             },
             y1: {
                 position: 'right',
@@ -129,32 +419,31 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                 title: {
                     display: true,
                     text: 'Pourcentage (%)',
-                    font: { size: 11 }
+                    font: { size: 12, weight: 'bold' },
+                    padding: { bottom: 10 }
                 },
                 ticks: {
-                    font: { size: 10 },
+                    font: { size: 11 },
                     callback: function(value) {
                         return value + '%';
                     }
                 },
-                grid: {
-                    drawOnChartArea: false,
-                }
+                grid: { drawOnChartArea: false }
             },
             x: {
                 title: {
                     display: true,
                     text: 'Catégories',
-                    font: { size: 11 }
+                    font: { size: 12, weight: 'bold' },
+                    padding: { top: 10 }
                 },
                 ticks: {
-                    font: { size: 10 },
+                    font: { size: 11, weight: '500' },
                     maxRotation: 35,
-                    minRotation: 35
+                    minRotation: 35,
+                    autoSkip: false,
                 },
-                grid: {
-                    display: false
-                }
+                grid: { display: false }
             }
         }
     };
@@ -170,43 +459,31 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
     }
 
     const chartData = {
-        labels: aggregatedData.map(item =>
-            item.categoryName && item.categoryName.length > 25
-                ? item.categoryName.substring(0, 25) + '...'
-                : item.categoryName || ''
-        ),
+        labels: aggregatedData.map(item => item.displayName),
         datasets: [
             {
                 label: "Chiffre d'affaires (DT)",
                 data: aggregatedData.map(item => item.totalRevenue ?? 0),
-                backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                backgroundColor: 'rgba(59, 130, 246, 0.8)',
                 borderColor: '#3b82f6',
                 borderWidth: 2,
                 borderRadius: 8,
-                barPercentage: 0.6,
-                categoryPercentage: 0.7,
+                barPercentage: 0.65,
+                categoryPercentage: 0.8,
                 yAxisID: 'y',
                 type: 'bar',
-                // Désactiver les data labels pour ce dataset
-                datalabels: {
-                    display: false
-                }
             },
             {
                 label: 'Quantité vendue',
                 data: aggregatedData.map(item => item.totalQuantity ?? 0),
-                backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                backgroundColor: 'rgba(16, 185, 129, 0.8)',
                 borderColor: '#10b981',
                 borderWidth: 2,
                 borderRadius: 8,
-                barPercentage: 0.6,
-                categoryPercentage: 0.7,
+                barPercentage: 0.65,
+                categoryPercentage: 0.8,
                 yAxisID: 'y',
                 type: 'bar',
-                // Désactiver les data labels pour ce dataset
-                datalabels: {
-                    display: false
-                }
             },
             {
                 label: 'Pourcentage du CA (%)',
@@ -214,8 +491,8 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                 borderColor: '#f59e0b',
                 backgroundColor: '#f59e0b',
                 borderWidth: 3,
-                pointRadius: 6,
-                pointHoverRadius: 8,
+                pointRadius: 7,
+                pointHoverRadius: 10,
                 pointBackgroundColor: '#f59e0b',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2,
@@ -223,166 +500,218 @@ export default function CategorySalesChart({ data = [], orders = [], title }) {
                 fill: false,
                 yAxisID: 'y1',
                 type: 'line',
-                // Désactiver les data labels pour ce dataset
-                datalabels: {
-                    display: false
-                }
             }
         ]
     };
 
     return (
-        <div className="row g-3">
-            <div className="col-md-8">
-                <div className="card shadow-sm border-0 h-100">
-                    <div className="card-body">
-                        <h6 className="fw-bold mb-3" style={{ fontSize: '0.9rem', color: '#0f172a' }}>
-                            {title || "Catégories les plus vendues"}
-                        </h6>
-                        <div style={{ height: '450px' }}>
-                            <Bar data={chartData} options={options} />
+        <>
+            <div className="row g-4">
+                {/* Colonne du graphique - plus large (col-md-9) */}
+                <div className="col-md-9">
+                    <div className="card shadow-sm border-0 h-100">
+                        <div className="card-body p-4">
+                            <div style={{ height: '550px', width: '100%', position: 'relative' }}>
+                                <Bar data={chartData} options={options} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {/* Colonne du tableau - plus petite (col-md-3) */}
+                <div className="col-md-3">
+                    <div className="card shadow-sm border-0 h-100">
+                        <div className="card-body p-3">
+                            <div className="table-responsive" style={{ maxHeight: '550px', overflowY: 'auto' }}>
+                                <table className="table table-sm table-hover" style={{ fontSize: '0.75rem' }}>
+                                    <thead className="table-light sticky-top">
+                                        <tr>
+                                            <th style={{ fontSize: '0.7rem' }}>Catégorie</th>
+                                            <th className="text-end" style={{ fontSize: '0.7rem' }}>CA (DT)</th>
+                                            <th className="text-end" style={{ fontSize: '0.7rem' }}>Qté</th>
+                                            <th className="text-end" style={{ fontSize: '0.7rem' }}>%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {aggregatedData.map((item, index) => {
+                                            const revenue = item.totalRevenue ?? 0;
+                                            const quantity = item.totalQuantity ?? 0;
+                                            const percentage = percentages[index];
+                                            
+                                            return (
+                                                <tr 
+                                                    key={index} 
+                                                    onClick={() => handleCategoryClick(item)}
+                                                    style={{ cursor: 'pointer' }}
+                                                    className="category-row"
+                                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = ''}
+                                                >
+                                                    <td style={{ fontSize: '0.7rem' }}>
+                                                        {item.displayName}
+                                                        {revenue === 0 && quantity === 0 && (
+                                                            <span className="badge bg-secondary ms-1" style={{ fontSize: '0.55rem' }}>0</span>
+                                                        )}
+                                                    </td>
+                                                    <td className="text-end" style={{ 
+                                                        fontSize: '0.7rem', 
+                                                        fontWeight: revenue > 0 ? 600 : 400,
+                                                        color: revenue > 0 ? '#3b82f6' : '#9ca3af' 
+                                                    }}>
+                                                        {formatPrice(revenue)}
+                                                    </td>
+                                                    <td className="text-end" style={{ 
+                                                        fontSize: '0.7rem', 
+                                                        fontWeight: quantity > 0 ? 600 : 400,
+                                                        color: quantity > 0 ? '#10b981' : '#9ca3af' 
+                                                    }}>
+                                                        {formatNumber(quantity)}
+                                                    </td>
+                                                    <td className="text-end" style={{ 
+                                                        fontSize: '0.7rem', 
+                                                        fontWeight: parseFloat(percentage) > 0 ? 600 : 400,
+                                                        color: parseFloat(percentage) > 0 ? '#f59e0b' : '#9ca3af' 
+                                                    }}>
+                                                        {percentage}%
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                    </tbody>
+                                    <tfoot className="table-light">
+                                        <tr>
+                                            <td className="fw-bold" style={{ fontSize: '0.7rem' }}>Total</td>
+                                            <td className="text-end fw-bold" style={{ fontSize: '0.7rem', color: '#3b82f6' }}>
+                                                {formatPrice(totalRevenue)}
+                                            </td>
+                                            <td className="text-end fw-bold" style={{ fontSize: '0.7rem', color: '#10b981' }}>
+                                                {formatNumber(aggregatedData.reduce((sum, item) => sum + (item.totalQuantity ?? 0), 0))}
+                                            </td>
+                                            <td className="text-end fw-bold" style={{ fontSize: '0.7rem' }}>100%</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <div className="col-md-4">
-                <div className="card shadow-sm border-0 h-100">
-                    <div className="card-body">
-                        <h6 className="fw-bold mb-3" style={{ fontSize: '0.9rem', color: '#0f172a' }}>
-                            Comparatif des catégories
-                        </h6>
-                        <div className="table-responsive" style={{ maxHeight: '450px', overflowY: 'auto' }}>
-                            <table className="table table-sm table-hover">
-                                <thead className="table-light sticky-top">
-                                    <tr>
-                                        <th>Catégorie</th>
-                                        <th className="text-end">CA (DT)</th>
-                                        <th className="text-end">Qté</th>
-                                        <th className="text-end">% CA</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {aggregatedData.map((item, index) => {
-                                        const revenue = item.totalRevenue ?? 0;
-                                        const quantity = item.totalQuantity ?? 0;
-                                        const percentage = percentages[index];
-                                        
-                                        return (
-                                            <tr key={index}>
-                                                <td style={{ fontSize: '0.85rem' }}>
-                                                    {item.categoryName || '-'}
-                                                </td>
-                                                <td className="text-end" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#3b82f6' }}>
-                                                    {formatPrice(revenue)}
-                                                </td>
-                                                <td className="text-end" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#10b981' }}>
-                                                    {formatNumber(quantity)}
-                                                </td>
-                                                <td className="text-end" style={{ fontSize: '0.85rem', fontWeight: 500, color: '#f59e0b' }}>
-                                                    {percentage}%
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                                <tfoot className="table-light">
-                                    <tr>
-                                        <td className="fw-bold">Total</td>
-                                        <td className="text-end fw-bold" style={{ color: '#3b82f6' }}>
-                                            {formatPrice(totalRevenue)}
-                                        </td>
-                                        <td className="text-end fw-bold" style={{ color: '#10b981' }}>
-                                            {formatNumber(aggregatedData.reduce((sum, item) => sum + (item.totalQuantity ?? 0), 0))}
-                                        </td>
-                                        <td className="text-end fw-bold">100%</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
+
+            {/* Modal pour le Donut Chart avec couleurs harmonisées */}
+            {selectedCategory && productsData.length > 0 && (
+                <div 
+                    className="modal show d-block" 
+                    tabIndex="-1" 
+                    style={{ backgroundColor: 'rgba(0,0,0,0.5)', position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1050 }}
+                    onClick={closeModal}
+                >
+                    <div 
+                        className="modal-dialog modal-lg modal-dialog-centered" 
+                        style={{ maxWidth: '800px', margin: '1.75rem auto' }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="modal-content shadow-lg">
+                            <div className="modal-header" style={{ backgroundColor: '#f8f9fa' }}>
+                                <h5 className="modal-title fw-bold">
+                                    <i className="fas fa-chart-pie me-2" style={{ color: '#3b82f6' }}></i>
+                                    Détail des produits - {selectedCategory.displayName}
+                                </h5>
+                                <button 
+                                    type="button" 
+                                    className="btn-close" 
+                                    onClick={closeModal}
+                                    aria-label="Close"
+                                ></button>
+                            </div>
+                            <div className="modal-body p-4">
+                                <div className="row">
+                                    <div className="col-md-12 text-center mb-3">
+                                        <div className="alert alert-info py-2" style={{ backgroundColor: '#e0f2fe', border: 'none' }}>
+                                            <small>
+                                                <strong>Chiffre d'affaires total de la catégorie :</strong> {formatPrice(selectedCategory.totalRevenue)} DT
+                                                <br />
+                                                <strong>Nombre de produits dans cette catégorie :</strong> {productsData.length}
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div style={{ height: '350px' }}>
+                                            {getDonutChartData() && (
+                                                <Doughnut data={getDonutChartData()} options={donutOptions} />
+                                            )}
+                                        </div>
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="table-responsive" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                                            <table className="table table-sm table-hover">
+                                                <thead className="table-light sticky-top">
+                                                    <tr>
+                                                        <th>Produit</th>
+                                                        <th className="text-end">CA (DT)</th>
+                                                        <th className="text-end">%</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {productsData.map((product, idx) => {
+                                                        const productPercentage = (product.totalRevenue / selectedCategory.totalRevenue * 100).toFixed(1);
+                                                        // Utilisation de la même palette de couleurs que le donut chart
+                                                        const productColor = COLOR_PALETTE[idx % COLOR_PALETTE.length];
+                                                        
+                                                        return (
+                                                            <tr key={idx}>
+                                                                <td style={{ fontSize: '0.8rem' }}>
+                                                                    <span 
+                                                                        className="d-inline-block me-2" 
+                                                                        style={{ 
+                                                                            width: '12px', 
+                                                                            height: '12px', 
+                                                                            borderRadius: '50%', 
+                                                                            backgroundColor: productColor,
+                                                                            display: 'inline-block',
+                                                                            verticalAlign: 'middle'
+                                                                        }} 
+                                                                    ></span>
+                                                                    {product.productName.length > 35 ? product.productName.substring(0, 32) + '...' : product.productName}
+                                                                </td>
+                                                                <td className="text-end" style={{ fontSize: '0.8rem', fontWeight: 500, color: '#3b82f6' }}>
+                                                                    {formatPrice(product.totalRevenue)}
+                                                                </td>
+                                                                <td className="text-end" style={{ fontSize: '0.8rem', fontWeight: 500, color: '#f59e0b' }}>
+                                                                    {productPercentage}%
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    })}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button 
+                                    type="button" 
+                                    className="btn btn-secondary btn-sm" 
+                                    onClick={closeModal}
+                                >
+                                    Fermer
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            )}
+
+            {/* Style CSS supplémentaire */}
+            <style jsx>{`
+                .category-row {
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                }
+                .category-row:active {
+                    transform: scale(0.98);
+                }
+            `}</style>
+        </>
     );
-}
-
-// Le reste des fonctions (aggregateOrdersByCategory, getProductCategory) reste identique
-function aggregateOrdersByCategory(orders) {
-    const categoryMap = new Map();
-
-    orders.forEach(order => {
-        const isValidOrder = order.paymentStatus === 'paid' || 
-                             order.orderStatus === 'livree' || 
-                             order.orderStatus === 'confirmee';
-        
-        if (!isValidOrder) return;
-
-        order.items.forEach(item => {
-            const productName = item.productName;
-            const quantity = item.quantity || 1;
-            const price = item.price || 0;
-            const revenue = quantity * price;
-            
-            let category = getProductCategory(productName);
-            
-            if (item.category) {
-                category = item.category;
-            }
-
-            if (categoryMap.has(category)) {
-                const existing = categoryMap.get(category);
-                existing.totalRevenue += revenue;
-                existing.totalQuantity += quantity;
-            } else {
-                categoryMap.set(category, {
-                    categoryName: category,
-                    totalRevenue: revenue,
-                    totalQuantity: quantity
-                });
-            }
-        });
-    });
-
-    let result = Array.from(categoryMap.values());
-    result.sort((a, b) => b.totalRevenue - a.totalRevenue);
-    return result.slice(0, 10);
-}
-
-function getProductCategory(productName) {
-    if (!productName) return 'Autres';
-    
-    if (productName.includes('PC1 Baby CNC')) return 'Tours CNC Éducation';
-    if (productName.includes('De2-Ultra Mini CNC')) return 'Tours CNC Éducation';
-    if (productName.includes('De4-Eco')) return 'Tours CNC Éducation';
-    if (productName.includes('De4-Pro')) return 'Tours CNC Éducation';
-    if (productName.includes('De6')) return 'Tours CNC Éducation';
-    if (productName.includes('De8')) return 'Tours CNC Éducation';
-    if (productName.includes('CK6140') || productName.includes('CK6180')) return 'Tours CNC Industriels';
-    if (productName.includes('Mini CNC Lathe 3040')) return 'Mini Tours CNC';
-    if (productName.includes('Fa2-Ultra')) return 'Fraiseuses CNC Éducation';
-    if (productName.includes('PX1 Baby')) return 'Fraiseuses CNC Éducation';
-    if (productName.includes('Fa4-Eco')) return 'Fraiseuses CNC Éducation';
-    if (productName.includes('XK7136')) return 'Fraiseuses CNC Industrielles';
-    if (productName.includes('Desktop CNC Mill 6040')) return 'Mini Fraiseuses';
-    if (productName.includes('5-Axis')) return 'Fraiseuses 5 Axes';
-    if (productName.includes('CO2 Laser')) return 'Découpeuses Laser';
-    if (productName.includes('Fiber Laser Marking')) return 'Marqueuses Laser';
-    if (productName.includes('Diode Laser Engraver')) return 'Graveuses Laser';
-    if (productName.includes('Industrial SLA')) return 'Imprimantes 3D Industrielles';
-    if (productName.includes('Creality Ender')) return 'Imprimantes 3D Grand Public';
-    if (productName.includes('Resin 3D Printer')) return 'Imprimantes 3D Résine';
-    if (productName.includes('Articulated Industrial Robot')) return 'Robots Industriels';
-    if (productName.includes('SCARA Robot')) return 'Robots SCARA';
-    if (productName.includes('Cobot Collaborative')) return 'Robots Collaboratifs';
-    if (productName.includes('4th Axis Rotary Table')) return 'Accessoires CNC';
-    if (productName.includes('CNC Dust Collector')) return 'Systèmes de Dépoussiérage';
-    if (productName.includes('Hydraulic Vise')) return 'Étaux et Bridages';
-    if (productName.includes('CNC Tooling Set')) return 'Outils de Coupe';
-    if (productName.includes('PTL')) return 'Accessoires Labo';
-    if (productName.includes('ACL-7000')) return 'Équipement Pédagogique';
-    if (productName.includes('M21-7100')) return 'Équipement Pédagogique';
-    if (productName.includes('F1-3')) return 'Équipement Pédagogique';
-    
-    return 'Autres Produits';
 }

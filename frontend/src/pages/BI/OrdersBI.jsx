@@ -1,6 +1,6 @@
-// OrdersBI.jsx - Version corrigée
+// OrdersBI.jsx - Version complète et corrigée
 import React, { useState, useEffect, useRef } from 'react';
-import { MonthlyBarChart, MonthlyOrdersChart, MonthComparisonTable, CategorySalesChart, ClientsByRegionMap, ClientMapCluster , ReturnExchangeDonut} from '../../components/BI';
+import { MonthlyBarChart, MonthlyOrdersChart, MonthComparisonTable, CategorySalesChart, ClientsByRegionMap, ClientMapCluster, ReturnExchangeDonut, OrderStatusDonut, PaymentMethodDonut } from '../../components/BI';
 import { 
   FaChartLine, FaChartBar, FaTable, FaTrophy, FaMedal, 
   FaMapMarkerAlt, FaShoppingCart, FaWallet, FaPercentage, 
@@ -19,7 +19,7 @@ export default function OrdersBI() {
     const [exporting, setExporting] = useState(false);
     const [printing, setPrinting] = useState(false);
     const [monthlyData, setMonthlyData] = useState([]);
-    const [allOrders, setAllOrders] = useState([]); // AJOUT: Stocker toutes les commandes
+    const [allOrders, setAllOrders] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [returnAnalytics, setReturnAnalytics] = useState([]);
     const [users, setUsers] = useState([]);
@@ -263,7 +263,7 @@ export default function OrdersBI() {
             });
             const data = await res.json();
             if (data.success && data.orders) {
-                setAllOrders(data.orders); // AJOUT: Stocker toutes les commandes
+                setAllOrders(data.orders);
                 const years = extractAvailableYears(data.orders);
                 setAvailableYears(years);
                 const monthly = processMonthlyData(data.orders, selectedYear);
@@ -305,15 +305,6 @@ export default function OrdersBI() {
     const fetchUsers = async () => {
         try {
             const data = await getAllUsers();
-            console.log('=== UTILISATEURS REÇUS ===');
-            console.log('Nombre:', data.length);
-            console.log('Premier utilisateur:', data[0]);
-            console.log('createdAt présent?', data[0]?.createdAt);
-            data.forEach(u => {
-                if (u.createdAt) {
-                    console.log(`${u.client_name}: ${new Date(u.createdAt).toLocaleDateString()}`);
-                }
-            });
             setUsers(Array.isArray(data) ? data : []);
         } catch (err) {
             console.error('Erreur chargement des utilisateurs:', err);
@@ -331,41 +322,6 @@ export default function OrdersBI() {
         fetchUsers();
     }, []);
 
-    useEffect(() => {
-        if (users.length > 0) {
-            console.log('=== VÉRIFICATION DES DATES UTILISATEURS ===');
-            const usersWithDates = users.filter(u => {
-                let hasDate = false;
-                if (u.createdAt) {
-                    if (typeof u.createdAt === 'object' && u.createdAt.$date) {
-                        hasDate = true;
-                    } else if (typeof u.createdAt === 'string') {
-                        hasDate = true;
-                    }
-                }
-                return hasDate;
-            });
-            console.log(`Utilisateurs avec date valide: ${usersWithDates.length}/${users.length}`);
-            
-            const monthGroups = {};
-            users.forEach(user => {
-                let date = null;
-                if (user.createdAt) {
-                    if (typeof user.createdAt === 'object' && user.createdAt.$date) {
-                        date = new Date(user.createdAt.$date);
-                    } else if (typeof user.createdAt === 'string') {
-                        date = new Date(user.createdAt);
-                    }
-                }
-                if (date && !isNaN(date.getTime())) {
-                    const monthKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-                    monthGroups[monthKey] = (monthGroups[monthKey] || 0) + 1;
-                }
-            });
-            console.log('Répartition par mois:', monthGroups);
-        }
-    }, [users]);
-
     if (loading) {
         return (
             <div className="d-flex justify-content-center align-items-center min-vh-100" style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
@@ -380,9 +336,9 @@ export default function OrdersBI() {
     }
 
     const totalRevenue = monthlyData.reduce((sum, month) => sum + month.revenue, 0);
-    const totalOrders = monthlyData.reduce((sum, month) => sum + month.orderCount, 0);
+    const totalOrdersCount = monthlyData.reduce((sum, month) => sum + month.orderCount, 0);
     const averageRevenue = monthlyData.length > 0 ? totalRevenue / monthlyData.length : 0;
-    const averageOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+    const averageOrderValue = totalOrdersCount > 0 ? totalRevenue / totalOrdersCount : 0;
 
     let totalEvolution = 0;
     let evolutionCount = 0;
@@ -405,15 +361,6 @@ export default function OrdersBI() {
     const monthlyGrowth = previousMonth && previousMonth.revenue > 0 
         ? ((lastMonth?.revenue - previousMonth.revenue) / previousMonth.revenue * 100)
         : 0;
-
-    // Filtrer les commandes de l'année sélectionnée pour le graphique des catégories
-    const filteredOrdersForCategory = allOrders.filter(order => {
-        if (order.paymentStatus !== 'paid' && order.orderStatus !== 'livree' && order.orderStatus !== 'confirmee') {
-            return false;
-        }
-        const orderYear = new Date(order.createdAt).getFullYear();
-        return orderYear === selectedYear;
-    });
 
     return (
         <div style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)', minHeight: '100vh' }}>
@@ -532,7 +479,7 @@ export default function OrdersBI() {
                                         </div>
                                         <div className="d-flex justify-content-between align-items-center mt-1">
                                             <span className="text-muted small">Total {selectedYear}</span>
-                                            <span className="small text-success">{totalOrders} commandes</span>
+                                            <span className="small text-success">{totalOrdersCount} commandes</span>
                                         </div>
                                     </div>
                                 </div>
@@ -546,7 +493,7 @@ export default function OrdersBI() {
                                         <div>
                                             <p className="text-muted mb-1 small text-uppercase fw-semibold">Commandes</p>
                                             <h2 className="fw-bold mb-0" style={{ color: '#1a1a2e', fontSize: '1.8rem' }}>
-                                                {totalOrders.toLocaleString()}
+                                                {totalOrdersCount.toLocaleString()}
                                             </h2>
                                         </div>
                                         <div className="rounded-3 p-2" style={{ backgroundColor: '#eff6ff' }}>
@@ -829,8 +776,8 @@ export default function OrdersBI() {
                         </div>
                     </div>
 
-                    {/* Top Categories - CORRECTION ICI */}
-                    <div className="row g-4">
+                    {/* Top Categories */}
+                    <div className="row g-4 mb-5">
                         <div className="col-12">
                             <div className="card border-0 shadow-sm rounded-4">
                                 <div className="card-header bg-transparent border-0 pt-4 px-4">
@@ -842,24 +789,75 @@ export default function OrdersBI() {
                                             </h5>
                                             <p className="text-muted small mb-0">Performance par catégorie de produits</p>
                                         </div>
-                                        <span className="badge bg-light text-dark px-3 py-2 rounded-pill border">
-                                            Meilleures ventes
-                                        </span>
                                     </div>
                                 </div>
                                 <div className="card-body p-4 pt-0">
-                                    {/* Passer les commandes filtrées au composant */}
                                     <CategorySalesChart 
-                                        orders={filteredOrdersForCategory}
+                                        orders={allOrders}
                                         title=""
                                     />
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
+                    {/* ESPACE ENTRE LES SECTIONS */}
+                    <div className="my-5"></div>
+
+                    {/* Analyses Supplémentaires - Commandes & Paiements */}
+                    <div className="row g-4">
+                        <div className="col-lg-6">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaChartLine className="me-2" style={{ color: '#10b981' }} />
+                                                Statut des Commandes
+                                            </h5>
+                                            <p className="text-muted small mb-0">Répartition par statut (toutes les commandes)</p>
+                                        </div>
+                                    
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    <OrderStatusDonut orders={allOrders} />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="col-lg-6">
+                            <div className="card border-0 shadow-sm rounded-4 h-100">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaWallet className="me-2" style={{ color: '#8b5cf6' }} />
+                                                Modes de Paiement
+                                            </h5>
+                                            <p className="text-muted small mb-0">Répartition par méthode de paiement</p>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-0">
+                                    <PaymentMethodDonut orders={allOrders} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            
+            <style>{`
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                .spin {
+                    animation: spin 1s linear infinite;
+                }
+            `}</style>
         </div>
     );
 }

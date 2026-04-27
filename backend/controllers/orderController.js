@@ -913,4 +913,100 @@ export const getCategoryAnalytics = async (req, res) => {
             error: 'Erreur lors de la récupération des statistiques de catégories.'
         });
     }
+    // GET /api/orders/analytics/order-status - Statistiques des statuts de commandes
+export const getOrderStatusStats = async (req, res) => {
+    try {
+        const { year } = req.query;
+        
+        let matchCondition = {};
+        if (year) {
+            const startDate = new Date(parseInt(year), 0, 1);
+            const endDate = new Date(parseInt(year) + 1, 0, 1);
+            matchCondition.createdAt = { $gte: startDate, $lt: endDate };
+        }
+        
+        // Agrégation des statuts de commande
+        const statusStats = await Order.aggregate([
+            { $match: matchCondition },
+            {
+                $group: {
+                    _id: '$orderStatus',
+                    count: { $sum: 1 },
+                    totalAmount: { $sum: { $ifNull: ['$totalAmount', 0] } }
+                }
+            },
+            { $sort: { _id: 1 } }
+        ]);
+        
+        // S'assurer que tous les statuts sont représentés
+        const allStatuses = ['en_attente', 'confirmee', 'expediee', 'livree', 'annulee'];
+        const statusMap = new Map();
+        statusStats.forEach(s => statusMap.set(s._id, s));
+        
+        const completeStats = allStatuses.map(status => ({
+            _id: status,
+            count: statusMap.get(status)?.count || 0,
+            totalAmount: statusMap.get(status)?.totalAmount || 0
+        }));
+        
+        res.json({
+            success: true,
+            data: completeStats
+        });
+    } catch (error) {
+        console.error('Erreur stats statuts commandes:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération des statistiques de statuts'
+        });
+    }
+};
+
+// GET /api/orders/analytics/payment-methods - Statistiques des modes de paiement
+export const getPaymentMethodStats = async (req, res) => {
+    try {
+        const { year } = req.query;
+        
+        let matchCondition = {};
+        if (year) {
+            const startDate = new Date(parseInt(year), 0, 1);
+            const endDate = new Date(parseInt(year) + 1, 0, 1);
+            matchCondition.createdAt = { $gte: startDate, $lt: endDate };
+        }
+        
+        // Agrégation des modes de paiement
+        const paymentStats = await Order.aggregate([
+            { $match: matchCondition },
+            {
+                $group: {
+                    _id: { $ifNull: ['$paymentMethod', 'livraison'] },
+                    count: { $sum: 1 },
+                    totalAmount: { $sum: { $ifNull: ['$totalAmount', 0] } }
+                }
+            }
+        ]);
+        
+        // S'assurer que tous les modes sont représentés
+        const allMethods = ['stripe', 'livraison', 'virement'];
+        const methodMap = new Map();
+        paymentStats.forEach(s => methodMap.set(s._id, s));
+        
+        const completeStats = allMethods.map(method => ({
+            _id: method,
+            count: methodMap.get(method)?.count || 0,
+            totalAmount: methodMap.get(method)?.totalAmount || 0
+        }));
+        
+        res.json({
+            success: true,
+            data: completeStats
+        });
+    } catch (error) {
+        console.error('Erreur stats modes paiement:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération des statistiques de paiement'
+        });
+    }
+};
 };

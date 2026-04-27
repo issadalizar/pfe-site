@@ -459,7 +459,7 @@ export const cncProductDetails = {
     "mainCategory": "Voitures",
     "price": 120.95,
     "prix": 120.95,
-    "stock": 10,
+    "stock": 6,
     "estActif": true,
     "features": [
       "Système complet d'essuie-glaces avant/arrière",
@@ -477,7 +477,7 @@ export const cncProductDetails = {
       "Protections": "Fusible thermique"
     },
     "images": [
-      "/images/products/voitures/ÉLECTRICITÉ/DTM7020 – Modules Essuie-Glaces.png"
+      "/images/products/voitures/ÉLECTRICITÉ/dtm7020_modules_essuie-glaces.png"
     ],
     "technicalSpecs": {
       "Puissance moteurs": "2 x 30W",
@@ -489,7 +489,26 @@ export const cncProductDetails = {
     "modele": "DTM7020",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Ensemble de 5 modules Essuie-glaces avec composants réels : comodos, cadenceur, actionneurs, électronique de commande, moteur, etc. Permet l’apprentissage des composants, de leur câblage, du système de retour en position repos et du fonctionnement d’arrêt fixe.",
+    "caracteristiques": [
+      "Ensemble de 5 modules Essuie-glaces",
+      "Composants réels : comodos",
+      "cadenceur",
+      "actionneurs",
+      "électronique",
+      "moteur...",
+      "Apprentissage du câblage et des composants",
+      "Étude du retour en position repos",
+      "Compréhension du fonctionnement d’arrêt fixe"
+    ],
+    "categorie": "697f9052a494e767414f1257",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/dtm7020_modules_essuie-glaces.png",
+    "nomFichierImage": "dtm7020_modules_essuie-glaces.png",
+    "stockApres": 10,
+    "id": "697f93e49e5f50c871efa235",
+    "updatedAt": "2026-04-27T10:20:04.715Z"
   },
   "DTM7000 – Modules Éclairage et Signalisation": {
     "_id": "697f93b69e5f50c871efa234",
@@ -500,7 +519,7 @@ export const cncProductDetails = {
     "mainCategory": "Voitures",
     "price": 150.99,
     "prix": 150.99,
-    "stock": 10,
+    "stock": 5,
     "estActif": true,
     "features": [
       "Système complet d'éclairage automobile",
@@ -518,7 +537,7 @@ export const cncProductDetails = {
       "Connectique": "Faisceau automobile"
     },
     "images": [
-      "/images/products/voitures/ÉLECTRICITÉ/DTM7000 – Modules Éclairage et Signalisation.png"
+      "/images/products/voitures/ÉLECTRICITÉ/dtm7000_modules_eclairage_et_signalisation.png"
     ],
     "technicalSpecs": {
       "Puissance totale": "150W max",
@@ -530,7 +549,25 @@ export const cncProductDetails = {
     "modele": "DTM7000",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Ensemble de 10 modules Éclairage et Signalisation permettant de reconstituer fidèlement un ensemble automobile. Il permet la mise en application des lois de l’électricité (loi d’Ohm…) et l’étude des sous-ensembles tels que fusibles, commutateurs, lampes, etc. Chaque boîtier peut être étudié séparément pour approfondir une fonction particulière.",
+    "caracteristiques": [
+      "Ensemble de 10 modules Éclairage & Signalisation",
+      "Reconstitution fidèle d’un ensemble automobile",
+      "Application des lois d’électricité (loi d’Ohm",
+      "etc.)",
+      "Étude fusibles",
+      "commutateurs",
+      "lampes...",
+      "Chaque module étudiable séparément"
+    ],
+    "categorie": "697f9052a494e767414f1257",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/dtm7000_modules_eclairage_et_signalisation.png",
+    "nomFichierImage": "dtm7000_modules_eclairage_et_signalisation.png",
+    "stockApres": 10,
+    "id": "697f93b69e5f50c871efa234",
+    "updatedAt": "2026-04-27T10:20:04.786Z"
   },
   "DT-M005 – Mesure des Courants et des Tensions": {
     "_id": "697f91fe9e5f50c871efa233",
@@ -541,7 +578,7 @@ export const cncProductDetails = {
     "mainCategory": "Voitures",
     "price": 750.5,
     "prix": 750.5,
-    "stock": 50,
+    "stock": 40,
     "estActif": true,
     "features": [
       "Système de mesure de grandeurs électriques automobiles",
@@ -559,7 +596,7 @@ export const cncProductDetails = {
       "Logiciel": "Oscilloscope virtuel, enregistreur"
     },
     "images": [
-      "/images/products/voitures/ÉLECTRICITÉ/DT-M005 – Mesure des Courants et des Tensions.png"
+      "/images/products/voitures/ÉLECTRICITÉ/dt-m005_mesure_des_courants_et_des_tensions.png"
     ],
     "technicalSpecs": {
       "Fréquence d'échantillonnage": "100 kHz",
@@ -571,7 +608,21 @@ export const cncProductDetails = {
     "modele": "DT-M005",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Le module pédagogique DT-M005 est un support électrique de base destiné à l’apprentissage de la mesure des courants et des tensions. Il permet de mettre en pratique les fondamentaux de l’électricité et d’utiliser des méthodes et outils de mesure adaptés.",
+    "caracteristiques": [
+      "Apprentissage des mesures électriques de base",
+      "Mesure des courants et des tensions",
+      "Mise en pratique des fondamentaux de l’électricité",
+      "Adapté à l’enseignement et à la formation"
+    ],
+    "categorie": "697f9052a494e767414f1257",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/dt-m005_mesure_des_courants_et_des_tensions.png",
+    "nomFichierImage": "dt-m005_mesure_des_courants_et_des_tensions.png",
+    "stockApres": 50,
+    "id": "697f91fe9e5f50c871efa233",
+    "updatedAt": "2026-04-27T10:20:04.828Z"
   },
   "MT-4002V – Maquette de Charge Démarrage 12V": {
     "_id": "697f91119e5f50c871efa231",
@@ -582,7 +633,7 @@ export const cncProductDetails = {
     "mainCategory": "Voitures",
     "price": 900.5,
     "prix": 900.5,
-    "stock": 15,
+    "stock": 10,
     "estActif": true,
     "features": [
       "Maquette pédagogique charge-démarrage",
@@ -600,7 +651,7 @@ export const cncProductDetails = {
       "Dimensions": "600 x 400 x 200 mm"
     },
     "images": [
-      "/images/products/voitures/ÉLECTRICITÉ/MT-4002V – Maquette de Charge Démarrage 12V.png"
+      "/images/products/voitures/ÉLECTRICITÉ/mt-4002v_maquette_de_charge_demarrage_12v.png"
     ],
     "technicalSpecs": {
       "Poids": "15 kg",
@@ -612,7 +663,23 @@ export const cncProductDetails = {
     "modele": "MT-4002V",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Maquette pédagogique destinée à la formation aux bases de l’électricité automobile dans un environnement « charge-démarrage 12 V ». Elle intègre un démarreur et un alternateur fixes avec platines associées, une platine de pré et postchauffage diesel, une platine de consommateurs divers, ainsi qu’un variateur de vitesse pour le moteur d’entraînement de l’alternateur. Livrée avec le contrôleur de charge-démarrage MI250S, outil réel de diagnostic.",
+    "caracteristiques": [
+      "Environnement pédagogique charge-démarrage 12 V",
+      "Démarreur et alternateur fixes avec platines associées",
+      "Platine pré et postchauffage diesel",
+      "Platine consommateurs divers",
+      "Variateur de vitesse pour moteur d’alternateur",
+      "Livrée avec contrôleur MI250S (diagnostic)"
+    ],
+    "categorie": "697f9052a494e767414f1257",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/mt-4002v_maquette_de_charge_demarrage_12v.png",
+    "nomFichierImage": "mt-4002v_maquette_de_charge_demarrage_12v.png",
+    "stockApres": 15,
+    "id": "697f91119e5f50c871efa231",
+    "updatedAt": "2026-04-27T10:20:04.867Z"
   },
   "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur": {
     "_id": "697f95159e5f50c871efa238",
@@ -4279,6 +4346,367 @@ export const cncProductDetails = {
       "_id": "69e6522240db2cd023b9ec84",
       "createdAt": "2026-04-20T16:19:46.472Z",
       "updatedAt": "2026-04-20T16:19:46.629Z"
+    },
+    "69ef36879fe9fe7855e662e3": {
+      "shippingInfo": {
+        "fullName": "salouma",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69ef36879fe9fe7855e662e3",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productId": "697f6f9b9e5f50c871efa22f",
+          "productName": "DT-M002 – Mesure des Positions",
+          "quantity": 2,
+          "price": 120.99,
+          "_id": "69ef36879fe9fe7855e662e4"
+        },
+        {
+          "productId": "697f6f609e5f50c871efa22e",
+          "productName": "DT-M001 – Mesure d'Angle de Volant",
+          "quantity": 2,
+          "price": 86.5,
+          "_id": "69ef36879fe9fe7855e662e5"
+        }
+      ],
+      "totalAmount": 414.98,
+      "paymentMethod": "stripe",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
+      "stockUpdated": false,
+      "createdAt": "2026-04-27T10:12:23.278Z",
+      "updatedAt": "2026-04-27T11:22:29.362Z",
+      "stripeSessionId": "cs_test_b12slsdfrp6Boj1SuOHDQjXUtcpST1khAAiQxA56mU0ivkVEalITrMds6g"
+    },
+    "69ef38549fe9fe7855e6663b": {
+      "shippingInfo": {
+        "fullName": "salouma",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "Sousse",
+        "postalCode": "4023"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69ef38549fe9fe7855e6663b",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productId": "697f93e49e5f50c871efa235",
+          "productName": "DTM7020 – Modules Essuie-Glaces",
+          "quantity": 4,
+          "price": 120.95,
+          "_id": "69ef38549fe9fe7855e6663c"
+        },
+        {
+          "productId": "697f93b69e5f50c871efa234",
+          "productName": "DTM7000 – Modules Éclairage et Signalisation",
+          "quantity": 5,
+          "price": 150.99,
+          "_id": "69ef38549fe9fe7855e6663d"
+        },
+        {
+          "productId": "697f91fe9e5f50c871efa233",
+          "productName": "DT-M005 – Mesure des Courants et des Tensions",
+          "quantity": 10,
+          "price": 750.5,
+          "_id": "69ef38549fe9fe7855e6663e"
+        },
+        {
+          "productId": "697f91119e5f50c871efa231",
+          "productName": "MT-4002V – Maquette de Charge Démarrage 12V",
+          "quantity": 5,
+          "price": 900.5,
+          "_id": "69ef38549fe9fe7855e6663f"
+        }
+      ],
+      "totalAmount": 13246.25,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "annulee",
+      "stockUpdated": true,
+      "createdAt": "2026-04-27T10:20:04.485Z",
+      "updatedAt": "2026-04-27T11:22:11.197Z"
+    },
+    "69d666282b0019e335b2a8b0": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d666282b0019e335b2a8b0",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d666282b0019e335b2a8b1"
+        }
+      ],
+      "totalAmount": 5490,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "failed",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-08T14:28:56.864Z",
+      "updatedAt": "2026-04-27T11:23:28.744Z"
+    },
+    "69d6649f2b0019e335b2a782": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d6649f2b0019e335b2a782",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 1,
+          "price": 7490,
+          "_id": "69d6649f2b0019e335b2a783"
+        }
+      ],
+      "totalAmount": 7490,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "failed",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-08T14:22:23.932Z",
+      "updatedAt": "2026-04-27T11:23:25.788Z"
+    },
+    "69d4f4cc53b83fba680cc6af": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d4f4cc53b83fba680cc6af",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 3,
+          "price": 5490,
+          "_id": "69d4f4cc53b83fba680cc6b0"
+        }
+      ],
+      "totalAmount": 16470,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "failed",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-07T12:13:00.904Z",
+      "updatedAt": "2026-04-27T11:23:19.444Z"
+    },
+    "69d4f37a53b83fba680cc634": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d4f37a53b83fba680cc634",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d4f37a53b83fba680cc635"
+        }
+      ],
+      "totalAmount": 5490,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "failed",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-07T12:07:22.672Z",
+      "updatedAt": "2026-04-27T11:23:22.895Z"
+    },
+    "69d4f25c53b83fba680cc575": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d4f25c53b83fba680cc575",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 2,
+          "price": 7490,
+          "_id": "69d4f25c53b83fba680cc576"
+        }
+      ],
+      "totalAmount": 14980,
+      "paymentMethod": "virement",
+      "returnDeadline": null,
+      "paymentStatus": "failed",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-07T12:02:36.625Z",
+      "updatedAt": "2026-04-27T11:23:15.725Z"
+    },
+    "69d4f0a853b83fba680cc4e6": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d4f0a853b83fba680cc4e6",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "quantity": 2,
+          "price": 7490,
+          "_id": "69d4f0a853b83fba680cc4e7"
+        }
+      ],
+      "totalAmount": 14980,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-07T11:55:20.218Z",
+      "updatedAt": "2026-04-27T11:22:56.776Z"
+    },
+    "69d4ed5253b83fba680cc3aa": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d4ed5253b83fba680cc3aa",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 5490,
+          "_id": "69d4ed5253b83fba680cc3ab"
+        }
+      ],
+      "totalAmount": 5490,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-07T11:41:06.276Z",
+      "updatedAt": "2026-04-27T11:23:04.559Z"
+    },
+    "69d4eb5453b83fba680cc37e": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d4eb5453b83fba680cc37e",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69d4eb5453b83fba680cc37f"
+        }
+      ],
+      "totalAmount": 8990,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "failed",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-07T11:32:36.761Z",
+      "updatedAt": "2026-04-27T11:23:12.103Z"
     }
   }
 };
