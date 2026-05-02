@@ -1,11 +1,12 @@
 // OrdersBI.jsx - Version complète et corrigée
 import React, { useState, useEffect, useRef } from 'react';
-import { MonthlyBarChart, MonthlyOrdersChart, MonthComparisonTable, CategorySalesChart, ClientsByRegionMap, ClientMapCluster, ReturnExchangeDonut, OrderStatusDonut, PaymentMethodDonut } from '../../components/BI';
-import { 
-  FaChartLine, FaChartBar, FaTable, FaTrophy, FaMedal, 
-  FaMapMarkerAlt, FaShoppingCart, FaWallet, FaPercentage, 
+import { MonthlyBarChart, MonthlyOrdersChart, MonthComparisonTable, CategorySalesChart, ClientsByRegionMap, ClientMapCluster, ReturnExchangeDonut, OrderStatusDonut, PaymentMethodDonut, StockEvolutionTable } from '../../components/BI';
+import {
+  FaChartLine, FaChartBar, FaTable, FaTrophy, FaMedal,
+  FaMapMarkerAlt, FaShoppingCart, FaWallet, FaPercentage,
   FaRocket, FaUsers, FaArrowUp, FaArrowDown, FaRegCalendarAlt,
-  FaDownload, FaFilter, FaEllipsisH, FaFilePdf, FaSpinner, FaPrint
+  FaDownload, FaFilter, FaEllipsisH, FaFilePdf, FaSpinner, FaPrint,
+  FaBoxes
 } from 'react-icons/fa';
 import { getReturnRequestAnalytics } from '../../services/returnRequestService';
 import { getAllUsers } from '../../services/userService';
@@ -23,6 +24,7 @@ export default function OrdersBI() {
     const [categoryData, setCategoryData] = useState([]);
     const [returnAnalytics, setReturnAnalytics] = useState([]);
     const [users, setUsers] = useState([]);
+    const [stockEvolution, setStockEvolution] = useState([]);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [availableYears, setAvailableYears] = useState([]);
     const [showExportMenu, setShowExportMenu] = useState(false);
@@ -302,6 +304,24 @@ export default function OrdersBI() {
         }
     };
 
+    const fetchStockEvolution = async (year) => {
+        try {
+            const token = localStorage.getItem('token');
+            const res = await fetch(`${API_URL}/analytics/stock-evolution?year=${year}&limit=15`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success && Array.isArray(data.data)) {
+                setStockEvolution(data.data);
+            } else {
+                setStockEvolution([]);
+            }
+        } catch (err) {
+            console.error('Erreur chargement évolution du stock:', err);
+            setStockEvolution([]);
+        }
+    };
+
     const fetchUsers = async () => {
         try {
             const data = await getAllUsers();
@@ -314,6 +334,7 @@ export default function OrdersBI() {
 
     useEffect(() => {
         fetchOrders();
+        fetchStockEvolution(selectedYear);
     }, [selectedYear]);
 
     useEffect(() => {
@@ -796,6 +817,33 @@ export default function OrdersBI() {
                                         orders={allOrders}
                                         title=""
                                     />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Évolution du Stock par Mois (Ranking) */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-12">
+                            <div className="card border-0 shadow-sm rounded-4">
+                                <div className="card-header bg-transparent border-0 pt-4 px-4">
+                                    <div className="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                                        <div>
+                                            <h5 className="fw-bold mb-1" style={{ color: '#1a1a2e' }}>
+                                                <FaBoxes className="me-2" style={{ color: '#0ea5e9' }} />
+                                                Évolution du Stock par Mois
+                                            </h5>
+                                            <p className="text-muted small mb-0">
+                                                Classement des produits par mouvement de stock — sorties mensuelles et stock actuel
+                                            </p>
+                                        </div>
+                                        <span className="badge bg-light text-dark px-3 py-2 rounded-pill border">
+                                            Ranking
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="card-body p-4 pt-3">
+                                    <StockEvolutionTable data={stockEvolution} year={selectedYear} />
                                 </div>
                             </div>
                         </div>

@@ -8,5 +8,6 @@ export { default as ClientsByRegionMap } from './ClientsByRegionMap';
 export { default as ClientMapCluster } from './ClientMapCluster';
 export { default as NewClientsChart } from './NewClientsChart';
 export { default as ReturnExchangeDonut } from './ReturnExchangeDonut';
-export { default as PaymentMethodDonut } from './PaymentMethodDonut';  
-export { default as OrderStatusDonut } from './OrderStatusDonut';     
+export { default as PaymentMethodDonut } from './PaymentMethodDonut';
+export { default as OrderStatusDonut } from './OrderStatusDonut';
+export { default as StockEvolutionTable } from './StockEvolutionTable';
