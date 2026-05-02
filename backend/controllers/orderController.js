@@ -913,7 +913,9 @@ export const getCategoryAnalytics = async (req, res) => {
             error: 'Erreur lors de la récupération des statistiques de catégories.'
         });
     }
-    // GET /api/orders/analytics/order-status - Statistiques des statuts de commandes
+};
+
+// GET /api/orders/analytics/order-status - Statistiques des statuts de commandes
 export const getOrderStatusStats = async (req, res) => {
     try {
         const { year } = req.query;
@@ -1009,4 +1011,114 @@ export const getPaymentMethodStats = async (req, res) => {
         });
     }
 };
+
+// GET /api/orders/analytics/stock-evolution - Évolution mensuelle du stock par produit (ranking)
+export const getStockEvolution = async (req, res) => {
+    try {
+        const { year, limit } = req.query;
+        const targetYear = year ? parseInt(year) : new Date().getFullYear();
+        const startDate = new Date(targetYear, 0, 1);
+        const endDate = new Date(targetYear + 1, 0, 1);
+        const topN = Math.min(parseInt(limit) || 15, 50);
+
+        const movements = await Order.aggregate([
+            { $match: { paymentStatus: 'paid', createdAt: { $gte: startDate, $lt: endDate } } },
+            { $unwind: '$items' },
+            {
+                $lookup: {
+                    from: 'products',
+                    let: { pid: '$items.productId', pname: '$items.productName' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $or: [
+                                        { $eq: ['$_id', '$$pid'] },
+                                        { $eq: ['$nom', '$$pname'] }
+                                    ]
+                                }
+                            }
+                        },
+                        { $limit: 1 }
+                    ],
+                    as: 'product'
+                }
+            },
+            { $unwind: { path: '$product', preserveNullAndEmptyArrays: true } },
+            {
+                $group: {
+                    _id: {
+                        key: { $ifNull: ['$product._id', '$items.productName'] },
+                        month: { $month: '$createdAt' }
+                    },
+                    productId: { $first: { $ifNull: ['$product._id', '$items.productId'] } },
+                    productName: { $first: { $ifNull: ['$product.nom', '$items.productName'] } },
+                    currentStock: { $first: { $ifNull: ['$product.stock', null] } },
+                    quantity: { $sum: '$items.quantity' },
+                    revenue: { $sum: { $multiply: ['$items.quantity', '$items.price'] } }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id.key',
+                    productId: { $first: '$productId' },
+                    productName: { $first: '$productName' },
+                    currentStock: { $first: '$currentStock' },
+                    monthly: { $push: { month: '$_id.month', sold: '$quantity', revenue: '$revenue' } },
+                    totalSold: { $sum: '$quantity' },
+                    totalRevenue: { $sum: '$revenue' }
+                }
+            },
+            { $sort: { totalSold: -1 } },
+            { $limit: topN }
+        ]);
+
+        const now = new Date();
+        const isCurrentYear = targetYear === now.getFullYear();
+        const refMonthIdx = isCurrentYear ? now.getMonth() : 11;
+
+        const data = movements.map(m => {
+            const monthlySold = new Array(12).fill(0);
+            const monthlyRevenue = new Array(12).fill(0);
+            m.monthly.forEach(({ month, sold, revenue }) => {
+                monthlySold[month - 1] = sold || 0;
+                monthlyRevenue[month - 1] = revenue || 0;
+            });
+
+            const last = monthlySold[refMonthIdx] || 0;
+            const prev = refMonthIdx > 0 ? monthlySold[refMonthIdx - 1] || 0 : 0;
+            let evolution = null;
+            if (prev > 0) evolution = ((last - prev) / prev) * 100;
+            else if (last > 0) evolution = 100;
+            else evolution = 0;
+
+            const peakMonth = monthlySold.indexOf(Math.max(...monthlySold));
+            const activeMonths = monthlySold.filter(v => v > 0).length;
+            const avgMonthly = activeMonths > 0 ? m.totalSold / activeMonths : 0;
+
+            return {
+                productId: m.productId || null,
+                productName: m.productName,
+                currentStock: m.currentStock,
+                totalSold: m.totalSold,
+                totalRevenue: m.totalRevenue,
+                monthlySold,
+                monthlyRevenue,
+                lastMonth: last,
+                previousMonth: prev,
+                evolution,
+                peakMonth: peakMonth >= 0 ? peakMonth + 1 : null,
+                activeMonths,
+                avgMonthly
+            };
+        });
+
+        res.json({ success: true, year: targetYear, data });
+    } catch (error) {
+        console.error('Erreur stock-evolution:', error);
+        res.status(500).json({
+            success: false,
+            error: "Erreur lors du calcul de l'évolution du stock"
+        });
+    }
 };

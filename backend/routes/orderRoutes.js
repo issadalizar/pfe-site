@@ -13,7 +13,10 @@ import {
     updateOrderStatus,
     cancelOrder,
     getCategoryAnalytics,
-    getMonthlyOrderCounts
+    getMonthlyOrderCounts,
+    getOrderStatusStats,
+    getPaymentMethodStats,
+    getStockEvolution
 } from '../controllers/orderController.js';
 import multer from 'multer';
 import path from 'path';
@@ -65,6 +68,7 @@ router.get('/analytics/categories', protect, adminOnly, getCategoryAnalytics);
 router.get('/analytics/monthly-orders', protect, adminOnly, getMonthlyOrderCounts)
 router.get('/analytics/order-status', protect, adminOnly, getOrderStatusStats);
 router.get('/analytics/payment-methods', protect, adminOnly, getPaymentMethodStats);
+router.get('/analytics/stock-evolution', protect, adminOnly, getStockEvolution);
 router.get('/', protect, adminOnly, getAllOrders);
 
 export default router;
