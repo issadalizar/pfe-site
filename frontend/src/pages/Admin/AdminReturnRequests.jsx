@@ -5,7 +5,7 @@ import {
     FaChevronDown, FaChevronUp, FaCalendarAlt,
     FaClipboardList, FaUndoAlt, FaSyncAlt, FaClock
 } from 'react-icons/fa';
-import { getAllReturnRequests, updateReturnRequestStatus } from '../../services/returnRequestService';
+import { getAllReturnRequests, updateReturnRequestStatus, updateReturnRequestDeadline } from '../../services/returnRequestService';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 export default function AdminReturnRequests() {
@@ -17,6 +17,31 @@ export default function AdminReturnRequests() {
     const [expandedRequest, setExpandedRequest] = useState(null);
     const [updatingRequest, setUpdatingRequest] = useState(null);
     const [adminNotes, setAdminNotes] = useState({});
+    const [deadlines, setDeadlines] = useState({});
+    const [savingDeadline, setSavingDeadline] = useState(null);
+
+    const saveDeadline = async (req) => {
+        const deadline = deadlines[req._id];
+        if (!deadline) return;
+        setSavingDeadline(req._id);
+        try {
+            const data = await updateReturnRequestDeadline(req._id, deadline);
+            if (data.success) {
+                setRequests(prev => prev.map(r =>
+                    r._id === req._id ? { ...r, returnDeadline: deadline } : r
+                ));
+                setDeadlines(prev => {
+                    const copy = { ...prev };
+                    delete copy[req._id];
+                    return copy;
+                });
+            }
+        } catch (err) {
+            console.error('Erreur sauvegarde deadline:', err);
+        } finally {
+            setSavingDeadline(null);
+        }
+    };
 
     const statusOptions = [
         { value: 'en_attente', label: 'En attente', bg: '#fef3c7', color: '#92400e', icon: <FaClock /> },
@@ -259,6 +284,60 @@ export default function AdminReturnRequests() {
                                                                                 <span className="fw-medium">x{item.quantity}</span>
                                                                             </div>
                                                                         ))}
+                                                                    </div>
+
+                                                                    {/* Date limite de renvoi du produit (par demande) */}
+                                                                    <div className="col-12">
+                                                                        <div className="p-3 rounded-3" style={{ backgroundColor: '#fff', border: '1px solid #fecaca' }}>
+                                                                            <h6 className="fw-bold mb-2"><FaCalendarAlt className="me-2 text-danger" />Date limite de retour du produit</h6>
+                                                                            <p className="text-muted mb-2" style={{ fontSize: '0.8rem' }}>
+                                                                                Date avant laquelle le client doit renvoyer le produit pour cette demande #{req._id.slice(-8).toUpperCase()}.
+                                                                            </p>
+                                                                            <div className="d-flex gap-2 align-items-center flex-wrap">
+                                                                                <input
+                                                                                    type="date"
+                                                                                    className="form-control form-control-sm"
+                                                                                    value={
+                                                                                        deadlines[req._id] !== undefined
+                                                                                            ? deadlines[req._id]
+                                                                                            : (req.returnDeadline ? new Date(req.returnDeadline).toISOString().split('T')[0] : '')
+                                                                                    }
+                                                                                    onClick={e => e.stopPropagation()}
+                                                                                    onChange={e => {
+                                                                                        e.stopPropagation();
+                                                                                        setDeadlines(prev => ({ ...prev, [req._id]: e.target.value }));
+                                                                                    }}
+                                                                                    min={new Date().toISOString().split('T')[0]}
+                                                                                    style={{ maxWidth: '180px', fontSize: '0.85rem' }}
+                                                                                />
+                                                                                <button
+                                                                                    className="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                                                                    onClick={e => { e.stopPropagation(); saveDeadline(req); }}
+                                                                                    disabled={
+                                                                                        savingDeadline === req._id ||
+                                                                                        (deadlines[req._id] === undefined && !req.returnDeadline) ||
+                                                                                        (deadlines[req._id] !== undefined && !deadlines[req._id])
+                                                                                    }
+                                                                                    style={{ fontSize: '0.78rem', fontWeight: 600 }}
+                                                                                >
+                                                                                    {savingDeadline === req._id
+                                                                                        ? <FaSpinner style={{ animation: 'spin 1s linear infinite' }} />
+                                                                                        : <FaCheckCircle className="me-1" />}
+                                                                                    Enregistrer
+                                                                                </button>
+                                                                                {req.returnDeadline && (
+                                                                                    <span className="ms-2" style={{
+                                                                                        color: new Date(req.returnDeadline) < new Date() ? '#dc2626' : '#16a34a',
+                                                                                        fontWeight: 600,
+                                                                                        fontSize: '0.8rem'
+                                                                                    }}>
+                                                                                        {new Date(req.returnDeadline) < new Date()
+                                                                                            ? '⛔ Délai expiré'
+                                                                                            : `✅ Avant le ${new Date(req.returnDeadline).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}`}
+                                                                                    </span>
+                                                                                )}
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
 
                                                                     {/* Note admin */}
