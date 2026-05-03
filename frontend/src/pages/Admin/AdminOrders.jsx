@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     FaShoppingCart, FaSearch, FaEye, FaCheckCircle,
     FaTruck, FaTimesCircle, FaSpinner, FaFilter,
-    FaCreditCard, FaBox, FaCalendarAlt, FaUser,
+    FaCreditCard, FaBox, FaUser,
     FaChevronDown, FaChevronUp, FaEnvelope, FaPhone,
     FaMapMarkerAlt, FaFileInvoice, FaPrint
 } from 'react-icons/fa';
@@ -18,7 +18,6 @@ export default function AdminOrders() {
     const [paymentFilter, setPaymentFilter] = useState('all');
     const [expandedOrder, setExpandedOrder] = useState(null);
     const [updatingOrder, setUpdatingOrder] = useState(null);
-    const [deadlines, setDeadlines] = useState({});
     const [receiptOrder, setReceiptOrder] = useState(null);
 
     const statusOptions = [
@@ -109,43 +108,6 @@ export default function AdminOrders() {
             }
         } catch (err) {
             console.error('Erreur mise a jour paiement:', err);
-        } finally {
-            setUpdatingOrder(null);
-        }
-    };
-
-    const saveDeadline = async (orderId) => {
-        if (!orderId) return;
-        const deadline = deadlines[orderId];
-        if (!deadline) return;
-        setUpdatingOrder(orderId);
-        try {
-            const token = localStorage.getItem('token');
-            const order = orders.find(o => o._id === orderId);
-            const res = await fetch(`${API_URL}/${orderId}/status`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`
-                },
-                body: JSON.stringify({
-                    orderStatus: order?.orderStatus || 'livree',
-                    returnDeadline: deadline
-                })
-            });
-            const data = await res.json();
-            if (data.success) {
-                setOrders(prev => prev.map(o =>
-                    o._id === orderId ? { ...o, returnDeadline: deadline } : o
-                ));
-                setDeadlines(prev => {
-                    const newDeadlines = { ...prev };
-                    delete newDeadlines[orderId];
-                    return newDeadlines;
-                });
-            }
-        } catch (err) {
-            console.error('Erreur sauvegarde deadline:', err);
         } finally {
             setUpdatingOrder(null);
         }
@@ -412,44 +374,6 @@ export default function AdminOrders() {
                                                                         </div>
                                                                     )}
 
-                                                                    <div className="col-md-4">
-                                                                        <h6 className="fw-bold mb-2"><FaCalendarAlt className="me-2 text-danger" />Date limite retour</h6>
-                                                                        <p className="text-muted mb-2" style={{ fontSize: '0.78rem' }}>
-                                                                            Le client ne pourra plus demander un retour/échange après cette date.
-                                                                        </p>
-                                                                        <div className="d-flex gap-2 align-items-center">
-                                                                            <input type="date"
-                                                                                className="form-control form-control-sm"
-                                                                                value={deadlines[order._id] || (order.returnDeadline ? new Date(order.returnDeadline).toISOString().split('T')[0] : '')}
-                                                                                onClick={e => e.stopPropagation()}
-                                                                                onChange={e => {
-                                                                                    e.stopPropagation();
-                                                                                    setDeadlines(prev => ({ ...prev, [order._id]: e.target.value }));
-                                                                                }}
-                                                                                min={new Date().toISOString().split('T')[0]}
-                                                                                style={{ maxWidth: '160px', fontSize: '0.85rem' }}
-                                                                            />
-                                                                            <button
-                                                                                className="btn btn-sm btn-outline-danger rounded-pill px-3"
-                                                                                onClick={e => { e.stopPropagation(); saveDeadline(order._id); }}
-                                                                                disabled={updatingOrder === order._id || (!deadlines[order._id] && !order.returnDeadline)}
-                                                                                style={{ fontSize: '0.78rem', fontWeight: 600 }}
-                                                                            >
-                                                                                {updatingOrder === order._id ? <FaSpinner style={{ animation: 'spin 1s linear infinite' }} /> : <FaCheckCircle className="me-1" />}
-                                                                                Enregistrer
-                                                                            </button>
-                                                                        </div>
-                                                                        {order.returnDeadline && (
-                                                                            <small className="mt-1 d-block" style={{
-                                                                                color: new Date(order.returnDeadline) < new Date() ? '#dc2626' : '#16a34a',
-                                                                                fontWeight: 600, fontSize: '0.78rem'
-                                                                            }}>
-                                                                                {new Date(order.returnDeadline) < new Date()
-                                                                                    ? '⛔ Délai expiré'
-                                                                                    : `✅ Jusqu'au ${new Date(order.returnDeadline).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}`}
-                                                                            </small>
-                                                                        )}
-                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </td>

@@ -48,4 +48,10 @@ export const updateReturnRequestStatus = async (id, status, adminNote) => {
     return response.data;
 };
 
+// Mettre à jour la date limite de retour du produit (admin)
+export const updateReturnRequestDeadline = async (id, returnDeadline) => {
+    const response = await returnRequestAPI.patch(`/${id}/deadline`, { returnDeadline });
+    return response.data;
+};
+
 export default returnRequestAPI;
