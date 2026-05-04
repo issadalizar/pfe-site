@@ -47,9 +47,27 @@ process.on('unhandledRejection', (reason, promise) => {
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// Middleware - CORS
+const allowedOrigins = [
+  /^http:\/\/localhost(:\d+)?$/,
+  /^https:\/\/.*\.netlify\.app$/,
+  /^https:\/\/.*\.netlify\.live$/
+];
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(cors({
-  origin: /^http:\/\/localhost(:\d+)?$/,
+  origin: (origin, callback) => {
+    // Autoriser les requêtes sans origin (Postman, curl, webhooks)
+    if (!origin) return callback(null, true);
+    const ok = allowedOrigins.some(o =>
+      o instanceof RegExp ? o.test(origin) : o === origin
+    );
+    if (ok) return callback(null, true);
+    console.warn(`CORS blocké pour origin: ${origin}`);
+    return callback(new Error('Origin non autorisé par CORS'));
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']

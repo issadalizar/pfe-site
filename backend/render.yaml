@@ -2,17 +2,30 @@ services:
   - type: web
     name: univertechno-backend
     runtime: node
-    repo: https://github.com/votre-repo/backend-node
+    rootDir: backend
     buildCommand: npm install
     startCommand: node server.js
     envVars:
-      - key: MONGODB_URI
-        value: mongodb+srv://salma:salma2026@cluster0.egfn7dl.mongodb.net/pfe_db?retryWrites=true&w=majority&appName=Cluster0
-      - key: JWT_SECRET
-        value: pfe_univertechno_jwt_secret_key_2026_secure
+      # IMPORTANT : ne mettre AUCUNE valeur sensible ici.
+      # Renseigner ces variables dans le dashboard Render
+      # (Service > Environment > Add Environment Variable).
       - key: NODE_ENV
         value: production
-      - key: FRONTEND_URL
-        value: https://iridescent-pixie-56880a.netlify.app
       - key: PORT
         value: 5000
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: GMAIL_USER
+        sync: false
+      - key: GMAIL_APP_PASSWORD
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
