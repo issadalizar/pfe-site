@@ -90,7 +90,7 @@ export const createReturnRequest = async (req, res) => {
 export const getMyReturnRequests = async (req, res) => {
     try {
         const requests = await ReturnRequest.find({ user: req.user._id })
-            .populate('order', 'items totalAmount orderStatus paymentStatus createdAt')
+            .populate('order', 'items totalAmount orderStatus paymentStatus createdAt returnDeadline')
             .sort({ createdAt: -1 });
 
         res.json({ success: true, returnRequests: requests });
@@ -105,7 +105,7 @@ export const getAllReturnRequests = async (req, res) => {
     try {
         const requests = await ReturnRequest.find()
             .populate('user', 'client_name email client_code')
-            .populate('order', 'items totalAmount orderStatus paymentStatus createdAt shippingInfo')
+            .populate('order', 'items totalAmount orderStatus paymentStatus createdAt shippingInfo returnDeadline')
             .sort({ createdAt: -1 });
 
         res.json({ success: true, returnRequests: requests });
@@ -245,7 +245,7 @@ export const updateReturnRequestStatus = async (req, res) => {
             updateData,
             { new: true }
         ).populate('user', 'client_name email client_code')
-            .populate('order', 'items totalAmount orderStatus paymentStatus createdAt shippingInfo');
+            .populate('order', 'items totalAmount orderStatus paymentStatus createdAt shippingInfo returnDeadline');
 
         if (!returnRequest) {
             return res.status(404).json({ success: false, error: 'Demande non trouvée.' });
@@ -255,5 +255,33 @@ export const updateReturnRequestStatus = async (req, res) => {
     } catch (error) {
         console.error('Erreur mise à jour demande retour:', error);
         res.status(500).json({ success: false, error: 'Erreur lors de la mise à jour.' });
+    }
+};
+
+// PATCH /api/return-requests/:id/deadline - Mettre à jour la date limite de retour du produit (admin)
+export const updateReturnRequestDeadline = async (req, res) => {
+    try {
+        const { returnDeadline } = req.body;
+
+        const value = returnDeadline ? new Date(returnDeadline) : null;
+        if (returnDeadline && isNaN(value.getTime())) {
+            return res.status(400).json({ success: false, error: 'Date invalide.' });
+        }
+
+        const returnRequest = await ReturnRequest.findByIdAndUpdate(
+            req.params.id,
+            { returnDeadline: value },
+            { new: true }
+        ).populate('user', 'client_name email client_code')
+         .populate('order', 'items totalAmount orderStatus paymentStatus createdAt shippingInfo returnDeadline');
+
+        if (!returnRequest) {
+            return res.status(404).json({ success: false, error: 'Demande non trouvée.' });
+        }
+
+        res.json({ success: true, returnRequest });
+    } catch (error) {
+        console.error('Erreur mise à jour deadline:', error);
+        res.status(500).json({ success: false, error: 'Erreur lors de la mise à jour de la date limite.' });
     }
 };

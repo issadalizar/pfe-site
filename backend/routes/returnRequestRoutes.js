@@ -5,7 +5,8 @@ import {
     getMyReturnRequests,
     getAllReturnRequests,
     getReturnRequestAnalytics,
-    updateReturnRequestStatus
+    updateReturnRequestStatus,
+    updateReturnRequestDeadline
 } from '../controllers/returnRequestController.js';
 
 const router = express.Router();
@@ -18,5 +19,6 @@ router.get('/my-requests', protect, getMyReturnRequests);
 router.get('/', protect, adminOnly, getAllReturnRequests);
 router.get('/analytics/products', protect, adminOnly, getReturnRequestAnalytics);
 router.patch('/:id/status', protect, adminOnly, updateReturnRequestStatus);
+router.patch('/:id/deadline', protect, adminOnly, updateReturnRequestDeadline);
 
 export default router;

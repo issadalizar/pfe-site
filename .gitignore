@@ -32,3 +32,6 @@ backend/.env.*.local
 # Frontend
 frontend/node_modules
 frontend/dist
+
+# Documentation interne (notes locales)
+DOC_DATE_LIMITE_RETOUR.md
