@@ -53,7 +53,7 @@ import {
 import { productAPI, categoryAPI } from "../services/CategorieProduct";
 import FeaturedProducts from "../components/FeaturedProducts";
 import ContactForm from "../components/ContactForm";
-import ProductData from "../components/productdata";
+import ProductData from "../components/ProductData";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/home.css";
 import { getAllCncProducts } from "../services/productDataService";
