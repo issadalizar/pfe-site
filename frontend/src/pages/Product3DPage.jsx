@@ -8,14 +8,10 @@ import {
   Typography,
   Box,
   Chip,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  Alert,
-  CircularProgress,
   Button,
   IconButton,
+  CircularProgress,
+  Alert,
 } from '@mui/material';
 import { FaArrowLeft, FaShare, FaExpand } from 'react-icons/fa';
 import ProductViewer3D from '../components/ProductViewer3D';
@@ -45,12 +41,14 @@ const Product3DPage = () => {
         );
         setProduct(productResponse.data?.data ?? productResponse.data);
 
+        // Optionnel: tenter de récupérer les infos du modèle 3D spécifique
         try {
           const modelResponse = await axios.get(
             `${API_BASE}/models3d/product/${encodeURIComponent(decodedProductId)}`
           );
           setModelData(modelResponse.data);
         } catch {
+          // Pas d'erreur, on utilise simplement le fallback
           setModelData({ has3DModel: false });
         }
 
@@ -74,10 +72,10 @@ const Product3DPage = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', bgcolor: '#0d0d1f' }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', bgcolor: '#f0f0f5' }}>
         <Box textAlign="center">
           <CircularProgress sx={{ color: '#4361ee' }} />
-          <Typography sx={{ mt: 2, color: 'rgba(255,255,255,0.6)', fontSize: 13, letterSpacing: 2, textTransform: 'uppercase' }}>
+          <Typography sx={{ mt: 2, color: 'rgba(0,0,0,0.5)', fontSize: 13, letterSpacing: 2, textTransform: 'uppercase' }}>
             Chargement…
           </Typography>
         </Box>
@@ -103,8 +101,7 @@ const Product3DPage = () => {
   }
 
   return (
-    <Box sx={{ bgcolor: '#0d0d1f', minHeight: '100vh', fontFamily: "'Syne', sans-serif" }}>
-      {/* Google Font */}
+    <Box sx={{ bgcolor: '#f0f0f5', minHeight: '100vh', fontFamily: "'Syne', sans-serif" }}>
       <style>{`@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&display=swap');`}</style>
 
       {/* ── Top bar ── */}
@@ -113,9 +110,9 @@ const Product3DPage = () => {
           position: 'sticky',
           top: 0,
           zIndex: 100,
-          bgcolor: 'rgba(13,13,31,0.92)',
+          bgcolor: 'rgba(255,255,255,0.95)',
           backdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          borderBottom: '1px solid rgba(0,0,0,0.05)',
           py: 1.5,
           px: { xs: 2, md: 4 },
           display: 'flex',
@@ -126,40 +123,44 @@ const Product3DPage = () => {
         <IconButton
           onClick={() => navigate(-1)}
           sx={{
-            color: 'white',
-            bgcolor: 'rgba(255,255,255,0.06)',
-            border: '1px solid rgba(255,255,255,0.1)',
+            color: '#333',
+            bgcolor: 'rgba(0,0,0,0.04)',
+            border: '1px solid rgba(0,0,0,0.08)',
             borderRadius: '10px',
             width: 38, height: 38,
-            '&:hover': { bgcolor: 'rgba(67,97,238,0.25)', borderColor: '#4361ee' },
+            '&:hover': { bgcolor: 'rgba(67,97,238,0.1)', borderColor: '#4361ee' },
           }}
         >
           <FaArrowLeft size={14} />
         </IconButton>
 
         <Box>
-          <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.35)', letterSpacing: 2, textTransform: 'uppercase', fontSize: 10 }}>
+          <Typography variant="caption" sx={{ color: 'rgba(0,0,0,0.4)', letterSpacing: 2, textTransform: 'uppercase', fontSize: 10 }}>
             Configurateur 3D
           </Typography>
-          <Typography variant="subtitle1" sx={{ color: '#fff', fontWeight: 700, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
+          <Typography variant="subtitle1" sx={{ color: '#111', fontWeight: 700, lineHeight: 1.1, fontFamily: 'Syne, sans-serif' }}>
             {product.title}
           </Typography>
         </Box>
 
         <Box sx={{ ml: 'auto', display: 'flex', gap: 1 }}>
-          <Chip
-            label={product.category}
-            size="small"
-            sx={{ bgcolor: 'rgba(67,97,238,0.25)', color: '#99aaff', border: '1px solid rgba(67,97,238,0.4)', fontSize: 11 }}
-          />
-          <Chip
-            label={product.mainCategory}
-            size="small"
-            sx={{ bgcolor: 'rgba(247,37,133,0.2)', color: '#ff88cc', border: '1px solid rgba(247,37,133,0.3)', fontSize: 11 }}
-          />
+          {product.category && (
+            <Chip
+              label={product.category}
+              size="small"
+              sx={{ bgcolor: 'rgba(67,97,238,0.12)', color: '#4361ee', border: '1px solid rgba(67,97,238,0.2)', fontSize: 11 }}
+            />
+          )}
+          {product.mainCategory && (
+            <Chip
+              label={product.mainCategory}
+              size="small"
+              sx={{ bgcolor: 'rgba(247,37,133,0.1)', color: '#c2185b', border: '1px solid rgba(247,37,133,0.2)', fontSize: 11 }}
+            />
+          )}
         </Box>
 
-        <IconButton sx={{ color: 'rgba(255,255,255,0.4)', '&:hover': { color: '#fff' } }}>
+        <IconButton sx={{ color: 'rgba(0,0,0,0.4)', '&:hover': { color: '#333' } }}>
           <FaShare size={14} />
         </IconButton>
       </Box>
@@ -175,25 +176,36 @@ const Product3DPage = () => {
               sx={{
                 height: fullscreen ? '85vh' : { xs: 380, sm: 500, md: 620 },
                 overflow: 'hidden',
-                bgcolor: '#111125',
+                bgcolor: '#ffffff',
                 borderRadius: '16px',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid rgba(0,0,0,0.08)',
                 position: 'relative',
                 transition: 'height 0.4s ease',
+                boxShadow: '0 4px 20px rgba(0,0,0,0.05)',
               }}
             >
-              <ProductViewer3D product={product} modelData={modelData} />
+              <ProductViewer3D 
+                product={product} 
+                modelData={modelData} 
+                useGenericFallback={true} 
+              />
 
               {/* Fullscreen toggle */}
               <IconButton
                 onClick={() => setFullscreen(v => !v)}
                 sx={{
-                  position: 'absolute', bottom: 16, right: 16,
-                  color: 'rgba(255,255,255,0.5)',
-                  bgcolor: 'rgba(13,13,31,0.7)',
-                  border: '1px solid rgba(255,255,255,0.1)',
-                  borderRadius: '8px', zIndex: 20,
-                  '&:hover': { color: '#fff', bgcolor: 'rgba(67,97,238,0.5)' },
+                  position: 'absolute', 
+                  bottom: 16, 
+                  right: 16,
+                  color: 'rgba(0,0,0,0.5)',
+                  bgcolor: 'rgba(255,255,255,0.9)',
+                  border: '1px solid rgba(0,0,0,0.1)',
+                  borderRadius: '8px', 
+                  zIndex: 20,
+                  '&:hover': { 
+                    color: '#fff', 
+                    bgcolor: '#4361ee' 
+                  },
                 }}
               >
                 <FaExpand size={12} />
@@ -207,145 +219,79 @@ const Product3DPage = () => {
               elevation={0}
               sx={{
                 height: { xs: 'auto', lg: fullscreen ? '85vh' : 620 },
-                overflow: 'auto',
-                bgcolor: 'rgba(18,18,36,0.95)',
-                backdropFilter: 'blur(20px)',
-                border: '1px solid rgba(255,255,255,0.08)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                textAlign: 'center',
+                bgcolor: '#ffffff',
+                border: '1px solid rgba(0,0,0,0.06)',
                 borderRadius: '16px',
-                color: 'white',
-                p: 0,
-                '&::-webkit-scrollbar': { width: 4 },
-                '&::-webkit-scrollbar-track': { background: 'transparent' },
-                '&::-webkit-scrollbar-thumb': { background: 'rgba(255,255,255,0.1)', borderRadius: 4 },
+                color: '#1a1a2e',
+                p: 4,
+                boxShadow: '0 4px 20px rgba(0,0,0,0.03)',
               }}
             >
-              {/* Product hero header */}
-              <Box sx={{ p: 3, background: 'linear-gradient(135deg, rgba(67,97,238,0.15) 0%, rgba(247,37,133,0.08) 100%)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                <Typography variant="h5" sx={{ fontWeight: 800, color: '#fff', fontFamily: 'Syne, sans-serif', lineHeight: 1.2 }}>
-                  {product.title}
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 800, 
+                  color: '#1a1a2e', 
+                  fontFamily: 'Syne, sans-serif', 
+                  lineHeight: 1.2,
+                  mb: 2
+                }}
+              >
+                {product.title}
+              </Typography>
+
+              {product.price && (
+                <Typography 
+                  variant="h3" 
+                  sx={{ 
+                    fontWeight: 800, 
+                    color: '#4361ee', 
+                    fontFamily: 'Syne, sans-serif',
+                    mb: 3
+                  }}
+                >
+                  {product.price}
                 </Typography>
+              )}
 
-                {product.price && (
-                  <Typography variant="h4" sx={{ mt: 1.5, fontWeight: 800, color: '#4361ee', fontFamily: 'Syne, sans-serif' }}>
-                    {product.price}
-                  </Typography>
-                )}
-              </Box>
-
-              <Box sx={{ p: 3 }}>
-                {/* Description */}
-                <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.3)', letterSpacing: 2, fontSize: 10 }}>
-                  Description
-                </Typography>
-                <Typography paragraph sx={{ color: 'rgba(255,255,255,0.65)', fontSize: 14, lineHeight: 1.7, mt: 1 }}>
-                  {product.fullDescription}
-                </Typography>
-
-                <Divider sx={{ my: 2.5, borderColor: 'rgba(255,255,255,0.07)' }} />
-
-                {/* Features */}
-                {product.features?.length > 0 && (
-                  <>
-                    <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.3)', letterSpacing: 2, fontSize: 10 }}>
-                      Caractéristiques
-                    </Typography>
-                    <List dense sx={{ mt: 0.5 }}>
-                      {product.features.map((feature, i) => (
-                        <ListItem key={i} sx={{ px: 0, py: 0.4 }}>
-                          <Box sx={{ width: 5, height: 5, borderRadius: '50%', bgcolor: '#4361ee', mr: 1.5, flexShrink: 0 }} />
-                          <ListItemText
-                            primary={feature}
-                            primaryTypographyProps={{ fontSize: 13, color: 'rgba(255,255,255,0.65)' }}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                    <Divider sx={{ my: 2.5, borderColor: 'rgba(255,255,255,0.07)' }} />
-                  </>
-                )}
-
-                {/* Specifications */}
-                {product.specifications && (
-                  <>
-                    <Typography variant="overline" sx={{ color: 'rgba(255,255,255,0.3)', letterSpacing: 2, fontSize: 10 }}>
-                      Spécifications
-                    </Typography>
-                    <Box sx={{ mt: 1.5, display: 'grid', gap: 1 }}>
-                      {Object.entries(product.specifications).map(([key, value]) => (
-                        <Box
-                          key={key}
-                          sx={{
-                            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                            py: 0.8, px: 1.5,
-                            bgcolor: 'rgba(255,255,255,0.03)',
-                            borderRadius: '8px',
-                            border: '1px solid rgba(255,255,255,0.05)',
-                          }}
-                        >
-                          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.4)', fontSize: 12 }}>
-                            {key}
-                          </Typography>
-                          <Typography variant="body2" sx={{ color: '#fff', fontWeight: 600, fontSize: 12 }}>
-                            {value}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                    <Divider sx={{ my: 2.5, borderColor: 'rgba(255,255,255,0.07)' }} />
-                  </>
-                )}
-
-                {/* CTA */}
-                <Box sx={{ display: 'flex', gap: 1.5, mt: 1 }}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    sx={{
-                      background: 'linear-gradient(135deg, #4361ee, #7209b7)',
-                      color: '#fff',
-                      fontWeight: 700,
-                      borderRadius: '10px',
-                      py: 1.4,
-                      fontFamily: 'Syne, sans-serif',
-                      textTransform: 'none',
-                      fontSize: 14,
-                      boxShadow: '0 4px 20px rgba(67,97,238,0.4)',
-                      '&:hover': { boxShadow: '0 6px 28px rgba(67,97,238,0.6)' },
-                    }}
-                  >
-                    Ajouter au panier
-                  </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      borderColor: 'rgba(255,255,255,0.15)',
-                      color: 'rgba(255,255,255,0.7)',
-                      borderRadius: '10px',
-                      px: 2.5,
-                      fontFamily: 'Syne, sans-serif',
-                      textTransform: 'none',
-                      '&:hover': { borderColor: '#4361ee', color: '#fff' },
-                    }}
-                  >
-                    ♡
-                  </Button>
-                </Box>
-
-                {!modelData?.has3DModel && (
-                  <Alert
-                    severity="info"
-                    sx={{
-                      mt: 2.5,
-                      bgcolor: 'rgba(33,150,243,0.08)',
-                      color: '#7eb8f7',
-                      border: '1px solid rgba(33,150,243,0.2)',
-                      borderRadius: '10px',
-                      fontSize: 12,
-                    }}
-                  >
-                    Représentation générique — aucun modèle 3D spécifique disponible.
-                  </Alert>
-                )}
+              <Box sx={{ display: 'flex', gap: 1.5, width: '100%', maxWidth: 300, mx: 'auto' }}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  sx={{
+                    background: 'linear-gradient(135deg, #4361ee, #7209b7)',
+                    color: '#fff',
+                    fontWeight: 700,
+                    borderRadius: '10px',
+                    py: 1.4,
+                    fontFamily: 'Syne, sans-serif',
+                    textTransform: 'none',
+                    fontSize: 14,
+                    boxShadow: '0 4px 20px rgba(67,97,238,0.3)',
+                    '&:hover': { boxShadow: '0 6px 28px rgba(67,97,238,0.5)' },
+                  }}
+                >
+                  Ajouter au panier
+                </Button>
+                <Button
+                  variant="outlined"
+                  sx={{
+                    borderColor: 'rgba(0,0,0,0.2)',
+                    color: 'rgba(0,0,0,0.6)',
+                    borderRadius: '10px',
+                    px: 2.5,
+                    fontFamily: 'Syne, sans-serif',
+                    textTransform: 'none',
+                    '&:hover': { borderColor: '#4361ee', color: '#4361ee' },
+                  }}
+                >
+                  ♡
+                </Button>
               </Box>
             </Paper>
           </Grid>

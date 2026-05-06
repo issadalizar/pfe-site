@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { FaPaperPlane, FaUser, FaEnvelope, FaTag, FaCommentAlt, FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
+import { FaPaperPlane, FaUser, FaEnvelope, FaTag, FaCommentAlt, FaCheckCircle, FaExclamationCircle, FaHeadset, FaClock, FaShieldAlt } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import { contactAPI } from '../services/contactAPI'; // Changement de l'import
+import { contactAPI } from '../services/contactAPI';
 import '../styles/contact.css';
 
 const ContactForm = () => {
@@ -11,7 +11,7 @@ const ContactForm = () => {
         subject: '',
         message: ''
     });
-    const [status, setStatus] = useState('idle'); // idle, submitting, success, error
+    const [status, setStatus] = useState('idle');
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleChange = (e) => {
@@ -45,15 +45,12 @@ const ContactForm = () => {
                 <div className="card-header-gradient">
                     <div className="d-flex justify-content-between align-items-start">
                         <div>
-                            <h1 className="fw-bold text-white mb-3 display-5">CONTACT US</h1>
-                            <h3 className="fw-bold text-white mb-2">
-                                Envoyez-nous un message
-                            </h3>
-                            <p className="text-white-50 mb-0">
-                                Une question ou une réclamation ? Notre équipe est là pour vous aider.
+                            <h1 className="fw-bold text-white mb-3 display-4">Contactez-nous</h1>
+                            <p className="text-white-50 mb-0 fs-5">
+                                Nous sommes là pour vous aider 24h/24 et 7j/7
                             </p>
                         </div>
-                        <Link to="/home" className="text-white-50 text-decoration-none">
+                        <Link to="/home" className="btn-back-home">
                             ← Accueil
                         </Link>
                     </div>
@@ -90,7 +87,7 @@ const ContactForm = () => {
                                 </div>
                             )}
 
-                            <div className="form-floating mb-3">
+                            <div className="form-floating mb-4">
                                 <input
                                     type="text"
                                     className="form-control"
@@ -107,7 +104,7 @@ const ContactForm = () => {
                                 </label>
                             </div>
 
-                            <div className="form-floating mb-3">
+                            <div className="form-floating mb-4">
                                 <input
                                     type="email"
                                     className="form-control"
@@ -124,7 +121,7 @@ const ContactForm = () => {
                                 </label>
                             </div>
 
-                            <div className="form-floating mb-3">
+                            <div className="form-floating mb-4">
                                 <select
                                     className="form-select"
                                     id="subject"
@@ -162,29 +159,51 @@ const ContactForm = () => {
                                 </label>
                             </div>
 
-                            <div className="d-flex justify-content-between align-items-center">
-                                <Link to="/home" className="text-white text-decoration-none fw-bold">
-                                    Accueil
-                                </Link>
-                                <button
-                                    type="submit"
-                                    className="btn btn-gradient py-3 fw-bold rounded-3 shadow-sm transition-all px-5"
-                                    disabled={status === 'submitting'}
-                                >
-                                    {status === 'submitting' ? (
-                                        <span>
-                                            <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                            Envoi en cours...
-                                        </span>
-                                    ) : (
-                                        <span>
-                                            Envoyer le message <FaPaperPlane className="ms-2" />
-                                        </span>
-                                    )}
-                                </button>
-                            </div>
+                            <button
+                                type="submit"
+                                className="btn-submit w-100"
+                                disabled={status === 'submitting'}
+                            >
+                                {status === 'submitting' ? (
+                                    <span>
+                                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                        Envoi en cours...
+                                    </span>
+                                ) : (
+                                    <span>
+                                        Envoyer le message <FaPaperPlane className="ms-2" />
+                                    </span>
+                                )}
+                            </button>
                         </form>
                     )}
+                </div>
+            </div>
+
+            {/* Info Section */}
+            <div className="contact-info-section mt-5">
+                <div className="row g-4">
+                    <div className="col-md-4">
+                        <div className="info-card">
+                            <FaHeadset className="info-icon" />
+                            <h5>Support 24/7</h5>
+                            <p>Notre équipe est disponible à tout moment pour vous assister</p>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="info-card">
+                            <FaClock className="info-icon" />
+                            <h5>Réponse rapide</h5>
+                            <p>Nous répondons à tous vos messages sous 24h</p>
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <div className="info-card">
+                            <FaShieldAlt className="info-icon" />
+                            <h5>Confidentialité</h5>
+                            <p>Vos données sont protégées et sécurisées</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
