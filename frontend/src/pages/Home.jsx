@@ -1655,7 +1655,7 @@ const Home = () => {
       <div className="col-lg-6 text-center">
         <div className="d-inline-block p-4 rounded-4 bg-white shadow-lg">
           <QRCodeSVG
-            value="https://iridescent-pixie-56880a.netlify.app"
+            value="https://univertechno.netlify.app/home"
             size={220}
             fgColor="#4361ee"
             bgColor="#ffffff"
