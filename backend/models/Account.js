@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 
 const accountSchema = new mongoose.Schema({
   email: {
@@ -24,6 +25,14 @@ const accountSchema = new mongoose.Schema({
     ref: 'User',
     required: true,
     unique: true // Un compte est lié à un seul utilisateur
+  },
+  passwordResetToken: {
+    type: String,
+    default: null
+  },
+  passwordResetExpires: {
+    type: Date,
+    default: null
   }
 });
 
@@ -48,6 +57,15 @@ accountSchema.pre('save', async function (next) {
 // Méthode pour comparer les mots de passe
 accountSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
+};
+
+// Générer un token de réinitialisation : retourne le token en clair (à envoyer par email),
+// stocke uniquement son hash sha256 + une expiration 1h.
+accountSchema.methods.createPasswordResetToken = function () {
+  const rawToken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto.createHash('sha256').update(rawToken).digest('hex');
+  this.passwordResetExpires = Date.now() + 60 * 60 * 1000;
+  return rawToken;
 };
 
 // Vérifier si le compte est verrouillé

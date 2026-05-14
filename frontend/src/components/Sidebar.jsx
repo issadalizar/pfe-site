@@ -59,6 +59,11 @@ export default function Sidebar() {
       icon: <FaExchangeAlt className="me-2" style={{ color: "#4dc0ff" }} />,
       label: "Retours"
     },
+    {
+      path: "/admin/profile",
+      icon: <FaUserCircle className="me-2" style={{ color: "#4dc0ff" }} />,
+      label: "Mon profil"
+    },
   ];
 
   return (

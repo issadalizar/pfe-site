@@ -8,6 +8,7 @@ import {
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/login.css";
 import Login from "./Login";
+import { forgotPasswordAPI } from "../services/authService";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -36,6 +37,9 @@ const LoginPage = () => {
     email: 'admin@univertechno.tn',
     password: 'admin123'
   });
+
+  const [forgotData, setForgotData] = useState({ email: '' });
+  const [forgotSuccess, setForgotSuccess] = useState('');
 
   // États pour la validation
   const [errors, setErrors] = useState({});
@@ -86,6 +90,42 @@ const LoginPage = () => {
         ...errors,
         [e.target.name]: null
       });
+    }
+  };
+
+  const handleForgotChange = (e) => {
+    setForgotData({ ...forgotData, [e.target.name]: e.target.value });
+    if (errors[e.target.name] || errors.general) {
+      setErrors({ ...errors, [e.target.name]: null, general: null });
+    }
+    if (forgotSuccess) setForgotSuccess('');
+  };
+
+  const openForgotView = () => {
+    setForgotData({ email: '' });
+    setForgotSuccess('');
+    setErrors({});
+    setView('forgot');
+  };
+
+  const handleForgotSubmit = async (e) => {
+    e.preventDefault();
+    const newErrors = {};
+    if (!forgotData.email) newErrors.email = "L'email est requis";
+    else if (!/\S+@\S+\.\S+/.test(forgotData.email)) newErrors.email = "Email invalide";
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
+    setLoading(true);
+    try {
+      const data = await forgotPasswordAPI(forgotData.email);
+      setForgotSuccess(data.message || 'Si un compte existe, un email a été envoyé.');
+    } catch (err) {
+      setErrors({ general: err?.response?.data?.error || "Impossible d'envoyer la demande." });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -235,11 +275,13 @@ const LoginPage = () => {
                 {view === 'login' && 'Bienvenue'}
                 {view === 'signup' && 'Créer un compte'}
                 {view === 'admin' && 'Espace Administrateur'}
+                {view === 'forgot' && 'Mot de passe oublié'}
               </h2>
               <p className="text-white-50">
                 {view === 'login' && 'Connectez-vous pour accéder à votre espace client'}
                 {view === 'signup' && 'Rejoignez la communauté UniverTechno+'}
                 {view === 'admin' && 'Accès réservé aux administrateurs'}
+                {view === 'forgot' && 'Recevez un lien sécurisé par email pour réinitialiser votre mot de passe'}
               </p>
             </div>
 
@@ -349,9 +391,14 @@ const LoginPage = () => {
                           Se souvenir de moi
                         </label>
                       </div>
-                      <a href="#" className="text-decoration-none small" style={{ color: '#4361ee' }}>
+                      <button
+                        type="button"
+                        className="btn btn-link p-0 text-decoration-none small"
+                        style={{ color: '#4361ee' }}
+                        onClick={openForgotView}
+                      >
                         Mot de passe oublié ?
-                      </a>
+                      </button>
                     </div>
 
                     {/* Message d'erreur général */}
@@ -644,6 +691,80 @@ const LoginPage = () => {
                   </form>
                 )}
 
+                {/* FORMULAIRE MOT DE PASSE OUBLIÉ */}
+                {view === 'forgot' && (
+                  <form onSubmit={handleForgotSubmit}>
+                    <div className="mb-4">
+                      <label className="form-label small fw-medium text-secondary mb-2">
+                        Adresse email
+                      </label>
+                      <div className="position-relative">
+                        <FaEnvelope className="position-absolute" style={{
+                          left: '16px',
+                          top: '14px',
+                          color: '#94a3b8',
+                          fontSize: '18px'
+                        }} />
+                        <input
+                          type="email"
+                          name="email"
+                          className={`form-control rounded-3 border-0 bg-light ps-5 py-3 ${errors.email ? 'is-invalid' : ''}`}
+                          placeholder="votre@email.com"
+                          value={forgotData.email}
+                          onChange={handleForgotChange}
+                          style={{ backgroundColor: '#f8fafc' }}
+                          autoComplete="email"
+                          disabled={!!forgotSuccess}
+                        />
+                      </div>
+                      {errors.email && (
+                        <small className="text-danger mt-2 d-block">{errors.email}</small>
+                      )}
+                    </div>
+
+                    {forgotSuccess && (
+                      <div className="alert alert-success rounded-3 border-0 d-flex align-items-center gap-2 py-3 mb-4">
+                        <FaCheckCircle className="flex-shrink-0" />
+                        <small>{forgotSuccess}</small>
+                      </div>
+                    )}
+
+                    {errors.general && (
+                      <div className="alert alert-danger py-2 small mb-4">
+                        {errors.general}
+                      </div>
+                    )}
+
+                    {!forgotSuccess && (
+                      <button
+                        type="submit"
+                        className="btn w-100 py-3 rounded-3 fw-medium mb-3"
+                        disabled={loading}
+                        style={{
+                          background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                          color: 'white',
+                          border: 'none'
+                        }}
+                      >
+                        {loading && <span className="spinner-border spinner-border-sm me-2"></span>}
+                        {loading ? 'Envoi en cours...' : 'Envoyer le lien de réinitialisation'}
+                      </button>
+                    )}
+
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        className="btn btn-link text-decoration-none"
+                        onClick={() => { setView('login'); setErrors({}); setForgotSuccess(''); }}
+                        style={{ color: '#64748b' }}
+                      >
+                        <FaArrowLeft className="me-2" />
+                        Retour à la connexion
+                      </button>
+                    </div>
+                  </form>
+                )}
+
                 {/* FORMULAIRE ADMIN */}
                 {view === 'admin' && (
                   <form onSubmit={handleAdminSubmit}>
@@ -709,6 +830,18 @@ const LoginPage = () => {
                       {errors.password && (
                         <small className="text-danger mt-2 d-block">{errors.password}</small>
                       )}
+                    </div>
+
+                    {/* Lien mot de passe oublié */}
+                    <div className="text-end mb-3">
+                      <button
+                        type="button"
+                        className="btn btn-link p-0 text-decoration-none small"
+                        style={{ color: '#b5179e' }}
+                        onClick={openForgotView}
+                      >
+                        Mot de passe oublié ?
+                      </button>
                     </div>
 
                     {/* Message d'information */}

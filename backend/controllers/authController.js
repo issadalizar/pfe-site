@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import User from '../models/User.js';
 import Account from '../models/Account.js'; // AJOUT: Importer Account
+import { sendPasswordResetEmail } from '../utils/emailService.js';
 
 // Générer un token JWT
 const generateToken = (user) => {
@@ -181,6 +183,112 @@ export const getProfile = async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Erreur lors de la récupération du profil.'
+        });
+    }
+};
+
+// POST /api/auth/forgot-password - Demander un email de reinitialisation
+export const forgotPassword = async (req, res) => {
+    // Reponse generique : on repond toujours pareil pour eviter l'enumeration d'emails.
+    const genericResponse = {
+        success: true,
+        message: 'Si un compte existe avec cet email, un lien de reinitialisation a ete envoye.'
+    };
+
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                error: 'L\'email est requis.'
+            });
+        }
+
+        const account = await Account.findOne({ email: email.toLowerCase() });
+
+        // Email inconnu ou compte desactive : reponse generique sans envoyer de mail
+        if (!account || !account.actif) {
+            return res.json(genericResponse);
+        }
+
+        // Generer un token et l'enregistrer (hashe) dans l'Account
+        const rawToken = account.createPasswordResetToken();
+        await account.save({ validateBeforeSave: false });
+
+        const frontendURL = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const resetURL = `${frontendURL}/reset-password?token=${rawToken}`;
+
+        const result = await sendPasswordResetEmail(account.email, resetURL);
+
+        if (!result.success) {
+            // Echec d'envoi : nettoyer pour que le token ne reste pas valide sans email recu
+            account.passwordResetToken = null;
+            account.passwordResetExpires = null;
+            await account.save({ validateBeforeSave: false });
+            return res.status(500).json({
+                success: false,
+                error: 'Impossible d\'envoyer l\'email. Veuillez reessayer plus tard.'
+            });
+        }
+
+        return res.json(genericResponse);
+    } catch (error) {
+        console.error('Erreur forgotPassword:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la demande de reinitialisation.'
+        });
+    }
+};
+
+// POST /api/auth/reset-password - Definir un nouveau mot de passe a partir du token
+export const resetPassword = async (req, res) => {
+    try {
+        const { token, newPassword } = req.body;
+
+        if (!token || !newPassword) {
+            return res.status(400).json({
+                success: false,
+                error: 'Token et nouveau mot de passe sont requis.'
+            });
+        }
+
+        if (newPassword.length < 6) {
+            return res.status(400).json({
+                success: false,
+                error: 'Le nouveau mot de passe doit contenir au moins 6 caracteres.'
+            });
+        }
+
+        const hashed = crypto.createHash('sha256').update(token).digest('hex');
+
+        const account = await Account.findOne({
+            passwordResetToken: hashed,
+            passwordResetExpires: { $gt: Date.now() }
+        });
+
+        if (!account) {
+            return res.status(400).json({
+                success: false,
+                error: 'Lien invalide ou expire. Veuillez refaire une demande.'
+            });
+        }
+
+        account.password = newPassword; // re-hashe via le pre-save hook
+        account.passwordResetToken = null;
+        account.passwordResetExpires = null;
+        await account.save();
+
+        return res.json({
+            success: true,
+            message: 'Mot de passe reinitialise avec succes. Vous pouvez vous connecter.'
+        });
+    } catch (error) {
+        console.error('Erreur resetPassword:', error);
+        return res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la reinitialisation du mot de passe.'
         });
     }
 };
