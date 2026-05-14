@@ -3,9 +3,11 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaLock,
-  FaArrowLeft, FaStore, FaUserShield, FaEye, FaEyeSlash
+  FaArrowLeft, FaStore, FaUserShield, FaEye, FaEyeSlash,
+  FaCheckCircle
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { forgotPasswordAPI } from "../services/authService";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -15,10 +17,13 @@ const Login = () => {
 
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotInfo, setForgotInfo] = useState("");
 
   // Si déjà connecté, rediriger automatiquement
   if (isAuthenticated) {
@@ -118,6 +123,45 @@ const Login = () => {
       }
     } catch (err) {
       setError(err.response?.data?.error || "Erreur lors de l'inscription.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Demande de reinitialisation de mot de passe
+  const openForgotPassword = () => {
+    setError("");
+    setForgotInfo("");
+    setForgotEmail("");
+    setShowForgotPassword(true);
+  };
+
+  const closeForgotPassword = () => {
+    setShowForgotPassword(false);
+    setError("");
+    setForgotInfo("");
+  };
+
+  const handleForgotPasswordSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setForgotInfo("");
+
+    if (!forgotEmail) {
+      setError("L'email est requis.");
+      return;
+    }
+    if (!/\S+@\S+\.\S+/.test(forgotEmail)) {
+      setError("Email invalide.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const data = await forgotPasswordAPI(forgotEmail);
+      setForgotInfo(data.message || "Si un compte existe, un email a été envoyé.");
+    } catch (err) {
+      setError(err.response?.data?.error || "Impossible d'envoyer la demande.");
     } finally {
       setLoading(false);
     }
@@ -227,15 +271,19 @@ const Login = () => {
                       borderRadius: '30px',
                       color: '#4361ee'
                     }}>
-                    {showAdminLogin ? <FaUserShield size={40} /> : <FaUser size={40} />}
+                    {showForgotPassword ? <FaLock size={36} /> : (showAdminLogin ? <FaUserShield size={40} /> : <FaUser size={40} />)}
                   </div>
                   <h2 className="fw-bold" style={{ color: '#0f172a' }}>
-                    {showAdminLogin ? "Espace Administrateur" : (isLoginMode ? "Connexion" : "Créer un compte")}
+                    {showForgotPassword
+                      ? "Mot de passe oublié"
+                      : (showAdminLogin ? "Espace Administrateur" : (isLoginMode ? "Connexion" : "Créer un compte"))}
                   </h2>
                   <p className="text-muted">
-                    {showAdminLogin
-                      ? "Accès réservé aux administrateurs"
-                      : (isLoginMode ? "Connectez-vous à votre compte" : "Rejoignez UniverTechno+")}
+                    {showForgotPassword
+                      ? "Recevez un lien sécurisé par email pour réinitialiser votre mot de passe"
+                      : (showAdminLogin
+                        ? "Accès réservé aux administrateurs"
+                        : (isLoginMode ? "Connectez-vous à votre compte" : "Rejoignez UniverTechno+"))}
                   </p>
                 </div>
 
@@ -253,7 +301,7 @@ const Login = () => {
                 )}
 
                 {/* Admin Login Link */}
-                {!showAdminLogin && (
+                {!showAdminLogin && !showForgotPassword && (
                   <div className="text-center mb-4">
                     <button
                       onClick={() => { setShowAdminLogin(true); setError(""); }}
@@ -267,7 +315,7 @@ const Login = () => {
                 )}
 
                 {/* Back to Client Login */}
-                {showAdminLogin && (
+                {showAdminLogin && !showForgotPassword && (
                   <div className="text-center mb-4">
                     <button
                       onClick={() => { setShowAdminLogin(false); setError(""); }}
@@ -280,8 +328,76 @@ const Login = () => {
                   </div>
                 )}
 
+                {/* Forgot Password Form */}
+                {showForgotPassword && (
+                  <form onSubmit={handleForgotPasswordSubmit}>
+                    <div className="mb-4">
+                      <label className="form-label fw-medium text-secondary">
+                        Adresse email
+                      </label>
+                      <div className="input-group">
+                        <span className="input-group-text bg-light border-0">
+                          <FaEnvelope style={{ color: '#4361ee' }} />
+                        </span>
+                        <input
+                          type="email"
+                          className="form-control border-0 bg-light"
+                          placeholder="votre@email.com"
+                          value={forgotEmail}
+                          onChange={(e) => { setForgotEmail(e.target.value); setError(""); setForgotInfo(""); }}
+                          required
+                          disabled={loading || !!forgotInfo}
+                          style={{ padding: '0.75rem' }}
+                          autoComplete="email"
+                        />
+                      </div>
+                    </div>
+
+                    {forgotInfo && (
+                      <div className="alert alert-success rounded-3 d-flex align-items-center gap-2 py-3" role="alert">
+                        <FaCheckCircle className="flex-shrink-0" />
+                        <small>{forgotInfo}</small>
+                      </div>
+                    )}
+
+                    {!forgotInfo && (
+                      <button
+                        type="submit"
+                        className="btn w-100 py-3 rounded-pill mb-3"
+                        disabled={loading}
+                        style={{
+                          background: 'linear-gradient(145deg, #4361ee, #3a0ca3)',
+                          border: 'none',
+                          color: 'white',
+                          fontWeight: '600',
+                          opacity: loading ? 0.7 : 1
+                        }}
+                      >
+                        {loading ? (
+                          <>
+                            <span className="spinner-border spinner-border-sm me-2" />
+                            Envoi en cours...
+                          </>
+                        ) : "Envoyer le lien"}
+                      </button>
+                    )}
+
+                    <div className="text-center">
+                      <button
+                        type="button"
+                        onClick={closeForgotPassword}
+                        className="btn btn-link text-decoration-none p-0"
+                        style={{ color: '#64748b' }}
+                      >
+                        <FaArrowLeft className="me-2" />
+                        Retour à la connexion
+                      </button>
+                    </div>
+                  </form>
+                )}
+
                 {/* Admin Login Form */}
-                {showAdminLogin && (
+                {showAdminLogin && !showForgotPassword && (
                   <form onSubmit={handleAdminLogin}>
                     <div className="mb-4">
                       <label className="form-label fw-medium text-secondary">
@@ -353,11 +469,22 @@ const Login = () => {
                         </>
                       ) : "Connexion Admin"}
                     </button>
+
+                    <p className="text-center mb-0">
+                      <button
+                        type="button"
+                        onClick={openForgotPassword}
+                        className="btn btn-link p-0 text-decoration-none"
+                        style={{ color: '#f72585', fontWeight: '600' }}
+                      >
+                        Mot de passe oublié ?
+                      </button>
+                    </p>
                   </form>
                 )}
 
                 {/* Client Forms */}
-                {!showAdminLogin && (
+                {!showAdminLogin && !showForgotPassword && (
                   <>
                     {/* Login Form */}
                     {isLoginMode ? (
@@ -432,6 +559,17 @@ const Login = () => {
                             </>
                           ) : "Se connecter"}
                         </button>
+
+                        <p className="text-center mb-2">
+                          <button
+                            type="button"
+                            onClick={openForgotPassword}
+                            className="btn btn-link p-0 text-decoration-none small"
+                            style={{ color: '#4361ee' }}
+                          >
+                            Mot de passe oublié ?
+                          </button>
+                        </p>
 
                         <p className="text-center mb-0">
                           <span className="text-muted">Pas encore de compte ? </span>

@@ -4707,6 +4707,41 @@ export const cncProductDetails = {
       "stockUpdated": false,
       "createdAt": "2026-04-07T11:32:36.761Z",
       "updatedAt": "2026-04-27T11:23:12.103Z"
+    },
+    "69fa6fd50b56f377671e83ee": {
+      "user": "69cbafe47074bd9355f218cf",
+      "items": [
+        {
+          "productId": "697f55259e5f50c871efa21f",
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 97.99,
+          "_id": "69fa6fd50b56f377671e83ef"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "Seif Boulabiar",
+        "email": "boulabiarseif55@gmail.com",
+        "phone": "25372382",
+        "address": "khaznadar",
+        "city": "Le Bardo",
+        "postalCode": "2000"
+      },
+      "totalAmount": 97.99,
+      "paymentMethod": "stripe",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69fa6fd50b56f377671e83ee",
+      "createdAt": "2026-05-05T22:31:49.143Z",
+      "updatedAt": "2026-05-05T22:31:49.884Z",
+      "stripeSessionId": "cs_test_a1ahhv4kn5k0nN0T4deXejEQWJmRlBueYTGcgMbfFnM7N7PD0YoZVFf5Bp"
     }
   }
 };
