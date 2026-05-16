@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: pfe_mongo
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - pfe_network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pfe_backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongo:27017/pfe_db
+      - NODE_ENV=production
+    depends_on:
+      - mongo
+    volumes:
+      - ./backend/uploads:/app/uploads
+    networks:
+      - pfe_network
+
+  backend-python:
+    build:
+      context: ./backend-python  # Changé de '.' à './backend-python'
+      dockerfile: Dockerfile
+    container_name: pfe_backend_python
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_PORT=5001
+      - FLASK_ENV=production
+    networks:
+      - pfe_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pfe_frontend
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - backend-python  # Ajout de la dépendance Python
+    networks:
+      - pfe_network
+
+networks:
+  pfe_network:
+    driver: bridge
+
+volumes:
+  mongo_data:

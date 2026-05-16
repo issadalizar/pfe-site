@@ -2,12 +2,13 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import Account from '../models/Account.js';
-
+//user
 export const protect = async (req, res, next) => {
   try {
     let token;
-// Vérifier que le token est présent dans les headers(les en-têtes de la requête) et commence par "Bearer"
+// Vérifier que le token est présent dans les headers(les en-têtes de la requête) 
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+      //bearer c'est un standard pour les tokens d'authentification(exemple authorization)
       token = req.headers.authorization.split(' ')[1];
     }
 
@@ -18,7 +19,7 @@ export const protect = async (req, res, next) => {
       });
     }
 
-    // Vérifier le token
+    // Vérifier le token selon .env.JWT_SECRET et extraire les informations de l'utilisateur
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findById(decoded.id);
@@ -55,7 +56,7 @@ export const protect = async (req, res, next) => {
     return;
   }
 };
-
+//admin
 export const adminOnly = (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();

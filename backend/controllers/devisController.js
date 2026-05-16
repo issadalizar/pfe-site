@@ -1,8 +1,6 @@
 import Devis from '../models/Devis.js';
 
-// @desc    Récupérer tous les devis
-// @route   GET /api/devis
-// @access  Private (Admin)
+//    Récupérer tous les devis
 export const getAllDevis = async (req, res) => {
     try {
         const devis = await Devis.find().sort({ createdAt: -1 });
@@ -19,12 +17,11 @@ export const getAllDevis = async (req, res) => {
     }
 };
 
-// @desc    Récupérer un devis par ID
-// @route   GET /api/devis/:id
-// @access  Private (Admin)
+//    Récupérer un devis par ID
 export const getDevisById = async (req, res) => {
     try {
         const devis = await Devis.findById(req.params.id);
+        //on ecrit req.params.id pour recuperer l'id du devis a partir de l'url
         
         if (!devis) {
             return res.status(404).json({
@@ -45,9 +42,7 @@ export const getDevisById = async (req, res) => {
     }
 };
 
-// @desc    Créer un nouveau devis
-// @route   POST /api/devis
-// @access  Public
+//    Créer un nouveau devis
 export const createDevis = async (req, res) => {
     try {
         const devisData = {
@@ -70,9 +65,7 @@ export const createDevis = async (req, res) => {
     }
 };
 
-// @desc    Mettre à jour le statut d'un devis
-// @route   PATCH /api/devis/:id/status
-// @access  Private (Admin)
+// Mettre à jour le statut d'un devis
 export const updateDevisStatus = async (req, res) => {
     try {
         const { id } = req.params;
@@ -111,9 +104,7 @@ export const updateDevisStatus = async (req, res) => {
     }
 };
 
-// @desc    Supprimer un devis
-// @route   DELETE /api/devis/:id
-// @access  Private (Admin)
+//    Supprimer un devis
 export const deleteDevis = async (req, res) => {
     try {
         const { id } = req.params;
@@ -138,9 +129,7 @@ export const deleteDevis = async (req, res) => {
     }
 };
 
-// @desc    Récupérer les statistiques des devis
-// @route   GET /api/devis/stats
-// @access  Private (Admin)
+//    Récupérer les statistiques des devis
 export const getDevisByProduct = async (req, res) => {
     try {
         const devis = await Devis.find({ product: req.params.productId })

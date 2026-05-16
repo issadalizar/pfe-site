@@ -3,59 +3,178 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover" />
+    <title>UniVerTechno+</title>
     
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-
-    <title>Gestion des Utilisateurs - PFE</title>
-
-    <!-- Icône Vite -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-
-    <!-- Bootstrap 5 CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
-      crossorigin="anonymous"
-    />
-
-    <!-- Bootstrap Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
-    />
-
-    <!-- Leaflet CSS pour les cartes -->
-    <link 
-      rel="stylesheet" 
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" 
-    />
+    <!-- STYLE RESPONSIVE UNIQUEMENT POUR MOBILE -->
+    <style>
+      /* Ces styles s'appliquent UNIQUEMENT sur mobile (moins de 768px) */
+      @media screen and (max-width: 768px) {
+        
+        /* Forcer tout le contenu à ne pas déborder */
+        html, body, #root {
+          overflow-x: hidden !important;
+          width: 100% !important;
+        }
+        
+        /* Supprimer la marge gauche fixe de l'admin (250px) */
+        div[style*="margin-left: 250px"],
+        .admin-main-content {
+          margin-left: 0 !important;
+          width: 100% !important;
+        }
+        
+        /* Tous les conteneurs prennent 100% */
+        .container, .container-fluid {
+          padding-left: 12px !important;
+          padding-right: 12px !important;
+        }
+        
+        /* Header - logo et icônes plus petits */
+        header .d-flex.align-items-center .me-3 {
+          width: 40px !important;
+          height: 40px !important;
+          font-size: 20px !important;
+        }
+        
+        header h1 {
+          font-size: 1.2rem !important;
+        }
+        
+        header .rounded-circle {
+          width: 38px !important;
+          height: 38px !important;
+        }
+        
+        header .rounded-circle svg {
+          font-size: 16px !important;
+        }
+        
+        /* Hero section */
+        #home {
+          min-height: 70vh !important;
+        }
+        
+        #home h1 {
+          font-size: 1.6rem !important;
+        }
+        
+        #home .lead {
+          font-size: 0.95rem !important;
+        }
+        
+        #home .btn {
+          padding: 8px 16px !important;
+          font-size: 0.85rem !important;
+        }
+        
+        /* Cards - pleine largeur */
+        .card {
+          width: 100% !important;
+          margin-bottom: 15px !important;
+        }
+        
+        /* Images responsives */
+        img {
+          max-width: 100% !important;
+          height: auto !important;
+        }
+        
+        /* Footer centré */
+        footer {
+          text-align: center !important;
+        }
+        
+        footer .d-flex.gap-3 {
+          justify-content: center !important;
+        }
+        
+        /* QR Code section */
+        .qr-section .row {
+          flex-direction: column-reverse !important;
+          text-align: center !important;
+        }
+        
+        /* Newsletter formulaire en colonne */
+        .newsletter-form {
+          flex-direction: column !important;
+        }
+        
+        .newsletter-form input,
+        .newsletter-form button {
+          width: 100% !important;
+        }
+        
+        /* Boutons pleine largeur */
+        .btn {
+          width: 100% !important;
+          margin-bottom: 8px !important;
+        }
+        
+        /* Boutons en groupe (Contact + Localisation) */
+        .d-flex.flex-wrap.gap-4 {
+          flex-direction: column !important;
+          align-items: center !important;
+        }
+        
+        .d-flex.flex-wrap.gap-4 .btn {
+          width: 80% !important;
+        }
+        
+        /* Inputs ne zooment pas sur iOS */
+        input, select, textarea {
+          font-size: 16px !important;
+        }
+      }
+      
+      /* Très petits écrans (moins de 480px) */
+      @media screen and (max-width: 480px) {
+        #home h1 {
+          font-size: 1.3rem !important;
+        }
+        
+        h2 {
+          font-size: 1.2rem !important;
+        }
+        
+        .container {
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+        }
+      }
+      @keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+    </style>
     
-    <!-- Leaflet Marker Cluster CSS -->
-    <link 
-      rel="stylesheet" 
-      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" 
-    />
-    <link 
-      rel="stylesheet" 
-      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" 
-    />
+    <script>
+      (function() {
+        function setScreenClass() {
+          if (!document.body) return;
+          const width = window.innerWidth;
+          const body = document.body;
+          body.classList.remove('phone-small', 'phone', 'tablet');
+          if (width < 480) body.classList.add('phone-small');
+          else if (width < 768) body.classList.add('phone');
+          else if (width < 1024) body.classList.add('tablet');
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', setScreenClass);
+        } else {
+          setScreenClass();
+        }
+        window.addEventListener('resize', setScreenClass);
+        window.addEventListener('orientationchange', setScreenClass);
+      })();
+    </script>
   </head>
-
   <body>
-    <!-- Point de montage React -->
     <div id="root"></div>
-
-    <!-- Bootstrap JS Bundle (Popper inclus) -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-      crossorigin="anonymous"
-    ></script>
-
-    <!-- Script principal Vite / React -->
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

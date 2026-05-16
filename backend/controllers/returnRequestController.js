@@ -1,6 +1,5 @@
 import ReturnRequest from '../models/ReturnRequest.js';
 import Order from '../models/Order.js';
-import { sendReturnRequestNotificationEmail } from '../utils/emailService.js';
 
 // POST /api/return-requests - Créer une demande de retour/échange (client)
 export const createReturnRequest = async (req, res) => {
@@ -71,8 +70,6 @@ export const createReturnRequest = async (req, res) => {
             items
         });
 
-        sendReturnRequestNotificationEmail(returnRequest, order)
-            .catch(err => console.error('Erreur email notification retour:', err));
 
         res.status(201).json({
             success: true,
@@ -121,7 +118,7 @@ export const getReturnRequestAnalytics = async (req, res) => {
         // DEBUG: compter toutes les commandes
         const totalOrders = await Order.countDocuments({});
         const paidOrders = await Order.countDocuments({ paymentStatus: 'paid' });
-        console.log(`📊 Total commandes: ${totalOrders}, Payées: ${paidOrders}`);
+        console.log(` Total commandes: ${totalOrders}, Payées: ${paidOrders}`);
 
         const soldProducts = await Order.aggregate([
             { $match: { paymentStatus: 'paid' } },
@@ -141,7 +138,7 @@ export const getReturnRequestAnalytics = async (req, res) => {
             }
         ]);
 
-        console.log('✅ soldProducts:', JSON.stringify(soldProducts));
+        console.log(' soldProducts:', JSON.stringify(soldProducts));
 
         const returnCounts = await ReturnRequest.aggregate([
             { $unwind: '$items' },
@@ -176,7 +173,7 @@ export const getReturnRequestAnalytics = async (req, res) => {
             }
         ]);
 
-        console.log('✅ returnCounts:', JSON.stringify(returnCounts));
+        console.log(' returnCounts:', JSON.stringify(returnCounts));
 
         const soldMap = new Map(soldProducts.map(item => [item.productName, item.totalSoldQuantity]));
         const returnMap = new Map(returnCounts.map(item => [item.productName, item]));
@@ -186,7 +183,7 @@ export const getReturnRequestAnalytics = async (req, res) => {
             ...returnCounts.map(item => item.productName)
         ]);
 
-        console.log('✅ allProductNames:', [...allProductNames]);
+        console.log(' allProductNames:', [...allProductNames]);
 
         const productsWithRates = Array.from(allProductNames).map((productName) => {
             const soldQty = soldMap.get(productName) || 0;
@@ -216,7 +213,7 @@ export const getReturnRequestAnalytics = async (req, res) => {
             })
             .slice(0, 8);
 
-        console.log('✅ productsWithRates:', JSON.stringify(productsWithRates));
+        console.log(' productsWithRates:', JSON.stringify(productsWithRates));
 
         res.json({ success: true, products: productsWithRates });
     } catch (error) {

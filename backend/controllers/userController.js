@@ -1,10 +1,7 @@
 import User from '../models/User.js';
 import Account from '../models/Account.js';
 
-// req contient les données envoyées par le client 
-// res est utilisé pour envoyer une réponse au client
-
-// POST - Créer un utilisateur (SANS email, password, actif)
+// POST - Créer un utilisateur
 export const createUser = async (req, res) => {
   try {
     const { 
@@ -13,32 +10,24 @@ export const createUser = async (req, res) => {
       adresse,
       telephone,
       isAdmin
-      // SUPPRIMÉ: email, actif (maintenant dans Account)
     } = req.body;
 
-    // Validation des champs requis
     if (!client_code || !client_name) {
       return res.status(400).json({ 
-        error: 'Les champs codeClient et nomClient sont requis' 
+        error: 'Les champs client_code et client_name sont requis' 
       });
     }
 
-    // Créer le nouvel utilisateur SANS email/actif
+    // Créer le nouvel utilisateur 
     const newUser = new User({
       client_code: client_code.toUpperCase(),    
       client_name: client_name,
       adresse: adresse || '',
       telephone: telephone || '',
       isAdmin: isAdmin !== undefined ? isAdmin : false
-      // SUPPRIMÉ: email, actif
     });
     
-    // Enregistrer dans la base de données
     const savedUser = await newUser.save();
-    
-    // Note: Le compte (Account) doit être créé séparément via /api/accounts
-    // Ou via l'inscription /api/auth/register
-    
     res.status(201).json(savedUser);
   } catch (error) {
     if (error.name === 'ValidationError') {
@@ -64,8 +53,6 @@ export const bulkCreateUsers = async (req, res) => {
       });
     }
 
-    // SUPPRIMÉ: Validation des emails (plus dans User)
-
     // Traiter chaque utilisateur
     const processedUsers = users.map(user => ({
       client_code: user.client_code?.toUpperCase(),
@@ -73,13 +60,9 @@ export const bulkCreateUsers = async (req, res) => {
       adresse: user.adresse || '',
       telephone: user.telephone || '',
       isAdmin: user.isAdmin !== undefined ? user.isAdmin : false
-      // SUPPRIMÉ: email, actif
     }));
 
     const savedUsers = await User.insertMany(processedUsers);
-    
-    // Note: Les comptes (Account) doivent être créés séparément
-    
     res.status(201).json({
       message: `${savedUsers.length} utilisateurs créés avec succès`,
       users: savedUsers
@@ -98,23 +81,17 @@ export const bulkCreateUsers = async (req, res) => {
 };
 
 // GET - Récupérer tous les utilisateurs avec leurs comptes associés
-// GET - Récupérer tous les utilisateurs avec leurs comptes associés
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find().sort({ createdAt: -1 });
     
-    // Récupérer tous les comptes associés
     const usersWithAccounts = await Promise.all(
       users.map(async (user) => {
         const account = await Account.findOne({ user: user._id });
-        
-        // FORCER une date valide pour createdAt
         let validCreatedAt = user.createdAt;
-        
-        // Si createdAt n'existe pas ou est invalide, utiliser la date actuelle
         if (!validCreatedAt || isNaN(new Date(validCreatedAt).getTime())) {
-          validCreatedAt = new Date(); // Date actuelle comme fallback
-          console.log(`⚠️ Date invalide pour ${user.client_name}, utilisation de la date actuelle`);
+          validCreatedAt = new Date();
+          console.log(`Date invalide pour ${user.client_name}, utilisation de la date actuelle`);
         }
         
         return {
@@ -124,7 +101,7 @@ export const getAllUsers = async (req, res) => {
           adresse: user.adresse,
           telephone: user.telephone,
           isAdmin: user.isAdmin,
-          createdAt: validCreatedAt,  // Date garantie valide
+          createdAt: validCreatedAt, 
           email: account?.email || null,
           actif: account?.actif || false
         };
@@ -175,7 +152,6 @@ export const updateUser = async (req, res) => {
       adresse,
       telephone,
       isAdmin
-      // SUPPRIMÉ: email, actif (maintenant dans Account)
     } = req.body;
     
     const user = await User.findById(req.params.id);
@@ -183,8 +159,6 @@ export const updateUser = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
-
-    // Mettre à jour les champs User uniquement
     if (client_code) user.client_code = client_code.toUpperCase();
     if (client_name) user.client_name = client_name;
     if (adresse !== undefined) user.adresse = adresse;
@@ -224,14 +198,12 @@ export const toggleUserStatus = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
-
-    // Récupérer le compte associé
     const account = await Account.findOne({ user: user._id });
     if (!account) {
       return res.status(404).json({ error: 'Compte associé non trouvé' });
     }
 
-    // Modifier le statut dans Account (plus dans User)
+    // Modifier le statut (actif/inactif)
     account.actif = !account.actif;
     await account.save();
 
@@ -251,7 +223,7 @@ export const toggleUserStatus = async (req, res) => {
   }
 };
 
-// DELETE - Supprimer un utilisateur et son compte associé
+// DELETE - Supprimer un utilisateur 
 export const deleteUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -259,18 +231,11 @@ export const deleteUser = async (req, res) => {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
 
-    // Supprimer d'abord le compte associé
-    await Account.deleteOne({ user: user._id });
-    
-    // Puis supprimer l'utilisateur
     await User.findByIdAndDelete(req.params.id);
 
     res.json({ 
       message: 'Utilisateur et compte associé supprimés avec succès',
-      user: {
-        ...user.toJSON(),
-        message: 'Compte également supprimé'
-      }
+      user: user.toJSON()
     });
   } catch (error) {
     if (error.name === 'CastError') {
@@ -283,7 +248,7 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// AJOUT: Nouvelle fonction pour mettre à jour User et Account en une seule requête
+// Mettre à jour User et Account en une seule requête
 export const updateUserAndAccount = async (req, res) => {
   try {
     const { 

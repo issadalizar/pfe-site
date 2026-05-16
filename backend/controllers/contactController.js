@@ -43,8 +43,7 @@ export const getContacts = async (req, res) => {
     }
 };
 
-//   Mettre à jour le statut d'un message
-//  Private (admin)
+//   Mettre à jour le statut d'un message à partir de admin
 export const updateContactStatus = async (req, res) => {
     try {
         const { status } = req.body;
@@ -71,7 +70,6 @@ export const updateContactStatus = async (req, res) => {
 };
 
 //   Supprimer un message de contact
-//  Private (admin)
 export const deleteContact = async (req, res) => {
     try {
         const contact = await Contact.findByIdAndDelete(req.params.id);

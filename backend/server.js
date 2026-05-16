@@ -1,7 +1,8 @@
 // backend/server.js
 import express from 'express';
-import cors from 'cors';
+import cors from 'cors';//  CORS pour le développement local
 import dotenv from 'dotenv';
+// Multer pour les uploads de fichiers et dotenv pour les variables d'environnement
 import { connectDB } from './config/database.js';
 import userRoutes from './routes/userRoutes.js';
 import categoryRoutes from './routes/categories.js';
@@ -11,37 +12,34 @@ import mongoose from 'mongoose';
 import devisRoutes from './routes/devisRoutes.js';
 import authRoutes from './routes/authRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
+
 import { protect, adminOnly } from './middleware/authMiddleware.js';
 import { handleStripeWebhook, createCheckoutSession } from './controllers/orderController.js';
+
 import specificationRoutes from './routes/specificationRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 import productDataRoutes from './routes/productDataRoutes.js';
-// AJOUT: Routes de synchronisation
 import syncRoutes from './routes/syncRoutes.js';
 import returnRequestRoutes from './routes/returnRequestRoutes.js';
 import factureRoutes from './routes/factureRoutes.js';
-// AJOUT: Service de synchronisation
+//  Service de synchronisation
 import dataSyncService from './services/dataSyncService.js';
 
-// ========== NOUVEAU: IMPORT POUR LA VISUALISATION 3D ==========
-import product3dRoutes from './routes/product3dRoutes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-// Obtenir __dirname équivalent en ES modules
+//configuration de base de données  
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-// ===============================================================
 
-// Charger les variables d'environnement
 dotenv.config();
 
-// Éviter que le processus ne tombe sur une exception non gérée (connexion reset côté client)
+// gestion des erreurs non capturées pour éviter les crashs silencieux
 process.on('uncaughtException', (err) => {
-  console.error('❌ uncaughtException:', err && err.message, err && err.stack);
+  console.error(' uncaughtException:', err && err.message, err && err.stack);
 });
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ unhandledRejection:', reason);
+  console.error(' unhandledRejection:', reason);
 });
 
 const app = express();
@@ -55,12 +53,12 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Webhook Stripe (doit etre AVANT express.json car Stripe a besoin du raw body)
+// Middleware pour Stripe Webhooks (doit être avant express.json())
 app.post('/api/orders/webhook', express.raw({ type: 'application/json' }), handleStripeWebhook);
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));// Middleware pour gérer les données de formulaire (pour les uploads de fichiers)
 
-// ========== NOUVEAU: Configuration pour les fichiers 3D ==========
+
 // Créer le dossier uploads/models3d s'il n'existe pas
 import fs from 'fs';
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -77,9 +75,7 @@ if (!fs.existsSync(virementsDir)) {
   fs.mkdirSync(virementsDir, { recursive: true });
 }
 
-// Servir les fichiers statiques 3D
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-// =================================================================
 
 // Middleware de logging pour le débogage
 app.use((req, res, next) => {
@@ -87,19 +83,19 @@ app.use((req, res, next) => {
   next();
 });
 
-// Connexion à MongoDB (ne bloque pas le démarrage du serveur)
+// Connexion à MongoDB 
 connectDB().catch((err) => {
   console.error(' Erreur lors de la connexion MongoDB:', err.message);
   console.log(' Le serveur continue de fonctionner, mais les routes nécessitent MongoDB');
 });
 
-// AJOUT: Initialiser la synchronisation après connexion MongoDB
+//Initialiser la synchronisation après connexion MongoDB
 mongoose.connection.once('open', async () => {
   console.log(' MongoDB connecté, initialisation de la synchronisation...');
   await dataSyncService.initializeOnStartup();
 });
 
-// Route racine (mise à jour avec les nouvelles routes)
+// CRUD de base pour vérifier que le serveur fonctionne
 app.get('/', (req, res) => {
   res.json({
     message: 'API Backend PFE - CNC Education',
@@ -148,13 +144,11 @@ app.get('/', (req, res) => {
         delete: 'DELETE /api/devis/:id',
         stats: 'GET /api/devis/stats'
       },
-      // AJOUT: Routes de synchronisation
       sync: {
         status: 'GET /api/sync/status',
         all: 'POST /api/sync/all',
         products: 'POST /api/sync/products'
       },
-      // ========== NOUVEAU: Routes 3D ==========
       models3d: {
         list: 'GET /api/models3d',
         getByProduct: 'GET /api/models3d/product/:productId',
@@ -162,7 +156,6 @@ app.get('/', (req, res) => {
         update: 'PUT /api/models3d/:modelId',
         delete: 'DELETE /api/models3d/:modelId'
       }
-      // =========================================
     }
   });
 });
@@ -188,10 +181,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Routes d'authentification (publiques)
+// Routes 
 app.use('/api/auth', authRoutes);
-
-// Routes
 app.use('/api/categories', categoryRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/product-data', productDataRoutes);
@@ -201,16 +192,13 @@ app.use('/api/devis', devisRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/specifications', specificationRoutes);
 app.use('/api/notifications', notificationRoutes);
-// AJOUT: Routes de synchronisation
 app.use('/api/sync', syncRoutes);
 app.use('/api/return-requests', returnRequestRoutes);
 app.use('/api/factures', factureRoutes);
 
-// ========== NOUVEAU: Routes 3D ==========
-app.use('/api/models3d', product3dRoutes);
-// =========================================
 
-// Gestion des erreurs 404 (doit être après toutes les routes)
+
+// Gestion des erreurs 404 
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -250,17 +238,14 @@ app.use((req, res) => {
       'PATCH /api/devis/:id/status',
       'DELETE /api/devis/:id',
       'GET /api/devis/stats',
-      // AJOUT: Routes sync
       'GET /api/sync/status',
       'POST /api/sync/all',
       'POST /api/sync/products',
-      // ========== NOUVEAU: Routes 3D ==========
       'GET /api/models3d',
       'GET /api/models3d/product/:productId',
       'POST /api/models3d/upload/:productId',
       'PUT /api/models3d/:modelId',
       'DELETE /api/models3d/:modelId'
-      // =========================================
     ]
   });
 });
@@ -286,7 +271,6 @@ app.listen(PORT, () => {
   console.log(` API Sync: http://localhost:${PORT}/api/sync/status`);
   console.log(`   - POST /api/sync/all (synchronisation complète)`);
   console.log(`   - POST /api/sync/products (synchronisation produits)`);
-  // ========== NOUVEAU: Logs 3D ==========
   console.log(` API 3D Models: http://localhost:${PORT}/api/models3d`);
   console.log(`   - GET /api/models3d (liste tous les modèles)`);
   console.log(`   - GET /api/models3d/product/:productId (modèle d'un produit)`);
@@ -294,7 +278,6 @@ app.listen(PORT, () => {
   console.log(`   - PUT /api/models3d/:modelId (mise à jour)`);
   console.log(`   - DELETE /api/models3d/:modelId (suppression)`);
   console.log(` Fichiers 3D: ${models3dDir}`);
-  // =======================================
   console.log(` Fichier de synchronisation: backend/data/productData.js`);
 });
 

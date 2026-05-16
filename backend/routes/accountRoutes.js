@@ -1,29 +1,15 @@
 import express from 'express';
-import {
-  createAccount,
-  bulkCreateAccounts,
-  getAllAccounts,
-  getAccountById,
-  getAccountByEmail,
-  updateAccount,
-  changePassword,
-  toggleAccountStatus,
-  deleteAccount,
-  resetLoginAttempts
-} from '../controllers/accountController.js';
+import { register, login, getProfile, updateProfile } from '../controllers/authController.js';
+import { register, login, getProfile, updateProfile, forgotPassword, resetPassword } from '../controllers/authController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Routes CRUD de base
-router.post('/', createAccount);
-router.post('/bulk', bulkCreateAccounts);
-router.get('/', getAllAccounts);
-router.get('/:id', getAccountById);
-router.get('/email/:email', getAccountByEmail);
-router.put('/:id', updateAccount);
-router.patch('/:id/change-password', changePassword);
-router.patch('/:id/toggle', toggleAccountStatus);
-router.patch('/:id/reset-login-attempts', resetLoginAttempts);
-router.delete('/:id', deleteAccount);
+// Routes publiques
+router.post('/register', register);
+router.post('/login', login);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 
-export default router;
+// Routes protégées
+router.get('/profile', protect, getProfile);

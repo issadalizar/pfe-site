@@ -1,0 +1,168 @@
+/* ===== FORCER LE RESPONSIVE SUR TOUS LES ÉCRANS ===== */
+
+/* 1. Bloquer tout débordement horizontal */
+html, body, #root, .home-page, .App, .d-flex, .vh-100 {
+  overflow-x: hidden !important;
+  max-width: 100% !important;
+}
+
+/* 2. Forcer tous les conteneurs à prendre 100% de largeur */
+div, section, header, footer, main, article, aside {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+/* 3. Supprimer TOUTES les largeurs fixes */
+[style*="width:"] {
+  max-width: 100% !important;
+  width: auto !important;
+}
+
+/* 4. Pour les conteneurs flex qui dépassent */
+.d-flex {
+  flex-wrap: wrap !important;
+}
+
+/* 5. Version mobile (moins de 768px) */
+@media screen and (max-width: 768px) {
+  
+  /* Tout ce qui a une largeur fixe devient 100% */
+  [style*="width:"] {
+    width: 100% !important;
+    min-width: auto !important;
+  }
+  
+  /* Header mobile */
+  header .container-fluid,
+  header .container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+  
+  /* Logo et titre */
+  header .d-flex.align-items-center {
+    flex: 1 !important;
+  }
+  
+  /* Cacher la recherche desktop sur mobile */
+  .d-none.d-md-block {
+    display: none !important;
+  }
+  
+  /* Icônes plus petites */
+  header .rounded-circle {
+    width: 35px !important;
+    height: 35px !important;
+  }
+  
+  /* Hero section */
+  #home {
+    min-height: 60vh !important;
+    padding: 40px 0 !important;
+  }
+  
+  #home h1 {
+    font-size: 1.5rem !important;
+  }
+  
+  #home .lead {
+    font-size: 0.9rem !important;
+  }
+  
+  #home .btn {
+    padding: 8px 16px !important;
+    font-size: 0.8rem !important;
+    width: auto !important;
+  }
+  
+  /* Cards - forcer pleine largeur */
+  .card {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  /* Grille produits - 1 ou 2 colonnes */
+  .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .col-lg-4, .col-md-6, .col-sm-12 {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  
+  /* Images */
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  
+  /* Footer */
+  footer .row {
+    text-align: center !important;
+  }
+  
+  footer .d-flex {
+    justify-content: center !important;
+  }
+  
+  /* QR Code */
+  .qr-section .row {
+    flex-direction: column-reverse !important;
+  }
+  
+  /* Boutons en pleine largeur sur mobile */
+  .btn-group-mobile,
+  button.btn {
+    width: 100% !important;
+    margin-bottom: 10px !important;
+  }
+  
+  /* Formulaire newsletter */
+  .newsletter-form {
+    flex-direction: column !important;
+  }
+  
+  .newsletter-form input,
+  .newsletter-form button {
+    width: 100% !important;
+  }
+}
+
+/* 6. Très petits écrans (moins de 480px) */
+@media screen and (max-width: 480px) {
+  h1 {
+    font-size: 1.3rem !important;
+  }
+  
+  h2 {
+    font-size: 1.2rem !important;
+  }
+  
+  .container {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+  
+  /* Forcer 1 seule colonne */
+  .row > [class*="col-"] {
+    width: 100% !important;
+    flex: 0 0 100% !important;
+  }
+}
+
+/* 7. Correction pour le sidebar admin */
+@media screen and (max-width: 768px) {
+  aside[style*="position: fixed"],
+  [style*="margin-left: 250px"] {
+    margin-left: 0 !important;
+    width: 100% !important;
+  }
+  
+  /* Masquer la sidebar fixe sur mobile */
+  aside.position-fixed {
+    display: none !important;
+  }
+}

@@ -335,7 +335,7 @@ export const cncProductDetails = {
     "mainCategory": "Voitures",
     "price": 120.99,
     "prix": 120.99,
-    "stock": 4,
+    "stock": 0,
     "estActif": true,
     "features": [
       "Étude des capteurs de position (pédale d'accélérateur, papillon, etc.)",
@@ -353,7 +353,7 @@ export const cncProductDetails = {
       "Résolution": "12 bits"
     },
     "images": [
-      "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-M002 – Mesure des Positions.png"
+      "/images/products/voitures/CAPTEURS ET ACTIONNEURS/dt-m002_mesure_des_positions.png"
     ],
     "technicalSpecs": {
       "Linéarité": "±0.5%",
@@ -365,18 +365,33 @@ export const cncProductDetails = {
     "modele": "DT-M002",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Le module pédagogique DT-M002 est conçu pour l’étude et la compréhension des capteurs de position utilisant des éléments automobiles réels. Il permet d’analyser le fonctionnement des capteurs, d’identifier la nature des signaux émis, d’étudier des schémas électriques, d’utiliser des outils de mesure adaptés et d’aborder le diagnostic des capteurs de position.",
+    "caracteristiques": [
+      "Étude du fonctionnement des capteurs de position",
+      "Analyse des signaux émis par les capteurs",
+      "Lecture et compréhension des schémas électriques",
+      "Utilisation d’outils de mesure adaptés",
+      "Introduction au diagnostic des capteurs automobiles"
+    ],
+    "categorie": "697f6df7a494e767414f116c",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/dt-m002_mesure_des_positions.png",
+    "nomFichierImage": "dt-m002_mesure_des_positions.png",
+    "stockApres": 5,
+    "id": "697f6f9b9e5f50c871efa22f",
+    "updatedAt": "2026-05-14T20:54:01.773Z"
   },
   "DT-M001 – Mesure d'Angle de Volant": {
     "_id": "697f6f609e5f50c871efa22e",
-    "nom": "DT-M001 – Mesure d'Angle de Volant",
+    "nom": "DT-M001 – Mesure d’Angle de Volant",
     "title": "DT-M001 – Mesure d'Angle de Volant",
     "slug": "dt-m001-mesure-angle-volant",
     "category": "CAPTEURS ET ACTIONNEURS",
     "mainCategory": "Voitures",
     "price": 86.5,
     "prix": 86.5,
-    "stock": 10,
+    "stock": 9,
     "estActif": true,
     "features": [
       "Capteur d'angle de volant pour étude des systèmes de direction",
@@ -394,7 +409,7 @@ export const cncProductDetails = {
       "Alimentation": "12V DC"
     },
     "images": [
-      "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png"
+      "/images/products/voitures/CAPTEURS ET ACTIONNEURS/dt-m001_mesure_angle_volant.png"
     ],
     "technicalSpecs": {
       "Précision": "±0.5°",
@@ -406,7 +421,22 @@ export const cncProductDetails = {
     "modele": "DT-M001",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Le module pédagogique DT-M001 permet l’étude d’un capteur réel de position d’angle de volant automobile. Le capteur fournit au calculateur ESP les informations relatives à l’angle de direction des roues avant via un bus CAN High Speed (500 Kbits/s). Deux sorties analogiques génèrent un signal RCO dont la période dépend de la vitesse de rotation du capteur.",
+    "caracteristiques": [
+      "Capteur réel d’angle de volant automobile",
+      "Communication CAN High Speed (500 Kbits/s)",
+      "Deux sorties analogiques avec signal RCO",
+      "Analyse des signaux envoyés au calculateur ESP",
+      "Idéal pour l’enseignement et la formation"
+    ],
+    "categorie": "697f6df7a494e767414f116c",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/dt-m001_mesure_angle_volant.png",
+    "nomFichierImage": "dt-m001_mesure_angle_volant.png",
+    "stockApres": 10,
+    "id": "697f6f609e5f50c871efa22e",
+    "updatedAt": "2026-05-14T20:54:01.806Z"
   },
   "DT-E001 – Unité de Contrôle Électronique": {
     "_id": "697f6e3c9e5f50c871efa22d",
@@ -477,7 +507,7 @@ export const cncProductDetails = {
       "Protections": "Fusible thermique"
     },
     "images": [
-      "/images/products/voitures/ÉLECTRICITÉ/dtm7020_modules_essuie-glaces.png"
+      "/images/products/voitures/ÉLECTRICITÉ/DTM7020 – Modules Essuie-Glaces.png"
     ],
     "technicalSpecs": {
       "Puissance moteurs": "2 x 30W",
@@ -504,8 +534,8 @@ export const cncProductDetails = {
     ],
     "categorie": "697f9052a494e767414f1257",
     "ordre": 0,
-    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/dtm7020_modules_essuie-glaces.png",
-    "nomFichierImage": "dtm7020_modules_essuie-glaces.png",
+    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/DTM7020 – Modules Essuie-Glaces.png",
+    "nomFichierImage": "DTM7020 – Modules Essuie-Glaces.png",
     "stockApres": 10,
     "id": "697f93e49e5f50c871efa235",
     "updatedAt": "2026-04-27T10:20:04.715Z"
@@ -537,7 +567,7 @@ export const cncProductDetails = {
       "Connectique": "Faisceau automobile"
     },
     "images": [
-      "/images/products/voitures/ÉLECTRICITÉ/dtm7000_modules_eclairage_et_signalisation.png"
+      "/images/products/voitures/ÉLECTRICITÉ/DTM7000 – Modules Éclairage et Signalisation.png"
     ],
     "technicalSpecs": {
       "Puissance totale": "150W max",
@@ -563,8 +593,8 @@ export const cncProductDetails = {
     ],
     "categorie": "697f9052a494e767414f1257",
     "ordre": 0,
-    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/dtm7000_modules_eclairage_et_signalisation.png",
-    "nomFichierImage": "dtm7000_modules_eclairage_et_signalisation.png",
+    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/DTM7000 – Modules Éclairage et Signalisation.png",
+    "nomFichierImage": "DTM7000 – Modules Éclairage et Signalisation.png",
     "stockApres": 10,
     "id": "697f93b69e5f50c871efa234",
     "updatedAt": "2026-04-27T10:20:04.786Z"
@@ -596,7 +626,7 @@ export const cncProductDetails = {
       "Logiciel": "Oscilloscope virtuel, enregistreur"
     },
     "images": [
-      "/images/products/voitures/ÉLECTRICITÉ/dt-m005_mesure_des_courants_et_des_tensions.png"
+      "/images/products/voitures/ÉLECTRICITÉ/DT-M005-Mesure des Courants et des Tensions.png"
     ],
     "technicalSpecs": {
       "Fréquence d'échantillonnage": "100 kHz",
@@ -618,8 +648,8 @@ export const cncProductDetails = {
     ],
     "categorie": "697f9052a494e767414f1257",
     "ordre": 0,
-    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/dt-m005_mesure_des_courants_et_des_tensions.png",
-    "nomFichierImage": "dt-m005_mesure_des_courants_et_des_tensions.png",
+    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/DT-M005-Mesure des Courants et des Tensions.png",
+    "nomFichierImage": "DT-M005-Mesure des Courants et des Tensions.png",
     "stockApres": 50,
     "id": "697f91fe9e5f50c871efa233",
     "updatedAt": "2026-04-27T10:20:04.828Z"
@@ -651,7 +681,7 @@ export const cncProductDetails = {
       "Dimensions": "600 x 400 x 200 mm"
     },
     "images": [
-      "/images/products/voitures/ÉLECTRICITÉ/mt-4002v_maquette_de_charge_demarrage_12v.png"
+      "/images/products/voitures/ÉLECTRICITÉ/MT-4002V-Maquette de Charge Démarrage 12V.png"
     ],
     "technicalSpecs": {
       "Poids": "15 kg",
@@ -675,8 +705,8 @@ export const cncProductDetails = {
     ],
     "categorie": "697f9052a494e767414f1257",
     "ordre": 0,
-    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/mt-4002v_maquette_de_charge_demarrage_12v.png",
-    "nomFichierImage": "mt-4002v_maquette_de_charge_demarrage_12v.png",
+    "cheminImageAuto": "/images/products/voitures/ÉLECTRICITÉ/MT-4002V-Maquette de Charge Démarrage 12V.png",
+    "nomFichierImage": "MT-4002V-Maquette de Charge Démarrage 12V.png",
     "stockApres": 15,
     "id": "697f91119e5f50c871efa231",
     "updatedAt": "2026-04-27T10:20:04.867Z"
@@ -690,7 +720,7 @@ export const cncProductDetails = {
     "mainCategory": "Voitures",
     "price": 110.98,
     "prix": 110.98,
-    "stock": 25,
+    "stock": 23,
     "estActif": true,
     "features": [
       "Maquette de moteur avec capteurs et actionneurs",
@@ -708,7 +738,7 @@ export const cncProductDetails = {
       "Diagnostic": "OBD-II, EOBD"
     },
     "images": [
-      "/images/products/voitures/RÉSEAUX MULTIPLEXÉS/MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur.png"
+      "/images/products/voitures/RÉSEAUX MULTIPLEXÉS/mt-moteur-meca_diagnostic_mecanique_moteur.png"
     ],
     "technicalSpecs": {
       "Microcontrôleur": "32 bits, 3 calculateurs",
@@ -720,7 +750,23 @@ export const cncProductDetails = {
     "modele": "MT-MOTEUR-MECA",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "La maquette pédagogique MT-MOTEUR-MECA permet l’étude et le diagnostic mécanique d’un moteur essence 4 cylindres. Elle offre la visualisation des composants mécaniques du moteur et permet de réaliser des diagnostics sur pannes mécaniques réelles, des mesures d’étanchéité et de compression, ainsi que le remplacement d’une courroie de distribution. Le moteur est monté sur un support ergonomique et mobile et permet de simuler plus de dix pannes réelles.",
+    "caracteristiques": [
+      "Moteur essence 4 cylindres réel",
+      "Diagnostic de pannes mécaniques",
+      "Mesure d’étanchéité et de compression",
+      "Changement de courroie de distribution",
+      "Support ergonomique et mobile",
+      "Simulation de plus de 10 pannes réelles"
+    ],
+    "categorie": "697f9469a494e767414f132c",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/voitures/RÉSEAUX MULTIPLEXÉS/mt-moteur-meca_diagnostic_mecanique_moteur.png",
+    "nomFichierImage": "mt-moteur-meca_diagnostic_mecanique_moteur.png",
+    "stockApres": 25,
+    "id": "697f95159e5f50c871efa238",
+    "updatedAt": "2026-05-14T21:42:50.056Z"
   },
   "MT-E5000 – Maquette d'Injection Essence Séquentielle": {
     "_id": "697f94e89e5f50c871efa237",
@@ -813,7 +859,7 @@ export const cncProductDetails = {
     "mainCategory": "MCP lab electronics",
     "price": 40,
     "prix": 40,
-    "stock": 10,
+    "stock": 9,
     "estActif": true,
     "features": [
       "Câble de test haute tension 10kV",
@@ -832,7 +878,7 @@ export const cncProductDetails = {
       "Normes": "IEC 61010, CAT II"
     },
     "images": [
-      "/images/products/MCP lab electronics/Accessoires/PTL908-2H – High Voltage Safety Test Lead 10kV.png"
+      "/images/products/MCP lab electronics/Accessoires/ptl908-2h_high_voltage_safety_test_lead_10kv.png"
     ],
     "technicalSpecs": {
       "Résistance d'isolement": ">1000 MΩ à 10kV",
@@ -844,7 +890,23 @@ export const cncProductDetails = {
     "modele": "PTL908-2H",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Le cordon de test haute tension PTL908-2H est conçu pour des applications jusqu’à 10 kV. Il est équipé de connecteurs mâle à mâle Ø4 mm et offre une excellente sécurité pour les tests haute tension.",
+    "caracteristiques": [
+      "Cordon haute tension mâle-mâle Ø4 mm",
+      "Section 0",
+      "5 mm²",
+      "Longueur 50 / 100 cm",
+      "Tension maximale 10 000 V",
+      "Courant maximal 1 A"
+    ],
+    "categorie": "697f95cfa494e767414f1371",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/MCP lab electronics/Accessoires/ptl908-2h_high_voltage_safety_test_lead_10kv.png",
+    "nomFichierImage": "ptl908-2h_high_voltage_safety_test_lead_10kv.png",
+    "stockApres": 10,
+    "id": "697f96479e5f50c871efa23a",
+    "updatedAt": "2026-05-14T20:57:31.067Z"
   },
   "PTL970 – Oscilloscope Probe 5kV": {
     "_id": "697f96799e5f50c871efa23d",
@@ -855,7 +917,7 @@ export const cncProductDetails = {
     "mainCategory": "MCP lab electronics",
     "price": 78.4,
     "prix": 78.4,
-    "stock": 10,
+    "stock": 9,
     "estActif": true,
     "features": [
       "Sonde oscilloscope haute tension 5kV",
@@ -874,7 +936,7 @@ export const cncProductDetails = {
       "Capacité entrée": "<5pF"
     },
     "images": [
-      "/images/products/MCP lab electronics/Accessoires/PTL970 – Oscilloscope Probe 5kV.png"
+      "/images/products/MCP lab electronics/Accessoires/ptl970_oscilloscope_probe_5kv.png"
     ],
     "technicalSpecs": {
       "Précision DC": "±2%",
@@ -886,7 +948,20 @@ export const cncProductDetails = {
     "modele": "PTL970",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "La sonde d’oscilloscope PTL970 est conçue pour des mesures haute tension jusqu’à 5 kV. Elle est adaptée aux applications industrielles, pédagogiques et de laboratoire.",
+    "caracteristiques": [
+      "Tension de test maximale 5 kV",
+      "Adaptée aux mesures haute tension",
+      "Utilisation industrielle et pédagogique"
+    ],
+    "categorie": "697f95cfa494e767414f1371",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/MCP lab electronics/Accessoires/ptl970_oscilloscope_probe_5kv.png",
+    "nomFichierImage": "ptl970_oscilloscope_probe_5kv.png",
+    "stockApres": 0,
+    "id": "697f96799e5f50c871efa23d",
+    "updatedAt": "2026-05-14T20:57:31.090Z"
   },
   "PTL955 – Oscilloscope Probe 40kV": {
     "_id": "697f968b9e5f50c871efa23e",
@@ -897,7 +972,7 @@ export const cncProductDetails = {
     "mainCategory": "MCP lab electronics",
     "price": 300,
     "prix": 300,
-    "stock": 9,
+    "stock": 8,
     "estActif": true,
     "features": [
       "Sonde oscilloscope très haute tension 40kV",
@@ -916,7 +991,7 @@ export const cncProductDetails = {
       "Longueur": "2m"
     },
     "images": [
-      "/images/products/MCP lab electronics/Accessoires/PTL955 – Oscilloscope Probe 40kV.png"
+      "/images/products/MCP lab electronics/Accessoires/ptl955_oscilloscope_probe_40kv.png"
     ],
     "technicalSpecs": {
       "Précision DC": "±3%",
@@ -928,7 +1003,20 @@ export const cncProductDetails = {
     "modele": "PTL955",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "La sonde d’oscilloscope PTL955 est destinée aux mesures très haute tension jusqu’à 40 kV. Elle convient aux applications spécialisées nécessitant un haut niveau de sécurité et de précision.",
+    "caracteristiques": [
+      "Tension maximale jusqu’à 40 kV",
+      "Conçue pour mesures très haute tension",
+      "Applications industrielles et spécialisées"
+    ],
+    "categorie": "697f95cfa494e767414f1371",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/MCP lab electronics/Accessoires/ptl955_oscilloscope_probe_40kv.png",
+    "nomFichierImage": "ptl955_oscilloscope_probe_40kv.png",
+    "stockApres": 9,
+    "id": "697f968b9e5f50c871efa23e",
+    "updatedAt": "2026-05-14T20:57:31.113Z"
   },
   "PTL908-8 – Test Lead 4mm 20A": {
     "_id": "697f965c9e5f50c871efa23b",
@@ -1065,7 +1153,7 @@ export const cncProductDetails = {
     "mainCategory": "MCP lab electronics",
     "price": 1450.57,
     "prix": 1450.57,
-    "stock": 18,
+    "stock": 16,
     "estActif": true,
     "features": [
       "Système complet pour l'apprentissage de l'électronique analogique",
@@ -1085,7 +1173,7 @@ export const cncProductDetails = {
       "Dimensions": "300 x 200 x 80mm"
     },
     "images": [
-      "/images/products/MCP lab electronics/EDUCATION EQUIPMENT/ACL-7000 – Analogue Training System.png"
+      "/images/products/MCP lab electronics/EDUCATION EQUIPMENT/acl-7000_analogue_training_system.png"
     ],
     "technicalSpecs": {
       "Protections": "Court-circuit, surchauffe",
@@ -1097,7 +1185,24 @@ export const cncProductDetails = {
     "modele": "ACL-7000",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Le système ACL-7000 est un laboratoire complet et autonome dédié à l’étude des circuits analogiques. Il comprend six cartes électroniques couvrant un large éventail de thèmes essentiels en électronique analogique, permettant la réalisation de 22 expériences. Toutes les fonctions nécessaires telles que l’alimentation, le générateur de signaux, les interrupteurs et les dispositifs d’affichage sont intégrées dans l’unité principale. Il constitue un outil pédagogique efficace pour les étudiants et les chercheurs.",
+    "caracteristiques": [
+      "22 expériences réalisées à partir de 6 cartes électroniques",
+      "Apprentissage des bases des circuits analogiques",
+      "Exercices progressifs étape par étape",
+      "Système autonome avec alimentation et générateur intégrés",
+      "Compatible avec le système M21-7000",
+      "Grande breadboard pour extension des expériences",
+      "Cartes facilement interchangeables"
+    ],
+    "categorie": "697f976ba494e767414f13e6",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/MCP lab electronics/EDUCATION EQUIPMENT/acl-7000_analogue_training_system.png",
+    "nomFichierImage": "acl-7000_analogue_training_system.png",
+    "stockApres": 18,
+    "id": "697f978e9e5f50c871efa240",
+    "updatedAt": "2026-05-16T11:55:51.899Z"
   },
   "M21-7100 – Digital & Analogue Training System": {
     "title": "M21-7100 – Digital & Analogue Training System",
@@ -1142,7 +1247,7 @@ export const cncProductDetails = {
     "mainCategory": "MCP lab electronics",
     "price": 1356,
     "prix": 1356,
-    "stock": 10,
+    "stock": 8,
     "estActif": true,
     "features": [
       "Système d'apprentissage des circuits logiques de base",
@@ -1162,7 +1267,7 @@ export const cncProductDetails = {
       "Alimentation": "+5V/1A"
     },
     "images": [
-      "/images/products/MCP lab electronics/EDUCATION EQUIPMENT/F1-3 – Basic Logic Circuit Training System.png"
+      "/images/products/MCP lab electronics/EDUCATION EQUIPMENT/f1-3_basic_logic_circuit_training_system.png"
     ],
     "technicalSpecs": {
       "Entrées": "8 interrupteurs, 4 boutons poussoirs",
@@ -1175,3227 +1280,123 @@ export const cncProductDetails = {
     "modele": "F1-3",
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    },
+    "description": "Le système de formation F1-3 est conçu pour l’apprentissage pratique des circuits logiques numériques. Les composants sont fournis dans des boîtiers transparents montés sur supports magnétiques ou matrices isolantes, permettant un assemblage simple par fiches. Le système comprend 26 expériences recommandées en logique numérique et offre la possibilité de concevoir des expériences supplémentaires selon les besoins pédagogiques.",
+    "caracteristiques": [
+      "Système de formation en logique numérique",
+      "26 expériences de base en circuits logiques",
+      "Composants modulaires en boîtiers transparents",
+      "Assemblage simple par fiches",
+      "Possibilité de créer des expériences personnalisées",
+      "Adapté à l’enseignement et à la formation"
+    ],
+    "categorie": "697f976ba494e767414f13e6",
+    "ordre": 0,
+    "cheminImageAuto": "/images/products/MCP lab electronics/EDUCATION EQUIPMENT/f1-3_basic_logic_circuit_training_system.png",
+    "nomFichierImage": "f1-3_basic_logic_circuit_training_system.png",
+    "stockApres": 0,
+    "id": "697f97e09e5f50c871efa242",
+    "updatedAt": "2026-05-16T11:55:51.929Z"
   },
   "_orders": {
-    "69b2c62e18b12803dcd93277": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c62e18b12803dcd93277",
-      "createdAt": "2026-03-12T13:57:02.210Z",
-      "updatedAt": "2026-03-12T13:57:02.235Z"
-    },
-    "69b2c630fac46a9589e4863c": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c630fac46a9589e4863c",
-      "createdAt": "2026-03-12T13:57:04.271Z",
-      "updatedAt": "2026-03-12T13:57:04.279Z"
-    },
-    "69b2c636a1beb25f9f6226c1": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c636a1beb25f9f6226c1",
-      "createdAt": "2026-03-12T13:57:10.973Z",
-      "updatedAt": "2026-03-12T13:57:10.995Z"
-    },
-    "69b2c638a6017fa6f54dfcc1": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c638a6017fa6f54dfcc1",
-      "createdAt": "2026-03-12T13:57:12.759Z",
-      "updatedAt": "2026-03-12T13:57:12.796Z"
-    },
-    "69b2c66491f3525024aa4c76": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c66491f3525024aa4c76",
-      "createdAt": "2026-03-12T13:57:57.453Z",
-      "updatedAt": "2026-03-12T13:57:57.892Z"
-    },
-    "69b2c66948ac1458c7fb3226": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c66948ac1458c7fb3226",
-      "createdAt": "2026-03-12T13:58:01.796Z",
-      "updatedAt": "2026-03-12T13:58:01.814Z"
-    },
-    "69b2c724ab7f41976b5fc140": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c724ab7f41976b5fc140",
-      "createdAt": "2026-03-12T14:01:08.397Z",
-      "updatedAt": "2026-03-12T14:01:08.421Z"
-    },
-    "69b2c726feb55f502d6097d9": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c726feb55f502d6097d9",
-      "createdAt": "2026-03-12T14:01:10.667Z",
-      "updatedAt": "2026-03-12T14:01:10.712Z"
-    },
-    "69b2c9084cee5b250df422a6": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c9084cee5b250df422a6",
-      "createdAt": "2026-03-12T14:09:12.491Z",
-      "updatedAt": "2026-03-12T14:09:12.513Z"
-    },
-    "69b2c90a64fecb9ceff2abae": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2c90a64fecb9ceff2abae",
-      "createdAt": "2026-03-12T14:09:14.498Z",
-      "updatedAt": "2026-03-12T14:09:14.507Z"
-    },
-    "69b2ca20d67e8ab876bebd10": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2ca20d67e8ab876bebd10",
-      "createdAt": "2026-03-12T14:13:53.172Z",
-      "updatedAt": "2026-03-12T14:13:54.086Z"
-    },
-    "69b2cb91c3b56204e9581dc0": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2cb91c3b56204e9581dc0",
-      "createdAt": "2026-03-12T14:20:01.687Z",
-      "updatedAt": "2026-03-12T14:20:01.710Z"
-    },
-    "69b2cb9312430946137fc09a": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2cb9312430946137fc09a",
-      "createdAt": "2026-03-12T14:20:03.459Z",
-      "updatedAt": "2026-03-12T14:20:03.483Z"
-    },
-    "69b2cc87f47193ff7051c93e": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2cc87f47193ff7051c93e",
-      "createdAt": "2026-03-12T14:24:07.677Z",
-      "updatedAt": "2026-03-12T14:24:07.699Z"
-    },
-    "69b2cc8957de17a51b978ed0": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2cc8957de17a51b978ed0",
-      "createdAt": "2026-03-12T14:24:09.592Z",
-      "updatedAt": "2026-03-12T14:24:09.634Z"
-    },
-    "69b2cec0b5c0e98a4c377f7c": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2cec0b5c0e98a4c377f7c",
-      "createdAt": "2026-03-12T14:33:36.994Z",
-      "updatedAt": "2026-03-12T14:33:37.018Z"
-    },
-    "69b2d01057fb88b9d2310387": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 3,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 22470,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2d01057fb88b9d2310387",
-      "createdAt": "2026-03-12T14:39:12.374Z",
-      "updatedAt": "2026-03-12T14:39:12.404Z"
-    },
-    "69b2e9d2cb47f72c7f14f2c5": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2e9d2cb47f72c7f14f2c5",
-      "createdAt": "2026-03-12T16:29:06.367Z",
-      "updatedAt": "2026-03-12T16:29:06.410Z"
-    },
-    "69b2f20606b28530d1972dfc": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2f20606b28530d1972dfc",
-      "createdAt": "2026-03-12T17:04:06.203Z",
-      "updatedAt": "2026-03-12T17:04:06.246Z"
-    },
-    "69b2f208be09cc8e44415d07": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b2f208be09cc8e44415d07",
-      "createdAt": "2026-03-12T17:04:08.131Z",
-      "updatedAt": "2026-03-12T17:04:08.138Z"
-    },
-    "69b30790059598c63269cde1": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b30790059598c63269cde1",
-      "createdAt": "2026-03-12T18:36:00.973Z",
-      "updatedAt": "2026-03-12T18:36:00.986Z"
-    },
-    "69b307929f09aac5538f89a5": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b307929f09aac5538f89a5",
-      "createdAt": "2026-03-12T18:36:02.566Z",
-      "updatedAt": "2026-03-12T18:36:02.582Z"
-    },
-    "69b307e1b22170c05c707e36": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b307e1b22170c05c707e36",
-      "createdAt": "2026-03-12T18:37:21.713Z",
-      "updatedAt": "2026-03-12T18:37:21.729Z"
-    },
-    "69b307e3304b8b4ab3cc55b8": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b307e3304b8b4ab3cc55b8",
-      "createdAt": "2026-03-12T18:37:23.130Z",
-      "updatedAt": "2026-03-12T18:37:23.150Z"
-    },
-    "69b30aa6970d8f45b93146b1": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b30aa6970d8f45b93146b1",
-      "createdAt": "2026-03-12T18:49:10.322Z",
-      "updatedAt": "2026-03-12T18:49:10.338Z"
-    },
-    "69b30aa8bd7173c17b2b58e5": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 7490,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b30aa8bd7173c17b2b58e5",
-      "createdAt": "2026-03-12T18:49:12.193Z",
-      "updatedAt": "2026-03-12T18:49:12.206Z"
-    },
-    "69b33a8f9c075ab50c5a7d00": {
-      "_id": "69b33a8f9c075ab50c5a7d00",
-      "user": "69a962aaca6c072acbba8669",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png",
-          "quantity": 1,
-          "price": 7490
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "dalizar aissa",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "totalAmount": 12980,
-      "stripeSessionId": "cs_test_b1uaVl9JV9IiNcYNsQbH3AVfenyqpvWEU9BnSdh5cBFzxeBZPOJ1deH51o",
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "createdAt": "2026-03-12T22:13:35.190Z",
-      "updatedAt": "2026-03-13T00:52:21.196Z"
-    },
-    "69b2cc38db0bb1958ddc8e93": {
-      "_id": "69b2cc38db0bb1958ddc8e93",
-      "user": "69a962aaca6c072acbba8669",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        },
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center.png",
-          "quantity": 1,
-          "price": 8990
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "dalizar aissa",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "totalAmount": 14480,
-      "stripeSessionId": "cs_test_b1dtlX7qqb7OQfvHELYOPHF2baPNfzPzJzX0brcsuzufNwjU2O140ZbULj",
-      "paymentStatus": "paid",
-      "orderStatus": "annulee",
-      "createdAt": "2026-03-12T14:22:48.981Z",
-      "updatedAt": "2026-03-13T00:53:33.009Z"
-    },
-    "69b3632696f549836a4d9331": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b3632696f549836a4d9331",
-      "createdAt": "2026-03-13T01:06:46.575Z",
-      "updatedAt": "2026-03-13T01:06:46.664Z"
-    },
-    "69b3634a4dc832213edd5355": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b3634a4dc832213edd5355",
-      "createdAt": "2026-03-13T01:07:22.145Z",
-      "updatedAt": "2026-03-13T01:07:22.166Z"
-    },
-    "69b3634b038f0b3742e88b14": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b3634b038f0b3742e88b14",
-      "createdAt": "2026-03-13T01:07:23.449Z",
-      "updatedAt": "2026-03-13T01:07:23.457Z"
-    },
-    "69b3649aeea2de032d87560b": {
-      "_id": "69b3649aeea2de032d87560b",
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "livree",
-      "createdAt": "2026-03-13T01:12:58.238Z",
-      "updatedAt": "2026-03-13T01:13:34.359Z"
-    },
-    "69b3672afccc0d57e23382f1": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b3672afccc0d57e23382f1",
-      "createdAt": "2026-03-13T01:23:54.771Z",
-      "updatedAt": "2026-03-13T01:23:54.786Z"
-    },
-    "69b3672c003ac69e2c69337f": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b3672c003ac69e2c69337f",
-      "createdAt": "2026-03-13T01:23:56.177Z",
-      "updatedAt": "2026-03-13T01:23:56.208Z"
-    },
-    "69b3673e6df4d5212ede5707": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "Balgouthi Salma",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b3673e6df4d5212ede5707",
-      "createdAt": "2026-03-13T01:24:14.754Z",
-      "updatedAt": "2026-03-13T01:24:14.770Z"
-    },
-    "69b3674016bbfa05b2858268": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "Balgouthi Salma",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b3674016bbfa05b2858268",
-      "createdAt": "2026-03-13T01:24:16.389Z",
-      "updatedAt": "2026-03-13T01:24:16.400Z"
-    },
-    "69b3692810d4f69cf2fc617f": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b3692810d4f69cf2fc617f",
-      "createdAt": "2026-03-13T01:32:24.262Z",
-      "updatedAt": "2026-03-13T01:32:24.278Z"
-    },
-    "69b36929870bd964ce7cd607": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b36929870bd964ce7cd607",
-      "createdAt": "2026-03-13T01:32:25.970Z",
-      "updatedAt": "2026-03-13T01:32:25.983Z"
-    },
-    "69b369a7bfceda830ec34211": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b369a7bfceda830ec34211",
-      "createdAt": "2026-03-13T01:34:31.947Z",
-      "updatedAt": "2026-03-13T01:34:31.963Z"
-    },
-    "69b369a9da12fe31d0f774c5": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b369a9da12fe31d0f774c5",
-      "createdAt": "2026-03-13T01:34:33.569Z",
-      "updatedAt": "2026-03-13T01:34:33.583Z"
-    },
-    "69b36cf2899227406b35f192": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b36cf2899227406b35f192",
-      "createdAt": "2026-03-13T01:48:34.281Z",
-      "updatedAt": "2026-03-13T01:48:34.298Z"
-    },
-    "69b36cf3aecce2a7c2354512": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b36cf3aecce2a7c2354512",
-      "createdAt": "2026-03-13T01:48:35.910Z",
-      "updatedAt": "2026-03-13T01:48:35.920Z"
-    },
-    "69b402526d35a8becb345bba": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b402526d35a8becb345bba",
-      "createdAt": "2026-03-13T12:25:54.088Z",
-      "updatedAt": "2026-03-13T12:25:54.251Z"
-    },
-    "69b40253666817602306e93a": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b40253666817602306e93a",
-      "createdAt": "2026-03-13T12:25:55.975Z",
-      "updatedAt": "2026-03-13T12:25:56.019Z"
-    },
-    "69b4034056e159cef53c3f35": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b4034056e159cef53c3f35",
-      "createdAt": "2026-03-13T12:29:52.729Z",
-      "updatedAt": "2026-03-13T12:29:52.754Z"
-    },
-    "69b403426de5e87d3a989691": {
-      "user": "69a4c2a20f2a9a8e1668aa74",
-      "items": [
-        {
-          "productName": "DT-E001 – Unité de Contrôle Électronique",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png",
-          "quantity": 1,
-          "price": 2450
-        },
-        {
-          "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "productImage": "/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png",
-          "quantity": 1,
-          "price": 1950
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 4400,
-      "stripeSessionId": "",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "_id": "69b403426de5e87d3a989691",
-      "createdAt": "2026-03-13T12:29:54.365Z",
-      "updatedAt": "2026-03-13T12:29:54.396Z"
-    },
-    "69b8a2f05ae94772e1c297f9": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 4,
-          "price": 8990,
-          "_id": "69b8a2f05ae94772e1c297fa"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 35960,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8a2f05ae94772e1c297f9",
-      "updatedAt": "2026-03-17T00:40:16.180Z"
-    },
-    "69b8a2f193ec0b3d1eb98fc7": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 4,
-          "price": 8990,
-          "_id": "69b8a2f193ec0b3d1eb98fc8"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 35960,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8a2f193ec0b3d1eb98fc7",
-      "updatedAt": "2026-03-17T00:40:17.973Z"
-    },
-    "69b8a3c8d237fb7975a7f6f4": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 4,
-          "price": 8990,
-          "_id": "69b8a3c8d237fb7975a7f6f5"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 35960,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8a3c8d237fb7975a7f6f4",
-      "updatedAt": "2026-03-17T00:43:52.210Z"
-    },
-    "69b8a3caea35253147b57913": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 4,
-          "price": 8990,
-          "_id": "69b8a3caea35253147b57914"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 35960,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8a3caea35253147b57913",
-      "updatedAt": "2026-03-17T00:43:54.134Z"
-    },
-    "69b8a49e97c72b6e8fb38804": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 4,
-          "price": 8990,
-          "_id": "69b8a49f97c72b6e8fb38805"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 35960,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8a49e97c72b6e8fb38804",
-      "updatedAt": "2026-03-17T00:47:27.051Z"
-    },
-    "69b8a4d367487ad8cefa0da2": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 10,
-          "price": 5490,
-          "_id": "69b8a4d367487ad8cefa0da3"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 54900,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8a4d367487ad8cefa0da2",
-      "updatedAt": "2026-03-17T00:48:19.875Z"
-    },
-    "69b8a55a53098ad39ad863d3": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 10,
-          "price": 5490,
-          "_id": "69b8a55a53098ad39ad863d4"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 54900,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8a55a53098ad39ad863d3",
-      "updatedAt": "2026-03-17T00:50:34.703Z"
-    },
-    "69b8bf70772e3b31496cb3ba": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 10,
-          "price": 5490,
-          "_id": "69b8bf70772e3b31496cb3bb"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 54900,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8bf70772e3b31496cb3ba",
-      "updatedAt": "2026-03-17T02:41:52.618Z"
-    },
-    "69b8c0a0b67ccc23f1b4dc8c": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 10,
-          "price": 5490,
-          "_id": "69b8c0a0b67ccc23f1b4dc8d"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 54900,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8c0a0b67ccc23f1b4dc8c",
-      "updatedAt": "2026-03-17T02:46:56.600Z"
-    },
-    "69b8c21df3bcff0af150a606": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 10,
-          "price": 5490,
-          "_id": "69b8c21df3bcff0af150a607"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 54900,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8c21df3bcff0af150a606",
-      "updatedAt": "2026-03-17T02:53:17.295Z"
-    },
-    "69b8c37f1bbf67275f7afc19": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productId": null,
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 10,
-          "price": 5490,
-          "_id": "69b8c37f1bbf67275f7afc1a"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "totalAmount": 54900,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8c37f1bbf67275f7afc19",
-      "updatedAt": "2026-03-17T02:59:11.829Z"
-    },
-    "69b8c6dda0c223318e1d1f63": {
-      "user": "69b8c69ca0c223318e1d1f49",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 10,
-          "price": 5490,
-          "_id": "69b8c6dda0c223318e1d1f64"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "mohamed habib",
-        "email": "mohamed@gmail.com",
-        "phone": "55445336",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 54900,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8c6dda0c223318e1d1f63",
-      "updatedAt": "2026-03-17T03:13:33.671Z"
-    },
-    "69b8c6eb57c53d4be92affce": {
-      "user": "69b8c69ca0c223318e1d1f49",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 7,
-          "price": 5490,
-          "_id": "69b8c6eb57c53d4be92affcf"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "mohamed habib",
-        "email": "mohamed@gmail.com",
-        "phone": "55445336",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 38430,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8c6eb57c53d4be92affce",
-      "updatedAt": "2026-03-17T03:13:47.380Z"
-    },
-    "69b8c70b5a53e601a789f1a9": {
-      "user": "69b8c69ca0c223318e1d1f49",
-      "items": [
-        {
-          "productName": "DTM7020 – Modules Essuie-Glaces",
-          "quantity": 1,
-          "price": 1290,
-          "_id": "69b8c70b5a53e601a789f1aa"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "mohamed habib",
-        "email": "mohamed@gmail.com",
-        "phone": "55445336",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 1290,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69b8c70b5a53e601a789f1a9",
-      "updatedAt": "2026-03-17T03:14:19.696Z"
-    },
-    "69c1640c646ba10016637468": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69c1640c646ba10016637469"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 8990,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69c1640c646ba10016637468",
-      "updatedAt": "2026-03-23T16:02:20.230Z"
-    },
-    "69c2f57d26be735163a1b810": {
-      "user": "69c2eb03f88004e2c7807658",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 3,
-          "price": 5490,
-          "_id": "69c2f57d26be735163a1b811"
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 1,
-          "price": 7490,
-          "_id": "69c2f57d26be735163a1b812"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "Seif",
-        "email": "boulabiarseif@gmail.com",
-        "phone": "+21625372382",
-        "address": "ggg",
-        "city": "Bardo",
-        "postalCode": "2000"
-      },
-      "totalAmount": 23960,
-      "paymentMethod": "livraison",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69c2f57d26be735163a1b810",
-      "updatedAt": "2026-03-24T20:35:09.139Z"
-    },
-    "69c2f6912e37e0b06d2b6786": {
-      "user": "69c2eb03f88004e2c7807658",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c2f6912e37e0b06d2b6787"
-        },
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69c2f6912e37e0b06d2b6788"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "Seif",
-        "email": "boulabiarseif@gmail.com",
-        "phone": "+21625372382",
-        "address": "ggg",
-        "city": "Bardo",
-        "postalCode": "2000"
-      },
-      "totalAmount": 14480,
-      "paymentMethod": "livraison",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69c2f6912e37e0b06d2b6786",
-      "updatedAt": "2026-03-24T20:39:45.802Z"
-    },
-    "69c431e28db6a6cce061f283": {
-      "user": "69c2eb03f88004e2c7807658",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c431e28db6a6cce061f284"
-        },
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69c431e28db6a6cce061f285"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "Seif",
-        "email": "boulabiarseif@gmail.com",
-        "phone": "+21625372382",
-        "address": "ggg",
-        "city": "Bardo",
-        "postalCode": "2000"
-      },
-      "totalAmount": 14480,
-      "paymentMethod": "livraison",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69c431e28db6a6cce061f283",
-      "updatedAt": "2026-03-25T19:05:06.382Z"
-    },
-    "69c3a5183b605418014d84d3": {
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c3a5183b605418014d84d4"
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 1,
-          "price": 7490,
-          "_id": "69c3a5183b605418014d84d5"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "totalAmount": 12980,
-      "paymentMethod": "livraison",
-      "paymentStatus": "pending",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "_id": "69c3a5183b605418014d84d3",
-      "updatedAt": "2026-03-25T09:04:53.836Z"
-    },
-    "69b3644bdbb2d90d9dc47a73": {
-      "shippingInfo": {
-        "fullName": "teeesttttt",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "paymentMethod": "stripe",
-      "stockUpdated": false,
-      "_id": "69b3644bdbb2d90d9dc47a73",
-      "user": "69a962aaca6c072acbba8669",
-      "items": [
-        {
-          "_id": "69c3ad7a7a3f8d6d507176ee",
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center.png",
-          "quantity": 1,
-          "price": 8990
-        },
-        {
-          "_id": "69c3ad7a7a3f8d6d507176ef",
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "productImage": "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-          "quantity": 1,
-          "price": 5490
-        }
-      ],
-      "totalAmount": 14480,
-      "stripeSessionId": "cs_test_b1wVgsN23q16eQH2GLWlbZp8T5BMqP7CAaSKsHdh5D0EUDpMuNwWlKpek9",
-      "paymentStatus": "pending",
-      "orderStatus": "livree",
-      "createdAt": "2026-03-13T01:11:39.769Z",
-      "updatedAt": "2026-03-25T09:40:10.586Z"
-    },
-    "69c3ae8f0c0549a28c26d467": {
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c3ae8f0c0549a28c26d468"
-        },
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69c3ae8f0c0549a28c26d469"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "totalAmount": 14480,
-      "paymentMethod": "livraison",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69c3ae8f0c0549a28c26d467",
-      "updatedAt": "2026-03-25T09:44:47.502Z"
-    },
-    "69c4327e573bbb330410f0c4": {
-      "user": "69c2eb03f88004e2c7807658",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c4327e573bbb330410f0c5"
-        },
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69c4327e573bbb330410f0c6"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "Seif",
-        "email": "boulabiarseif@gmail.com",
-        "phone": "+21625372382",
-        "address": "ggg",
-        "city": "TUNIS",
-        "postalCode": "2052"
-      },
-      "totalAmount": 14480,
-      "paymentMethod": "livraison",
-      "paymentStatus": "pending",
-      "orderStatus": "annulee",
-      "stockUpdated": false,
-      "_id": "69c4327e573bbb330410f0c4",
-      "createdAt": "2026-03-25T19:07:42.250Z",
-      "updatedAt": "2026-03-25T19:07:59.312Z"
-    },
-    "69c3af2023276b03816a7b80": {
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c3af2023276b03816a7b81"
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 1,
-          "price": 7490,
-          "_id": "69c3af2023276b03816a7b82"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "totalAmount": 12980,
-      "paymentMethod": "livraison",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69c3af2023276b03816a7b80",
-      "updatedAt": "2026-03-25T09:47:12.350Z"
-    },
-    "69c3afac31a50a44d4b45180": {
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c3afac31a50a44d4b45181"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "totalAmount": 5490,
-      "paymentMethod": "livraison",
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69c3afac31a50a44d4b45180",
-      "updatedAt": "2026-03-25T09:49:32.822Z"
-    },
-    "69c43e39a464a9be4f75ebe3": {
-      "shippingInfo": {
-        "fullName": "Seif",
-        "email": "boulabiarseif@gmail.com",
-        "phone": "+21625372382",
-        "address": "aaaaaa",
-        "city": "TUNIS",
-        "postalCode": "2052"
-      },
-      "_id": "69c43e39a464a9be4f75ebe3",
-      "user": "69c2eb03f88004e2c7807658",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c43e39a464a9be4f75ebe4"
-        },
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69c43e39a464a9be4f75ebe5"
-        }
-      ],
-      "totalAmount": 14480,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-03-25T19:57:45.505Z",
-      "updatedAt": "2026-03-25T19:59:30.583Z"
-    },
-    "69c45adc92721fe5fbc8bc02": {
-      "shippingInfo": {
-        "fullName": "Seif",
-        "email": "boulabiarseif@gmail.com",
-        "phone": "+21625372382",
-        "address": "ggg",
-        "city": "TUNIS",
-        "postalCode": "2052"
-      },
-      "_id": "69c45adc92721fe5fbc8bc02",
-      "user": "69c2eb03f88004e2c7807658",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69c45adc92721fe5fbc8bc03"
-        },
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69c45adc92721fe5fbc8bc04"
-        }
-      ],
-      "totalAmount": 14480,
-      "paymentMethod": "livraison",
-      "returnDeadline": "2026-03-28T00:00:00.000Z",
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-03-25T21:59:56.231Z",
-      "updatedAt": "2026-03-25T22:17:22.944Z"
-    },
-    "69cbb4eb8b59a691267ea8d4": {
-      "shippingInfo": {
-        "fullName": "Seif Boulabiar",
-        "email": "boulabiarseif55@gmail.com",
-        "phone": "25372382",
-        "address": "khaznadar",
-        "city": "khaznadar ",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1774957891187-475065638.pdf",
-        "method": "platform",
-        "uploadedAt": "2026-03-31T11:51:31.196Z"
-      },
-      "_id": "69cbb4eb8b59a691267ea8d4",
-      "user": "69cbafe47074bd9355f218cf",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cbb4eb8b59a691267ea8d5"
-        },
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69cbb4eb8b59a691267ea8d6"
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 1,
-          "price": 7490,
-          "_id": "69cbb4eb8b59a691267ea8d7"
-        }
-      ],
-      "totalAmount": 21970,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "createdAt": "2026-03-31T11:50:03.106Z",
-      "updatedAt": "2026-03-31T11:51:31.220Z"
-    },
-    "69cbb6439c46bf781b89c15c": {
-      "shippingInfo": {
-        "fullName": "Seif Boulabiar",
-        "email": "boulabiarseif55@gmail.com",
-        "phone": "25372382",
-        "address": "khaznadar",
-        "city": "khaznadar ",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1774958157912-379097695.png",
-        "method": "platform",
-        "uploadedAt": "2026-03-31T11:55:57.935Z"
-      },
-      "_id": "69cbb6439c46bf781b89c15c",
-      "user": "69cbafe47074bd9355f218cf",
-      "items": [
-        {
-          "productName": "De4-Pro (iKC4) Bench CNC Lathe",
-          "quantity": 2,
-          "price": 10990,
-          "_id": "69cbb6439c46bf781b89c15d"
-        },
-        {
-          "productName": "De6 (iKC6S) CNC Turning Machine",
-          "quantity": 1,
-          "price": 12990,
-          "_id": "69cbb6439c46bf781b89c15e"
-        }
-      ],
-      "totalAmount": 34970,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "confirmee",
-      "stockUpdated": false,
-      "createdAt": "2026-03-31T11:55:47.350Z",
-      "updatedAt": "2026-03-31T11:56:22.467Z"
-    },
-    "69cce00fb365e667f704da70": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
-          "quantity": 1,
-          "price": 3490,
-          "_id": "69cce00fb365e667f704da71"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 3490,
-      "paymentMethod": "virement",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce00fb365e667f704da70",
-      "createdAt": "2026-04-01T09:06:23.937Z",
-      "updatedAt": "2026-04-01T09:06:23.960Z"
-    },
-    "69cce02f74786ac91f4d0824": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69cce02f74786ac91f4d0825"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 8990,
-      "paymentMethod": "stripe",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce02f74786ac91f4d0824",
-      "createdAt": "2026-04-01T09:06:55.678Z",
-      "updatedAt": "2026-04-01T09:06:55.697Z"
-    },
-    "69cce2f22299db58d304767a": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cce2f22299db58d304767b"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 5490,
-      "paymentMethod": "stripe",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce2f22299db58d304767a",
-      "createdAt": "2026-04-01T09:18:42.526Z",
-      "updatedAt": "2026-04-01T09:18:42.555Z"
-    },
-    "69cce41771d859d3edc1178f": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cce41771d859d3edc11790"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 5490,
-      "paymentMethod": "stripe",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce41771d859d3edc1178f",
-      "createdAt": "2026-04-01T09:23:35.282Z",
-      "updatedAt": "2026-04-01T09:23:35.301Z"
-    },
-    "69cce47866c661348ed805d2": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cce47866c661348ed805d3"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 5490,
-      "paymentMethod": "stripe",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce47866c661348ed805d2",
-      "createdAt": "2026-04-01T09:25:12.332Z",
-      "updatedAt": "2026-04-01T09:25:12.352Z"
-    },
-    "69cce5703b24d6d13fe14721": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cce5703b24d6d13fe14722"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 5490,
-      "paymentMethod": "stripe",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce5703b24d6d13fe14721",
-      "createdAt": "2026-04-01T09:29:20.214Z",
-      "updatedAt": "2026-04-01T09:29:20.236Z"
-    },
-    "69cce5b8e467f8ea10988c96": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cce5b8e467f8ea10988c97"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 5490,
-      "paymentMethod": "stripe",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce5b8e467f8ea10988c96",
-      "createdAt": "2026-04-01T09:30:32.237Z",
-      "updatedAt": "2026-04-01T09:30:33.287Z",
-      "stripeSessionId": "cs_test_a1zwqIyjtICXC4hWpCTs3yQ1BUycgsfTF9i5tdQdp8suqFyAN0ALfX6crp"
-    },
-    "69cce6797dbb994ba516c3f0": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69cce6797dbb994ba516c3f0",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cce6797dbb994ba516c3f1"
-        }
-      ],
-      "totalAmount": 5490,
-      "paymentMethod": "stripe",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "confirmee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-01T09:33:45.206Z",
-      "updatedAt": "2026-04-01T09:34:18.342Z",
-      "stripeSessionId": "cs_test_a1smoQppxYOoYhgXE59jumrArtvjA1OZNvTOWQNMe9IcAIhIYDO8C5HRGQ"
-    },
-    "69cce6b07dbb994ba516c41c": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69cce6b07dbb994ba516c41d"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 8990,
-      "paymentMethod": "livraison",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce6b07dbb994ba516c41c",
-      "createdAt": "2026-04-01T09:34:40.957Z",
-      "updatedAt": "2026-04-01T09:34:40.972Z"
-    },
-    "69cce6c57dbb994ba516c432": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cce6c57dbb994ba516c433"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 5490,
-      "paymentMethod": "virement",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69cce6c57dbb994ba516c432",
-      "createdAt": "2026-04-01T09:35:01.591Z",
-      "updatedAt": "2026-04-01T09:35:01.601Z"
-    },
-    "69ccf0507dbb994ba516c4ce": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69ccf0507dbb994ba516c4cf"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 8990,
-      "paymentMethod": "virement",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69ccf0507dbb994ba516c4ce",
-      "createdAt": "2026-04-01T10:15:44.311Z",
-      "updatedAt": "2026-04-01T10:15:44.329Z"
-    },
-    "69ccf0967dbb994ba516c556": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1775038687272-997911692.png",
-        "method": "platform",
-        "uploadedAt": "2026-04-01T10:18:07.282Z"
-      },
-      "_id": "69ccf0967dbb994ba516c556",
-      "user": "69a4c1b16bd3caaeb26c53f9",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69ccf0967dbb994ba516c557"
-        }
-      ],
-      "totalAmount": 8990,
-      "paymentMethod": "virement",
-      "returnDeadline": "2026-04-03T00:00:00.000Z",
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-01T10:16:54.883Z",
-      "updatedAt": "2026-04-01T10:19:46.732Z"
-    },
-    "69cda98b0870fcbe210a0320": {
-      "shippingInfo": {
-        "fullName": "Seif Boulabiar",
-        "email": "boulabiarseif60@gmail.com",
-        "phone": "25372382",
-        "address": "khaznadar",
-        "city": "khaznadar ",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1775085973771-180353004.jpg",
-        "method": "platform",
-        "uploadedAt": "2026-04-01T23:26:13.789Z"
-      },
-      "_id": "69cda98b0870fcbe210a0320",
-      "user": "69cda9630870fcbe210a030f",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69cda98b0870fcbe210a0321"
-        },
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 1,
-          "price": 7490,
-          "_id": "69cda98b0870fcbe210a0322"
-        }
-      ],
-      "totalAmount": 12980,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "createdAt": "2026-04-01T23:26:03.298Z",
-      "updatedAt": "2026-04-01T23:26:13.834Z"
-    },
-    "69ce496eaafdf287b4a73467": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1775126898825-432815609.png",
-        "method": "platform",
-        "uploadedAt": "2026-04-02T10:48:18.836Z"
-      },
-      "_id": "69ce496eaafdf287b4a73467",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PX1 Baby CNC Milling Machine",
-          "quantity": 1,
-          "price": 5990,
-          "_id": "69ce496eaafdf287b4a73468"
-        }
-      ],
-      "totalAmount": 5990,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "createdAt": "2026-04-02T10:48:14.836Z",
-      "updatedAt": "2026-04-02T10:48:18.854Z"
-    },
-    "69ce510eaafdf287b4a7356d": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1775128857075-968205374.png",
-        "method": "platform",
-        "uploadedAt": "2026-04-02T11:20:57.092Z"
-      },
-      "_id": "69ce510eaafdf287b4a7356d",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69ce510eaafdf287b4a7356e"
-        },
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69ce510eaafdf287b4a7356f"
-        }
-      ],
-      "totalAmount": 14480,
-      "paymentMethod": "virement",
-      "returnDeadline": "2026-04-10T00:00:00.000Z",
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-02T11:20:46.260Z",
-      "updatedAt": "2026-04-02T11:24:05.138Z"
-    },
-    "69ce55ecaafdf287b4a738ca": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69ce55ecaafdf287b4a738ca",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69ce55ecaafdf287b4a738cb"
-        }
-      ],
-      "totalAmount": 5490,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-02T11:41:32.502Z",
-      "updatedAt": "2026-04-02T11:42:11.750Z"
-    },
-    "69ce56b3aafdf287b4a73b0c": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69ce56b3aafdf287b4a73b0c",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "De4-Pro (iKC4) Bench CNC Lathe",
-          "quantity": 2,
-          "price": 10990,
-          "_id": "69ce56b3aafdf287b4a73b0d"
-        }
-      ],
-      "totalAmount": 21980,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-02T11:44:51.927Z",
-      "updatedAt": "2026-04-02T11:46:05.959Z"
-    },
-    "69d44c32b460aafd28fc5621": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d44c32b460aafd28fc5621",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 2,
-          "price": 5490,
-          "_id": "69d44c32b460aafd28fc5622"
-        }
-      ],
-      "totalAmount": 10980,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-07T00:13:38.957Z",
-      "updatedAt": "2026-04-07T00:14:05.979Z"
-    },
-    "69d77e556a23ea6d73eac945": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1775730271914-329790703.png",
-        "method": "platform",
-        "uploadedAt": "2026-04-09T10:24:31.926Z"
-      },
-      "_id": "69d77e556a23ea6d73eac945",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 2,
-          "price": 7490,
-          "_id": "69d77e556a23ea6d73eac946"
-        }
-      ],
-      "totalAmount": 14980,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-09T10:24:21.649Z",
-      "updatedAt": "2026-04-09T10:29:22.590Z"
-    },
-    "69d77e7b6a23ea6d73eac96c": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d77e7b6a23ea6d73eac96c",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PX1 Baby CNC Milling Machine",
-          "quantity": 3,
-          "price": 5990,
-          "_id": "69d77e7b6a23ea6d73eac96d"
-        }
-      ],
-      "totalAmount": 17970,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-09T10:24:59.371Z",
-      "updatedAt": "2026-04-09T10:29:24.593Z"
-    },
-    "69d77e876a23ea6d73eac97a": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d77e876a23ea6d73eac97a",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "DT-M002 – Mesure des Positions",
-          "quantity": 2,
-          "price": 1750,
-          "_id": "69d77e876a23ea6d73eac97b"
-        }
-      ],
-      "totalAmount": 3500,
-      "paymentMethod": "stripe",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "confirmee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-09T10:25:11.736Z",
-      "updatedAt": "2026-04-09T10:26:04.688Z",
-      "stripeSessionId": "cs_test_a1Zi45ZSqNVNacD6MXsDiE5trzv8DPwLvuRijSuYdmOSzIV44Hfws6RPVE"
-    },
-    "69d77ec96a23ea6d73eac99e": {
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "PX1 Baby CNC Milling Machine",
-          "quantity": 1,
-          "price": 5990,
-          "_id": "69d77ec96a23ea6d73eac99f"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "totalAmount": 5990,
-      "paymentMethod": "livraison",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69d77ec96a23ea6d73eac99e",
-      "createdAt": "2026-04-09T10:26:17.179Z",
-      "updatedAt": "2026-04-09T10:26:17.186Z"
-    },
-    "69d77eda6a23ea6d73eac9b4": {
-      "shippingInfo": {
-        "fullName": "dalizar aissa ",
-        "email": "issadalizar@gmail.com",
-        "phone": "+21652115980",
-        "address": "rue salah louhichi zeramdine monastir5040",
-        "city": "MONASTIR",
-        "postalCode": "5040"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1775730400569-277158443.png",
-        "method": "platform",
-        "uploadedAt": "2026-04-09T10:26:40.578Z"
-      },
-      "_id": "69d77eda6a23ea6d73eac9b4",
-      "user": "69c323a5fd8d70d1bab2b6c3",
-      "items": [
-        {
-          "productName": "De6 (iKC6S) CNC Turning Machine",
-          "quantity": 1,
-          "price": 12990,
-          "_id": "69d77eda6a23ea6d73eac9b5"
-        }
-      ],
-      "totalAmount": 12990,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-09T10:26:34.226Z",
-      "updatedAt": "2026-04-09T10:27:33.395Z"
-    },
-    "69d682bc2b0019e335b2b6cc": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d682bc2b0019e335b2b6cc",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69d682bc2b0019e335b2b6cd"
-        }
-      ],
-      "totalAmount": 8990,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-08T16:30:52.052Z",
-      "updatedAt": "2026-04-08T16:33:31.381Z"
-    },
-    "69d683aa2b0019e335b2b971": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": "/uploads/virements/virement-1775666119026-21602100.jpg",
-        "method": "platform",
-        "uploadedAt": "2026-04-08T16:35:19.045Z"
-      },
-      "_id": "69d683aa2b0019e335b2b971",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69d683aa2b0019e335b2b972"
-        }
-      ],
-      "totalAmount": 5490,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-08T16:34:50.778Z",
-      "updatedAt": "2026-04-09T10:53:57.072Z"
-    },
-    "69dbd76759e281307d53d7e0": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69dbd76759e281307d53d7e0",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De8 (iKC8) CNC Turning Machine",
-          "quantity": 1,
-          "price": 18990,
-          "_id": "69dbd76759e281307d53d7e1"
-        }
-      ],
-      "totalAmount": 18990,
-      "paymentMethod": "stripe",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": true,
-      "createdAt": "2026-04-12T17:33:27.192Z",
-      "updatedAt": "2026-04-12T17:35:23.270Z",
-      "stripeSessionId": "cs_test_a1gG0CjgEuLNkf7isGTDkKSdztDSc2gxLGfzYbvIdJ1DmisbpSnR8IAymI"
-    },
-    "69dcda0f0269db7f8d154f19": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productId": "697f55969e5f50c871efa221",
-          "productName": "De4-Pro (iKC4) Bench CNC Lathe",
-          "quantity": 3,
-          "price": 87.9,
-          "_id": "69dcda0f0269db7f8d154f1a"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 263.70000000000005,
-      "paymentMethod": "livraison",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69dcda0f0269db7f8d154f19",
-      "createdAt": "2026-04-13T11:57:03.341Z",
-      "updatedAt": "2026-04-13T11:57:03.367Z"
-    },
-    "69e6522240db2cd023b9ec84": {
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productId": "697f545c9e5f50c871efa21e",
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 1,
-          "price": 103.9,
-          "_id": "69e6522240db2cd023b9ec85"
-        }
-      ],
-      "shippingInfo": {
-        "fullName": "salouma",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "totalAmount": 103.9,
-      "paymentMethod": "livraison",
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "en_attente",
-      "stockUpdated": false,
-      "_id": "69e6522240db2cd023b9ec84",
-      "createdAt": "2026-04-20T16:19:46.472Z",
-      "updatedAt": "2026-04-20T16:19:46.629Z"
-    },
-    "69ef36879fe9fe7855e662e3": {
-      "shippingInfo": {
-        "fullName": "salouma",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "Sousse",
-        "postalCode": "4023"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69ef36879fe9fe7855e662e3",
+    "6a063669c1b1ad54104163cb": {
       "user": "69b883e5d6e37dfe1f2e3418",
       "items": [
         {
           "productId": "697f6f9b9e5f50c871efa22f",
           "productName": "DT-M002 – Mesure des Positions",
-          "quantity": 2,
+          "quantity": 1,
           "price": 120.99,
-          "_id": "69ef36879fe9fe7855e662e4"
+          "_id": "6a063669c1b1ad54104163cc"
         },
         {
           "productId": "697f6f609e5f50c871efa22e",
           "productName": "DT-M001 – Mesure d'Angle de Volant",
-          "quantity": 2,
+          "quantity": 1,
           "price": 86.5,
-          "_id": "69ef36879fe9fe7855e662e5"
+          "_id": "6a063669c1b1ad54104163cd"
         }
       ],
-      "totalAmount": 414.98,
-      "paymentMethod": "stripe",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "livree",
-      "stockUpdated": false,
-      "createdAt": "2026-04-27T10:12:23.278Z",
-      "updatedAt": "2026-04-27T11:22:29.362Z",
-      "stripeSessionId": "cs_test_b12slsdfrp6Boj1SuOHDQjXUtcpST1khAAiQxA56mU0ivkVEalITrMds6g"
-    },
-    "69ef38549fe9fe7855e6663b": {
       "shippingInfo": {
         "fullName": "salouma",
         "email": "salmabalgouthi84@gmail.com",
         "phone": "+21658818563",
         "address": "tunisia sousse",
-        "city": "Sousse",
+        "city": "sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 207.49,
+      "paymentMethod": "livraison",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "invoices": [],
+      "_id": "6a063669c1b1ad54104163cb",
+      "createdAt": "2026-05-14T20:54:01.712Z",
+      "updatedAt": "2026-05-14T20:54:01.829Z"
+    },
+    "6a06373bc1b1ad5410416593": {
+      "user": "6a063723c1b1ad5410416582",
+      "items": [
+        {
+          "productId": "697f96479e5f50c871efa23a",
+          "productName": "PTL908-2H – High Voltage Safety Test Lead 10kV",
+          "quantity": 1,
+          "price": 40,
+          "_id": "6a06373bc1b1ad5410416594"
+        },
+        {
+          "productId": "697f96799e5f50c871efa23d",
+          "productName": "PTL970 – Oscilloscope Probe 5kV",
+          "quantity": 1,
+          "price": 78.4,
+          "_id": "6a06373bc1b1ad5410416595"
+        },
+        {
+          "productId": "697f968b9e5f50c871efa23e",
+          "productName": "PTL955 – Oscilloscope Probe 40kV",
+          "quantity": 1,
+          "price": 300,
+          "_id": "6a06373bc1b1ad5410416596"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "issadalizar",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21655445336",
+        "address": "sousse",
+        "city": "sousse",
+        "postalCode": "4023"
+      },
+      "totalAmount": 418.4,
+      "paymentMethod": "livraison",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "invoices": [],
+      "_id": "6a06373bc1b1ad5410416593",
+      "createdAt": "2026-05-14T20:57:31.045Z",
+      "updatedAt": "2026-05-14T20:57:31.132Z"
+    },
+    "6a0641d9c1b1ad5410416b10": {
+      "shippingInfo": {
+        "fullName": "issadalizar",
+        "email": "issadalizar@gmail.com",
+        "phone": "+21655445336",
+        "address": "sousse",
+        "city": "sousse",
         "postalCode": "4023"
       },
       "virementProof": {
@@ -4403,310 +1404,98 @@ export const cncProductDetails = {
         "method": null,
         "uploadedAt": null
       },
-      "_id": "69ef38549fe9fe7855e6663b",
-      "user": "69b883e5d6e37dfe1f2e3418",
+      "_id": "6a0641d9c1b1ad5410416b10",
+      "user": "6a063723c1b1ad5410416582",
       "items": [
         {
-          "productId": "697f93e49e5f50c871efa235",
-          "productName": "DTM7020 – Modules Essuie-Glaces",
-          "quantity": 4,
-          "price": 120.95,
-          "_id": "69ef38549fe9fe7855e6663c"
-        },
-        {
-          "productId": "697f93b69e5f50c871efa234",
-          "productName": "DTM7000 – Modules Éclairage et Signalisation",
-          "quantity": 5,
-          "price": 150.99,
-          "_id": "69ef38549fe9fe7855e6663d"
-        },
-        {
-          "productId": "697f91fe9e5f50c871efa233",
-          "productName": "DT-M005 – Mesure des Courants et des Tensions",
-          "quantity": 10,
-          "price": 750.5,
-          "_id": "69ef38549fe9fe7855e6663e"
-        },
-        {
-          "productId": "697f91119e5f50c871efa231",
-          "productName": "MT-4002V – Maquette de Charge Démarrage 12V",
-          "quantity": 5,
-          "price": 900.5,
-          "_id": "69ef38549fe9fe7855e6663f"
+          "productId": "697f95159e5f50c871efa238",
+          "productName": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
+          "quantity": 2,
+          "price": 110.98,
+          "_id": "6a0641d9c1b1ad5410416b11"
         }
       ],
-      "totalAmount": 13246.25,
+      "totalAmount": 221.96,
       "paymentMethod": "livraison",
       "returnDeadline": null,
-      "paymentStatus": "pending",
-      "orderStatus": "annulee",
+      "paymentStatus": "paid",
+      "orderStatus": "livree",
       "stockUpdated": true,
-      "createdAt": "2026-04-27T10:20:04.485Z",
-      "updatedAt": "2026-04-27T11:22:11.197Z"
+      "invoices": [
+        {
+          "invoiceNumber": "INV-202605-000030",
+          "generatedAt": "2026-05-14T21:42:54.477Z",
+          "totalAmount": 221.96,
+          "pdfUrl": null,
+          "status": "generated",
+          "_id": "6a0641dec1b1ad5410416b2f",
+          "createdAt": "2026-05-14T21:42:54.482Z",
+          "updatedAt": "2026-05-14T21:42:54.482Z"
+        }
+      ],
+      "createdAt": "2026-05-14T21:42:49.970Z",
+      "updatedAt": "2026-05-14T21:44:36.118Z",
+      "currentInvoice": "6a0641dec1b1ad5410416b2f"
     },
-    "69d666282b0019e335b2a8b0": {
+    "6a085b47f7817954b401bca6": {
       "shippingInfo": {
-        "fullName": "salma balgouthi",
+        "fullName": "salouma",
         "email": "salmabalgouthi84@gmail.com",
         "phone": "+21658818563",
         "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
+        "city": "sousse",
+        "postalCode": "4023"
       },
       "virementProof": {
         "fileUrl": null,
         "method": null,
         "uploadedAt": null
       },
-      "_id": "69d666282b0019e335b2a8b0",
+      "_id": "6a085b47f7817954b401bca6",
       "user": "69b883e5d6e37dfe1f2e3418",
       "items": [
         {
-          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productId": "697f978e9e5f50c871efa240",
+          "productName": "ACL-7000 – Analogue Training System",
           "quantity": 1,
-          "price": 5490,
-          "_id": "69d666282b0019e335b2a8b1"
-        }
-      ],
-      "totalAmount": 5490,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "failed",
-      "orderStatus": "annulee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-08T14:28:56.864Z",
-      "updatedAt": "2026-04-27T11:23:28.744Z"
-    },
-    "69d6649f2b0019e335b2a782": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d6649f2b0019e335b2a782",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
+          "price": 1450.57,
+          "_id": "6a085b47f7817954b401bca7"
+        },
         {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
+          "productName": "M21-7100 – Digital & Analogue Training System",
           "quantity": 1,
-          "price": 7490,
-          "_id": "69d6649f2b0019e335b2a783"
-        }
-      ],
-      "totalAmount": 7490,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "failed",
-      "orderStatus": "annulee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-08T14:22:23.932Z",
-      "updatedAt": "2026-04-27T11:23:25.788Z"
-    },
-    "69d4f4cc53b83fba680cc6af": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d4f4cc53b83fba680cc6af",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
+          "price": 1890,
+          "_id": "6a085b47f7817954b401bca8"
+        },
         {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 3,
-          "price": 5490,
-          "_id": "69d4f4cc53b83fba680cc6b0"
-        }
-      ],
-      "totalAmount": 16470,
-      "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "failed",
-      "orderStatus": "annulee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-07T12:13:00.904Z",
-      "updatedAt": "2026-04-27T11:23:19.444Z"
-    },
-    "69d4f37a53b83fba680cc634": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d4f37a53b83fba680cc634",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "PC1 Baby CNC Lathe-Mach",
+          "productId": "697f97e09e5f50c871efa242",
+          "productName": "F1-3 – Basic Logic Circuit Training System",
           "quantity": 1,
-          "price": 5490,
-          "_id": "69d4f37a53b83fba680cc635"
+          "price": 1356,
+          "_id": "6a085b47f7817954b401bca9"
         }
       ],
-      "totalAmount": 5490,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "failed",
-      "orderStatus": "annulee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-07T12:07:22.672Z",
-      "updatedAt": "2026-04-27T11:23:22.895Z"
-    },
-    "69d4f25c53b83fba680cc575": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d4f25c53b83fba680cc575",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 2,
-          "price": 7490,
-          "_id": "69d4f25c53b83fba680cc576"
-        }
-      ],
-      "totalAmount": 14980,
+      "totalAmount": 4696.57,
       "paymentMethod": "virement",
-      "returnDeadline": null,
-      "paymentStatus": "failed",
-      "orderStatus": "annulee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-07T12:02:36.625Z",
-      "updatedAt": "2026-04-27T11:23:15.725Z"
-    },
-    "69d4f0a853b83fba680cc4e6": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d4f0a853b83fba680cc4e6",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De4-Eco (KC4S) Bench CNC Lathe",
-          "quantity": 2,
-          "price": 7490,
-          "_id": "69d4f0a853b83fba680cc4e7"
-        }
-      ],
-      "totalAmount": 14980,
-      "paymentMethod": "livraison",
       "returnDeadline": null,
       "paymentStatus": "paid",
-      "orderStatus": "confirmee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-07T11:55:20.218Z",
-      "updatedAt": "2026-04-27T11:22:56.776Z"
-    },
-    "69d4ed5253b83fba680cc3aa": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d4ed5253b83fba680cc3aa",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
+      "orderStatus": "livree",
+      "stockUpdated": true,
+      "invoices": [
         {
-          "productName": "PC1 Baby CNC Lathe-Mach",
-          "quantity": 1,
-          "price": 5490,
-          "_id": "69d4ed5253b83fba680cc3ab"
+          "invoiceNumber": "INV-202605-000031",
+          "generatedAt": "2026-05-16T11:56:02.276Z",
+          "totalAmount": 4696.57,
+          "pdfUrl": null,
+          "status": "generated",
+          "_id": "6a085b52f7817954b401bd52",
+          "createdAt": "2026-05-16T11:56:02.281Z",
+          "updatedAt": "2026-05-16T11:56:02.281Z"
         }
       ],
-      "totalAmount": 5490,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "paid",
-      "orderStatus": "confirmee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-07T11:41:06.276Z",
-      "updatedAt": "2026-04-27T11:23:04.559Z"
-    },
-    "69d4eb5453b83fba680cc37e": {
-      "shippingInfo": {
-        "fullName": "salma balgouthi",
-        "email": "salmabalgouthi84@gmail.com",
-        "phone": "+21658818563",
-        "address": "tunisia sousse",
-        "city": "tunis",
-        "postalCode": "2000"
-      },
-      "virementProof": {
-        "fileUrl": null,
-        "method": null,
-        "uploadedAt": null
-      },
-      "_id": "69d4eb5453b83fba680cc37e",
-      "user": "69b883e5d6e37dfe1f2e3418",
-      "items": [
-        {
-          "productName": "De2-Ultra Mini CNC Turning Center",
-          "quantity": 1,
-          "price": 8990,
-          "_id": "69d4eb5453b83fba680cc37f"
-        }
-      ],
-      "totalAmount": 8990,
-      "paymentMethod": "livraison",
-      "returnDeadline": null,
-      "paymentStatus": "failed",
-      "orderStatus": "annulee",
-      "stockUpdated": false,
-      "createdAt": "2026-04-07T11:32:36.761Z",
-      "updatedAt": "2026-04-27T11:23:12.103Z"
+      "createdAt": "2026-05-16T11:55:51.842Z",
+      "updatedAt": "2026-05-16T11:57:14.263Z",
+      "currentInvoice": "6a085b52f7817954b401bd52"
     }
   }
 };

@@ -22,7 +22,7 @@ const ProductViewer3D = ({ product, modelData }) => {
     const title = product.title || '';
     const ref = product.reference || product.sku || '';
 
-    console.log('🔍 Titre produit:', `"${title}"`);
+    console.log(' Titre produit:', `"${title}"`);
 
     // Mapping avec vos chemins exacts (basé sur vos images)
     const modelMapping = {
@@ -67,14 +67,14 @@ const ProductViewer3D = ({ product, modelData }) => {
 
     // 1. Match exact
     if (modelMapping[title]) {
-      console.log('✅ Match exact:', modelMapping[title]);
+      console.log('Match exact:', modelMapping[title]);
       return modelMapping[title];
     }
 
     // 2. Match insensible à la casse
     for (const [key, path] of Object.entries(modelMapping)) {
       if (title.toLowerCase() === key.toLowerCase()) {
-        console.log('✅ Match (insensible casse):', path);
+        console.log(' Match (insensible casse):', path);
         return path;
       }
     }
@@ -86,14 +86,14 @@ const ProductViewer3D = ({ product, modelData }) => {
         // Trouver le chemin correspondant
         for (const [key, path] of Object.entries(modelMapping)) {
           if (key.includes(keyword)) {
-            console.log('✅ Match par mot-clé:', keyword, '→', path);
+            console.log(' Match par mot-clé:', keyword, '→', path);
             return path;
           }
         }
       }
     }
 
-    console.warn('⚠️ Aucun modèle trouvé pour:', title);
+    console.warn('Aucun modèle trouvé pour:', title);
     return null;
   };
 
@@ -219,7 +219,7 @@ const ProductViewer3D = ({ product, modelData }) => {
     setError(false);
 
     const modelPath = getModelPath(product);
-    console.log('📁 Chemin final:', modelPath);
+    console.log('Chemin final:', modelPath);
 
     if (modelPath) {
       const loader = new GLTFLoader();
@@ -352,9 +352,9 @@ const ProductViewer3D = ({ product, modelData }) => {
           fontSize: '13px',
           zIndex: 10,
         }}>
-          <div>🖱️ Rotation: cliquer + glisser</div>
-          <div>🔍 Zoom: molette</div>
-          <div>🔄 Auto-rotation activée</div>
+          <div> Rotation: cliquer + glisser</div>
+          <div> Zoom: molette</div>
+          <div> Auto-rotation activée</div>
         </div>
       )}
 

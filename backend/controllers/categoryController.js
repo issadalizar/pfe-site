@@ -1,7 +1,7 @@
 import Category from '../models/Category.js';
 import dataSyncService from '../services/dataSyncService.js';
 
-
+// Récupérer toutes les catégories
 export const getAllCategories = async (req, res) => {
   try {
     const categories = await Category.find().populate('parent');
@@ -22,7 +22,7 @@ export const getAllCategories = async (req, res) => {
   }
 };
 
-
+// Récupérer une catégorie par ID
 export const getCategoryById = async (req, res) => {
   try {
     const category = await Category.findById(req.params.id).populate('parent');

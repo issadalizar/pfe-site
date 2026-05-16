@@ -1,24 +1,21 @@
-// controllers/productController.js
 import Product from "../models/Product.js";
 import Category from "../models/Category.js";
 import notificationService from '../services/notificationService.js';
 import dataSyncService from '../services/dataSyncService.js';
 
-// @desc    Récupérer tous les produits
-// @route   GET /api/products
-// @access  Public
+// Récupérer tous les produits
 export const getAllProducts = async (req, res) => {
   try {
     const products = await Product.find().populate("categorie");
 
-    console.log(`✅ ${products.length} produits récupérés`);
+    console.log(` ${products.length} produits récupérés`);
     res.json({
       success: true,
       count: products.length,
       data: products,
     });
   } catch (error) {
-    console.error("❌ Erreur dans getAllProducts:", error);
+    console.error(" Erreur dans getAllProducts:", error);
     res.status(500).json({
       success: false,
       error: "Erreur serveur lors de la récupération des produits",
@@ -27,9 +24,7 @@ export const getAllProducts = async (req, res) => {
   }
 };
 
-// @desc    Récupérer les produits par catégorie
-// @route   GET /api/products/categorie/:categorieId
-// @access  Public
+// Récupérer les produits par catégorie
 export const getProductsByCategory = async (req, res) => {
   try {
     const { categorieId } = req.params;
@@ -44,7 +39,7 @@ export const getProductsByCategory = async (req, res) => {
 
     const products = await Product.find({ categorie: categorieId }).populate("categorie");
 
-    console.log(`✅ ${products.length} produits récupérés pour la catégorie "${categorie.nom}"`);
+    console.log(` ${products.length} produits récupérés pour la catégorie "${categorie.nom}"`);
     res.json({
       success: true,
       categorie: categorie.nom,
@@ -52,7 +47,7 @@ export const getProductsByCategory = async (req, res) => {
       data: products,
     });
   } catch (error) {
-    console.error("❌ Erreur dans getProductsByCategory:", error);
+    console.error(" Erreur dans getProductsByCategory:", error);
     res.status(500).json({
       success: false,
       error: "Erreur serveur",
@@ -61,9 +56,7 @@ export const getProductsByCategory = async (req, res) => {
   }
 };
 
-// @desc    Récupérer un produit par ID
-// @route   GET /api/products/:id
-// @access  Public
+// Récupérer un produit par ID
 export const getProductById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id).populate("categorie");
@@ -75,13 +68,13 @@ export const getProductById = async (req, res) => {
       });
     }
 
-    console.log(`✅ Produit "${product.nom}" récupéré`);
+    console.log(` ${product.nom} récupéré`);
     res.json({
       success: true,
       data: product,
     });
   } catch (error) {
-    console.error("❌ Erreur dans getProductById:", error);
+    console.error(" Erreur dans getProductById:", error);
     res.status(500).json({
       success: false,
       error: "Erreur serveur",
@@ -90,9 +83,7 @@ export const getProductById = async (req, res) => {
   }
 };
 
-// @desc    Créer un nouveau produit
-// @route   POST /api/products
-// @access  Public (à protéger plus tard)
+// Créer un nouveau produit
 export const createProduct = async (req, res) => {
   try {
     const {
@@ -123,7 +114,7 @@ export const createProduct = async (req, res) => {
       });
     }
 
-    // ✅ parse numbers
+    
     const parsedPrix = prix === "" || prix === undefined || prix === null ? 0 : Number(prix);
     const parsedStock = stock === "" || stock === undefined || stock === null ? 0 : Number.parseInt(stock, 10);
 
@@ -149,25 +140,24 @@ export const createProduct = async (req, res) => {
 
     const product = await Product.create(productData);
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    // SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.addProductToFile({
         ...product.toObject(),
         _id: product._id.toString()
       });
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
-      // Ne pas bloquer la réponse
+      console.error(' Erreur sync productData:', syncError);
     }
 
-    console.log(`✅ Produit créé: ${product.nom}`);
+    console.log(` Produit créé: ${product.nom}`);
     res.status(201).json({
       success: true,
       message: "Produit créé avec succès",
       data: product,
     });
   } catch (error) {
-    console.error("❌ Erreur dans createProduct:", error);
+    console.error(" Erreur dans createProduct:", error);
 
     if (error.code === 11000) {
       return res.status(400).json({
@@ -184,9 +174,7 @@ export const createProduct = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour un produit (AVEC NOTIFICATIONS)
-// @route   PUT /api/products/:id
-// @access  Public (à protéger plus tard)
+// Mettre à jour un produit (AVEC NOTIFICATIONS)
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -204,7 +192,7 @@ export const updateProduct = async (req, res) => {
     // Sauvegarder l'ancien stock
     const ancienStock = ancienProduit.stock || 0;
     
-    // ✅ Liste des champs autorisés pour la mise à jour
+    // Liste des champs autorisés pour la mise à jour
     const allowedUpdates = [
       "nom",
       "description",
@@ -235,7 +223,7 @@ export const updateProduct = async (req, res) => {
       }
     }
 
-    // ✅ parse numbers
+    // parse numbers
     if (updates.prix !== undefined) {
       const parsedPrix = updates.prix === "" || updates.prix === null ? 0 : Number(updates.prix);
       if (Number.isNaN(parsedPrix) || parsedPrix < 0) {
@@ -252,7 +240,7 @@ export const updateProduct = async (req, res) => {
       updates.stock = parsedStock;
     }
 
-    // ✅ normaliser arrays si envoyés en string "a,b,c"
+    // normaliser arrays si envoyés en string "a,b,c"
     if (updates.caracteristiques && !Array.isArray(updates.caracteristiques)) {
       updates.caracteristiques = String(updates.caracteristiques)
         .split(",")
@@ -269,17 +257,17 @@ export const updateProduct = async (req, res) => {
     Object.assign(ancienProduit, updates);
     await ancienProduit.save();
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    // SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.updateProductInFile(
         id, 
         ancienProduit.toObject()
       );
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
+      console.error(' Erreur sync productData:', syncError);
     }
 
-    // 🔔 CRÉER UNE NOTIFICATION SI LE STOCK A CHANGÉ
+    //  CRÉER UNE NOTIFICATION SI LE STOCK A CHANGÉ
     if (ancienStock !== ancienProduit.stock) {
       await notificationService.notifierModificationStock(
         ancienProduit,
@@ -288,17 +276,17 @@ export const updateProduct = async (req, res) => {
         req.user?._id // Si vous avez l'utilisateur connecté
       );
       
-      console.log(`📢 Notification créée pour ${ancienProduit.nom || ancienProduit.name}`);
+      console.log(` Notification créée pour ${ancienProduit.nom || ancienProduit.name}`);
     }
 
-    console.log(`✅ Produit mis à jour: ${ancienProduit.nom}`);
+    console.log(`Produit mis à jour: ${ancienProduit.nom}`);
     res.json({
       success: true,
       message: "Produit mis à jour avec succès",
       data: ancienProduit,
     });
   } catch (error) {
-    console.error("❌ Erreur dans updateProduct:", error);
+    console.error(" Erreur dans updateProduct:", error);
 
     if (error.code === 11000) {
       return res.status(400).json({
@@ -315,9 +303,7 @@ export const updateProduct = async (req, res) => {
   }
 };
 
-// @desc    Supprimer un produit
-// @route   DELETE /api/products/:id
-// @access  Public (à protéger plus tard)
+// Supprimer un produit
 export const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
@@ -331,20 +317,20 @@ export const deleteProduct = async (req, res) => {
 
     await product.deleteOne();
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    //  SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.deleteProductFromFile(req.params.id);
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
+      console.error(' Erreur sync productData:', syncError);
     }
 
-    console.log(`✅ Produit supprimé: ${product.nom}`);
+    console.log(` Produit supprimé: ${product.nom}`);
     res.json({
       success: true,
       message: "Produit supprimé avec succès",
     });
   } catch (error) {
-    console.error("❌ Erreur dans deleteProduct:", error);
+    console.error(" Erreur dans deleteProduct:", error);
     res.status(500).json({
       success: false,
       error: "Erreur serveur lors de la suppression",
@@ -353,9 +339,7 @@ export const deleteProduct = async (req, res) => {
   }
 };
 
-// @desc    Récupérer les produits en rupture de stock
-// @route   GET /api/products/rupture-stock
-// @access  Private/Admin
+//  Récupérer les produits en rupture de stock
 export const getOutOfStockProducts = async (req, res) => {
   try {
     const products = await Product.find({ 
@@ -363,14 +347,14 @@ export const getOutOfStockProducts = async (req, res) => {
       estActif: true 
     }).populate("categorie");
 
-    console.log(`✅ ${products.length} produits en rupture de stock récupérés`);
+    console.log(` ${products.length} produits en rupture de stock récupérés`);
     res.json({
       success: true,
       count: products.length,
       data: products,
     });
   } catch (error) {
-    console.error("❌ Erreur dans getOutOfStockProducts:", error);
+    console.error(" Erreur dans getOutOfStockProducts:", error);
     res.status(500).json({
       success: false,
       error: "Erreur serveur lors de la récupération des produits en rupture",
@@ -379,20 +363,18 @@ export const getOutOfStockProducts = async (req, res) => {
   }
 };
 
-// @desc    Récupérer les statistiques de stock
-// @route   GET /api/products/statistiques-stock
-// @access  Private/Admin
+// Récupérer les statistiques de stock
 export const getStockStats = async (req, res) => {
-  console.log("📊 [DEBUG] Début de getStockStats");
+  console.log(" [DEBUG] Début de getStockStats");
   
   try {
     // Vérifiez que Product est bien importé
-    console.log("📊 [DEBUG] Modèle Product:", Product ? "OK" : "NON DÉFINI");
+    console.log(" [DEBUG] Modèle Product:", Product ? "OK" : "NON DÉFINI");
     
     // Vérifiez l'état MongoDB
     const mongoose = await import('mongoose');
     const dbState = mongoose.default.connection.readyState;
-    console.log(`📊 [DEBUG] État MongoDB: ${dbState} (0=déconnecté, 1=connecté)`);
+    console.log(` [DEBUG] État MongoDB: ${dbState} (0=déconnecté, 1=connecté)`);
     
     if (dbState !== 1) {
       return res.json({
@@ -413,7 +395,7 @@ export const getStockStats = async (req, res) => {
     try {
       totalProduits = await Product.countDocuments({});
     } catch (countError) {
-      console.error("❌ Erreur countDocuments total:", countError.message);
+      console.error(" Erreur countDocuments total:", countError.message);
       totalProduits = 0;
     }
     
@@ -423,7 +405,7 @@ export const getStockStats = async (req, res) => {
         estActif: true 
       });
     } catch (err) {
-      console.error("❌ Erreur countDocuments rupture:", err.message);
+      console.error(" Erreur countDocuments rupture:", err.message);
       ruptureStock = 0;
     }
     
@@ -433,7 +415,7 @@ export const getStockStats = async (req, res) => {
         estActif: true 
       });
     } catch (err) {
-      console.error("❌ Erreur countDocuments normal:", err.message);
+      console.error(" Erreur countDocuments normal:", err.message);
       stockNormal = 0;
     }
     
@@ -455,7 +437,7 @@ export const getStockStats = async (req, res) => {
     });
     
   } catch (error) {
-    console.error("❌ [ERREUR GLOBALE] getStockStats:", error.message);
+    console.error(" [ERREUR GLOBALE] getStockStats:", error.message);
     return res.json({
       success: true,
       data: {
@@ -468,11 +450,9 @@ export const getStockStats = async (req, res) => {
   }
 };
 
-// ============= NOUVELLES FONCTIONS POUR LES NOTIFICATIONS =============
+// ============= NOTIFICATION FUNCTIONS =============
 
-// @desc    Récupérer toutes les notifications
-// @route   GET /api/notifications
-// @access  Private/Admin
+// Récupérer toutes les notifications
 export const getNotifications = async (req, res) => {
   try {
     const { page = 1, limit = 50, type, lu } = req.query;
@@ -490,7 +470,7 @@ export const getNotifications = async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Erreur récupération notifications:', error);
+    console.error("Erreur récupération notifications:", error);
     res.status(500).json({
       success: false,
       message: error.message
@@ -498,31 +478,7 @@ export const getNotifications = async (req, res) => {
   }
 };
 
-// @desc    Récupérer les notifications non lues
-// @route   GET /api/notifications/non-lues
-// @access  Private/Admin
-export const getNotificationsNonLues = async (req, res) => {
-  try {
-    const { limit = 20 } = req.query;
-    const result = await notificationService.getNotificationsNonLues(parseInt(limit));
-    
-    res.status(200).json({
-      success: true,
-      data: result.notifications,
-      nonLuesCount: result.notifications.length
-    });
-  } catch (error) {
-    console.error('❌ Erreur récupérations notifications non lues:', error);
-    res.status(500).json({
-      success: false,
-      message: error.message
-    });
-  }
-};
-
-// @desc    Marquer une notification comme lue
-// @route   PUT /api/notifications/:id/lire
-// @access  Private/Admin
+// Marquer une notification spécifique comme lue (AJOUTER CETTE FONCTION)
 export const marquerNotificationLue = async (req, res) => {
   try {
     const { id } = req.params;
@@ -532,18 +488,18 @@ export const marquerNotificationLue = async (req, res) => {
     if (!notification) {
       return res.status(404).json({
         success: false,
-        message: 'Notification non trouvée'
+        message: "Notification non trouvée"
       });
     }
     
     res.status(200).json({
       success: true,
-      data: notification,
-      message: 'Notification marquée comme lue'
+      message: "Notification marquée comme lue",
+      data: notification
     });
     
   } catch (error) {
-    console.error('❌ Erreur marquage notification:', error);
+    console.error("Erreur lors du marquage de la notification:", error);
     res.status(500).json({
       success: false,
       message: error.message
@@ -551,9 +507,7 @@ export const marquerNotificationLue = async (req, res) => {
   }
 };
 
-// @desc    Marquer toutes les notifications comme lues
-// @route   PUT /api/notifications/lire-toutes
-// @access  Private/Admin
+// Marquer toutes les notifications comme lues
 export const marquerToutesNotificationsLues = async (req, res) => {
   try {
     const result = await notificationService.marquerToutesCommeLues();
@@ -565,7 +519,7 @@ export const marquerToutesNotificationsLues = async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Erreur marquage toutes notifications:', error);
+    console.error("Erreur marquage toutes notifications:", error);
     res.status(500).json({
       success: false,
       message: error.message
@@ -573,9 +527,7 @@ export const marquerToutesNotificationsLues = async (req, res) => {
   }
 };
 
-// @desc    Récupérer les statistiques des notifications
-// @route   GET /api/notifications/stats
-// @access  Private/Admin
+// Récupérer les statistiques des notifications
 export const getNotificationsStats = async (req, res) => {
   try {
     const stats = await notificationService.getStatistiques();
@@ -586,7 +538,7 @@ export const getNotificationsStats = async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Erreur stats notifications:', error);
+    console.error('Erreur stats notifications:', error);
     res.status(500).json({
       success: false,
       message: error.message
@@ -594,9 +546,7 @@ export const getNotificationsStats = async (req, res) => {
   }
 };
 
-// @desc    Récupérer les notifications de rupture
-// @route   GET /api/notifications/ruptures
-// @access  Private/Admin
+// Récupérer les notifications de rupture de stock
 export const getRuptureNotifications = async (req, res) => {
   try {
     const { page = 1, limit = 50 } = req.query;
@@ -614,7 +564,7 @@ export const getRuptureNotifications = async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Erreur récupération notifications rupture:', error);
+    console.error('Erreur récupération notifications rupture:', error);
     res.status(500).json({
       success: false,
       message: error.message
@@ -622,9 +572,7 @@ export const getRuptureNotifications = async (req, res) => {
   }
 };
 
-// @desc    Supprimer les anciennes notifications
-// @route   DELETE /api/notifications/nettoyer
-// @access  Private/Admin
+// Supprimer les anciennes notifications
 export const nettoyerAnciennesNotifications = async (req, res) => {
   try {
     const { jours = 30 } = req.query;
@@ -637,7 +585,7 @@ export const nettoyerAnciennesNotifications = async (req, res) => {
     });
     
   } catch (error) {
-    console.error('❌ Erreur nettoyage notifications:', error);
+    console.error('Erreur nettoyage notifications:', error);
     res.status(500).json({
       success: false,
       message: error.message

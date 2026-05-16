@@ -135,78 +135,7 @@ const ContactPage = () => {
               </p>
             </div>
 
-            {/* Informations de contact - PLACÉES AU-DESSUS DU FORMULAIRE */}
-            <div className="mb-4">
-              <div className="row g-3">
-                <div className="col-md-3 col-6">
-                  <div className="text-center p-3 rounded-3" style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    transition: 'all 0.3s ease',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                  onClick={() => window.location.href = 'tel:+21629375735'}>
-                    <FaPhoneAlt style={{ color: '#4cc9f0', fontSize: '24px' }} />
-                    <p className="text-white mt-2 mb-0 small">+216 29 375 735</p>
-                  </div>
-                </div>
-                <div className="col-md-3 col-6">
-                  <div className="text-center p-3 rounded-3" style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    transition: 'all 0.3s ease',
-                    cursor: 'pointer'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
-                  onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
-                  onClick={() => window.location.href = 'mailto:s.univertechno@yahoo.fr'}>
-                    <FaEnvelope style={{ color: '#f72585', fontSize: '24px' }} />
-                    <p className="text-white mt-2 mb-0 small">s.univertechno@yahoo.fr</p>
-                  </div>
-                </div>
-                <div className="col-md-3 col-6">
-                  <div className="text-center p-3 rounded-3" style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    transition: 'all 0.3s ease'
-                  }}>
-                    <FaMapMarkerAlt style={{ color: '#4cc9f0', fontSize: '24px' }} />
-                    <p className="text-white mt-2 mb-0 small">Sousse, Sahloul 1</p>
-                    <small className="text-white-50">Immeuble Charchari, 2ème étage B16</small>
-                  </div>
-                </div>
-                <div className="col-md-3 col-6">
-                  <div className="text-center p-3 rounded-3" style={{
-                    background: 'rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(10px)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    transition: 'all 0.3s ease'
-                  }}>
-                    <FaClock style={{ color: '#f72585', fontSize: '24px' }} />
-                    <p className="text-white mt-2 mb-0 small">Lun-Ven: 9h-17h</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Carte d'adresse détaillée */}
-              <div className="mt-3 p-3 rounded-3 text-center" style={{
-                background: 'rgba(255,255,255,0.05)',
-                backdropFilter: 'blur(10px)',
-                border: '1px solid rgba(255,255,255,0.1)'
-              }}>
-                <FaMapMarkerAlt style={{ color: '#4cc9f0', marginRight: '8px' }} />
-                <span className="text-white small">
-                  Adresse complète : Sousse, Sahloul 1 - Immeuble Charchari, 2ème étage, Bureau B16
-                </span>
-              </div>
-            </div>
-
-            {/* Carte de contact - Formulaire */}
+            {/* Carte de contact */}
             <div className="card border-0 rounded-4 overflow-hidden" style={{
               background: 'rgba(255,255,255,0.95)',
               backdropFilter: 'blur(10px)',
@@ -428,10 +357,68 @@ const ContactPage = () => {
               </div>
             </div>
 
+            {/* Informations de contact - Cartes élégantes */}
+            <div className="row g-3 mt-4">
+              <div className="col-md-3 col-6">
+                <div className="text-center p-3 rounded-3" style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                onClick={() => window.location.href = 'tel:+21629375735'}>
+                  <FaPhoneAlt style={{ color: '#4cc9f0', fontSize: '24px' }} />
+                  <p className="text-white mt-2 mb-0 small">+216 29 375 735</p>
+                </div>
+              </div>
+              <div className="col-md-3 col-6">
+                <div className="text-center p-3 rounded-3" style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  transition: 'all 0.3s ease',
+                  cursor: 'pointer'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'translateY(-5px)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'translateY(0)'}
+                onClick={() => window.location.href = 'mailto:s.univertechno@yahoo.fr'}>
+                  <FaEnvelope style={{ color: '#f72585', fontSize: '24px' }} />
+                  <p className="text-white mt-2 mb-0 small">s.univertechno@yahoo.fr</p>
+                </div>
+              </div>
+              
+              <div className="col-md-3 col-6">
+                <div className="text-center p-3 rounded-3" style={{
+                  background: 'rgba(255,255,255,0.1)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255,255,255,0.2)',
+                  transition: 'all 0.3s ease'
+                }}>
+                  <FaClock style={{ color: '#f72585', fontSize: '24px' }} />
+                  <p className="text-white mt-2 mb-0 small">Lun-Ven: 8h-17h</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Carte d'adresse détaillée */}
+            <div className="mt-3 p-3 rounded-3 text-center" style={{
+              background: 'rgba(255,255,255,0.05)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255,255,255,0.1)'
+            }}>
+              <FaMapMarkerAlt style={{ color: '#4cc9f0', marginRight: '8px' }} />
+              <span className="text-white small">
+                Adresse complète : Sousse, Sahloul 1 - Immeuble Charchari, 2ème étage, Bureau B16
+              </span>
+            </div>
+
             {/* Footer */}
             <div className="text-center mt-4">
               <small className="text-white-50">
-                © 2024 UniverTechno+ - Tous droits réservés
+                © 2026 UniverTechno+ - Tous droits réservés
               </small>
             </div>
           </div>

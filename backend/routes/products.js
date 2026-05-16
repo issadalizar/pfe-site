@@ -13,7 +13,7 @@ import {
 
 const router = express.Router();
 
-// Routes specifiques EN PREMIER (avant /:id)
+// Routes specifiques 
 router.route('/rupture-stock').get(getOutOfStockProducts);
 router.route('/statistiques-stock').get(getStockStats);
 router.route('/categorie/:categorieId').get(getProductsByCategory);

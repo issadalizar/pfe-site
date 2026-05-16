@@ -3,7 +3,7 @@ import User from '../models/User.js';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 
-// Créer un compte pour un utilisateur existant
+// Créer un compte pour un utilisateur
 export const createAccount = async (req, res) => {
   try {
     const { userId, email, password, actif } = req.body;
@@ -318,7 +318,7 @@ export const resetLoginAttempts = async (req, res) => {
     }
 
     account.loginAttempts = 0;
-    account.lockUntil = undefined;
+    account.lockUntil = undefined;// Déverrouiller le compte si nécessaire
     await account.save();
 
     res.json({ message: 'Tentatives de connexion réinitialisées' });

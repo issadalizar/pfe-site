@@ -43,6 +43,18 @@ export const updateProfileAPI = async (profileData) => {
     return response.data;
 };
 
+// Demander un email de reinitialisation de mot de passe
+export const forgotPasswordAPI = async (email) => {
+    const response = await authAPI.post('/forgot-password', { email });
+    return response.data;
+};
+
+// Definir un nouveau mot de passe a partir d'un token recu par email
+export const resetPasswordAPI = async (token, newPassword) => {
+    const response = await authAPI.post('/reset-password', { token, newPassword });
+    return response.data;
+};
+
 // Sauvegarder le token et l'utilisateur dans localStorage
 export const saveAuthData = (token, user) => {
     localStorage.setItem('token', token);

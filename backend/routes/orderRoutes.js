@@ -57,7 +57,7 @@ router.post('/checkout-virement', protect, createVirementOrder);
 router.get('/my-orders', protect, getMyOrders);
 router.get('/verify-session/:sessionId', protect, verifySession);
 
-// ⚠️  IMPORTANT : routes spécifiques avec suffixe AVANT la route générique /:id
+//  routes spécifiques avec suffixe AVANT la route générique /:id
 router.post('/:id/virement-proof', protect, uploadVirement.single('proof'), uploadVirementProof);
 router.patch('/:id/cancel', protect, cancelOrder);
 router.patch('/:id/status', protect, adminOnly, updateOrderStatus);
@@ -65,10 +65,13 @@ router.get('/:id', protect, getOrderById);
 
 // Routes admin
 router.get('/analytics/categories', protect, adminOnly, getCategoryAnalytics);
-router.get('/analytics/monthly-orders', protect, adminOnly, getMonthlyOrderCounts)
+router.get('/analytics/monthly-orders', protect, adminOnly, getMonthlyOrderCounts);
 router.get('/analytics/order-status', protect, adminOnly, getOrderStatusStats);
+
 router.get('/analytics/payment-methods', protect, adminOnly, getPaymentMethodStats);
+
 router.get('/analytics/stock-evolution', protect, adminOnly, getStockEvolution);
+
 router.get('/', protect, adminOnly, getAllOrders);
 
 export default router;

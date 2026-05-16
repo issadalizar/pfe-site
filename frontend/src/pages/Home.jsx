@@ -48,12 +48,12 @@ import {
   FaRegBell,
   FaMapMarkedAlt,
   FaGlobe,
-  FaCube, // Import pour l'icône 3D
+  FaCube,
 } from "react-icons/fa";
 import { productAPI, categoryAPI } from "../services/CategorieProduct";
 import FeaturedProducts from "../components/FeaturedProducts";
 import ContactForm from "../components/ContactForm";
-import ProductData from "../components/productdata";
+import ProductData from "../components/ProductData";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/home.css";
 import { getAllCncProducts } from "../services/productDataService";
@@ -76,9 +76,7 @@ const Home = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [imageErrors, setImageErrors] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [newsletterEmail, setNewsletterEmail] = useState("");
   const [language, setLanguage] = useState("fr"); // 'fr' for French, 'en' for English
 
   // ========== FONCTION POUR LA NAVIGATION 3D ==========
@@ -95,7 +93,6 @@ const Home = () => {
       home: "Accueil",
       products: "Produits",
       expertise: "Expertise",
-      about: "À propos",
       contactNav: "Contact",
       searchPlaceholder: "Rechercher un produit...",
 
@@ -178,7 +175,6 @@ const Home = () => {
       home: "Home",
       products: "Products",
       expertise: "Expertise",
-      about: "About",
       contactNav: "Contact",
       searchPlaceholder: "Search for a product...",
 
@@ -667,343 +663,260 @@ const Home = () => {
       )}
 
       {/* Header */}
-      <header
-        className="py-3 sticky-top"
-        style={{
-          backgroundColor: "rgba(255,255,255,0.95)",
-          backdropFilter: "blur(10px)",
-          boxShadow: "0 4px 30px rgba(0,0,0,0.03)",
-          borderBottom: "1px solid rgba(67, 97, 238, 0.1)",
-          zIndex: 1030,
-        }}
-      >
-        <div className="container">
-          <div className="d-flex align-items-center justify-content-between">
-            {/* Logo */}
-            <div className="d-flex align-items-center">
-              <div
-                className="me-3 d-flex align-items-center justify-content-center"
-                style={{
-                  width: "48px",
-                  height: "48px",
-                  background: "linear-gradient(145deg, #4361ee, #3a0ca3)",
-                  borderRadius: "14px",
-                  color: "white",
-                  fontSize: "26px",
-                  cursor: "pointer",
-                  transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                  boxShadow: "0 8px 20px rgba(67, 97, 238, 0.3)",
-                }}
-                onClick={scrollToTop}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "rotate(5deg) scale(1.1)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "rotate(0deg) scale(1)";
-                }}
-              >
-                <FaStore />
-              </div>
-              <div>
-                <h1
-                  className="fw-bold mb-0"
+      {/* Header */}
+<header
+  className="py-2 sticky-top"
+  style={{
+    backgroundColor: "rgba(255,255,255,0.95)",
+    backdropFilter: "blur(10px)",
+    boxShadow: "0 4px 30px rgba(0,0,0,0.03)",
+    borderBottom: "1px solid rgba(67, 97, 238, 0.1)",
+    zIndex: 1030,
+  }}
+>
+  <div className="container">
+    <div className="d-flex align-items-center justify-content-between">
+      
+      {/* Logo à GAUCHE */}
+      <div className="d-flex align-items-center">
+        <div
+          className="me-3 d-flex align-items-center justify-content-center"
+          style={{
+            width: "42px",
+            height: "42px",
+            background: "linear-gradient(145deg, #4361ee, #3a0ca3)",
+            borderRadius: "12px",
+            color: "white",
+            fontSize: "22px",
+            cursor: "pointer",
+            transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            boxShadow: "0 8px 20px rgba(67, 97, 238, 0.3)",
+          }}
+          onClick={scrollToTop}
+        >
+          <FaStore />
+        </div>
+        <h1
+          className="fw-bold mb-0"
+          style={{
+            fontSize: "1.4rem",
+            background: "linear-gradient(145deg, #1e293b, #0f172a)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            cursor: "pointer",
+            letterSpacing: "-0.5px",
+          }}
+          onClick={scrollToTop}
+        >
+          UniVer
+          <span style={{ color: "#4361ee", WebkitTextFillColor: "#4361ee" }}>
+            Techno
+          </span>
+          +
+        </h1>
+      </div>
+
+      {/* Navigation au CENTRE */}
+      <div className="d-none d-lg-block">
+        <ul className="nav gap-1">
+          {[
+            { name: t.home, href: "#home" },
+            { name: t.expertise, href: "#services" },
+            { name: t.products, href: "#products" },
+            { name: t.contactNav, href: "/contact" },
+          ].map((item, index) => (
+            <li className="nav-item" key={index}>
+              {item.href.startsWith("/") ? (
+                <Link
+                  className="nav-link fw-medium px-4 py-2 rounded-pill"
+                  to={item.href}
                   style={{
-                    fontSize: "1.6rem",
-                    background: "linear-gradient(145deg, #1e293b, #0f172a)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    cursor: "pointer",
-                    letterSpacing: "-0.5px",
-                  }}
-                  onClick={scrollToTop}
-                >
-                  UniVer
-                  <span
-                    style={{ color: "#4361ee", WebkitTextFillColor: "#4361ee" }}
-                  >
-                    Techno
-                  </span>
-                  +
-                </h1>
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <div className="d-none d-lg-block">
-              <ul className="nav gap-2">
-                {[
-                  { name: t.home, href: "#home" },
-                  { name: t.products, href: "#products" },
-                  { name: t.expertise, href: "#services" },
-                  { name: t.about, href: "#about" },
-                  { name: t.contactNav, href: "/contact" },
-                ].map((item, index) => (
-                  <li className="nav-item" key={index}>
-                    {item.href.startsWith("/") ? (
-                      <Link
-                        className="nav-link fw-medium px-4 py-2 rounded-pill"
-                        to={item.href}
-                        style={{
-                          color: "#334155",
-                          transition: "all 0.3s ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor =
-                            "rgba(67, 97, 238, 0.05)";
-                          e.currentTarget.style.color = "#4361ee";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "transparent";
-                          e.currentTarget.style.color = "#334155";
-                        }}
-                      >
-                        {item.name}
-                      </Link>
-                    ) : (
-                      <a
-                        className="nav-link fw-medium px-4 py-2 rounded-pill"
-                        href={item.href}
-                        style={{
-                          color: "#334155",
-                          transition: "all 0.3s ease",
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor =
-                            "rgba(67, 97, 238, 0.05)";
-                          e.currentTarget.style.color = "#4361ee";
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = "transparent";
-                          e.currentTarget.style.color = "#334155";
-                        }}
-                      >
-                        {item.name}
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Actions */}
-            <div className="d-flex align-items-center gap-3">
-              {/* Language Switcher */}
-              <button
-                onClick={toggleLanguage}
-                className="btn d-flex align-items-center gap-2 rounded-pill px-3 py-2"
-                style={{
-                  backgroundColor: "#f8fafc",
-                  border: "1px solid #e2e8f0",
-                  color: "#334155",
-                  transition: "all 0.3s ease",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = "#eef2ff";
-                  e.currentTarget.style.borderColor = "#4361ee";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = "#f8fafc";
-                  e.currentTarget.style.borderColor = "#e2e8f0";
-                }}
-              >
-                <FaGlobe style={{ color: "#4361ee" }} />
-                <span className="fw-medium">
-                  {language === "fr" ? "FR" : "EN"}
-                </span>
-              </button>
-
-              {/* Recherche */}
-              <div className="position-relative d-none d-md-block">
-                <input
-                  type="text"
-                  className="form-control rounded-pill border-0 bg-light"
-                  placeholder={t.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  style={{
-                    width: "240px",
-                    padding: "0.6rem 1rem 0.6rem 2.8rem",
+                    color: "#334155",
+                    transition: "all 0.3s ease",
                     fontSize: "0.95rem",
-                    backgroundColor: "#f8fafc",
-                    transition: "all 0.3s ease",
-                    border: "1px solid transparent",
                   }}
-                  onFocus={(e) => {
-                    e.target.style.backgroundColor = "white";
-                    e.target.style.borderColor = "#4361ee";
-                    e.target.style.boxShadow =
-                      "0 0 0 4px rgba(67, 97, 238, 0.1)";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.backgroundColor = "#f8fafc";
-                    e.target.style.borderColor = "transparent";
-                    e.target.style.boxShadow = "none";
-                  }}
-                />
-                <FaSearch
-                  className="position-absolute"
-                  style={{
-                    left: "18px",
-                    top: "12px",
-                    color: "#94a3b8",
-                    fontSize: "16px",
-                    pointerEvents: "none",
-                  }}
-                />
-              </div>
-
-              {/* Icônes */}
-              <div className="d-flex align-items-center gap-2">
-                <div
-                  className="rounded-circle d-flex align-items-center justify-content-center"
-                  style={{
-                    backgroundColor: "#f8fafc",
-                    width: "44px",
-                    height: "44px",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    border: "1px solid transparent",
-                  }}
-                  onClick={handleLoginClick}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = "#eef2ff";
-                    e.currentTarget.style.borderColor = "#4361ee";
-                    e.currentTarget.style.transform = "scale(1.05)";
+                    e.currentTarget.style.backgroundColor = "rgba(67, 97, 238, 0.05)";
+                    e.currentTarget.style.color = "#4361ee";
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = "#f8fafc";
-                    e.currentTarget.style.borderColor = "transparent";
-                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#334155";
                   }}
                 >
-                  <FaUser style={{ color: "#4361ee", fontSize: "18px" }} />
-                </div>
+                  {item.name}
+                </Link>
+              ) : (
+                <a
+                  className="nav-link fw-medium px-4 py-2 rounded-pill"
+                  href={item.href}
+                  style={{
+                    color: "#334155",
+                    transition: "all 0.3s ease",
+                    fontSize: "0.95rem",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = "rgba(67, 97, 238, 0.05)";
+                    e.currentTarget.style.color = "#4361ee";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = "transparent";
+                    e.currentTarget.style.color = "#334155";
+                  }}
+                >
+                  {item.name}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
 
-                <div className="position-relative">
-                  <div
-                    className="rounded-circle d-flex align-items-center justify-content-center"
-                    style={{
-                      backgroundColor: "#f8fafc",
-                      width: "44px",
-                      height: "44px",
-                      cursor: "pointer",
-                      transition: "all 0.3s ease",
-                      border: "1px solid transparent",
-                    }}
-                    onClick={() => navigate("/cart")}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.backgroundColor = "#eef2ff";
-                      e.currentTarget.style.borderColor = "#4361ee";
-                      e.currentTarget.style.transform = "scale(1.05)";
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.backgroundColor = "#f8fafc";
-                      e.currentTarget.style.borderColor = "transparent";
-                      e.currentTarget.style.transform = "scale(1)";
-                    }}
-                  >
-                    <FaShoppingCart
-                      style={{ color: "#4361ee", fontSize: "18px" }}
-                    />
-                  </div>
-                  <span
-                    className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
-                    style={{
-                      backgroundColor: "#f72585",
-                      fontSize: "11px",
-                      padding: "4px 6px",
-                      border: "2px solid white",
-                      fontWeight: "600",
-                    }}
-                  >
-                    {getCartCount()}
-                  </span>
-                </div>
-              </div>
+      {/* Actions à DROITE */}
+      <div className="d-flex align-items-center gap-2">
+        {/* Language Switcher */}
+        <button
+          onClick={toggleLanguage}
+          className="btn d-flex align-items-center gap-1 rounded-pill px-3 py-2"
+          style={{
+            backgroundColor: "#f8fafc",
+            border: "1px solid #e2e8f0",
+            color: "#334155",
+            transition: "all 0.3s ease",
+          }}
+        >
+          <FaGlobe style={{ color: "#4361ee", fontSize: "14px" }} />
+          <span className="fw-medium" style={{ fontSize: "13px" }}>
+            {language === "fr" ? "FR" : "EN"}
+          </span>
+        </button>
 
-              {/* Menu mobile */}
-              <button
-                className="btn d-lg-none p-0"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                style={{
-                  color: "#4361ee",
-                  width: "44px",
-                  height: "44px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  backgroundColor: "#f8fafc",
-                  borderRadius: "50%",
-                }}
-              >
-                {mobileMenuOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Menu mobile */}
-          {mobileMenuOpen && (
-            <div
-              className="d-lg-none mt-3 pb-2"
-              style={{ animation: "slideDown 0.3s ease" }}
-            >
-              <ul className="nav flex-column">
-                {[
-                  { name: t.home, href: "#home" },
-                  { name: t.products, href: "#products" },
-                  { name: t.expertise, href: "#services" },
-                  { name: t.about, href: "#about" },
-                  { name: t.contactNav, href: "/contact" },
-                ].map((item, index) => (
-                  <li className="nav-item" key={index}>
-                    {item.href.startsWith("/") ? (
-                      <Link
-                        className="nav-link py-3"
-                        to={item.href}
-                        style={{
-                          color: "#334155",
-                          borderBottom: "1px solid #e2e8f0",
-                        }}
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
-                    ) : (
-                      <a
-                        className="nav-link py-3"
-                        href={item.href}
-                        style={{
-                          color: "#334155",
-                          borderBottom: "1px solid #e2e8f0",
-                        }}
-                        onClick={() => setMobileMenuOpen(false)}
-                      >
-                        {item.name}
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-3">
-                <input
-                  type="text"
-                  className="form-control rounded-pill bg-light border-0 py-3"
-                  placeholder={t.searchPlaceholder}
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-          )}
+        {/* Icône User */}
+        <div
+          className="rounded-circle d-flex align-items-center justify-content-center"
+          style={{
+            backgroundColor: "#f8fafc",
+            width: "40px",
+            height: "40px",
+            cursor: "pointer",
+            transition: "all 0.3s ease",
+            border: "1px solid transparent",
+          }}
+          onClick={handleLoginClick}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#eef2ff";
+            e.currentTarget.style.borderColor = "#4361ee";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "#f8fafc";
+            e.currentTarget.style.borderColor = "transparent";
+          }}
+        >
+          <FaUser style={{ color: "#4361ee", fontSize: "16px" }} />
         </div>
-      </header>
+
+        {/* Icône Panier */}
+        <div className="position-relative">
+          <div
+            className="rounded-circle d-flex align-items-center justify-content-center"
+            style={{
+              backgroundColor: "#f8fafc",
+              width: "40px",
+              height: "40px",
+              cursor: "pointer",
+              transition: "all 0.3s ease",
+              border: "1px solid transparent",
+            }}
+            onClick={() => navigate("/cart")}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#eef2ff";
+              e.currentTarget.style.borderColor = "#4361ee";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "#f8fafc";
+              e.currentTarget.style.borderColor = "transparent";
+            }}
+          >
+            <FaShoppingCart style={{ color: "#4361ee", fontSize: "16px" }} />
+          </div>
+          <span
+            className="position-absolute top-0 start-100 translate-middle badge rounded-pill"
+            style={{
+              backgroundColor: "#f72585",
+              fontSize: "10px",
+              padding: "3px 5px",
+              border: "2px solid white",
+              fontWeight: "600",
+            }}
+          >
+            {getCartCount()}
+          </span>
+        </div>
+
+        {/* Menu mobile button */}
+        <button
+          className="btn d-lg-none p-0"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          style={{
+            color: "#4361ee",
+            width: "40px",
+            height: "40px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#f8fafc",
+            borderRadius: "50%",
+          }}
+        >
+          {mobileMenuOpen ? <FaTimes size={18} /> : <FaBars size={18} />}
+        </button>
+      </div>
+    </div>
+
+    {/* Menu mobile - garder le même */}
+    {mobileMenuOpen && (
+      <div className="d-lg-none mt-3 pb-2" style={{ animation: "slideDown 0.3s ease" }}>
+        <ul className="nav flex-column">
+          {[
+            { name: t.home, href: "#home" },
+            { name: t.expertise, href: "#services" },
+            { name: t.products, href: "#products" },
+            { name: t.contactNav, href: "/contact" },
+          ].map((item, index) => (
+            <li className="nav-item" key={index}>
+              {item.href.startsWith("/") ? (
+                <Link
+                  className="nav-link py-3"
+                  to={item.href}
+                  style={{ color: "#334155", borderBottom: "1px solid #e2e8f0" }}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </Link>
+              ) : (
+                <a
+                  className="nav-link py-3"
+                  href={item.href}
+                  style={{ color: "#334155", borderBottom: "1px solid #e2e8f0" }}
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {item.name}
+                </a>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+</header>
 
       {/* Hero Section */}
       <section
         id="home"
-        className="position-relative overflow-hidden"
+        className="position-relative overflow-hidden d-flex align-items-center"
         style={{
-          minHeight: "100vh",
+          minHeight: "70vh",
           background:
             "linear-gradient(145deg, #0b1120 0%, #1a237e 50%, #283593 100%)",
         }}
@@ -1029,66 +942,113 @@ const Home = () => {
           className="container h-100 position-relative"
           style={{ zIndex: 2 }}
         >
-          <div className="row align-items-center min-vh-100">
+          <div className="row align-items-center justify-content-center min-vh-100 py-5">
+            {/* Centered content - sans la partie droite */}
             <div
-              className="col-lg-12 text-white text-center"
+              className="col-lg-8 text-center"
               style={{ animation: "fadeInUp 1s ease" }}
             >
-              <div className="mb-4">
-                <span
-                  className="badge px-4 py-2 rounded-pill"
+              {/* Logo et icône IA côte à côte */}
+              <div className="d-flex align-items-center justify-content-center gap-4 mb-4">
+                {/* Icône IA / E-commerce */}
+                <div
                   style={{
+                    width: "80px",
+                    height: "80px",
                     background: "linear-gradient(145deg, #4361ee, #3a0ca3)",
-                    boxShadow: "0 10px 30px rgba(67, 97, 238, 0.3)",
-                    fontSize: "0.9rem",
-                    fontWeight: "500",
-                    letterSpacing: "0.5px",
-                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "20px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 20px 40px rgba(67, 97, 238, 0.4)",
+                    animation: "float 3s ease-in-out infinite",
                   }}
                 >
-                  <FaRocket className="me-2" style={{ fontSize: "14px" }} />
-                  {t.innovationBadge}
-                </span>
+                  <svg
+                    width="45"
+                    height="45"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M3 9H21L19 20H5L3 9Z"
+                      stroke="white"
+                      strokeWidth="1.5"
+                      fill="none"
+                    />
+                    <path
+                      d="M7 9L9 3H15L17 9"
+                      stroke="white"
+                      strokeWidth="1.5"
+                      fill="none"
+                    />
+                    <circle cx="8" cy="13" r="1.5" fill="white" />
+                    <circle cx="16" cy="13" r="1.5" fill="white" />
+                    <path
+                      d="M7 17H17"
+                      stroke="white"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M12 9V17"
+                      stroke="white"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M18 6C19.5 6 20 7 20 8C20 9 19 9 18 9"
+                      stroke="white"
+                      strokeWidth="1"
+                      fill="none"
+                    />
+                    <circle cx="19" cy="6" r="1" fill="white" />
+                  </svg>
+                </div>
+
+                <h1
+                  className="fw-bold mb-0"
+                  style={{
+                    fontSize: "clamp(2rem, 5vw, 4rem)",
+                    lineHeight: "1.1",
+                    letterSpacing: "-1px",
+                    textShadow: "0 4px 30px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  UniVer
+                  <span
+                    style={{
+                      background:
+                        "linear-gradient(120deg, #64b5f6, #c084fc, #f72585)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                      backgroundSize: "200% auto",
+                      animation: "gradient 3s linear infinite",
+                      display: "inline-block",
+                    }}
+                  >
+                    Techno
+                  </span>
+                  +
+                </h1>
               </div>
 
-              <h1
-                className="display-3 fw-bold mb-4"
-                style={{
-                  lineHeight: "1.2",
-                  textShadow: "0 4px 30px rgba(0,0,0,0.3)",
-                }}
-              >
-                {t.heroTitle1}{" "}
-                <span
-                  style={{
-                    background:
-                      "linear-gradient(120deg, #64b5f6, #c084fc, #f72585)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundSize: "200% auto",
-                    animation: "gradient 3s linear infinite",
-                  }}
-                >
-                  {t.heroTitle2}
-                </span>
-                <br />
-                {t.heroTitle3}
-              </h1>
-
+              {/* Description */}
               <p
-                className="lead mb-5"
+                className="mb-4 mx-auto"
                 style={{
-                  fontSize: "1.25rem",
-                  color: "rgba(255,255,255,0.9)",
-                  maxWidth: "700px",
-                  margin: "0 auto",
+                  fontSize: "1.1rem",
+                  color: "rgba(255,255,255,0.8)",
+                  maxWidth: "650px",
                   lineHeight: "1.6",
                 }}
               >
                 {t.heroDescription}
               </p>
 
-              <div className="d-flex flex-wrap gap-4 justify-content-center">
+              {/* Boutons */}
+              <div className="d-flex flex-wrap gap-3 mb-5 justify-content-center">
                 <button
                   className="btn btn-lg px-5 py-3 rounded-pill"
                   onClick={handleContactClick}
@@ -1096,20 +1056,18 @@ const Home = () => {
                     background: "linear-gradient(120deg, #4361ee, #3a0ca3)",
                     border: "none",
                     color: "white",
-                    fontWeight: "600",
-                    boxShadow: "0 20px 40px rgba(67, 97, 238, 0.3)",
+                    fontWeight: "700",
+                    fontSize: "1rem",
+                    boxShadow: "0 20px 40px rgba(67, 97, 238, 0.4)",
                     transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.transform =
-                      "translateY(-3px) scale(1.02)";
-                    e.currentTarget.style.boxShadow =
-                      "0 30px 50px rgba(67, 97, 238, 0.4)";
+                    e.currentTarget.style.transform = "translateY(-3px) scale(1.03)";
+                    e.currentTarget.style.boxShadow = "0 30px 50px rgba(67, 97, 238, 0.5)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.transform = "translateY(0) scale(1)";
-                    e.currentTarget.style.boxShadow =
-                      "0 20px 40px rgba(67, 97, 238, 0.3)";
+                    e.currentTarget.style.boxShadow = "0 20px 40px rgba(67, 97, 238, 0.4)";
                   }}
                 >
                   {t.contactUs}
@@ -1124,31 +1082,41 @@ const Home = () => {
                     border: "1px solid rgba(255,255,255,0.2)",
                     color: "white",
                     fontWeight: "600",
+                    fontSize: "1rem",
                     transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = "rgba(255,255,255,0.2)";
-                    e.currentTarget.style.transform =
-                      "translateY(-3px) scale(1.02)";
+                    e.currentTarget.style.transform = "translateY(-3px) scale(1.02)";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "rgba(255,255,255,0.1)";
                     e.currentTarget.style.transform = "translateY(0) scale(1)";
                   }}
                 >
-                  <FaMapMarkedAlt
-                    className="me-2"
-                    style={{ fontSize: "14px" }}
-                  />
+                  <FaMapMarkedAlt className="me-2" style={{ fontSize: "14px" }} />
                   {t.location}
                 </button>
+              </div>
+
+              {/* Trust indicators */}
+              <div className="d-flex align-items-center justify-content-center gap-4 flex-wrap">
+                {[
+                  { icon: <FaShieldAlt />, label: language === "fr" ? "Certifié ISO" : "ISO Certified" },
+                  { icon: <FaAward />, label: language === "fr" ? "15+ ans expertise" : "15+ years expertise" },
+                  { icon: <FaHeadset />, label: language === "fr" ? "Support 24/7" : "24/7 Support" },
+                ].map((item, i) => (
+                  <div key={i} className="d-flex align-items-center gap-2" style={{ color: "rgba(255,255,255,0.7)", fontSize: "0.85rem" }}>
+                    <span style={{ color: "#4361ee", fontSize: "14px" }}>{item.icon}</span>
+                    {item.label}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
       </section>
-
-      {/* Secteurs d'expertise */}
+      {/* Secteurs d'expertise - DÉPLACÉ ICI (avant les produits) */}
       <section
         id="services"
         className="py-6"
@@ -1311,369 +1279,79 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Catalogue produits */}
-      <ProductData
-        t={t}
-        mainCategories={mainCategories}
-        allProducts={allProducts}
-        filteredProducts={filteredProducts}
-        selectedCategory={selectedCategory}
-        handleCategoryFilter={handleCategoryFilter}
-        handleProductClick={handleProductClick}
-        handleView3D={handleView3D}
-        getCategoryProductCount={getCategoryProductCount}
-        formatPrice={formatPrice}
-        truncateText={truncateText}
-        renderStars={renderStars}
-        addToCart={addToCart}
-        language={language}
-      />
+     {/* Catalogue produits - SECTION AVEC ID products POUR LE SCROLL */}
+<section id="products">
+  <ProductData
+    t={t}
+    mainCategories={mainCategories}
+    allProducts={allProducts}
+    filteredProducts={filteredProducts}
+    selectedCategory={selectedCategory}
+    handleCategoryFilter={handleCategoryFilter}
+    handleProductClick={handleProductClick}
+    handleView3D={handleView3D}
+    getCategoryProductCount={getCategoryProductCount}
+    formatPrice={formatPrice}
+    truncateText={truncateText}
+    renderStars={renderStars}
+    addToCart={addToCart}
+    language={language}
+  />
+</section>
 
-      {/* Témoignages clients */}
-      <section
-        className="py-6"
-        style={{
-          background: "linear-gradient(145deg, #0f172a, #1e293b)",
-          color: "white",
-        }}
-      >
-        <div className="container">
-          <div className="text-center mb-5">
-            <span
-              className="badge px-4 py-2 rounded-pill mb-3"
-              style={{
-                background: "rgba(255,255,255,0.15)",
-                color: "white",
-                fontWeight: "600",
-              }}
-            >
-              {t.testimonialsBadge}
-            </span>
-            <h2 className="display-4 fw-bold mb-3 text-white">
-              {t.testimonialsTitle}
-            </h2>
-            <p
-              className="text-white-50"
-              style={{
-                maxWidth: "600px",
-                margin: "0 auto",
-                fontSize: "1.1rem",
-              }}
-            >
-              {t.testimonialsDescription}
-            </p>
-          </div>
-
-          <div className="row g-4">
-            {testimonials.map((testimonial, index) => (
-              <div key={index} className="col-md-4">
-                <div
-                  className="card h-100 border-0 rounded-4"
-                  style={{
-                    background: "rgba(255,255,255,0.05)",
-                    backdropFilter: "blur(10px)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    transition: "all 0.3s ease",
-                  }}
-                >
-                  <div className="card-body p-4">
-                    <FaQuoteRight
-                      style={{
-                        color: "rgba(255,255,255,0.2)",
-                        fontSize: "40px",
-                        marginBottom: "20px",
-                      }}
-                    />
-
-                    <p
-                      className="mb-4"
-                      style={{
-                        color: "rgba(255,255,255,0.9)",
-                        lineHeight: "1.6",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      "
-                      {language === "fr"
-                        ? testimonial.contentFr
-                        : testimonial.contentEn}
-                      "
-                    </p>
-
-                    <div className="d-flex align-items-center gap-3">
-                      <img
-                        src={testimonial.image}
-                        alt={testimonial.name}
-                        className="rounded-circle"
-                        style={{
-                          width: "60px",
-                          height: "60px",
-                          objectFit: "cover",
-                          border: "3px solid rgba(255,255,255,0.2)",
-                        }}
-                      />
-                      <div>
-                        <h6 className="fw-bold mb-1 text-white">
-                          {testimonial.name}
-                        </h6>
-                        <small style={{ color: "rgba(255,255,255,0.6)" }}>
-                          {language === "fr"
-                            ? testimonial.positionFr
-                            : testimonial.positionEn}
-                        </small>
-                        <div className="mt-2">
-                          {renderStars(testimonial.rating)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section Newsletter */}
-      <section
-        className="py-6"
-        style={{
-          background: "linear-gradient(145deg, #4361ee, #3a0ca3)",
-        }}
-      >
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-8 text-center text-white">
-              <h2 className="display-5 fw-bold mb-4">{t.newsletterTitle}</h2>
-              <p className="mb-5" style={{ fontSize: "1.1rem", opacity: 0.9 }}>
-                {t.newsletterDescription}
-              </p>
-
-              <form
-                onSubmit={handleNewsletterSubmit}
-                className="d-flex flex-wrap gap-3 justify-content-center"
-              >
-                <div className="flex-grow-1" style={{ maxWidth: "400px" }}>
-                  <input
-                    type="email"
-                    className="form-control form-control-lg rounded-pill border-0"
-                    placeholder={t.newsletterPlaceholder}
-                    value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
-                    required
-                    style={{
-                      padding: "1rem 1.5rem",
-                      fontSize: "1rem",
-                    }}
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="btn btn-lg rounded-pill px-5"
-                  style={{
-                    background: "white",
-                    color: "#4361ee",
-                    fontWeight: "600",
-                    border: "none",
-                    padding: "1rem 2rem",
-                  }}
-                >
-                  <FaRegPaperPlane className="me-2" />
-                  {t.newsletterButton}
-                </button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer
-        className="py-6"
-        style={{
-          background: "#0f172a",
-          color: "#94a3b8",
-        }}
-      >
-        <div className="container">
-          <div className="row g-5">
-            <div className="col-lg-4">
-              <div className="d-flex align-items-center gap-3 mb-4">
-                <div
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    background: "linear-gradient(145deg, #4361ee, #3a0ca3)",
-                    borderRadius: "14px",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    color: "white",
-                    fontSize: "24px",
-                  }}
-                >
-                  <FaStore />
-                </div>
-                <h4 className="fw-bold text-white mb-0">UniverTechno+</h4>
-              </div>
-              <p className="mb-4">{t.footerDescription}</p>
-              <div className="d-flex gap-3">
-                {[
-                  FaFacebook,
-                  FaLinkedin,
-                  FaTwitter,
-                  FaYoutube,
-                  FaInstagram,
-                ].map((Icon, index) => (
-                  <a
-                    key={index}
-                    href="#"
-                    className="d-flex align-items-center justify-content-center rounded-circle"
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      background: "rgba(255,255,255,0.05)",
-                      color: "#94a3b8",
-                      transition: "all 0.3s ease",
-                      textDecoration: "none",
-                    }}
-                  >
-                    <Icon size={18} />
-                  </a>
-                ))}
-              </div>
-            </div>
-
-            <div className="col-lg-8">
-              <div className="row g-4">
-                <div className="col-md-4">
-                  <h5 className="fw-bold text-white mb-4">{t.quickLinks}</h5>
-                  <ul className="list-unstyled">
-                    {[
-                      t.home,
-                      t.products,
-                      t.expertise,
-                      t.about,
-                      t.contactNav,
-                    ].map((item, index) => (
-                      <li className="mb-3" key={index}>
-                        <a
-                          href="#"
-                          className="text-decoration-none"
-                          style={{ color: "#94a3b8" }}
-                        >
-                          <FaAngleRight
-                            className="me-2"
-                            style={{ fontSize: "12px", color: "#4361ee" }}
-                          />
-                          {item}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="col-md-4">
-                  <h5 className="fw-bold text-white mb-4">{t.contact}</h5>
-                  <ul className="list-unstyled">
-                    <li className="mb-3 d-flex align-items-center gap-3">
-                      <FaMapMarkerAlt
-                        style={{ color: "#4361ee", fontSize: "18px" }}
-                      />
-                      <span style={{ color: "#94a3b8" }}>
-                        123 Rue de l'Innovation, Tunis
-                      </span>
-                    </li>
-                    <li className="mb-3 d-flex align-items-center gap-3">
-                      <FaPhone style={{ color: "#4361ee", fontSize: "18px" }} />
-                      <span style={{ color: "#94a3b8" }}>+216 71 123 456</span>
-                    </li>
-                    <li className="mb-3 d-flex align-items-center gap-3">
-                      <FaEnvelope
-                        style={{ color: "#4361ee", fontSize: "18px" }}
-                      />
-                      <span style={{ color: "#94a3b8" }}>
-                        contact@univertechno.tn
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <hr
-            className="my-5"
-            style={{ borderColor: "rgba(255,255,255,0.1)" }}
-          />
-
-          <div className="row align-items-center">
-            <div className="col-md-6">
-              <p className="mb-0 small">
-                © 2024 UniverTechno+. {t.allRightsReserved}
-              </p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      
 
       {/* ChatBot Component */}
       <ChatBot />
-      {/* Section QR Code - Télécharger l'app */}
-<section className="py-6" style={{ background: "linear-gradient(145deg, #0f172a, #1e293b)" }}>
-  <div className="container">
-    <div className="row align-items-center g-5">
-      
-      {/* Texte gauche */}
-      <div className="col-lg-6 text-white">
-        <span className="badge px-4 py-2 rounded-pill mb-4"
-          style={{ background: "rgba(67,97,238,0.3)", color: "#a5b4fc", border: "1px solid #4361ee" }}>
-          📱 APPLICATION MOBILE
-        </span>
-        <h2 className="display-5 fw-bold mb-4">
-          Emportez UniverTechno+ <br />
-          <span style={{ color: "#4361ee" }}>partout avec vous</span>
-        </h2>
-        <p style={{ color: "#94a3b8", fontSize: "1.1rem" }} className="mb-4">
-          Scannez le QR Code avec votre téléphone Android ou iPhone. 
-          Le site s'ouvre directement et vous pouvez l'installer 
-          comme une application sur votre écran d'accueil.
-        </p>
-        <ul className="list-unstyled" style={{ color: "#94a3b8" }}>
-          {[
-            "✅ Aucun App Store requis",
-            "✅ Fonctionne sur Android et iPhone",
-            "✅ S'installe en 2 secondes",
-            "✅ Accès rapide depuis l'écran d'accueil",
-          ].map((item, i) => (
-            <li key={i} className="mb-2">{item}</li>
-          ))}
-        </ul>
-      </div>
+           {/* Section QR Code - Télécharger l'app */}
+      <section className="py-6" style={{ background: "linear-gradient(145deg, #0f172a, #1e293b)" }}>
+        <div className="container">
+          {/* Coordonnées de l'entreprise - Au dessus du QR code */}
+          <div className="row justify-content-center mb-5">
+            <div className="col-lg-8 text-center">
+              <h3 className="fw-bold text-white mb-4" style={{ fontSize: "1.8rem" }}>
+                {language === "fr" ? "Nos coordonnées" : "Our contact"}
+              </h3>
+              <div className="d-flex flex-wrap justify-content-center gap-4">
+                <div className="d-flex align-items-center gap-2 text-white-50">
+                  <FaMapMarkerAlt style={{ color: "#4361ee", fontSize: "18px" }} />
+                  <span>123 Rue de l'Innovation, Tunis</span>
+                </div>
+                <div className="d-flex align-items-center gap-2 text-white-50">
+                  <FaPhone style={{ color: "#4361ee", fontSize: "18px" }} />
+                  <span>+216 71 123 456</span>
+                </div>
+                <div className="d-flex align-items-center gap-2 text-white-50">
+                  <FaEnvelope style={{ color: "#4361ee", fontSize: "18px" }} />
+                  <span>contact@univertechno.tn</span>
+                </div>
+              </div>
+            </div>
+          </div>
 
-      {/* QR Code droite */}
-      <div className="col-lg-6 text-center">
-        <div className="d-inline-block p-4 rounded-4 bg-white shadow-lg">
-          <QRCodeSVG
-            value="https://iridescent-pixie-56880a.netlify.app"
-            size={220}
-            fgColor="#4361ee"
-            bgColor="#ffffff"
-            level="H"
-            includeMargin={true}
-          />
-          <p className="mt-3 mb-0 fw-semibold" style={{ color: "#0f172a" }}>
-            Scanner pour ouvrir le site
-          </p>
-          <p className="small text-muted mb-0">
-            univertechno.tn
-          </p>
+          {/* QR Code centré uniquement - sans texte à gauche */}
+          <div className="row justify-content-center">
+            <div className="col-lg-4 text-center">
+              <div className="d-inline-block p-4 rounded-4 bg-white shadow-lg">
+                <QRCodeSVG
+                  value="https://univertechno.netlify.app/home"
+                  size={200}
+                  fgColor="#4361ee"
+                  bgColor="#ffffff"
+                  level="H"
+                  includeMargin={true}
+                />
+                <p className="mt-3 mb-1 fw-semibold" style={{ color: "#0f172a" }}>
+                  {language === "fr" ? "Scannez pour ouvrir le site" : "Scan to open the site"}
+                </p>
+                <p className="small text-muted mb-0">
+                  univertechno.tn
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
-
-    </div>
-  </div>
-</section>
+      </section>
 
       {/* Styles additionnels */}
       <style>{`

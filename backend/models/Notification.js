@@ -1,28 +1,23 @@
-// models/Notification.js
 import mongoose from 'mongoose';
 
 const notificationSchema = new mongoose.Schema({
-  // Date de la notification
   dateNotification: {
     type: Date,
     default: Date.now,
     required: true
   },
   
-  // Description de la notification
   description: {
     type: String,
     required: true
   },
   
-  // Type de notification
   type: {
     type: String,
     enum: ['rupture', 'reapprovisionnement', 'creation', 'modification'],
     default: 'rupture'
   },
   
-  // Référence au produit
   produitId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',
@@ -35,18 +30,15 @@ const notificationSchema = new mongoose.Schema({
     required: true
   },
   
-  // Statut de lecture
   lu: {
     type: Boolean,
     default: false
   },
   
-  // Date de lecture
   dateLecture: {
     type: Date
   },
   
-  // Métadonnées supplémentaires (optionnel)
   metadata: {
     type: Map,
     of: String,

@@ -1,6 +1,31 @@
 // models/Order.js
 import mongoose from 'mongoose';
 
+const invoiceSchema = new mongoose.Schema({
+    invoiceNumber: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    generatedAt: {
+        type: Date,
+        default: Date.now
+    },
+    totalAmount: {
+        type: Number,
+        required: true
+    },
+    pdfUrl: {
+        type: String,
+        default: null
+    },
+    status: {
+        type: String,
+        enum: ['pending', 'generated', 'cancelled'],
+        default: 'generated'
+    }
+}, { _id: true, timestamps: true });
+
 const orderSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -53,10 +78,16 @@ const orderSchema = new mongoose.Schema({
         enum: ['en_attente', 'confirmee', 'expediee', 'livree', 'annulee'],
         default: 'en_attente'
     },
-    // ✅ NOUVEAU CHAMP POUR ÉVITER LES DOUBLES MISES À JOUR
     stockUpdated: {
         type: Boolean,
         default: false
+    },
+    // ✅ NOUVEAU: Tableau des factures liées à la commande
+    invoices: [invoiceSchema],
+    // Facture principale (la plus récente)
+    currentInvoice: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Order.invoices'
     }
 }, { timestamps: true });
 
@@ -65,6 +96,50 @@ orderSchema.index({ user: 1, createdAt: -1 });
 orderSchema.index({ orderStatus: 1 });
 orderSchema.index({ paymentStatus: 1 });
 orderSchema.index({ stripeSessionId: 1 });
+orderSchema.index({ 'invoices.invoiceNumber': 1 });
+
+// Méthode pour générer un numéro de facture
+orderSchema.statics.generateInvoiceNumber = async function() {
+    const year = new Date().getFullYear();
+    const month = String(new Date().getMonth() + 1).padStart(2, '0');
+    const count = await this.aggregate([
+        { $unwind: '$invoices' },
+        { $count: 'total' }
+    ]);
+    const invoiceCount = (count[0]?.total || 0) + 1;
+    return `INV-${year}${month}-${String(invoiceCount).padStart(6, '0')}`;
+};
+
+// Méthode pour ajouter une facture à la commande
+orderSchema.methods.addInvoice = async function(invoiceData) {
+    const OrderModel = this.constructor;
+    const invoiceNumber = await OrderModel.generateInvoiceNumber();
+    
+    const newInvoice = {
+        invoiceNumber,
+        generatedAt: new Date(),
+        totalAmount: invoiceData.totalAmount || this.totalAmount,
+        pdfUrl: invoiceData.pdfUrl || null,
+        status: 'generated'
+    };
+    
+    this.invoices.push(newInvoice);
+    this.currentInvoice = this.invoices[this.invoices.length - 1]._id;
+    await this.save();
+    
+    return newInvoice;
+};
+
+// Méthode pour récupérer la dernière facture
+orderSchema.methods.getLastInvoice = function() {
+    if (this.invoices.length === 0) return null;
+    return this.invoices[this.invoices.length - 1];
+};
+
+// Méthode pour récupérer toutes les factures
+orderSchema.methods.getAllInvoices = function() {
+    return this.invoices.sort((a, b) => b.generatedAt - a.generatedAt);
+};
 
 const Order = mongoose.model('Order', orderSchema);
 

@@ -1,22 +1,21 @@
 import Stripe from 'stripe';
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
-import { sendInvoiceEmail, sendAdminNotificationEmail } from '../utils/emailService.js';
 import dataSyncService from '../services/dataSyncService.js';
 import notificationService from '../services/notificationService.js';
 
 const getStripe = () => {
     const key = process.env.STRIPE_SECRET_KEY;
-    if (!key || key.trim() === '') return null; //.trim() pour éviter les espaces accidentels
+    if (!key || key.trim() === '') return null;
     return new Stripe(key);
 };
 
-//  mettre à jour le stock
+// Mettre à jour le stock
 const updateStockAfterPayment = async (orderId) => {
     try {
         const order = await Order.findById(orderId);
         if (!order) {
-            console.error(` Commande ${orderId} non trouvée`);
+            console.error(`Commande ${orderId} non trouvée`);
             return false;
         }
 
@@ -25,12 +24,12 @@ const updateStockAfterPayment = async (orderId) => {
             return true;
         }
 
-        console.log(` Mise à jour du stock pour la commande ${orderId}`);
+        console.log(`Mise à jour du stock pour la commande ${orderId}`);
 
-        for (const item of order.items) {//les articles de panier
+        for (const item of order.items) {
             const product = await Product.findById(item.productId);
             if (!product) {
-                console.error(` Produit ${item.productId} non trouvé`);
+                console.error(`Produit ${item.productId} non trouvé`);
                 continue;
             }
 
@@ -40,9 +39,8 @@ const updateStockAfterPayment = async (orderId) => {
             product.stock = nouveauStock;
             await product.save();
 
-            console.log(` ${item.productName}: ${ancienStock} → ${nouveauStock}`);
+            console.log(`${item.productName}: ${ancienStock} → ${nouveauStock}`);
 
-            // Notifications
             if (ancienStock > 0 && nouveauStock === 0) {
                 await notificationService.notifierRupture(product, null);
             } else if (ancienStock !== nouveauStock) {
@@ -57,23 +55,38 @@ const updateStockAfterPayment = async (orderId) => {
                     product.toObject()
                 );
             } catch (syncError) {
-                console.error(' Erreur sync product:', syncError);
+                console.error('Erreur sync product:', syncError);
             }
         }
 
         order.stockUpdated = true;
         await order.save();
 
-        console.log(` Stock mis à jour pour la commande ${orderId}`);
+        console.log(`Stock mis à jour pour la commande ${orderId}`);
         return true;
 
     } catch (error) {
-        console.error(' Erreur mise à jour stock:', error);
+        console.error('Erreur mise à jour stock:', error);
         return false;
     }
 };
 
-//  Créer une session Stripe Checkout
+// Générer automatiquement une facture après paiement
+const generateInvoiceAfterPayment = async (order) => {
+    try {
+        if (!order.invoices || order.invoices.length === 0) {
+            const newInvoice = await order.addInvoice({ totalAmount: order.totalAmount });
+            console.log(`📄 Facture générée automatiquement: ${newInvoice.invoiceNumber}`);
+            return newInvoice;
+        }
+        return null;
+    } catch (error) {
+        console.error('Erreur génération facture:', error);
+        return null;
+    }
+};
+
+// Créer une session Stripe Checkout
 export const createCheckoutSession = async (req, res) => {
     const sendError = (status, message) => {
         try {
@@ -82,6 +95,7 @@ export const createCheckoutSession = async (req, res) => {
             console.error('Erreur envoi réponse:', e);
         }
     };
+    
     try {
         const stripe = getStripe();
         if (!stripe) {
@@ -106,7 +120,7 @@ export const createCheckoutSession = async (req, res) => {
             });
         }
 
-        // Vérifier le stock avant de créer la commande 
+        // Vérifier le stock
         for (const item of items) {
             const productName = item.productName || item.product?.nom || item.product?.name || item.product?.title || '';
             const productPrice = parseFloat(item.price) || 0;
@@ -116,7 +130,7 @@ export const createCheckoutSession = async (req, res) => {
                     error: `Item invalide: nom ou prix manquant pour "${productName || 'produit'}".`
                 });
             }
-            // Tenter de trouver le produit en base pour vérifier le stock
+            
             let product = null;
             if (item.productId) {
                 product = await Product.findById(item.productId);
@@ -143,7 +157,8 @@ export const createCheckoutSession = async (req, res) => {
             shippingInfo,
             totalAmount,
             paymentStatus: 'pending',
-            orderStatus: 'en_attente'
+            orderStatus: 'en_attente',
+            invoices: [] // Initialiser le tableau des factures
         });
 
         try {
@@ -152,7 +167,7 @@ export const createCheckoutSession = async (req, res) => {
             console.error('⚠️ Erreur sync order:', syncError);
         }
 
-        // Créer la session Stripe (unit_amount en centimes, minimum 1)
+        // Créer la session Stripe
         const DT_TO_EUR = 0.30;
         const line_items = items.map(item => {
             const unitAmountCents = Math.round((parseFloat(item.price) || 0) * DT_TO_EUR * 100);
@@ -190,9 +205,6 @@ export const createCheckoutSession = async (req, res) => {
             console.error('⚠️ Erreur sync order:', syncError);
         }
 
-        // Envoyer notification admin (asynchrone)
-        sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
-
         res.json({
             success: true,
             sessionUrl: session.url,
@@ -215,7 +227,7 @@ export const createCheckoutSession = async (req, res) => {
     }
 };
 
-// POST /api/orders/checkout-cod - Créer une commande avec paiement à la livraison
+// Créer une commande avec paiement à la livraison
 export const createCodOrder = async (req, res) => {
     try {
         const { items, shippingInfo } = req.body || {};
@@ -233,13 +245,6 @@ export const createCodOrder = async (req, res) => {
         // Vérifier le stock
         for (const item of items) {
             const productName = item.productName || item.product?.nom || item.product?.name || item.product?.title || '';
-            const productPrice = parseFloat(item.price) || 0;
-            if (!productName || (productPrice <= 0 && !item.productId)) {
-                return res.status(400).json({
-                    success: false,
-                    error: `Item invalide: nom ou prix manquant pour "${productName || 'produit'}".`
-                });
-            }
             let product = null;
             if (item.productId) {
                 product = await Product.findById(item.productId);
@@ -267,10 +272,11 @@ export const createCodOrder = async (req, res) => {
             totalAmount,
             paymentMethod: 'livraison',
             paymentStatus: 'pending',
-            orderStatus: 'en_attente'
+            orderStatus: 'en_attente',
+            invoices: []
         });
 
-        // Décrémenter le stock dès la création (paiement à la livraison = commande ferme)
+        // Décrémenter le stock
         await updateStockAfterPayment(order._id);
 
         try {
@@ -278,9 +284,6 @@ export const createCodOrder = async (req, res) => {
         } catch (syncError) {
             console.error('⚠️ Erreur sync order:', syncError);
         }
-
-        // Envoyer notification admin
-        sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
 
         console.log(`📦 Commande COD créée: ${order._id}`);
 
@@ -298,7 +301,7 @@ export const createCodOrder = async (req, res) => {
     }
 };
 
-// POST /api/orders/checkout-virement - Créer une commande avec virement bancaire
+// Créer une commande avec virement bancaire
 export const createVirementOrder = async (req, res) => {
     try {
         const { items, shippingInfo } = req.body || {};
@@ -316,13 +319,6 @@ export const createVirementOrder = async (req, res) => {
         // Vérifier le stock
         for (const item of items) {
             const productName = item.productName || item.product?.nom || item.product?.name || item.product?.title || '';
-            const productPrice = parseFloat(item.price) || 0;
-            if (!productName || (productPrice <= 0 && !item.productId)) {
-                return res.status(400).json({
-                    success: false,
-                    error: `Item invalide: nom ou prix manquant pour "${productName || 'produit'}".`
-                });
-            }
             let product = null;
             if (item.productId) {
                 product = await Product.findById(item.productId);
@@ -349,10 +345,11 @@ export const createVirementOrder = async (req, res) => {
             totalAmount,
             paymentMethod: 'virement',
             paymentStatus: 'pending',
-            orderStatus: 'en_attente'
+            orderStatus: 'en_attente',
+            invoices: []
         });
 
-        // Décrémenter le stock dès la création (virement = commande ferme, stock réservé)
+        // Décrémenter le stock
         await updateStockAfterPayment(order._id);
 
         try {
@@ -360,8 +357,6 @@ export const createVirementOrder = async (req, res) => {
         } catch (syncError) {
             console.error('⚠️ Erreur sync order:', syncError);
         }
-
-        sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
 
         console.log(`🏦 Commande virement créée: ${order._id}`);
 
@@ -379,7 +374,7 @@ export const createVirementOrder = async (req, res) => {
     }
 };
 
-// POST /api/orders/:id/virement-proof - Uploader la preuve de virement
+// Uploader la preuve de virement
 export const uploadVirementProof = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
@@ -415,9 +410,6 @@ export const uploadVirementProof = async (req, res) => {
             console.error('⚠️ Erreur sync order:', syncError);
         }
 
-        // Notifier l'admin
-        sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
-
         console.log(`📄 Preuve de virement uploadée pour commande: ${order._id}`);
 
         res.json({
@@ -435,7 +427,7 @@ export const uploadVirementProof = async (req, res) => {
     }
 };
 
-// POST /api/orders/webhook - Webhook Stripe
+// Webhook Stripe
 export const handleStripeWebhook = async (req, res) => {
     const sig = req.headers['stripe-signature'];
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -472,13 +464,15 @@ export const handleStripeWebhook = async (req, res) => {
                 if (order) {
                     // Mettre à jour le stock
                     await updateStockAfterPayment(orderId);
+                    
+                    // Générer automatiquement une facture
+                    await generateInvoiceAfterPayment(order);
 
-                    // Synchroniser et envoyer les emails
+                    // Synchroniser
                     await dataSyncService.updateOrderInFile(orderId, order.toObject());
-                    sendInvoiceEmail(order).catch(err => console.error('Erreur email:', err));
                 }
             } catch (err) {
-                console.error('❌ Erreur mise à jour commande:', err);
+                console.error('Erreur mise à jour commande:', err);
             }
         }
     }
@@ -486,11 +480,12 @@ export const handleStripeWebhook = async (req, res) => {
     res.json({ received: true });
 };
 
-// GET /api/orders/verify-session/:sessionId - Vérifier le statut d'une session
+// Vérifier le statut d'une session
 export const verifySession = async (req, res) => {
     try {
         const stripe = getStripe();
         if (!stripe) return res.status(503).json({ success: false, error: 'Stripe non configuré' });
+        
         const { sessionId } = req.params;
         const session = await stripe.checkout.sessions.retrieve(sessionId);
 
@@ -506,9 +501,11 @@ export const verifySession = async (req, res) => {
 
                     // Mettre à jour le stock
                     await updateStockAfterPayment(orderId);
+                    
+                    // Générer automatiquement une facture
+                    await generateInvoiceAfterPayment(order);
 
                     await dataSyncService.updateOrderInFile(orderId, order.toObject());
-                    sendInvoiceEmail(order).catch(err => console.error('Erreur email:', err));
                 }
             }
         }
@@ -527,7 +524,7 @@ export const verifySession = async (req, res) => {
     }
 };
 
-// GET /api/orders/my-orders - Mes commandes
+// Mes commandes
 export const getMyOrders = async (req, res) => {
     try {
         const orders = await Order.find({ user: req.user._id })
@@ -546,7 +543,7 @@ export const getMyOrders = async (req, res) => {
     }
 };
 
-// GET /api/orders/:id - Détail commande
+// Détail commande
 export const getOrderById = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id)
@@ -559,7 +556,6 @@ export const getOrderById = async (req, res) => {
             });
         }
 
-        // Vérifier que l'utilisateur est admin ou propriétaire de la commande
         if (!req.user.isAdmin && order.user._id.toString() !== req.user._id.toString()) {
             return res.status(403).json({
                 success: false,
@@ -580,7 +576,7 @@ export const getOrderById = async (req, res) => {
     }
 };
 
-// GET /api/orders - Toutes les commandes (admin)
+// Toutes les commandes (admin)
 export const getAllOrders = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -615,7 +611,7 @@ export const getAllOrders = async (req, res) => {
     }
 };
 
-// PATCH /api/orders/:id/status - Mettre à jour le statut (admin)
+// Mettre à jour le statut (admin)
 export const updateOrderStatus = async (req, res) => {
     try {
         const { orderStatus, returnDeadline, paymentStatus } = req.body;
@@ -649,6 +645,11 @@ export const updateOrderStatus = async (req, res) => {
             });
         }
 
+        // Si la commande est livrée, générer une facture si elle n'existe pas
+        if (orderStatus === 'livree' && (!order.invoices || order.invoices.length === 0)) {
+            await generateInvoiceAfterPayment(order);
+        }
+
         try {
             await dataSyncService.updateOrderInFile(req.params.id, order.toObject());
         } catch (syncError) {
@@ -668,7 +669,7 @@ export const updateOrderStatus = async (req, res) => {
     }
 };
 
-// PATCH /api/orders/:id/cancel - Annuler une commande
+// Annuler une commande
 export const cancelOrder = async (req, res) => {
     try {
         const order = await Order.findById(req.params.id);
@@ -711,7 +712,7 @@ export const cancelOrder = async (req, res) => {
             });
         }
 
-        // Restaurer le stock si celui-ci avait été décrémenté (Stripe payé, COD, ou virement)
+        // Restaurer le stock
         if (order.stockUpdated) {
             console.log(`🔄 Restauration du stock pour la commande annulée ${order._id}`);
 
@@ -771,7 +772,7 @@ export const cancelOrder = async (req, res) => {
     }
 };
 
-// GET /api/orders/analytics/monthly-orders - Nombre de commandes payées par mois
+// Statistiques mensuelles
 export const getMonthlyOrderCounts = async (req, res) => {
     try {
         const monthlyOrders = await Order.aggregate([
@@ -829,24 +830,20 @@ export const getMonthlyOrderCounts = async (req, res) => {
             monthlyOrders
         });
     } catch (error) {
-        console.error('Erreur statistiques commandes mensuelles :', error);
+        console.error('Erreur statistiques commandes mensuelles:', error);
         res.status(500).json({
             success: false,
-            error: 'Erreur lors de la récupération des statistiques de commandes mensuelles.'
+            error: 'Erreur lors de la récupération des statistiques.'
         });
     }
 };
 
-// GET /api/orders/analytics/categories - Analytique des catégories les plus vendues
+// Analytique des catégories
 export const getCategoryAnalytics = async (req, res) => {
     try {
-        // Agréger les données des commandes payées
         const categoryStats = await Order.aggregate([
-            // Filtrer seulement les commandes payées
             { $match: { paymentStatus: 'paid' } },
-            // Déplier les items de chaque commande
             { $unwind: '$items' },
-            // Joindre avec la collection Product par nom de produit
             {
                 $lookup: {
                     from: 'products',
@@ -855,9 +852,7 @@ export const getCategoryAnalytics = async (req, res) => {
                     as: 'product'
                 }
             },
-            // Déplier le produit (chaque item a un produit)
             { $unwind: { path: '$product', preserveNullAndEmptyArrays: false } },
-            // Joindre avec la collection Category
             {
                 $lookup: {
                     from: 'categories',
@@ -866,9 +861,7 @@ export const getCategoryAnalytics = async (req, res) => {
                     as: 'category'
                 }
             },
-            // Déplier la catégorie
             { $unwind: { path: '$category', preserveNullAndEmptyArrays: false } },
-            // Grouper par catégorie
             {
                 $group: {
                     _id: '$category._id',
@@ -880,17 +873,13 @@ export const getCategoryAnalytics = async (req, res) => {
                     orderCount: { $addToSet: '$_id' }
                 }
             },
-            // Calculer le nombre de commandes uniques
             {
                 $addFields: {
                     uniqueOrders: { $size: '$orderCount' }
                 }
             },
-            // Trier par revenu total décroissant
             { $sort: { totalRevenue: -1 } },
-            // Limiter aux 10 meilleures catégories
             { $limit: 10 },
-            // Projeter les champs finaux
             {
                 $project: {
                     _id: 1,
@@ -910,12 +899,12 @@ export const getCategoryAnalytics = async (req, res) => {
         console.error('Erreur analytique catégories:', error);
         res.status(500).json({
             success: false,
-            error: 'Erreur lors de la récupération des statistiques de catégories.'
+            error: 'Erreur lors de la récupération des statistiques.'
         });
     }
 };
 
-// GET /api/orders/analytics/order-status - Statistiques des statuts de commandes
+// Statistiques des statuts de commandes
 export const getOrderStatusStats = async (req, res) => {
     try {
         const { year } = req.query;
@@ -927,7 +916,6 @@ export const getOrderStatusStats = async (req, res) => {
             matchCondition.createdAt = { $gte: startDate, $lt: endDate };
         }
         
-        // Agrégation des statuts de commande
         const statusStats = await Order.aggregate([
             { $match: matchCondition },
             {
@@ -940,7 +928,6 @@ export const getOrderStatusStats = async (req, res) => {
             { $sort: { _id: 1 } }
         ]);
         
-        // S'assurer que tous les statuts sont représentés
         const allStatuses = ['en_attente', 'confirmee', 'expediee', 'livree', 'annulee'];
         const statusMap = new Map();
         statusStats.forEach(s => statusMap.set(s._id, s));
@@ -959,12 +946,12 @@ export const getOrderStatusStats = async (req, res) => {
         console.error('Erreur stats statuts commandes:', error);
         res.status(500).json({
             success: false,
-            error: 'Erreur lors de la récupération des statistiques de statuts'
+            error: 'Erreur lors de la récupération des statistiques'
         });
     }
 };
 
-// GET /api/orders/analytics/payment-methods - Statistiques des modes de paiement
+// Statistiques des modes de paiement
 export const getPaymentMethodStats = async (req, res) => {
     try {
         const { year } = req.query;
@@ -976,7 +963,6 @@ export const getPaymentMethodStats = async (req, res) => {
             matchCondition.createdAt = { $gte: startDate, $lt: endDate };
         }
         
-        // Agrégation des modes de paiement
         const paymentStats = await Order.aggregate([
             { $match: matchCondition },
             {
@@ -988,7 +974,6 @@ export const getPaymentMethodStats = async (req, res) => {
             }
         ]);
         
-        // S'assurer que tous les modes sont représentés
         const allMethods = ['stripe', 'livraison', 'virement'];
         const methodMap = new Map();
         paymentStats.forEach(s => methodMap.set(s._id, s));
@@ -1007,12 +992,12 @@ export const getPaymentMethodStats = async (req, res) => {
         console.error('Erreur stats modes paiement:', error);
         res.status(500).json({
             success: false,
-            error: 'Erreur lors de la récupération des statistiques de paiement'
+            error: 'Erreur lors de la récupération des statistiques'
         });
     }
 };
 
-// GET /api/orders/analytics/stock-evolution - Évolution mensuelle du stock par produit (ranking)
+// Évolution mensuelle du stock
 export const getStockEvolution = async (req, res) => {
     try {
         const { year, limit } = req.query;

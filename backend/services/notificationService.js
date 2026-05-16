@@ -12,10 +12,10 @@ class NotificationService {
       });
       
       const saved = await notification.save();
-      console.log(`✅ Notification créée: ${saved.description}`);
+      console.log(`Notification créée: ${saved.description}`);
       return saved;
     } catch (error) {
-      console.error('❌ Erreur création notification:', error);
+      console.error(' Erreur création notification:', error);
       throw error;
     }
   }
@@ -37,7 +37,7 @@ class NotificationService {
   // Notification de modification de stock
   async notifierModificationStock(produit, ancienStock, nouveauStock, utilisateurId = null) {
     let type = 'modification';
-    let description = `📝 Stock modifié: ${ancienStock} → ${nouveauStock}`;
+    let description = `Stock modifié: ${ancienStock} → ${nouveauStock}`;
     
     if (ancienStock > 0 && nouveauStock === 0) {
       type = 'rupture';
@@ -165,7 +165,14 @@ class NotificationService {
       return 0;
     }
   }
-
+// In notificationService.js, you should have:
+async marquerCommeLue(notificationId) {
+  return await Notification.findByIdAndUpdate(
+    notificationId,
+    { lu: true, dateLecture: new Date() },
+    { new: true }
+  );
+}
   // Supprimer les anciennes notifications (plus de 30 jours)
   async nettoyerAnciennes(jours = 30) {
     try {

@@ -301,6 +301,68 @@ export const sendAdminNotificationEmail = async (order) => {
   }
 };
 
+// Envoyer email de reinitialisation de mot de passe
+export const sendPasswordResetEmail = async (toEmail, resetURL) => {
+  try {
+    let transporter = createTransporter();
+    if (!transporter) {
+      const testAccount = await nodemailer.createTestAccount();
+      transporter = nodemailer.createTransport({
+        host: 'smtp.ethereal.email', port: 587, secure: false,
+        auth: { user: testAccount.user, pass: testAccount.pass }
+      });
+      console.log('Email de test via Ethereal (pas de SMTP configure)');
+    }
+
+    const html = `
+<!DOCTYPE html><html><head><meta charset="utf-8"></head>
+<body style="margin:0;padding:0;background:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;">
+<div style="max-width:580px;margin:0 auto;padding:32px 16px;">
+  <div style="background:linear-gradient(145deg,#4361ee,#3a0ca3);border-radius:16px 16px 0 0;padding:32px;text-align:center;">
+    <h1 style="margin:0;color:white;font-size:24px;font-weight:700;">UniVerTechno+</h1>
+    <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Reinitialisation de mot de passe</p>
+  </div>
+  <div style="background:white;padding:32px;border-radius:0 0 16px 16px;box-shadow:0 4px 20px rgba(0,0,0,0.06);">
+    <p style="margin:0 0 16px;font-size:15px;color:#0f172a;">Bonjour,</p>
+    <p style="margin:0 0 16px;font-size:14px;color:#475569;line-height:1.6;">
+      Nous avons recu une demande de reinitialisation du mot de passe de votre compte. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.
+    </p>
+    <div style="text-align:center;margin:28px 0;">
+      <a href="${resetURL}" style="display:inline-block;background:linear-gradient(145deg,#4361ee,#3a0ca3);color:white;text-decoration:none;padding:14px 32px;border-radius:50px;font-size:14px;font-weight:600;box-shadow:0 8px 25px rgba(67,97,238,0.35);">
+        Reinitialiser mon mot de passe
+      </a>
+    </div>
+    <div style="background:#fef3c7;border:1px solid #fcd34d;border-radius:8px;padding:12px;margin:20px 0;font-size:13px;color:#92400e;">
+      Ce lien expire dans 1 heure. Si vous n'etes pas a l'origine de cette demande, vous pouvez ignorer cet email en toute securite.
+    </div>
+    <p style="margin:16px 0 0;font-size:12px;color:#94a3b8;word-break:break-all;">
+      Si le bouton ne fonctionne pas, copiez ce lien dans votre navigateur :<br>${resetURL}
+    </p>
+  </div>
+  <div style="text-align:center;padding:20px 16px;">
+    <p style="margin:0;font-size:11px;color:#cbd5e1;">Cet email a ete envoye automatiquement. Veuillez ne pas y repondre.</p>
+  </div>
+</div>
+</body></html>`;
+
+    const info = await transporter.sendMail({
+      from: `"UniVerTechno+" <${process.env.GMAIL_USER || process.env.SMTP_USER || 'noreply@univertechno.com'}>`,
+      to: toEmail,
+      subject: 'Reinitialisation de votre mot de passe - UniVerTechno+',
+      html
+    });
+
+    console.log(`Email reset password envoye: ${info.messageId}`);
+    if (info.messageId && !process.env.GMAIL_USER && !process.env.SMTP_HOST) {
+      console.log(`Preview email: ${nodemailer.getTestMessageUrl(info)}`);
+    }
+    return { success: true, messageId: info.messageId };
+  } catch (error) {
+    console.error('Erreur envoi email reset password:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 // Envoyer notification email a l'admin pour une demande de retour/echange
 export const sendReturnRequestNotificationEmail = async (returnRequest, order) => {
   try {

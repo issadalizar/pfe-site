@@ -290,7 +290,7 @@ const Product3DPage = () => {
                     '&:hover': { borderColor: '#4361ee', color: '#4361ee' },
                   }}
                 >
-                  ♡
+                  ♡ Favories
                 </Button>
               </Box>
             </Paper>

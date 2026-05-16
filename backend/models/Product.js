@@ -1,4 +1,4 @@
-// models/Product.js
+
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
@@ -61,7 +61,6 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
-    // NOUVEAU: Stock après modification (historique)
     stockApres: {
       type: Number,
       default: 0,
@@ -84,16 +83,16 @@ const productSchema = new mongoose.Schema(
   }
 );
 
-// --- helpers ---
+// Fonction utilitaire pour générer un slug à partir du nom du produit
 function makeSlug(str) {
   return String(str || "")
     .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\w\s-]/g, "")
+    .normalize("NFD")// Supprimer les accents
+    .replace(/[\u0300-\u036f]/g, "")// Supprimer les caractères de diacritiques restants
+    .replace(/[^\w\s-]/g, "")// Supprimer les caractères non alphanumériques, espaces et tirets
     .trim()
-    .replace(/\s+/g, "-")
-    .replace(/-+/g, "-");
+    .replace(/\s+/g, "-")// Remplacer les espaces par des tirets
+    .replace(/-+/g, "-");// Remplacer les multiples tirets par un seul
 }
 
 // Fonction pour générer un nom de fichier image à partir du nom du produit
@@ -102,19 +101,12 @@ function genererNomFichierImage(nomProduit) {
   
   // Nettoyer le nom pour créer un nom de fichier
   let filename = nomProduit
-    // Remplacer les caractères spéciaux
     .replace(/[<>:"/\\|?*]/g, '')
-    // Remplacer les espaces par des underscores
     .replace(/\s+/g, '_')
-    // Remplacer les parenthèses
     .replace(/[()]/g, '')
-    // Remplacer les crochets
     .replace(/[\[\]]/g, '')
-    // Remplacer les caractères accentués
     .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-    // Convertir en minuscules
     .toLowerCase()
-    // Ajouter l'extension
     + '.png';
   
   return filename;
@@ -127,7 +119,6 @@ function genererCheminImageAuto(nomProduit, modele) {
   const filename = genererNomFichierImage(nomProduit);
   if (!filename) return "";
   
-  // Déterminer la catégorie basée sur le nom ou le modèle
   const lowerName = nomProduit.toLowerCase();
   const lowerModel = (modele || "").toLowerCase();
   
@@ -168,12 +159,10 @@ productSchema.methods.obtenirCheminImage = function() {
   return this.cheminImageAuto || genererCheminImageAuto(this.nom, this.modele);
 };
 
-// Méthode d'instance pour mettre à jour les infos d'image
 productSchema.methods.mettreAJourInfosImage = function() {
   this.nomFichierImage = genererNomFichierImage(this.nom);
   this.cheminImageAuto = genererCheminImageAuto(this.nom, this.modele);
   
-  // Si pas d'images définies, utiliser le chemin auto-généré
   if (!this.images || this.images.length === 0) {
     this.images = [this.cheminImageAuto];
   }
@@ -181,19 +170,15 @@ productSchema.methods.mettreAJourInfosImage = function() {
   return this;
 };
 
-// ✅ Générer slug avant save (create / save)
+// Middleware pour générer le slug et les infos d'image avant de sauvegarder
 productSchema.pre("save", function (next) {
   if (!this.slug && this.nom) {
     this.slug = makeSlug(this.nom);
   }
-  
-  // Générer automatiquement les infos d'image si non définies
   if (this.isNew || this.isModified('nom') || this.isModified('modele')) {
     this.nomFichierImage = genererNomFichierImage(this.nom);
     this.cheminImageAuto = genererCheminImageAuto(this.nom, this.modele);
-    
-    // Si pas d'images définies, utiliser le chemin auto-généré
-    if (!this.images || this.images.length === 0) {
+        if (!this.images || this.images.length === 0) {
       this.images = [this.cheminImageAuto];
     }
   }
@@ -201,24 +186,20 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-// ✅ IMPORTANT: findOneAndUpdate / findByIdAndUpdate ne déclenche PAS pre('save')
+// Middleware pour gérer les mises à jour via findOneAndUpdate
 productSchema.pre("findOneAndUpdate", function (next) {
   const update = this.getUpdate() || {};
   const $set = update.$set || {};
 
-  // Supporter update direct {nom: "..."} ou {$set:{nom:"..."}}
   const incomingNom = update.nom ?? $set.nom;
   const incomingModele = update.modele ?? $set.modele;
-
-  // Toujours updatedAt
   $set.updatedAt = new Date();
-
-  // Si nom change et slug pas fourni => regen slug
+  // Si nom change et slug pas fourni 
   if (incomingNom && !($set.slug || update.slug)) {
     $set.slug = makeSlug(incomingNom);
   }
 
-  // Si nom ou modele change => regen infos image
+  // Si nom ou modele change 
   if (incomingNom || incomingModele) {
     const nomAUtiliser = incomingNom || this._update.nom || this._conditions.nom;
     const modeleAUtiliser = incomingModele || this._update.modele || this._conditions.modele;
@@ -234,7 +215,7 @@ productSchema.pre("findOneAndUpdate", function (next) {
     }
   }
 
-  // Remettre $set dans update
+  
   update.$set = $set;
 
   // Si update contenait nom/slug au top-level, on les enlève pour éviter conflits
@@ -266,5 +247,4 @@ productSchema.virtual('specifications', {
 productSchema.set('toJSON', { virtuals: true });
 productSchema.set('toObject', { virtuals: true });
 
-// Export existant
 export default mongoose.model('Product', productSchema);

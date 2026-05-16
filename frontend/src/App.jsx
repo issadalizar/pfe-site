@@ -9,6 +9,7 @@ import Categories from "./pages/Admin/Categories";
 import Products from "./pages/Admin/Products";
 import UsersPage from "./pages/Admin/UsersPage";
 import StockAlertsPage from "./pages/Admin/StockAlertsPage";
+import AdminProfile from "./pages/Admin/AdminProfile";
 import Home from "./pages/Home";
 import ProductDetails from "./pages/ProductDetails";
 import PublicCategoryPage from "./pages/PublicCategoryPage";
@@ -18,6 +19,7 @@ import AdminReturnRequests from "./pages/Admin/AdminReturnRequests";
 import ContactPage from "./pages/ContactPage";
 import SectorPage from "./pages/SectorPage";
 import Login from "./pages/Login";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import CartPage from "./pages/CartPage";
 import ClientDashboard from "./pages/ClientDashboard";
 import CheckoutPage from "./pages/CheckoutPage";
@@ -36,6 +38,7 @@ function App() {
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/sector/:sectorId" element={<SectorPage />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/product3d/:productId" element={<Product3DPage />} />
       <Route path="/client/dashboard" element={
@@ -88,6 +91,7 @@ function App() {
                       <Route path="/messages" element={<AdminMessages />} />
                       <Route path="/orders" element={<AdminOrders />} />
                       <Route path="/return-requests" element={<AdminReturnRequests />} />
+                      <Route path="/admin/profile" element={<AdminProfile />} />
                       <Route
                         path="/categories/:categoryId/products"
                         element={<CategoryProductsView />}

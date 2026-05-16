@@ -5,7 +5,7 @@ const categorySchema = new mongoose.Schema({
     type: String, 
     required: true,
     trim: true,
-    unique: true  // Le name devient ton identifiant unique
+    unique: true  
   },
  
   description: {
@@ -17,7 +17,7 @@ const categorySchema = new mongoose.Schema({
     ref: 'Category', 
     default: null 
   },
-  level: { // Le niveau de la catégorie dans la hiérarchie
+  level: { 
     type: Number, 
     default: 1,
     min: 1,
@@ -40,7 +40,6 @@ categorySchema.pre('save', function(next) {
 
 // Index (supprimer l'index sur slug)
 categorySchema.index({ parent: 1, level: 1 });
-// categorySchema.index({ slug: 1 });  ← À SUPPRIMER
 
 const Category = mongoose.model('Category', categorySchema);
 

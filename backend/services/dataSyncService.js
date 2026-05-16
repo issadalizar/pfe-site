@@ -46,7 +46,6 @@ class DataSyncService {
     try {
       // Nettoyer les données pour éviter les références circulaires
       const cleanData = JSON.parse(JSON.stringify(data, (key, value) => {
-        // Exclure les champs problématiques
         if (key === '__v' || key === 'password' || key === 'salt') return undefined;
         return value;
       }));
