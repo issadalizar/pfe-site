@@ -31,6 +31,7 @@ const LoginPage = () => {
     adresse: '',
     password: '',
     confirmPassword: ''
+
   });
 
   const [adminData, setAdminData] = useState({
@@ -362,7 +363,7 @@ const LoginPage = () => {
                             backgroundColor: '#f8fafc',
                             fontSize: '0.95rem'
                           }}
-                        />
+                        />  
                         <button
                           type="button"
                           className="btn position-absolute end-0 top-0 h-100 d-flex align-items-center"

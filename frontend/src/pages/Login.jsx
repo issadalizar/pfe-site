@@ -14,7 +14,6 @@ const Login = () => {
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirect');
   const { login, register, isAuthenticated, isAdmin } = useAuth();
-
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showAdminLogin, setShowAdminLogin] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);

@@ -68,74 +68,73 @@ class OpenChatEngine:
         history = session.get('history', [])
         context = session.get('context', {})
 
-        # --- 0. Traitement des questions simples avec "est-ce que" ---
+        # Traitement des questions simples avec "est-ce que"
         if msg_lower.startswith('est-ce que') or msg_lower.startswith("est ce que"):
             # Transformer en requête de recherche
             query = msg_lower.replace('est-ce que', '').replace('est ce que', '').strip()
             return self._handle_free_search(message, query, context, history)
 
-        # --- 1. Salutations ---
+        # Salutations 
         if self._has_signal(msg_lower, self.GREETING_SIGNALS) and len(msg_lower.split()) <= 5:
             return self._greeting_response(history)
 
-        # --- 2. Questions sur le chatbot lui-même ---
+        #  Questions sur le chatbot lui-même 
         if any(phrase in msg_lower for phrase in ['qui es-tu', 'tu es qui', 'c\'est quoi', 'ton nom', 't\'appelles']):
             return self._identity_response()
 
-        # --- 3. Remerciements / Au revoir ---
+        #  Remerciements / Au revoir 
         if any(w in msg_lower for w in ['merci', 'thanks', 'thank you']):
-            return {'response': "De rien ! N'hésitez pas si vous avez d'autres questions. 😊", 'products': [], 'action': 'chat'}
+            return {'response': "De rien ! N'hésitez pas si vous avez d'autres questions. ", 'products': [], 'action': 'chat'}
         if any(w in msg_lower for w in ['au revoir', 'bye', 'à bientôt', 'adieu']):
-            return {'response': "Au revoir ! À bientôt ! 👋", 'products': [], 'action': 'chat'}
+            return {'response': "Au revoir ! À bientôt ! ", 'products': [], 'action': 'chat'}
 
-        # --- 4. Aide ---
+        # Aide 
         if any(w in msg_lower for w in ['aide', 'help', 'comment utiliser', 'que peux-tu', 'que sais tu faire']):
             return {'response': self._help_message(), 'products': [], 'action': 'chat'}
 
-        # --- 5. Détection des intentions de comparaison ---
+        #  Détection des intentions de comparaison 
         intent_type, products, criteria = self._detect_comparison_intent(msg_lower, history, context)
         if intent_type:
             return self._handle_comparison_with_intent(intent_type, products, criteria, context, history)
 
-        # --- 6. Liste des catégories ---
+        #  Liste des catégories 
         if self._is_category_list_request(msg_lower):
             return self._list_categories()
 
-        # --- 7. Requête spécifique de catégorie ---
+        #  Requête spécifique de catégorie 
         category_result = self._handle_category_query(message, session)
         if category_result:
             return category_result
 
-        # --- 8. Liste de tous les produits ---
+        #  Liste de tous les produits 
         if self._is_product_list_request(msg_lower) and not self._has_specific_product_context(msg_lower):
             return self._list_all_products()
 
-        # --- 9. Recommandation ---
+        #  9. Recommandation 
         if self._has_signal(msg_lower, self.RECOMMENDATION_SIGNALS):
             return self._handle_recommendation(message, msg_lower, context)
 
-        # --- 10. Recherche par prix ---
+        #  10. Recherche par prix 
         if self._has_signal(msg_lower, self.PRICE_SIGNALS):
             return self._handle_price_query(message, msg_lower)
 
-        # --- 11. Recherche par stock ---
+        #  11. Recherche par stock 
         if self._has_signal(msg_lower, self.STOCK_SIGNALS):
             return self._handle_stock_query(msg_lower)
 
-        # --- 12. Recherche par popularité ---
+        #  12. Recherche par popularité 
         if self._has_signal(msg_lower, self.ORDER_SIGNALS):
             return self._handle_order_query(msg_lower)
 
-        # --- 13. Recherche par spec/feature ---
+        #  13. Recherche par spec/feature 
         if self._has_signal(msg_lower, self.SPEC_SIGNALS):
             return self._handle_feature_spec_query(message, msg_lower)
 
-        # --- 14. Recherche générale ---
+        #  14. Recherche générale 
         return self._handle_free_search(message, msg_lower, context, history)
 
-    # ================================================================
+
     # DÉTECTION DES INTENTIONS
-    # ================================================================
 
     def _has_signal(self, text, signals):
         return any(s in text for s in signals)
@@ -157,7 +156,7 @@ class OpenChatEngine:
         return any(t in msg_lower for t in triggers)
 
     def _has_specific_product_context(self, msg_lower):
-        product_words = ['cnc', 'tour', 'fraise', 'capteur', 'oscilloscope', 'voiture', 'auto',
+        product_words = ['cnc', 'tour', 'capteur', 'oscilloscope', 'voiture', 'auto',
                          'mcp', 'labo', 'éducatif', 'education', 'milling', 'turning', 'de2', 'pc1',
                          'fa2', 'px1', 'dt-', 'dtm', 'mt-', 'ptl', 'acl', 'f1-']
         return any(p in msg_lower for p in product_words)

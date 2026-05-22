@@ -38,10 +38,10 @@ dotenv.config();
 
 // Éviter que le processus ne tombe sur une exception non gérée (connexion reset côté client)
 process.on('uncaughtException', (err) => {
-  console.error('❌ uncaughtException:', err && err.message, err && err.stack);
+  console.error(' uncaughtException:', err && err.message, err && err.stack);
 });
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('❌ unhandledRejection:', reason);
+  console.error(' unhandledRejection:', reason);
 });
 
 const app = express();

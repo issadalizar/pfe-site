@@ -57,7 +57,7 @@ router.post('/checkout-virement', protect, createVirementOrder);
 router.get('/my-orders', protect, getMyOrders);
 router.get('/verify-session/:sessionId', protect, verifySession);
 
-// ⚠️  IMPORTANT : routes spécifiques avec suffixe AVANT la route générique /:id
+//   IMPORTANT : routes spécifiques avec suffixe AVANT la route générique /:id
 router.post('/:id/virement-proof', protect, uploadVirement.single('proof'), uploadVirementProof);
 router.patch('/:id/cancel', protect, cancelOrder);
 router.patch('/:id/status', protect, adminOnly, updateOrderStatus);

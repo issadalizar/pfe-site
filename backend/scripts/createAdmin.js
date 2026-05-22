@@ -25,7 +25,7 @@ const createAdmin = async () => {
         const existingAccount = await Account.findOne({ email: ADMIN_DATA.email.toLowerCase() });
 
         if (existingAccount) {
-            console.log('⚠️  Un compte admin existe déjà avec cet email :');
+            console.log(' Un compte admin existe déjà avec cet email :');
             console.log(`   Email: ${existingAccount.email}`);
             console.log('\n   Aucune modification effectuée.');
         } else {
@@ -39,12 +39,12 @@ const createAdmin = async () => {
                     isAdmin: true,
                 });
                 await adminUser.save();
-                console.log('✅ Utilisateur admin créé.');
+                console.log(' Utilisateur admin créé.');
             } else {
                 // S'assurer qu'il est bien admin
                 adminUser.isAdmin = true;
                 await adminUser.save();
-                console.log('✅ Utilisateur admin existant mis à jour.');
+                console.log(' Utilisateur admin existant mis à jour.');
             }
 
             // 2. Créer le Account associé
@@ -56,18 +56,18 @@ const createAdmin = async () => {
             });
             await account.save();
 
-            console.log('✅ Compte administrateur créé avec succès !');
+            console.log(' Compte administrateur créé avec succès !');
             console.log(`   Email: ${ADMIN_DATA.email}`);
             console.log(`   Mot de passe: ${ADMIN_DATA.password}`);
             console.log(`   Code: ${ADMIN_DATA.client_code}`);
-            console.log('\n   ⚠️  Changez le mot de passe après la première connexion !');
+            console.log('\n     Changez le mot de passe après la première connexion !');
         }
 
         await mongoose.connection.close();
         console.log('\nConnexion MongoDB fermée.');
         process.exit(0);
     } catch (error) {
-        console.error('❌ Erreur:', error.message);
+        console.error('  Erreur:', error.message);
         await mongoose.connection.close();
         process.exit(1);
     }

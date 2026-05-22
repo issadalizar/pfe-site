@@ -7,24 +7,24 @@ CORRECTION: suppression de self.text_processor (non initialisé), remplacé par 
 import re
 
 
-class IntelligentSearch:
+class IntelligentSearch: #Cette classe reçoit un data_loader qui contient les produits.
     def __init__(self, data_loader):
         self.data_loader = data_loader
         self._stopwords = {'de', 'la', 'le', 'les', 'et', 'en', 'un', 'une', 'des',
                            'du', 'pour', 'par', 'sur', 'avec', 'dans', 'the', 'and',
-                           'for', 'with', 'of', 'in', 'to', 'a', 'an'}
+                           'for', 'with', 'of', 'in', 'to', 'a', 'an'} #liste des mots inutiles à ignorer pendant la recherche
 
     def _tokenize(self, text):
         words = re.findall(r'\b\w{2,}\b', text.lower())
         return [w for w in words if w not in self._stopwords]
 
     def search(self, query, limit=10):
-        if not query:
+        if not query:#query vide ou None, on retourne une liste vide
             return []
-        q = query.lower().strip()
+        q = query.lower().strip()#on met la query en minuscule et on enlève les espaces superflus
 
         # Prix
-        if self._is_price_query(q):
+        if self._is_price_query(q):#si la query contient des éléments liés au prix, on effectue une recherche par prix
             r = self._search_by_price(q)
             if r:
                 return r[:limit]
@@ -48,7 +48,7 @@ class IntelligentSearch:
                 return r[:limit]
 
         # Texte libre
-        return self._full_text_search(q, limit)
+        return self._full_text_search(q, limit)#si aucune des méthodes précédentes n'a retourné de résultats, on effectue une recherche en texte libre sur tous les champs du produit
     
     def search_advanced(self, query, filters=None):
         """
@@ -57,20 +57,20 @@ class IntelligentSearch:
         """
         results = self.search(query, limit=50)
         
-        if not filters:
+        if not filters:#si aucun filtre n'est fourni, on retourne les résultats de la recherche simple
             return results
         
         filtered = []
         for p in results:
             include = True
             
-            if 'price_min' in filters and p.price < filters['price_min']:
+            if 'price_min' in filters and p.price < filters['price_min']:#si le prix du produit est inférieur au prix minimum spécifié dans les filtres, on l'exclut
                 include = False
             if 'price_max' in filters and p.price > filters['price_max']:
                 include = False
-            if 'category' in filters and filters['category'].lower() not in p.category.lower():
+            if 'category' in filters and filters['category'].lower() not in p.category.lower():#Si la catégorie ne correspond pas → rejet
                 include = False
-            if 'in_stock' in filters and filters['in_stock'] and p.stock == 0:
+            if 'in_stock' in filters and filters['in_stock'] and p.stock == 0:#Si on veut uniquement les produits en stock et que le produit n'est pas en stock → rejet
                 include = False
             
             if include:
@@ -78,15 +78,15 @@ class IntelligentSearch:
         
         return filtered[:10]
 
-    def _is_price_query(self, q):
-        return bool(re.search(
+    def _is_price_query(self, q):#Détecter si l’utilisateur parle de prix
+        return bool(re.search(#bool est utilisé pour convertir le résultat de re.search en un booléen (True ou False). 
             r'prix|tarif|co[uû]t|cher|abordable|budget|moins de \d+|under \d+|€|\d+\s*euros?', q))
 
     def _is_stock_query(self, q):
         return bool(re.search(r'stock|disponible|dispo|rupture|[eé]puis[eé]|livraison', q))
 
     def _is_category_query(self, q):
-        return any(cat in q for cat in self.data_loader.get_all_categories())
+        return any(cat in q for cat in self.data_loader.get_all_categories())#cat in q vérifie si une catégorie est dans la requête
 
     def _is_feature_spec_query(self, q):
         tech_kw = [
@@ -101,10 +101,10 @@ class IntelligentSearch:
         products = self.data_loader.get_all_products()
 
         # Entre X et Y
-        m = re.search(r'entre\s*(\d+)\s*(?:et|and|[àa]|-)\s*(\d+)', q)
+        m = re.search(r'entre\s*(\d+)\s*(?:et|and|[àa]|-)\s*(\d+)', q)#entre 100 et 500
         if m:
             mn, mx = int(m.group(1)), int(m.group(2))
-            return sorted([p for p in products if mn <= p.price <= mx], key=lambda x: x.price)
+            return sorted([p for p in products if mn <= p.price <= mx], key=lambda x: x.price)#on filtre les produits dont le prix est entre mn et mx, puis on les trie par prix croissant
 
         # Moins de X
         m = re.search(r'moins de\s*(\d+)|under\s*(\d+)|max(?:imum)?\s*(\d+)|budget\s*(?:de)?\s*(\d+)', q)

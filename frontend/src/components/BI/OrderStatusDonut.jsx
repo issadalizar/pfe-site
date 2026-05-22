@@ -24,12 +24,12 @@ const STATUS_NAMES = {
 export default function OrderStatusDonut({ orders = [] }) {
     const statusData = useMemo(() => {
         const stats = {
-            en_attente: { count: 0, amount: 0 },
+            en_attente: { count: 0, amount: 0 },//(nbr cmndes, montant total)
             confirmee: { count: 0, amount: 0 },
             expediee: { count: 0, amount: 0 },
             livree: { count: 0, amount: 0 },
             annulee: { count: 0, amount: 0 }
-        };
+        }; 
 
         orders.forEach(order => {
             if (!order || !order._id) return;
@@ -110,9 +110,9 @@ export default function OrderStatusDonut({ orders = [] }) {
         }
     };
 
-    const totalOrders = Object.values(statusData).reduce((sum, item) => sum + item.count, 0);
-    const totalAmount = Object.values(statusData).reduce((sum, item) => sum + item.amount, 0);
-    const confirmedOrders = (statusData.confirmee?.count || 0) + (statusData.livree?.count || 0);
+    const totalOrders = Object.values(statusData).reduce((sum, item) => sum + item.count, 0);//Addition de tous les statuts.
+    const totalAmount = Object.values(statusData).reduce((sum, item) => sum + item.amount, 0);//somme de tous les montants.
+    const confirmedOrders = (statusData.confirmee?.count || 0) + (statusData.livree?.count || 0);//taux de confirmation 
     const pendingOrders = statusData.en_attente?.count || 0;
     const cancelledOrders = statusData.annulee?.count || 0;
     const shippedOrders = statusData.expediee?.count || 0;

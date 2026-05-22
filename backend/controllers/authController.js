@@ -1,8 +1,14 @@
+<<<<<<< Updated upstream
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import User from '../models/User.js';
 import Account from '../models/Account.js'; // AJOUT: Importer Account
 import { sendPasswordResetEmail } from '../utils/emailService.js';
+=======
+import jwt from 'jsonwebtoken';//sert à créer et vérifier les tokens
+import User from '../models/User.js';
+import Account from '../models/Account.js'; 
+>>>>>>> Stashed changes
 
 // Générer un token JWT
 const generateToken = (user) => {
@@ -12,6 +18,12 @@ const generateToken = (user) => {
         { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
     );
 };
+//Cette fonction generateToken permet de générer un token JWT pour authentifier un utilisateur. 
+// Elle crée un token contenant l’identifiant de l’utilisateur et son rôle (isAdmin), 
+// puis le signe avec une clé secrète stockée dans JWT_SECRET. Le token possède également
+//  une durée d’expiration définie par JWT_EXPIRES_IN ou fixée par défaut à 7 jours.
+
+
 
 // POST /api/auth/register - Inscription client
 export const register = async (req, res) => {

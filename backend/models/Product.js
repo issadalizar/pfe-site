@@ -201,7 +201,7 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-// ✅ IMPORTANT: findOneAndUpdate / findByIdAndUpdate ne déclenche PAS pre('save')
+//  IMPORTANT: findOneAndUpdate / findByIdAndUpdate ne déclenche PAS pre('save')
 productSchema.pre("findOneAndUpdate", function (next) {
   const update = this.getUpdate() || {};
   const $set = update.$set || {};

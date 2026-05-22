@@ -4,8 +4,8 @@ import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-// Routes publiques
-router.post('/register', register);
+// Routes publiques'
+router.post('/register', register);//Parce qu’on ne peut pas être connecté avant de s’inscrire
 router.post('/login', login);
 router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);

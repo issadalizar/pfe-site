@@ -16,14 +16,14 @@ class ConversationManager:
                     'comparison_products': [],  # Produits en cours de comparaison
                     'price_filter': None,       # Filtre prix actif
                     'category_filter': None,    # Filtre catégorie actif
-                    'last_comparison_type': None, # Dernier type de comparaison
+                    'last_comparison_type': None, # Produits actuellement comparés.
                     'comparison_warning': None,   # Message d'avertissement
                     'viewing_global': False,      # Si on est en mode global
                     'global_criteria': None,      # Critère de comparaison globale
                 }
             }
         return self.sessions[user_id]
-
+    "Ajoute un message dans l’historique."
     def add_message(self, user_id, role, content, products=None):
         session = self.get_or_create_session(user_id)
         entry = {
@@ -33,7 +33,7 @@ class ConversationManager:
             'products': products or []
         }
         session['history'].append(entry)
-
+    #Si le message contient des produits, ils deviennent les derniers produits consultés.
         # Mettre à jour le contexte
         if products:
             session['context']['last_products'] = products

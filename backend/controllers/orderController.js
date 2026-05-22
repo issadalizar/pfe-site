@@ -358,7 +358,7 @@ export const createVirementOrder = async (req, res) => {
         try {
             await dataSyncService.updateOrderInFile(order._id.toString(), order.toObject());
         } catch (syncError) {
-            console.error('⚠️ Erreur sync order:', syncError);
+            console.error(' Erreur sync order:', syncError);
         }
 
         sendAdminNotificationEmail(order).catch(err => console.error('Erreur email admin:', err));
@@ -652,7 +652,7 @@ export const updateOrderStatus = async (req, res) => {
         try {
             await dataSyncService.updateOrderInFile(req.params.id, order.toObject());
         } catch (syncError) {
-            console.error('⚠️ Erreur sync order:', syncError);
+            console.error(' Erreur sync order:', syncError);
         }
 
         res.json({

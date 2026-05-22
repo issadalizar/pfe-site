@@ -32,13 +32,13 @@ const devisSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
-    // ✅ MODIFICATION: Référence au produit au lieu de stocker les attributs
+    //  MODIFICATION: Référence au produit au lieu de stocker les attributs
     product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
         required: true
     },
-    // ⚠️ Garder productId si nécessaire pour compatibilité, mais rendre optionnel
+    //  Garder productId si nécessaire pour compatibilité, mais rendre optionnel
     productId: {
         type: String,
         required: false // Optionnel maintenant car on utilise product
@@ -61,7 +61,7 @@ devisSchema.pre('save', async function(next) {
     next();
 });
 
-// ✅ Ajouter des indexes pour les performances
+// Ajouter des indexes pour les performances
 devisSchema.index({ product: 1 });
 devisSchema.index({ status: 1 });
 devisSchema.index({ createdAt: -1 });

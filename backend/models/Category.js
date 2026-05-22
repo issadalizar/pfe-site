@@ -31,7 +31,6 @@ const categorySchema = new mongoose.Schema({
  
  
 });
-
 // Middleware simplifié (plus de slug)
 categorySchema.pre('save', function(next) {
   this.updatedAt = Date.now();
