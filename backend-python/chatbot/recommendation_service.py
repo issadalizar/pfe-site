@@ -1,20 +1,17 @@
-# chatbot/recommendation_service.py
-
 import re
-
+from utils.text_processor import TextProcessor
+from utils.scoring import ScoringService  # ← Importer scoring centralisé
 
 class RecommendationService:
     def __init__(self, data_loader):
         self.data_loader = data_loader
+        self.text_processor = TextProcessor()
 
     def recommend(self, user_input=None, max_results=6):
-        """Recommande des produits selon le contexte libre"""
         if not user_input:
             return self._top_rated(max_results)
 
         user_input_lower = user_input.lower()
-
-        # Budget
         budget = self._extract_budget(user_input_lower)
 
         # Type de besoin
@@ -35,7 +32,7 @@ class RecommendationService:
         elif any(w in user_input_lower for w in ['populaire', 'top', 'tendance', 'plus vendu']):
             products = self._popular(max_results, budget)
         elif budget:
-            # Budget mentionné sans catégorie → filtrer par prix
+            # Budget mentionné sans catégorie donc filtrer par prix
             all_p = self.data_loader.get_all_products()
             products = sorted(
                 [p for p in all_p if p.price <= budget],
@@ -43,9 +40,7 @@ class RecommendationService:
             )[:max_results]
         else:
             # Recherche dans tout le catalogue par mots-clés
-            from utils.text_processor import TextProcessor
-            tp = TextProcessor()
-            keywords = tp.extract_keywords(user_input)
+            keywords = self.text_processor.extract_keywords(user_input)  # ← Utiliser self.text_processor
             products = []
             if keywords:
                 for p in self.data_loader.get_all_products():
@@ -57,11 +52,10 @@ class RecommendationService:
             if not products:
                 products = self._popular(max_results)
 
-        # Scorer et trier
-        return self._score_products(products)[:max_results]
-    
+        return ScoringService.score_products(products)[:max_results]  # ← Utiliser scoring centralisé pour classer les recommandations
+
+    # recommandation par critère spécifique (prix, stock, commandes, notes, rapport qualité/prix)
     def recommend_best_by_criteria(self, criteria, limit=5):
-        """Recommande les meilleurs produits selon un critère global"""
         all_products = self.data_loader.get_all_products()
         
         if criteria == 'prix':
@@ -77,7 +71,6 @@ class RecommendationService:
             # Mieux notés
             return sorted(all_products, key=lambda x: x.rating, reverse=True)[:limit]
         elif criteria == 'value':
-            # Meilleur rapport qualité/prix
             scored = []
             for p in all_products:
                 if p.price > 0:
@@ -86,7 +79,7 @@ class RecommendationService:
             return [p for _, p in sorted(scored, key=lambda x: x[0], reverse=True)][:limit]
         else:
             return self._top_rated(limit)
-
+# extraire budget 
     def _extract_budget(self, text):
         patterns = [
             r'moins de\s*(\d+)',
@@ -100,23 +93,11 @@ class RecommendationService:
             if m:
                 return int(m.group(1))
         return None
-
-    def _score_products(self, products):
-        """Trie par score multi-critères"""
-        if not products:
-            return []
-        max_orders = max((p.order_count for p in products), default=1) or 1
-        scored = []
-        for p in products:
-            score = p.rating * 10 + (p.order_count / max_orders) * 5 + (1 if p.stock > 0 else 0) * 3
-            scored.append((score, p))
-        scored.sort(key=lambda x: x[0], reverse=True)
-        return [p for _, p in scored]
-
+# fonctions de recommandation spécifiques pour les différents types de besoins
     def _top_rated(self, limit):
         products = self.data_loader.get_all_products()
         return sorted(products, key=lambda x: x.rating, reverse=True)[:limit]
-
+# recommandation par prix (moins cher ou premium) en filtrant par budget si mentionné
     def _by_price(self, price_type, limit, budget=None):
         products = self.data_loader.get_all_products()
         if budget:
@@ -124,7 +105,7 @@ class RecommendationService:
         if price_type == 'cheap':
             return sorted(products, key=lambda x: x.price)[:limit]
         return sorted(products, key=lambda x: x.price, reverse=True)[:limit]
-
+# recommandation pour les besoins éducatifs ou de formation en filtrant par budget si mentionné
     def _for_education(self, limit, budget=None):
         products = self.data_loader.get_all_products()
         if budget:
@@ -134,7 +115,7 @@ class RecommendationService:
                'cnc' in p.mainCategory.lower() or
                'formation' in p.description.lower()]
         return edu[:limit] if edu else products[:limit]
-
+# recommandation par catégorie (ex: CNC, automobile, laboratoire) en filtrant par budget si mentionné
     def _by_category(self, cat, limit, budget=None):
         products = self.data_loader.get_all_products()
         if budget:
@@ -144,7 +125,7 @@ class RecommendationService:
                     cat in p.category.lower() or
                     cat in p.description.lower()]
         return filtered[:limit] if filtered else products[:limit]
-
+# recommandation des produits populaires (plus commandés) en filtrant par budget si mentionné
     def _popular(self, limit, budget=None):
         products = self.data_loader.get_all_products()
         if budget:

@@ -1,7 +1,6 @@
 # services/data_loader.py
 import re, os
 
-
 class Product:
     def __init__(self, data):
         self.id = data.get('id', '')
@@ -41,7 +40,6 @@ class Product:
         }
     
     def get_summary(self):
-        """Retourne un résumé du produit pour les comparaisons globales"""
         return {
             'id': self.id,
             'name': self.name,
@@ -101,7 +99,7 @@ class ProductDataLoader:
 
             self.products = products
             self._build_indexes()
-            self._stats_cache = None  # Invalider le cache
+            self._stats_cache = None
             print("OK : %d produits | %d categories" % (len(products), len(self.get_all_categories())))
             return products
 
@@ -168,7 +166,6 @@ class ProductDataLoader:
                 continue
 
             if depth == 0 and not in_str and c == '"':
-                # Read key until closing quote
                 end_q = i + 1
                 while end_q < len(inner):
                     if inner[end_q] == '\\':
@@ -210,7 +207,6 @@ class ProductDataLoader:
         return products
 
     def _get_string_field(self, body, field):
-        # Find field: "value" pattern
         idx = body.find('"' + field + '"')
         if idx == -1:
             return None
@@ -221,7 +217,6 @@ class ProductDataLoader:
         after = rest[colon+1:].lstrip()
         if not after.startswith('"'):
             return None
-        # Extract string value
         val = []
         j = 1
         while j < len(after):
@@ -252,7 +247,6 @@ class ProductDataLoader:
             if val:
                 data[field] = val
 
-        # Numeric fields
         for fname, ftype in [('price','float'),('stock','int'),('rating','float'),('orderCount','int'),('order_count','int')]:
             idx = body.find('"' + fname + '"')
             if idx != -1:
@@ -266,7 +260,6 @@ class ProductDataLoader:
                         val = float(nm.group(1)) if ftype == 'float' else int(float(nm.group(1)))
                         data[key] = val
 
-        # Arrays: features, images
         for field in ['features', 'images']:
             idx = body.find('"' + field + '"')
             if idx == -1:
@@ -298,7 +291,6 @@ class ProductDataLoader:
                     pos = end + 1
                 data[field] = items
 
-        # Objects: specifications, technicalSpecs
         for field in ['specifications', 'technicalSpecs']:
             idx = body.find('"' + field + '"')
             if idx == -1:
@@ -314,7 +306,6 @@ class ProductDataLoader:
             result = {}
             pos = 0
             while pos < len(obj_content):
-                # Find key
                 q1 = obj_content.find('"', pos)
                 if q1 == -1:
                     break
@@ -322,7 +313,6 @@ class ProductDataLoader:
                 if q1e == -1:
                     break
                 k = obj_content[q1+1:q1e]
-                # Find value
                 rest2 = obj_content[q1e+1:]
                 c2 = rest2.find(':')
                 if c2 == -1:
@@ -376,12 +366,16 @@ class ProductDataLoader:
             return None
 
     def _estimate_orders(self, key):
-        if 'Ultra' in key or 'Pro' in key: return 150
-        if 'Eco' in key: return 200
-        if 'Baby' in key: return 180
+        if 'Ultra' in key or 'Pro' in key:
+            return 150
+        if 'Eco' in key:
+            return 200
+        if 'Baby' in key:
+            return 180
         return 100
 
     def _build_indexes(self):
+        """Construit les index pour la recherche rapide"""
         stop = {'de','la','le','les','et','en','un','une','des','du','pour','par',
                 'sur','avec','dans','est','the','and','for','with','of','in','to','a','an'}
 
@@ -391,26 +385,36 @@ class ProductDataLoader:
         for p in self.products:
             self.products_by_name[p.name.lower()] = p
             self.products_by_id[p.id] = p
+            
             for f in p.features:
                 for w in tok(f):
                     self.features_index.setdefault(w, [])
                     if p not in self.features_index[w]:
                         self.features_index[w].append(p)
+            
             for k, v in dict(list(p.specifications.items()) + list(p.technicalSpecs.items())).items():
                 for w in tok('%s %s' % (k, v)):
                     self.specs_index.setdefault(w, [])
                     if p not in self.specs_index[w]:
                         self.specs_index[w].append(p)
+            
             for cat in [p.category.lower(), p.mainCategory.lower()]:
                 if cat:
                     self.categories.setdefault(cat, [])
                     if p not in self.categories[cat]:
                         self.categories[cat].append(p)
 
-    def get_all_products(self):        return self.products
-    def get_product_by_id(self, pid):  return self.products_by_id.get(pid)
-    def get_all_categories(self):      return list(set(self.categories.keys()))
-    def get_products_by_category(self, cat): return self.categories.get(cat.lower(), [])
+    def get_all_products(self):
+        return self.products
+    
+    def get_product_by_id(self, pid):
+        return self.products_by_id.get(pid)
+    
+    def get_all_categories(self):
+        return list(set(self.categories.keys()))
+    
+    def get_products_by_category(self, cat):
+        return self.categories.get(cat.lower(), [])
 
     def get_product_by_name(self, name):
         n = name.lower()
@@ -430,14 +434,20 @@ class ProductDataLoader:
         for p in self.products:
             s = 0
             for kw in kws:
-                if kw in p.name.lower():        s += 10
-                if kw in p.category.lower():     s += 6
-                if kw in p.mainCategory.lower(): s += 4
-                if kw in p.description.lower():  s += 2
+                if kw in p.name.lower():
+                    s += 10
+                if kw in p.category.lower():
+                    s += 6
+                if kw in p.mainCategory.lower():
+                    s += 4
+                if kw in p.description.lower():
+                    s += 2
                 for f in p.features:
-                    if kw in f.lower(): s += 3
+                    if kw in f.lower():
+                        s += 3
                 for k, v in dict(list(p.specifications.items()) + list(p.technicalSpecs.items())).items():
-                    if kw in k.lower() or kw in str(v).lower(): s += 2
+                    if kw in k.lower() or kw in str(v).lower():
+                        s += 2
             if s > 0:
                 scored[p.id] = (s, p)
         return [p for _, p in sorted(scored.values(), key=lambda x: x[0], reverse=True)][:limit]
@@ -449,7 +459,6 @@ class ProductDataLoader:
         return self.specs_index.get(kw.lower().strip(), [])
     
     def get_global_stats(self):
-        """Retourne des statistiques globales sur tous les produits (avec cache)"""
         if self._stats_cache:
             return self._stats_cache
         

@@ -4,7 +4,8 @@ import {
     createFacture,
     getMyFactures,
     getFactureById,
-    getAllFactures
+    getAllFactures,
+    regenerateFacture
 } from '../controllers/factureController.js';
 
 const router = express.Router();
@@ -13,6 +14,7 @@ const router = express.Router();
 router.post('/', protect, createFacture);
 router.get('/my-factures', protect, getMyFactures);
 router.get('/:id', protect, getFactureById);
+router.post('/:orderId/regenerate', protect, regenerateFacture);
 
 // Routes admin
 router.get('/', protect, adminOnly, getAllFactures);

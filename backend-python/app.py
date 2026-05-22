@@ -1,9 +1,12 @@
+# app.py
 import sys
 import os
+
+# Ajouter le répertoire parent au path pour les imports absolus
 sys.path.insert(0, os.path.dirname(__file__))
+
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import re
 from dotenv import load_dotenv
 
 from services.data_loader import ProductDataLoader
@@ -12,30 +15,54 @@ from chatbot.recommendation_service import RecommendationService
 from chatbot.conversation import ConversationManager
 from comparateur.smart_comparator import SmartComparator
 from chatbot.open_chat_engine import OpenChatEngine
-from utils.text_processor import TextProcessor
 
 load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
 
+# Initialisation unique et centralisée
+def init_services():
+    """Initialise tous les services dans le bon ordre"""
+    # 1. Data loader (charge les produits)
+    data_loader = ProductDataLoader('../backend/data/productData.js')
+    data_loader.load_products()
+    
+    # 2. Moteur de recherche (dépend de data_loader)
+    search_engine = IntelligentSearch(data_loader)
+    
+    # 3. Service de recommandation (dépend de data_loader)
+    recommendation_service = RecommendationService(data_loader)
+    
+    # 4. Comparateur (dépend de data_loader)
+    comparator = SmartComparator(data_loader)
+    
+    # 5. Gestionnaire de conversation (indépendant)
+    conversation_manager = ConversationManager()
+    
+    # 6. Moteur de chat (dépend de tout)
+    chat_engine = OpenChatEngine(data_loader, search_engine, comparator, recommendation_service)
+    
+    return {
+        'data_loader': data_loader,
+        'search_engine': search_engine,
+        'recommendation_service': recommendation_service,
+        'comparator': comparator,
+        'conversation_manager': conversation_manager,
+        'chat_engine': chat_engine
+    }
+
 # Initialisation
-data_loader = ProductDataLoader('../backend/data/productData.js')
-data_loader.load_products()
+services = init_services()
+data_loader = services['data_loader']
+conversation_manager = services['conversation_manager']
+chat_engine = services['chat_engine']
 
-# Services
-search_engine = IntelligentSearch(data_loader)
-recommendation_service = RecommendationService(data_loader)
-comparator = SmartComparator(data_loader)
-conversation_manager = ConversationManager()
-text_processor = TextProcessor()
-chat_engine = OpenChatEngine(data_loader, search_engine, comparator, recommendation_service)
+print(f" Chatbot initialisé avec {len(data_loader.get_all_products())} produits")
+print(f" Catégories: {len(data_loader.get_all_categories())}")
+print(f" Mode: conversation ouverte + comparaison globale")
 
-print(f"✅ Chatbot initialisé avec {len(data_loader.get_all_products())} produits")
-print("🎯 Mode conversation OUVERTE activé")
-print("📊 Mode comparaison globale activé")
-
-
+# Routes (identiques à votre code)
 @app.route('/api/chat', methods=['POST'])
 def chat():
     try:
@@ -46,22 +73,15 @@ def chat():
         if not message:
             return jsonify({'success': False, 'response': 'Message vide.', 'products': []}), 400
 
-        print(f"\n📨 Message reçu de {user_id}: '{message}'")
+        print(f"\n📨 Message reçu de {user_id}: '{message[:50]}...'")
 
-        # Ajouter au contexte
         conversation_manager.add_message(user_id, 'user', message)
         session = conversation_manager.get_or_create_session(user_id)
 
-        # Traitement via le moteur de conversation ouverte
         result = chat_engine.process(message, session)
 
-        # Ajouter la réponse à l'historique
         conversation_manager.add_message(user_id, 'assistant', result['response'], result.get('products', []))
 
-        print(f"✅ Réponse générée ({result.get('action', 'chat')}): {result['response'][:80]}...")
-        print(f"📦 Produits: {len(result.get('products', []))}")
-
-        # Préparer la réponse JSON
         response_data = {
             'success': True,
             'response': result['response'],
@@ -69,16 +89,12 @@ def chat():
             'action': result.get('action', 'chat'),
         }
 
-        # Ajouter les informations de comparaison si présentes
         if result.get('comparison'):
             response_data['comparison'] = result['comparison']
-        
         if result.get('comparison_type'):
             response_data['comparison_type'] = result['comparison_type']
-        
         if result.get('categories'):
             response_data['categories'] = result['categories']
-        
         if result.get('best_product'):
             response_data['best_product'] = result['best_product']
 
@@ -124,7 +140,6 @@ def get_products():
 
 @app.route('/api/stats', methods=['GET'])
 def get_stats():
-    """Endpoint pour obtenir des statistiques globales"""
     products = data_loader.get_all_products()
     
     if not products:
@@ -149,5 +164,5 @@ def get_stats():
 
 if __name__ == '__main__':
     port = int(os.getenv('FLASK_PORT', 5001))
-    print(f"🚀 Serveur démarré sur http://localhost:{port}")
+    print(f" Serveur démarré sur http://localhost:{port}")
     app.run(debug=True, port=port)

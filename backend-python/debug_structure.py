@@ -1,8 +1,3 @@
-#!/usr/bin/env python3
-"""
-Lance depuis backend-python/ :  python debug_structure.py
-Affiche la VRAIE structure de productData.js
-"""
 import re, os
 
 PATH = '../backend/data/productData.js'

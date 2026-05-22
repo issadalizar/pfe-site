@@ -510,7 +510,7 @@ const ChatBot = () => {
               </div>
             </div>
 
-            {/* 🏠 Bouton Retour accueil */}
+            {/*  Bouton Retour accueil */}
             <button onClick={handleGoHome}
               style={{ display:"flex", alignItems:"center", gap:8, padding:"9px 13px", width:"100%", borderRadius:10, background:"white", border:`1px solid ${C.chipBorder}`, color:C.primary, cursor:"pointer", fontSize:12, fontWeight:600, transition:"all 0.2s", marginBottom:8, boxShadow:"0 2px 8px rgba(67,97,238,0.08)" }}
               onMouseEnter={e=>{e.currentTarget.style.background=C.chip;e.currentTarget.style.borderColor=C.borderMed;e.currentTarget.style.boxShadow="0 4px 14px rgba(67,97,238,0.14)";}}

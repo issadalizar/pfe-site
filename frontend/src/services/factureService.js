@@ -1,46 +1,64 @@
+// services/factureService.js
 import axios from 'axios';
 
-const isDev = import.meta.env.DEV;
-const BASE = isDev ? '/api' : (import.meta.env.VITE_API_URL || 'http://localhost:5000/api');
-const API_URL = BASE.endsWith('/') ? BASE.slice(0, -1) : BASE;
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
-const factureAPI = axios.create({
-    baseURL: `${API_URL}/factures`,
-    headers: { 'Content-Type': 'application/json' }
-});
-
-factureAPI.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-}, (error) => Promise.reject(error));
-
-factureAPI.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        console.error('Erreur factureAPI:', error.response?.data);
-        return Promise.reject(error);
-    }
-);
-
-// Créer une facture à partir d'une commande
+// Créer une facture
 export const createFacture = async (orderId) => {
-    const response = await factureAPI.post('/', { orderId });
-    return response.data;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post(
+            `${API_URL}/factures`,
+            { orderId },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Erreur création facture:', error);
+        throw error;
+    }
 };
 
-// Récupérer mes factures
+// Récupérer les factures de l'utilisateur
 export const getMyFactures = async () => {
-    const response = await factureAPI.get('/my-factures');
-    return response.data;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API_URL}/factures/my-factures`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Erreur récupération factures:', error);
+        throw error;
+    }
 };
 
 // Récupérer une facture par ID
 export const getFactureById = async (id) => {
-    const response = await factureAPI.get(`/${id}`);
-    return response.data;
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${API_URL}/factures/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Erreur récupération facture:', error);
+        throw error;
+    }
 };
 
-export default factureAPI;
+// Régénérer une facture
+export const regenerateFacture = async (orderId, pdfUrl = null) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post(
+            `${API_URL}/factures/${orderId}/regenerate`,
+            { pdfUrl },
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Erreur régénération facture:', error);
+        throw error;
+    }
+};
