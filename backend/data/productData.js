@@ -1493,9 +1493,88 @@ export const cncProductDetails = {
           "updatedAt": "2026-05-16T11:56:02.281Z"
         }
       ],
+<<<<<<< HEAD
       "createdAt": "2026-05-16T11:55:51.842Z",
       "updatedAt": "2026-05-16T11:57:14.263Z",
       "currentInvoice": "6a085b52f7817954b401bd52"
+=======
+      "totalAmount": 5490,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "paid",
+      "orderStatus": "confirmee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-07T11:41:06.276Z",
+      "updatedAt": "2026-04-27T11:23:04.559Z"
+    },
+    "69d4eb5453b83fba680cc37e": {
+      "shippingInfo": {
+        "fullName": "salma balgouthi",
+        "email": "salmabalgouthi84@gmail.com",
+        "phone": "+21658818563",
+        "address": "tunisia sousse",
+        "city": "tunis",
+        "postalCode": "2000"
+      },
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "_id": "69d4eb5453b83fba680cc37e",
+      "user": "69b883e5d6e37dfe1f2e3418",
+      "items": [
+        {
+          "productName": "De2-Ultra Mini CNC Turning Center",
+          "quantity": 1,
+          "price": 8990,
+          "_id": "69d4eb5453b83fba680cc37f"
+        }
+      ],
+      "totalAmount": 8990,
+      "paymentMethod": "livraison",
+      "returnDeadline": null,
+      "paymentStatus": "failed",
+      "orderStatus": "annulee",
+      "stockUpdated": false,
+      "createdAt": "2026-04-07T11:32:36.761Z",
+      "updatedAt": "2026-04-27T11:23:12.103Z"
+    },
+    "69fa6fd50b56f377671e83ee": {
+      "user": "69cbafe47074bd9355f218cf",
+      "items": [
+        {
+          "productId": "697f55259e5f50c871efa21f",
+          "productName": "PC1 Baby CNC Lathe-Mach",
+          "quantity": 1,
+          "price": 97.99,
+          "_id": "69fa6fd50b56f377671e83ef"
+        }
+      ],
+      "shippingInfo": {
+        "fullName": "Seif Boulabiar",
+        "email": "boulabiarseif55@gmail.com",
+        "phone": "25372382",
+        "address": "khaznadar",
+        "city": "Le Bardo",
+        "postalCode": "2000"
+      },
+      "totalAmount": 97.99,
+      "paymentMethod": "stripe",
+      "virementProof": {
+        "fileUrl": null,
+        "method": null,
+        "uploadedAt": null
+      },
+      "returnDeadline": null,
+      "paymentStatus": "pending",
+      "orderStatus": "en_attente",
+      "stockUpdated": false,
+      "_id": "69fa6fd50b56f377671e83ee",
+      "createdAt": "2026-05-05T22:31:49.143Z",
+      "updatedAt": "2026-05-05T22:31:49.884Z",
+      "stripeSessionId": "cs_test_a1ahhv4kn5k0nN0T4deXejEQWJmRlBueYTGcgMbfFnM7N7PD0YoZVFf5Bp"
+>>>>>>> 0750bfa04c8bbb0aa43c45ae2e85416cd5b21824
     }
   }
 };

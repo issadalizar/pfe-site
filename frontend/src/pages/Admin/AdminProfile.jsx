@@ -192,4 +192,8 @@ export default function AdminProfile() {
       </div>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 0750bfa04c8bbb0aa43c45ae2e85416cd5b21824

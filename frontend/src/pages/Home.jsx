@@ -1329,6 +1329,7 @@ const Home = () => {
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* QR Code centré uniquement - sans texte à gauche */}
           <div className="row justify-content-center">
             <div className="col-lg-4 text-center">
@@ -1350,6 +1351,25 @@ const Home = () => {
               </div>
             </div>
           </div>
+=======
+      {/* QR Code droite */}
+      <div className="col-lg-6 text-center">
+        <div className="d-inline-block p-4 rounded-4 bg-white shadow-lg">
+          <QRCodeSVG
+            value="https://univertechno.netlify.app/home"
+            size={220}
+            fgColor="#4361ee"
+            bgColor="#ffffff"
+            level="H"
+            includeMargin={true}
+          />
+          <p className="mt-3 mb-0 fw-semibold" style={{ color: "#0f172a" }}>
+            Scanner pour ouvrir le site
+          </p>
+          <p className="small text-muted mb-0">
+            univertechno.tn
+          </p>
+>>>>>>> 0750bfa04c8bbb0aa43c45ae2e85416cd5b21824
         </div>
       </section>
 

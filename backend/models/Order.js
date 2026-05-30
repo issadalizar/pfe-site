@@ -1,4 +1,4 @@
-// models/Order.js
+ // models/Order.js
 import mongoose from 'mongoose';
 
 const invoiceSchema = new mongoose.Schema({

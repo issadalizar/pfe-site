@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from "react";
+//optimise les performances en évitant de recalculer le tri à chaque rendu.
 import {
   FaTrophy,
   FaMedal,
@@ -13,15 +14,16 @@ const MONTH_LABELS = [
   "Jan", "Fév", "Mar", "Avr", "Mai", "Juin",
   "Juil", "Aoû", "Sep", "Oct", "Nov", "Déc",
 ];
-
+//Cette constante définit le style des 3 meilleurs produits
 const RANK_BADGES = {
   1: { color: "#f59e0b", bg: "#fef3c7", icon: <FaTrophy /> },
   2: { color: "#94a3b8", bg: "#f1f5f9", icon: <FaMedal /> },
   3: { color: "#b45309", bg: "#fef3c7", icon: <FaMedal /> },
 };
-
+//Ce composant crée un mini graphique en barres sans utiliser Chart.js.
 function MiniBars({ values, color = "#4361ee" }) {
   const max = Math.max(...values, 1);
+
   return (
     <div
       style={{
@@ -31,15 +33,14 @@ function MiniBars({ values, color = "#4361ee" }) {
         height: "32px",
         minWidth: "120px",
       }}
-      title={values
-        .map((v, i) => `${MONTH_LABELS[i]}: ${v}`)
-        .join("  •  ")}
     >
       {values.map((v, i) => {
         const h = v === 0 ? 2 : Math.max(4, (v / max) * 100);
+
         return (
           <div
             key={i}
+            //Quand l’utilisateur passe la souris 
             style={{
               flex: 1,
               height: `${h}%`,
@@ -47,6 +48,15 @@ function MiniBars({ values, color = "#4361ee" }) {
               borderRadius: "2px 2px 0 0",
               minWidth: "6px",
               transition: "all 0.2s",
+              cursor: "pointer",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.opacity = "0.8";
+              e.currentTarget.style.transform = "scaleY(1.05)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.opacity = "1";
+              e.currentTarget.style.transform = "scaleY(1)";
             }}
           />
         );

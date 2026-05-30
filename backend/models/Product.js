@@ -186,7 +186,11 @@ productSchema.pre("save", function (next) {
   next();
 });
 
+<<<<<<< HEAD
 // Middleware pour gérer les mises à jour via findOneAndUpdate
+=======
+//  IMPORTANT: findOneAndUpdate / findByIdAndUpdate ne déclenche PAS pre('save')
+>>>>>>> 0750bfa04c8bbb0aa43c45ae2e85416cd5b21824
 productSchema.pre("findOneAndUpdate", function (next) {
   const update = this.getUpdate() || {};
   const $set = update.$set || {};

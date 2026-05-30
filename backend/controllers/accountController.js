@@ -1,7 +1,7 @@
 import Account from '../models/Account.js';
-import User from '../models/User.js';
-import bcrypt from 'bcryptjs';
-import crypto from 'crypto';
+import User from '../models/User.js';//1 et 2 Ici tu importes les modèles MongoDB.
+import bcrypt from 'bcryptjs';//sert au chiffrement des mots de passe.
+import crypto from 'crypto';//sert aux opérations de sécurité.
 
 // Créer un compte pour un utilisateur
 export const createAccount = async (req, res) => {
@@ -13,7 +13,7 @@ export const createAccount = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: 'Utilisateur non trouvé' });
     }
-
+//ddd
     // Vérifier si un compte existe déjà pour cet utilisateur
     const existingAccount = await Account.findOne({ user: userId });
     if (existingAccount) {
@@ -133,7 +133,7 @@ export const getAllAccounts = async (req, res) => {
   try {
     const accounts = await Account.find()
       .populate('user')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 });//du plus récent au plus ancien.
     res.json(accounts);
   } catch (error) {
     res.status(500).json({ 

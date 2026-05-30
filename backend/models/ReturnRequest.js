@@ -39,6 +39,11 @@ const returnRequestSchema = new mongoose.Schema({
         type: String,
         default: '',
         maxlength: 1000
+    },
+    // Date limite pour que le client renvoie physiquement le produit (fixée par l'admin après réception de la demande)
+    returnDeadline: {
+        type: Date,
+        default: null
     }
 }, {
     timestamps: true
