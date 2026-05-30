@@ -1,4 +1,3 @@
-// src/components/Admin/ProductList.jsx
 import React, { useState, useEffect } from "react";
 import {
   FaEdit,
@@ -14,9 +13,8 @@ import {
   FaImage,
 } from "react-icons/fa";
 import { getProductDetails } from "../../services/productDataService";
-
-// ✅ ProductImage défini EN DEHORS de ProductList pour éviter "Rendered fewer hooks"
-function ProductImage({ product }) {
+// Composant pour afficher l'image du produit avec gestion des erreurs
+function ProductImage({ product }) {  
   const [imageError, setImageError] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
 
@@ -61,7 +59,7 @@ function ProductImage({ product }) {
       </div>
     );
   }
-
+// Afficher l'image du produit
   return (
     <img
       src={imageUrl}
@@ -78,7 +76,7 @@ function ProductImage({ product }) {
     />
   );
 }
-
+// Composant principal pour afficher la liste des produits dans l'admin
 export default function ProductList({
   products,
   onEdit,
@@ -90,7 +88,7 @@ export default function ProductList({
   selectedProducts = [],
   onSelectProduct,
   onSelectAll,
-}) {
+}) {// Fonction pour déterminer le statut de stock d'un produit
   const getStockStatus = (product) => {
     const stock = Number(product.stock || 0);
     const status = product.status || (stock === 0 ? 'rupture' : stock < 5 ? 'faible' : 'available');

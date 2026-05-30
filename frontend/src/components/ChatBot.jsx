@@ -202,7 +202,7 @@ const ComparisonView = ({ comparison, products, language, criteria, keyword }) =
                     <div key={j} style={{ fontSize:10, color:C.success, paddingLeft:8 }}>✓ {f}</div>
                   )) : <div style={{ fontSize:10, color:C.textMuted, paddingLeft:8 }}>({t.noFeature})</div>}
                   {Object.entries(specs).slice(0,2).map(([k,v],j) => (
-                    <div key={j} style={{ fontSize:10, paddingLeft:8, color:C.textSub }}>🔧 {k}: {v}</div>
+                    <div key={j} style={{ fontSize:10, paddingLeft:8, color:C.textSub }}> {k}: {v}</div>
                   ))}
                 </div>
               );
@@ -215,7 +215,7 @@ const ComparisonView = ({ comparison, products, language, criteria, keyword }) =
           <div style={{ background:"linear-gradient(135deg,rgba(67,97,238,0.06),rgba(124,58,237,0.06))", border:`1px solid rgba(67,97,238,0.15)`, borderRadius:12, padding:"12px 14px", marginTop:6 }}>
             <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:6 }}>
               <FaTrophy color={C.gold} size={14}/>
-              <strong style={{ color:C.primary2, fontSize:12 }}>🏆 {t.winner} : {rec.best_product}</strong>
+              <strong style={{ color:C.primary2, fontSize:12 }}> {t.winner} : {rec.best_product}</strong>
             </div>
             <div style={{ fontSize:11, color:C.textSub }}>{rec.explanation}</div>
             {rec.scores && (
@@ -293,7 +293,7 @@ const CategoryButtons = ({ categories, onCategoryClick, level, parentName, langu
   return (
     <div style={{ marginTop:10, marginBottom:6 }}>
       <div style={{ fontSize:10, color:C.textMuted, marginBottom:8, textTransform:"uppercase", letterSpacing:0.8, fontWeight:600 }}>
-        {level===1?"🗂️ "+label.main:"📂 "+label.sub}
+        {level===1?label.main:label.sub}
       </div>
       <div style={{ display:"flex", flexDirection:"column", gap:4 }}>
         {categories.map((cat,i) => (
@@ -353,7 +353,7 @@ const ChatBot = () => {
   const navigate = useNavigate();
   const [isFullOpen, setIsFullOpen] = useState(false);
   const [messages, setMessages] = useState([
-    { role:"assistant", content:"Bonjour ! 👋 Je suis votre assistant UniverTechno+. Posez-moi n'importe quelle question sur nos produits.", products:[], comparison:null, action:null }
+    { role:"assistant", content:"Bonjour ! Je suis votre assistant UniverTechno+. Posez-moi n'importe quelle question sur nos produits.", products:[], comparison:null, action:null }
   ]);
   const [inputMessage, setInputMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -383,9 +383,9 @@ const ChatBot = () => {
   const t = translations[language]||translations.fr;
 
   const getWelcomeMessage = (lang=language) => ({
-    fr:"Bonjour ! 👋 Je suis votre assistant UniverTechno+. Posez-moi n'importe quelle question sur nos produits.",
-    en:"Hello! 👋 I'm your UniverTechno+ assistant. Ask me anything about our products.",
-    ar:"مرحبًا! 👋 أنا مساعد UniverTechno+. اسألني أي شيء عن منتجاتنا."
+    fr:"Bonjour ! Je suis votre assistant UniverTechno+. Posez-moi n'importe quelle question sur nos produits.",
+    en:"Hello! I'm your UniverTechno+ assistant. Ask me anything about our products.",
+    ar:"مرحبًا!  أنا مساعد UniverTechno+. اسألني أي شيء عن منتجاتنا."
   }[lang]);
 
   const handleSendMessage = async (overrideMessage) => {
@@ -510,7 +510,7 @@ const ChatBot = () => {
               </div>
             </div>
 
-            {/* 🏠 Bouton Retour accueil */}
+            {/*  Bouton Retour accueil */}
             <button onClick={handleGoHome}
               style={{ display:"flex", alignItems:"center", gap:8, padding:"9px 13px", width:"100%", borderRadius:10, background:"white", border:`1px solid ${C.chipBorder}`, color:C.primary, cursor:"pointer", fontSize:12, fontWeight:600, transition:"all 0.2s", marginBottom:8, boxShadow:"0 2px 8px rgba(67,97,238,0.08)" }}
               onMouseEnter={e=>{e.currentTarget.style.background=C.chip;e.currentTarget.style.borderColor=C.borderMed;e.currentTarget.style.boxShadow="0 4px 14px rgba(67,97,238,0.14)";}}
@@ -589,7 +589,7 @@ const ChatBot = () => {
 
             {/* Actions header */}
             <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-              {/* 🏠 Lien accueil dans le header */}
+              {/*  Lien accueil dans le header */}
               <button onClick={handleGoHome}
                 style={{ display:"flex", alignItems:"center", gap:6, padding:"7px 14px", borderRadius:9, background:C.chip, border:`1px solid ${C.chipBorder}`, color:C.primary, cursor:"pointer", fontSize:11, fontWeight:600, transition:"all 0.15s" }}
                 onMouseEnter={e=>{e.currentTarget.style.background=C.chipHov;e.currentTarget.style.boxShadow="0 2px 10px rgba(67,97,238,0.13)";}}
@@ -655,12 +655,12 @@ const ChatBot = () => {
                                 </div>
                                 <div style={{ display:"flex", flexWrap:"wrap", gap:6 }}>
                                   {[
-                                    { label:"📊 Complet", val:"" },
-                                    { label:"💰 Prix", val:"prix" },
-                                    { label:"📦 Stock", val:"stock" },
-                                    { label:"🔥 Popularité", val:"commandes" },
-                                    { label:"✅ Caractéristiques", val:"caractéristiques" },
-                                    { label:"🔧 Specs", val:"spécifications" },
+                                    { label:" Complet", val:"" },
+                                    { label:" Prix", val:"prix" },
+                                    { label:" Stock", val:"stock" },
+                                    { label:" Popularité", val:"commandes" },
+                                    { label:" Caractéristiques", val:"caractéristiques" },
+                                    { label:" Specs", val:"spécifications" },
                                   ].map((btn,i)=>(
                                     <button key={i} onClick={()=>handleCompareLastProducts(btn.val)}
                                       style={{ padding:"5px 11px", borderRadius:20, background:"white", border:`1px solid ${C.chipBorder}`, color:C.primary, cursor:"pointer", fontSize:11, fontWeight:500, transition:"all 0.15s", boxShadow:"0 1px 4px rgba(67,97,238,0.08)" }}
@@ -726,11 +726,11 @@ const ChatBot = () => {
               {/* Suggestions */}
               <div style={{ display:"flex", gap:6, marginBottom:10, flexWrap:"wrap" }}>
                 {[
-                  { label:"📋 Catégories", msg:"liste des catégories" },
-                  { label:"💰 Pas chers", msg:"produits pas chers" },
-                  { label:"🏆 Meilleur", msg:"meilleur produit" },
-                  { label:"📦 En stock", msg:"produits en stock" },
-                  ...(canCompare?[{ label:"📊 Comparer", msg:"comparer ces produits" }]:[]),
+                  { label:"Catégories", msg:"liste des catégories" },
+                  { label:" Pas chers", msg:"produits pas chers" },
+                  { label:" Meilleur", msg:"meilleur produit" },
+                  { label:" En stock", msg:"produits en stock" },
+                  ...(canCompare?[{ label:" Comparer", msg:"comparer ces produits" }]:[]),
                 ].map((s,i)=>(
                   <button key={i} onClick={()=>handleSendMessage(s.msg)}
                     style={{ padding:"5px 12px", borderRadius:20, background:C.chip, border:`1px solid ${C.chipBorder}`, color:C.textSub, cursor:"pointer", fontSize:11, transition:"all 0.15s", whiteSpace:"nowrap" }}

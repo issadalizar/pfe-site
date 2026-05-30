@@ -1,5 +1,5 @@
 import { FaArrowRight, FaCube, FaShoppingCart } from "react-icons/fa";
-
+// SVG de remplacement pour les produits sans image
 const PLACEHOLDER_SVG = `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='150' height='150'><rect width='150' height='150' fill='%23e9ecef'/><text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle' fill='%234361ee' font-size='14'>Produit</text></svg>`;
 
 const ProductData = ({
@@ -102,6 +102,7 @@ const ProductData = ({
                 </h6>
                 <div className="d-flex flex-column gap-2">
                   {mainCategories.map((cat, index) => {
+                    //fonction pour compter le nombre de produits dans chaque catégorie et l'afficher à côté du nom de la catégorie
                     if (cat === "All products") return null;
                     const count = getCategoryProductCount(cat);
                     let displayCat = cat;
@@ -110,9 +111,9 @@ const ProductData = ({
                         "CNC Turning Machine": "CNC Turning Machine",
                         "CNC Milling Machine": "CNC Milling Machine",
                         "CAPTEURS ET ACTIONNEURS": "SENSORS AND ACTUATORS",
-                        ÉLECTRICITÉ: "ELECTRICITY",
+                        "ÉLECTRICITÉ": "ELECTRICITY",
                         "RÉSEAUX MULTIPLEXÉS": "MULTIPLEXED NETWORKS",
-                        Accessoires: "Accessories",
+                        "Accessoires": "Accessories",
                         "EDUCATION EQUIPMENT": "EDUCATION EQUIPMENT",
                       };
                       displayCat = catMap[cat] || cat;
@@ -135,12 +136,12 @@ const ProductData = ({
                             selectedCategory === cat
                               ? "#4361ee"
                               : "transparent",
-                        }}
+                        }}//erreur de syntaxe
                         onClick={(e) => {
                           e.preventDefault();
                           handleCategoryFilter(cat);
                         }}
-                      >
+                      >//affiche le nom de la catégorie et le nombre de produits dans chaque catégorie à côté du nom de la catégorie
                         <span className="small fw-medium">{displayCat}</span>
                         <small
                           style={{
@@ -157,7 +158,7 @@ const ProductData = ({
               </div>
             </div>
           </div>
-
+// Affichage des produits
           <div className="col-lg-9">
             <div className="d-flex justify-content-between align-items-center mb-4">
               <div>
@@ -190,14 +191,14 @@ const ProductData = ({
                   padding: "0.6rem 2rem 0.6rem 1rem",
                   fontSize: "0.95rem",
                 }}
-              >
+              >//options de tri pour trier les produits par prix croissant, décroissant et par nouveauté
                 <option>{t.sortBy}</option>
                 <option>{t.sortPriceAsc}</option>
                 <option>{t.sortPriceDesc}</option>
                 <option>{t.sortNewest}</option>
               </select>
             </div>
-
+// Affichage des produits filtrés
             <div className="row g-4">
               {filteredProducts.slice(0, 12).map((product, index) => (
                 <div key={index} className="col-md-6 col-xl-4">
@@ -248,7 +249,7 @@ const ProductData = ({
                     >
                       <FaCube size={18} />
                     </button>
-
+// Affichage de l'image du produit avec un badge "Nouveau" pour les 2 premiers produits
                     <div className="position-relative">
                       <div
                         className="product-image p-4 text-center"
@@ -276,7 +277,7 @@ const ProductData = ({
                           }}
                         />
                       </div>
-
+// Affichage d'un badge "Nouveau" pour les 2 premiers produits
                       {index < 2 && (
                         <span
                           className="position-absolute top-0 end-0 m-3 badge rounded-pill"
@@ -292,7 +293,7 @@ const ProductData = ({
                         </span>
                       )}
                     </div>
-
+// Affichage du nom, de la description, du prix et du bouton d'ajout au panier pour chaque produit
                     <div className="card-body p-4">
                       <h6
                         className="fw-bold mb-2"

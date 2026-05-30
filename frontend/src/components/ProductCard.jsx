@@ -1,4 +1,3 @@
-// ProductCard.jsx - Version corrigée avec productDataService et bouton 3D
 import { FaStar, FaArrowRight, FaBox, FaCube } from "react-icons/fa";
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";

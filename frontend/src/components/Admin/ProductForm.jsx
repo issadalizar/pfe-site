@@ -1,4 +1,3 @@
-// src/components/Admin/ProductForm.jsx
 import React, { useEffect, useState } from "react";
 import {
   FaSave,
@@ -13,7 +12,7 @@ import {
 } from "react-icons/fa";
 import { specificationAPI } from "../../services/specificationAPI";
 import { getProductDetails } from "../../services/productDataService";
-
+// Importer l'API de catégories pour rafraîchir après sauvegarde
 export default function ProductForm({
   editingProduct,
   onSave,
@@ -58,7 +57,7 @@ export default function ProductForm({
         const details = getProductDetails(formData.nom);
         setProductDetails(details);
 
-        // Ne pré-remplir que si c'est une création et que les champs sont vides
+        // Si des détails sont trouvés et qu'on n'est pas en mode édition, pré-remplir certains champs
         if (details && !editingProduct) {
           setFormData((prev) => ({
             ...prev,
@@ -85,7 +84,7 @@ export default function ProductForm({
     }
   }, [formData.nom, editingProduct]);
 
-  // Charger les spécifications si on est en mode édition
+  // Charger les spécifications si on est en mode édition(mode édtion c'est à dire que editingProduct est défini)
   useEffect(() => {
     const loadSpecifications = async () => {
       if (editingProduct && editingProduct._id) {
@@ -107,7 +106,7 @@ export default function ProductForm({
           }
         } catch (error) {
           console.error("Erreur chargement spécifications (groupée):", error);
-          // Fallback à l'ancienne méthode
+          // En cas d'erreur, essayer la méthode classique
           try {
             const response = await specificationAPI.getByProductId(
               editingProduct._id,
@@ -130,7 +129,7 @@ export default function ProductForm({
     loadSpecifications();
   }, [editingProduct]);
 
-  // Pré-remplissage en mode edit
+  // Pré-remplissage en mode de mofication ou réinitialisation en mode création
   useEffect(() => {
     if (editingProduct) {
       setFormData({
@@ -206,9 +205,7 @@ export default function ProductForm({
     }));
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: null }));
   };
-// src/components/Admin/ProductForm.jsx
-// Modifiez la fonction handleSubmit
-
+  
 const handleSubmit = async (e) => {
   e.preventDefault();
   if (!validateForm()) return;
@@ -217,7 +214,7 @@ const handleSubmit = async (e) => {
   setSaveError(null);
 
   try {
-    // IMPORTANT: S'assurer que la catégorie est bien définie
+    //  S'assurer que la catégorie est bien définie
     if (!formData.categorie) {
       setSaveError("Veuillez sélectionner une catégorie");
       setLoading(false);
@@ -244,12 +241,12 @@ const handleSubmit = async (e) => {
           : [],
     };
 
-    console.log("📦 Données du produit à sauvegarder:", formattedData);
-    console.log("📂 Catégorie sélectionnée:", formattedData.categorie);
+    console.log(" Données du produit à sauvegarder:", formattedData);
+    console.log(" Catégorie sélectionnée:", formattedData.categorie);
 
     // Sauvegarder le produit
     const savedProduct = await onSave(formattedData);
-    console.log("✅ Produit sauvegardé:", savedProduct);
+    console.log(" Produit sauvegardé:", savedProduct);
 
     // Mettre à jour les catégories dans le localStorage ou le contexte
     try {
@@ -265,14 +262,14 @@ const handleSubmit = async (e) => {
         window.categoryContext.refresh();
       }
       
-      console.log("✅ Catégories mises à jour après sauvegarde du produit");
+      console.log(" Catégories mises à jour après sauvegarde du produit");
     } catch (categoryError) {
-      console.error("⚠️ Erreur lors de la mise à jour des catégories:", categoryError);
+      console.error(" Erreur lors de la mise à jour des catégories:", categoryError);
     }
 
     // ... suite du code pour les spécifications ...
   } catch (error) {
-    console.error("❌ Erreur lors de la sauvegarde:", error);
+    console.error(" Erreur lors de la sauvegarde:", error);
     setSaveError("Erreur lors de la sauvegarde. Veuillez réessayer.");
   } finally {
     setLoading(false);

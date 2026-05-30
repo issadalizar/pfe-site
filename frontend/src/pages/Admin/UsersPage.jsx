@@ -1,8 +1,8 @@
 import { useState } from "react";
 import UserList from "../../components/Admin/UserList";
 import "bootstrap/dist/css/bootstrap.min.css";
-
 export default function UsersPage() {
+  // State pour forcer le rafraîchissement de la liste des utilisateurs après une modification
   const [refreshKey, setRefreshKey] = useState(0);
 
   return (

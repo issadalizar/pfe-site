@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  //birthday: { type: Date, required: false},
   createdAt: {
     type: Date,
     default: Date.now
@@ -35,10 +36,19 @@ userSchema.post('findOneAndDelete', async function(doc) {
   if (doc) {
     try {
       const Account = mongoose.model('Account');
+<<<<<<< Updated upstream
       await Account.deleteOne({ user: doc._id });
       console.log(` Compte supprimé pour l'utilisateur ${doc._id}`);
     } catch (error) {
       console.error(' Erreur lors de la suppression du compte:', error);
+=======
+      const result = await Account.deleteOne({ user: doc._id });
+      if (result.deletedCount > 0) {
+        console.log(`Compte supprimé pour l'utilisateur ${doc.client_name} (${doc._id})`);
+      }
+    } catch (error) {
+      console.error(` Erreur lors de la suppression du compte pour l'utilisateur ${doc._id}:`, error);
+>>>>>>> Stashed changes
     }
   }
 });

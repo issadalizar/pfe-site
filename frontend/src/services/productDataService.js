@@ -1,5 +1,5 @@
 const API_URL = import.meta.env.VITE_PRODUCT_DATA_URL || 'http://localhost:5000/api/product-data';
-
+//fonction de normalisation des données pour assurer la compatibilité avec le backend
 const normalizeImageUrl = (url) => {
   if (!url || typeof url !== 'string') return '';
 
@@ -8,13 +8,13 @@ const normalizeImageUrl = (url) => {
   if (!normalized.startsWith('http') && !normalized.startsWith('/')) {
     normalized = `/${normalized}`;
   }
-
+//on mettre ca puisque on a des produits de turning machine et d'autres de turing machine dans le backend
   normalized = normalized.replace('/CNC Turning Machine/', '/CNC Turing Machine/');
   normalized = normalized.replace('/CNC Turing Machine /', '/CNC Turing Machine/');
 
   return normalized;
 };
-
+//fonction de normalisation des données pour assurer la compatibilité avec le backend
 const normalizeProduct = (product) => {
   if (!product || typeof product !== 'object') return {};
 
@@ -56,13 +56,15 @@ const normalizeProduct = (product) => {
     technicalSpecs: product.technicalSpecs || {},
   };
 };
-
+// Fonction pour obtenir les détails d'un produit spécifique
 export const getProductDetails = async (productName) => {
   try {
+    //prend url depuis backend de file productDataRoutes.js
     const response = await fetch(`${API_URL}/details/${encodeURIComponent(productName)}`);
     
     if (!response.ok) {
       if (response.status === 404) {
+        //utlise console.warn affiche le message avec un icône d'erreur et couleur jaune au contraire de console.log qui affiche en noir
         console.warn(`Produit non trouvé: ${productName}`);
         return null;
       }
@@ -72,11 +74,11 @@ export const getProductDetails = async (productName) => {
     const data = await response.json();
     return data.success ? normalizeProduct(data.data) : null;
   } catch (error) {
-    console.error('❌ Erreur API (détails produit):', error.message);
+    console.error(' Erreur API (détails produit):', error.message);
     return null;
   }
 };
-
+// Fonction pour obtenir tous les produits CNC
 export const getAllCncProducts = async () => {
   try {
     const response = await fetch(`${API_URL}/all-cnc`);
@@ -92,12 +94,10 @@ export const getAllCncProducts = async () => {
       Object.entries(data.data || {}).map(([key, product]) => [key, normalizeProduct(product)]),
     );
   } catch (error) {
-    console.error('❌ Erreur API (tous produits):', error.message);
-    console.error('   → Vérifiez que le backend est démarré sur http://localhost:5000');
-    console.error('   → Commande: cd backend && npm run dev');
+    console.error(' Erreur API (tous produits):', error.message);
+    console.error(' Vérifiez que le backend est démarré sur http://localhost:5000');
+    console.error(' Commande: cd backend && npm run dev');
     
-    // Retourner un objet vide - l'UI affichera "aucun produit"
-    // PAS DE FALLBACK VERS UN FICHIER LOCAL
     return {};
   }
 };

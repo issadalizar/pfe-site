@@ -1,5 +1,6 @@
+//axios pour faire les requetes http vers le backend
 import axios from 'axios';
-
+//+/users car c'est la route de base pour les opérations sur les utilisateurs
 const API_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000/api') + '/users';
 
 // Créer une instance axios avec intercepteur pour le token JWT
@@ -10,7 +11,9 @@ const userAPI = axios.create({
   }
 });
 
-// Intercepteur pour ajouter le token à chaque requête
+
+// fonction qui s'exécute avant chaque requete pour ajouter le token d'authentification dans les headers
+//communique avec database
 userAPI.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -19,7 +22,8 @@ userAPI.interceptors.request.use((config) => {
   return config;
 });
 
-// Dans userService.js, assurez-vous que getAllUsers retourne bien les dates
+// Fonction pour récupérer tous les utilisateurs
+//on utilise fonction asynchrone pour attendre la réponse du backend avant de continuer l'exécution du code
 export const getAllUsers = async () => {
   try {
     const response = await userAPI.get('/');
@@ -37,7 +41,7 @@ export const getAllUsers = async () => {
     throw error;
   }
 };
-
+// Fonction pour activer/désactiver un utilisateur
 export const toggleUserStatus = async (userId) => {
   try {
     const response = await userAPI.patch(`/${userId}/toggle`);
@@ -47,7 +51,7 @@ export const toggleUserStatus = async (userId) => {
     throw error;
   }
 };
-
+// Fonction pour créer un nouvel utilisateur
 export const createUser = async (userData) => {
   try {
     const response = await userAPI.post('/', userData);
@@ -57,7 +61,7 @@ export const createUser = async (userData) => {
     throw error;
   }
 };
-
+// Fonction pour mettre à jour un utilisateur existant
 export const updateUser = async (userId, userData) => {
   try {
     const response = await userAPI.put(`/${userId}`, userData);
@@ -67,7 +71,7 @@ export const updateUser = async (userId, userData) => {
     throw error;
   }
 };
-
+// Fonction pour supprimer un utilisateur
 export const deleteUser = async (userId) => {
   try {
     const response = await userAPI.delete(`/${userId}`);
@@ -77,7 +81,7 @@ export const deleteUser = async (userId) => {
     throw error;
   }
 };
-
+// Fonction pour créer plusieurs utilisateurs en une seule requête
 export const bulkCreateUsers = async (usersData) => {
   try {
     const response = await userAPI.post('/bulk', usersData);

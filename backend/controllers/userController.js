@@ -12,8 +12,12 @@ export const createUser = async (req, res) => {
       client_name,
       adresse,
       telephone,
+<<<<<<< Updated upstream
       isAdmin
       // SUPPRIMÉ: email, actif (maintenant dans Account)
+=======
+      isAdmin,
+>>>>>>> Stashed changes
     } = req.body;
 
     // Validation des champs requis

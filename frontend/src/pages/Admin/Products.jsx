@@ -1,4 +1,3 @@
-// src/pages/Products.jsx
 import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import ProductForm from "../../components/Admin/ProductForm";

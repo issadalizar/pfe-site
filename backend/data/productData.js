@@ -11,79 +11,19 @@ export const cncProductDetails = {
     "stock": 20,
     "estActif": true,
     "features": [
-      "Trois modes sont disponibles : De2, De2-Pro, De2-Ultra",
+      "Trois modes disponibles : De2, De2-Pro, De2-Ultra",
       "Banc incliné avec changeur d'outils automatique à 4 positions",
       "Mandrin à 3 mors et pinces de serrage inclus de série",
       "Accessoires bien organisés"
     ],
-    "fullDescription": "Le De2-Ultra est un centre de tournage CNC miniaturisé parfait pour l'enseignement. Sa conception compacte n'enlève rien à ses performances professionnelles. Idéal pour initier les étudiants aux techniques de tournage CNC.",
-    "specifications": {
-      "Modes disponibles": "De2, De2-Pro, De2-Ultra",
-      "Changeur d'outils": "Automatique à 4 positions",
-      "Banc": "Incliné",
-      "Mandrin": "3 mors avec pinces de serrage",
-      "Application": "Enseignement et formation CNC"
-    },
+    "fullDescription": "Le De2-Ultra est un centre de tournage CNC miniaturisé parfait pour l'enseignement.",
     "images": [
       "/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center.png",
       "/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center-2.png",
       "/images/products/CNC EDUCATION/CNC Turing Machine/De2-Ultra Mini CNC Turning Center-3.jpg"
     ],
-    "technicalSpecs": {
-      "Course axe X": "120 mm",
-      "Course axe Z": "200 mm",
-      "Vitesse de broche": "0-3000 tr/min",
-      "Puissance moteur": "1.5 kW",
-      "Précision": "±0.005 mm"
-    },
     "modele": "De2-Ultra",
-    "categorie": "697f4c69a494e767414f0e2e",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
-  },
-  "PC1 Baby CNC Lathe-Mach": {
-    "_id": "697f55259e5f50c871efa21f",
-    "nom": "PC1 Baby CNC Lathe-Mach",
-    "title": "PC1 Baby CNC Lathe-Mach",
-    "slug": "pc1-baby-cnc-lathe-mach",
-    "category": "CNC Turning Machine",
-    "mainCategory": "CNC for Education",
-    "price": 97.99,
-    "prix": 97.99,
-    "stock": 9,
-    "estActif": true,
-    "description": "PC1 Baby CNC Lathe-Mach. Tour micro-CNC piloté par PC, faible coût, volant manuel préinstallé. Arrêt automatique de l'alimentation à l'ouverture de la porte. Idéal pour l'enseignement et la formation. Combine les modes CNC et manuel (2 en 1).",
-    "features": [
-      "Faible coût",
-      "Volant manuel préinstallé",
-      "Tour micro-CNC piloté par PC",
-      "Arrêt automatique de l'alimentation à l'ouverture de la porte",
-      "Idéal pour l'enseignement et la formation",
-      "Combine les modes CNC et manuel",
-      "2 en 1 (CNC et manuel)"
-    ],
-    "fullDescription": "Le PC1 Baby CNC Lathe-Mach est une solution économique et pédagogique par excellence. Ce tour micro-CNC piloté par PC offre la flexibilité de fonctionner à la fois en mode CNC et en mode manuel, ce qui en fait un outil polyvalent pour l'apprentissage progressif de l'usinage CNC.",
-    "specifications": {
-      "Type": "Tour micro-CNC piloté par PC",
-      "Modes": "CNC et Manuel (2 en 1)",
-      "Sécurité": "Arrêt auto à l'ouverture de porte",
-      "Volant": "Manuel préinstallé",
-      "Application": "Enseignement et formation"
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
-      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach-2.png"
-    ],
-    "modele": "PC1",
-    "categorie": "697f4c69a494e767414f0e2e",
-    "ordre": 0,
-    "cheminImageAuto": "/images/products/CNC EDUCATION/CNC Turning Machine/pc1_baby_cnc_lathe-mach.png",
-    "nomFichierImage": "pc1_baby_cnc_lathe-mach.png",
-    "stockApres": 10,
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f4c69a494e767414f0e2e"
   },
   "De4-Eco (KC4S) Bench CNC Lathe": {
     "_id": "697f545c9e5f50c871efa21e",
@@ -97,28 +37,42 @@ export const cncProductDetails = {
     "stock": 4,
     "estActif": true,
     "features": [
-      "Système CNC basé sur PC, haute fiabilité, utilisation simple",
+      "Système CNC basé sur PC, haute fiabilité",
       "Connexion au PC via câble réseau",
-      "Moteur pas à pas 2 axes de haute qualité, moteur brushless à couple élevé",
+      "Moteur pas à pas 2 axes",
       "Broche métrique MT3",
-      "Porte-outils automatique à 4 positions",
-      "Glissières de guidage haute résistance"
+      "Porte-outils automatique à 4 positions"
     ],
-    "fullDescription": "Le De4-Eco (KC4S) est un tour CNC d'établi robuste et fiable, conçu pour un usage intensif en environnement éducatif. Sa connexion réseau simplifiée et son interface intuitive permettent une prise en main rapide par les étudiants.",
-    "specifications": {
-      "Système CNC": "Basé sur PC, connexion réseau",
-      "Broche": "Métrique MT3",
-      "Porte-outils": "Automatique 4 positions",
-      "Moteurs": "Pas à pas 2 axes, brushless couple élevé",
-      "Glissières": "Haute résistance"
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png"
-    ],
+    "fullDescription": "Le De4-Eco (KC4S) est un tour CNC d'établi robuste et fiable.",
+    "images": ["/images/products/CNC EDUCATION/CNC Turing Machine/De4-Eco (KC4S) Bench CNC Lathe.png"],
     "modele": "KC4S",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f4c69a494e767414f0e2e"
+  },
+  "PC1 Baby CNC Lathe-Mach": {
+    "_id": "697f55259e5f50c871efa21f",
+    "nom": "PC1 Baby CNC Lathe-Mach",
+    "title": "PC1 Baby CNC Lathe-Mach",
+    "slug": "pc1-baby-cnc-lathe-mach",
+    "category": "CNC Turning Machine",
+    "mainCategory": "CNC for Education",
+    "price": 97.99,
+    "prix": 97.99,
+    "stock": 9,
+    "estActif": true,
+    "features": [
+      "Faible coût",
+      "Volant manuel préinstallé",
+      "Tour micro-CNC piloté par PC",
+      "Arrêt auto à l'ouverture de la porte",
+      "2 en 1 (CNC et manuel)"
+    ],
+    "fullDescription": "Le PC1 Baby CNC Lathe-Mach est une solution économique et pédagogique.",
+    "images": [
+      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach.png",
+      "/images/products/CNC EDUCATION/CNC Turing Machine/PC1 Baby CNC Lathe-Mach-2.png"
+    ],
+    "modele": "PC1",
+    "categorie": "697f4c69a494e767414f0e2e"
   },
   "De6 (iKC6S) CNC Turning Machine": {
     "_id": "697f55549e5f50c871efa220",
@@ -134,24 +88,13 @@ export const cncProductDetails = {
     "features": [
       "Changeur d'outils automatique à 8 positions",
       "Banc incliné avec couvercle de protection",
-      "Rails linéaires de très haute précision",
-      "Certification de sécurité CE"
+      "Rails linéaires très haute précision",
+      "Certification CE"
     ],
-    "fullDescription": "La De6 (iKC6S) est une machine de tournage CNC professionnelle avec changeur d'outils 8 positions. Sa construction robuste avec rails linéaires haute précision et banc incliné garantit une excellente stabilité et précision d'usinage. Certifiée CE pour une sécurité optimale.",
-    "specifications": {
-      "Changeur d'outils": "Automatique 8 positions",
-      "Banc": "Incliné avec protection",
-      "Rails": "Linéaires très haute précision",
-      "Certification": "CE",
-      "Application": "Usinage professionnel et formation avancée"
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Turing Machine/De6 (iKC6S) CNC Turning Machine.png"
-    ],
+    "fullDescription": "La De6 (iKC6S) est une machine de tournage CNC professionnelle.",
+    "images": ["/images/products/CNC EDUCATION/CNC Turing Machine/De6 (iKC6S) CNC Turning Machine.png"],
     "modele": "iKC6S",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f4c69a494e767414f0e2e"
   },
   "De4-Pro (iKC4) Bench CNC Lathe": {
     "_id": "697f55969e5f50c871efa221",
@@ -167,23 +110,13 @@ export const cncProductDetails = {
     "features": [
       "Changeur d'outils à 8 stations",
       "Glissière inclinée",
-      "Rails linéaires de très haute précision",
+      "Rails linéaires très haute précision",
       "Certificat CE"
     ],
-    "fullDescription": "Le De4-Pro (iKC4) est la version professionnelle du tour d'établi CNC, équipé d'un changeur d'outils 8 stations et de rails linéaires haute précision. Sa glissière inclinée facilite l'évacuation des copeaux et améliore l'accessibilité.",
-    "specifications": {
-      "Changeur d'outils": "8 stations",
-      "Glissière": "Inclinée",
-      "Rails": "Linéaires très haute précision",
-      "Certification": "CE"
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Turing Machine/De4-Pro (iKC4) Bench CNC Lathe.png"
-    ],
+    "fullDescription": "Le De4-Pro (iKC4) est la version professionnelle du tour d'établi CNC.",
+    "images": ["/images/products/CNC EDUCATION/CNC Turing Machine/De4-Pro (iKC4) Bench CNC Lathe.png"],
     "modele": "iKC4",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f4c69a494e767414f0e2e"
   },
   "De8 (iKC8) CNC Turning Machine": {
     "_id": "697f55e79e5f50c871efa223",
@@ -198,28 +131,14 @@ export const cncProductDetails = {
     "estActif": false,
     "features": [
       "Bâti monobloc en fonte",
-      "Structure de broche A2-5 et moteur de broche de 4 kW",
-      "Les axes X/Z sont équipés de guides linéaires et de vis à billes de haute précision",
-      "Magasin d'outils électrique à 8 positions",
-      "Banc incliné à 35°",
-      "Plusieurs systèmes CNC tels que Siemens, FANUC, GSK et HNC peuvent être installés en option"
+      "Moteur de broche 4 kW",
+      "Magasin d'outils électrique 8 positions",
+      "Banc incliné 35°"
     ],
-    "fullDescription": "La De8 (iKC8) est une machine de tournage CNC haut de gamme avec bâti monobloc en fonte pour une rigidité maximale. Son moteur de broche 4 kW et son magasin d'outils électrique 8 positions en font un outil professionnel pour les formations avancées. Compatible avec les principaux systèmes CNC (Siemens, FANUC, etc.).",
-    "specifications": {
-      "Bâti": "Monobloc en fonte",
-      "Broche": "Structure A2-5, moteur 4 kW",
-      "Axes X/Z": "Guides linéaires + vis à billes haute précision",
-      "Magasin d'outils": "Électrique 8 positions",
-      "Banc": "Incliné 35°",
-      "Systèmes CNC optionnels": "Siemens, FANUC, GSK, HNC"
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Turing Machine/De8 (iKC8) CNC Turning Machine.png"
-    ],
+    "fullDescription": "La De8 (iKC8) est une machine de tournage CNC haut de gamme.",
+    "images": ["/images/products/CNC EDUCATION/CNC Turing Machine/De8 (iKC8) CNC Turning Machine.png"],
     "modele": "iKC8",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f4c69a494e767414f0e2e"
   },
   "Fa2-Ultra Mini CNC Milling Center": {
     "_id": "697f6813a494e767414f10c5",
@@ -233,27 +152,14 @@ export const cncProductDetails = {
     "stock": 10,
     "estActif": false,
     "features": [
-      "Trois modes sont disponibles : Fa2, Fa2-Pro, Fa2-Ultra",
-      "Usinage à grande vitesse de 5000 tr/min pour une surface lisse",
-      "Changeur d'outils automatique à 2 stations pour un changement d'outil rapide",
-      "Structure interne du centre d'usinage",
-      "Accessoires bien organisés"
+      "Trois modes : Fa2, Fa2-Pro, Fa2-Ultra",
+      "Usinage à 5000 tr/min",
+      "Changeur d'outils automatique 2 stations"
     ],
-    "fullDescription": "Le Fa2-Ultra est un centre de fraisage CNC miniaturisé avec usinage à grande vitesse (5000 tr/min). Sa structure de centre d'usinage et son changeur d'outils automatique en font un outil idéal pour l'apprentissage professionnel de la fabrication numérique.",
-    "specifications": {
-      "Modes disponibles": "Fa2, Fa2-Pro, Fa2-Ultra",
-      "Vitesse de broche": "5000 tr/min",
-      "Changeur d'outils": "Automatique 2 stations",
-      "Structure": "Centre d'usinage",
-      "Finition": "Surface lisse"
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Milling Machine/Fa2-Ultra Mini CNC Milling Center.png"
-    ],
+    "fullDescription": "Le Fa2-Ultra est un centre de fraisage CNC miniaturisé.",
+    "images": ["/images/products/CNC EDUCATION/CNC Milling Machine/Fa2-Ultra Mini CNC Milling Center.png"],
     "modele": "",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f6748a494e767414f10aa"
   },
   "PX1 Baby CNC Milling Machine": {
     "_id": "697f69499e5f50c871efa229",
@@ -267,29 +173,14 @@ export const cncProductDetails = {
     "stock": 10,
     "estActif": false,
     "features": [
-      "Machine CNC 2 en 1 (mode automatique et manuel)",
+      "Machine CNC 2 en 1",
       "Boîtier transparent",
-      "Vitesse de rotation élevée de 20 000 tr/min",
-      "Fraiseuse micro-CNC pilotée par PC",
-      "Arrêt automatique de l'alimentation à l'ouverture de la porte",
-      "Idéale pour l'enseignement et la formation"
+      "Vitesse 20 000 tr/min"
     ],
-    "fullDescription": "La PX1 Baby CNC Milling Machine est une fraiseuse micro-CNC polyvalente avec boîtier transparent pour une visualisation pédagogique optimale. Sa vitesse de rotation de 20 000 tr/min permet l'usinage de précision de petites pièces. Le mode 2-en-1 (CNC/manuel) facilite l'apprentissage progressif.",
-    "specifications": {
-      "Type": "Fraiseuse micro-CNC pilotée par PC",
-      "Modes": "Automatique et Manuel (2 en 1)",
-      "Vitesse": "20 000 tr/min",
-      "Boîtier": "Transparent pour visualisation",
-      "Sécurité": "Arrêt auto à l'ouverture de porte",
-      "Application": "Enseignement et formation"
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Milling Machine/PX1 Baby CNC Milling Machine.png"
-    ],
+    "fullDescription": "La PX1 Baby CNC Milling Machine est une fraiseuse micro-CNC polyvalente.",
+    "images": ["/images/products/CNC EDUCATION/CNC Milling Machine/PX1 Baby CNC Milling Machine.png"],
     "modele": "PX1",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f6748a494e767414f10aa"
   },
   "Fa4-Eco (KX1S) CNC Milling Machine": {
     "_id": "697f69869e5f50c871efa22a",
@@ -303,25 +194,14 @@ export const cncProductDetails = {
     "stock": 10,
     "estActif": true,
     "features": [
-      "Système CNC basé sur PC, haute fiabilité, utilisation simple",
-      "Connexion au PC via câble réseau",
-      "Interface rapide 4 axes préinstallée",
-      "Interface rapide pour volant de commande préinstallée",
-      "Le meilleur choix pour les bricoleurs et les amateurs",
-      "Certification de sécurité CE"
+      "Système CNC basé sur PC",
+      "Interface 4 axes préinstallée",
+      "Certification CE"
     ],
-    "fullDescription": "La Fa4-Eco (KX1S) est une fraiseuse CNC d'établi accessible et fiable, parfaite pour les amateurs et l'initiation. Son interface 4 axes préinstallée et sa connexion réseau en font un outil moderne et facile à utiliser.",
-    "specifications": {
-      "Système CNC": "Basé sur PC, connexion réseau",
-      "Interface": "4 axes préinstallée",
-      "Volant": "Interface rapide préinstallée",
-      "Application": "Bricoleurs, amateurs, initiation",
-      "Certification": "CE"
-    },
-    "images": [
-      "/images/products/CNC EDUCATION/CNC Milling Machine/Fa4-Eco (KX1S) CNC Milling Machine.png"
-    ],
+    "fullDescription": "La Fa4-Eco (KX1S) est une fraiseuse CNC d'établi accessible.",
+    "images": ["/images/products/CNC EDUCATION/CNC Milling Machine/Fa4-Eco (KX1S) CNC Milling Machine.png"],
     "modele": "KX1S",
+<<<<<<< Updated upstream
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
     }
@@ -407,6 +287,9 @@ export const cncProductDetails = {
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
     }
+=======
+    "categorie": "697f6748a494e767414f10aa"
+>>>>>>> Stashed changes
   },
   "DT-E001 – Unité de Contrôle Électronique": {
     "_id": "697f6e3c9e5f50c871efa22d",
@@ -420,54 +303,32 @@ export const cncProductDetails = {
     "stock": 10,
     "estActif": true,
     "features": [
-      "Calculateur moteur didactique avec accès aux signaux",
-      "Interface de programmation et diagnostic",
-      "Visualisation en temps réel des paramètres",
-      "Simulation de défauts pour apprentissage diagnostic",
-      "Compatible avec logiciel de diagnostic standard"
+      "Étude conversion Analogique/Numérique",
+      "Multiplexage de l'information",
+      "Commande des actionneurs"
     ],
-    "fullDescription": "Le DT-E001 est une unité de contrôle électronique didactique conçue pour l'apprentissage des systèmes de gestion moteur. Il permet aux étudiants de comprendre le fonctionnement d'un calculateur réel, d'analyser les signaux d'entrée/sortie, et de pratiquer le diagnostic automobile.",
-    "specifications": {
-      "Microcontrôleur": "32 bits, 80 MHz",
-      "Mémoire": "1 Mo Flash, 256 Ko RAM",
-      "Entrées": "8 analogiques, 6 digitales",
-      "Sorties": "4 PWM, 8 digitales",
-      "Communication": "CAN, LIN, K-Line",
-      "Alimentation": "12V DC"
-    },
-    "images": [
-      "/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png"
-    ],
-    "technicalSpecs": {
-      "Protocoles diagnostic": "ISO 9141, ISO 14230 (KWP2000), ISO 15765 (CAN)",
-      "Connecteur diagnostic": "OBD-II 16 broches",
-      "Tension d'alimentation": "9-16V DC",
-      "Consommation": "< 500 mA",
-      "Température": "-20°C à +70°C"
-    },
+    "fullDescription": "Module pédagogique pour l'étude du traitement de l'information dans une unité de contrôle électronique automobile.",
+    "images": ["/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-E001 – Unité de Contrôle Électronique.png"],
     "modele": "DT-E001",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f6df7a494e767414f116c"
   },
-  "DTM7020 – Modules Essuie-Glaces": {
-    "_id": "697f93e49e5f50c871efa235",
-    "nom": "DTM7020 – Modules Essuie-Glaces",
-    "title": "DTM7020 – Modules Essuie-Glaces",
-    "slug": "dtm7020-modules-essuie-glaces",
-    "category": "ÉLECTRICITÉ",
+  "DT-M001 – Mesure d'Angle de Volant": {
+    "_id": "697f6f609e5f50c871efa22e",
+    "nom": "DT-M001 – Mesure d'Angle de Volant",
+    "title": "DT-M001 – Mesure d'Angle de Volant",
+    "slug": "dt-m001-mesure-angle-volant",
+    "category": "CAPTEURS ET ACTIONNEURS",
     "mainCategory": "Voitures",
-    "price": 120.95,
-    "prix": 120.95,
-    "stock": 6,
+    "price": 86.5,
+    "prix": 86.5,
+    "stock": 9,
     "estActif": true,
     "features": [
-      "Système complet d'essuie-glaces avant/arrière",
-      "Moteurs pas à pas avec retour de position",
-      "Commandes manuelles et automatiques",
-      "Détection de pluie simulée",
-      "Étude des circuits électriques et logique de commande"
+      "Capteur réel d'angle de volant",
+      "Communication CAN High Speed",
+      "Deux sorties analogiques"
     ],
+<<<<<<< Updated upstream
     "fullDescription": "Le DTM7020 est un module didactique pour l'étude du système d'essuie-glaces automobile. Il reproduit fidèlement le fonctionnement des essuie-glaces avant et arrière, avec leurs différentes vitesses, la fonction intermittente, et la détection de pluie.",
     "specifications": {
       "Moteurs": "2 moteurs pas à pas",
@@ -509,25 +370,30 @@ export const cncProductDetails = {
     "stockApres": 10,
     "id": "697f93e49e5f50c871efa235",
     "updatedAt": "2026-04-27T10:20:04.715Z"
+=======
+    "fullDescription": "Module pédagogique pour l'étude d'un capteur réel de position d'angle de volant automobile.",
+    "images": ["/images/products/voitures/CAPTEURS ET ACTIONNEURS/produit2.png"],
+    "modele": "DT-M001",
+    "categorie": "697f6df7a494e767414f116c"
+>>>>>>> Stashed changes
   },
-  "DTM7000 – Modules Éclairage et Signalisation": {
-    "_id": "697f93b69e5f50c871efa234",
-    "nom": "DTM7000 – Modules Éclairage et Signalisation",
-    "title": "DTM7000 – Modules Éclairage et Signalisation",
-    "slug": "dtm7000-modules-eclairage-signalisation",
-    "category": "ÉLECTRICITÉ",
+  "DT-M002 – Mesure des Positions": {
+    "_id": "697f6f9b9e5f50c871efa22f",
+    "nom": "DT-M002 – Mesure des Positions",
+    "title": "DT-M002 – Mesure des Positions",
+    "slug": "dt-m002-mesure-des-positions",
+    "category": "CAPTEURS ET ACTIONNEURS",
     "mainCategory": "Voitures",
-    "price": 150.99,
-    "prix": 150.99,
-    "stock": 5,
+    "price": 120.99,
+    "prix": 120.99,
+    "stock": 0,
     "estActif": true,
     "features": [
-      "Système complet d'éclairage automobile",
-      "Feux de position, croisement, route, clignotants",
-      "Feux stop, recul, antibrouillard",
-      "Éclairage intérieur et tableau de bord",
-      "Étude des circuits électriques et relais"
+      "Étude des capteurs de position",
+      "Analyse des signaux",
+      "Diagnostic des capteurs"
     ],
+<<<<<<< Updated upstream
     "fullDescription": "Le DTM7000 est un module didactique complet pour l'étude des systèmes d'éclairage et de signalisation automobile. Il reproduit l'ensemble des feux d'un véhicule moderne, permettant aux étudiants de comprendre le câblage, les circuits de commande, et les technologies d'éclairage.",
     "specifications": {
       "Types de feux": "LED, halogène",
@@ -623,6 +489,12 @@ export const cncProductDetails = {
     "stockApres": 50,
     "id": "697f91fe9e5f50c871efa233",
     "updatedAt": "2026-04-27T10:20:04.828Z"
+=======
+    "fullDescription": "Module pédagogique pour l'étude des capteurs de position automobiles.",
+    "images": ["/images/products/voitures/CAPTEURS ET ACTIONNEURS/DT-M002 – Mesure des Positions.png"],
+    "modele": "DT-M002",
+    "categorie": "697f6df7a494e767414f116c"
+>>>>>>> Stashed changes
   },
   "MT-4002V – Maquette de Charge Démarrage 12V": {
     "_id": "697f91119e5f50c871efa231",
@@ -636,12 +508,11 @@ export const cncProductDetails = {
     "stock": 10,
     "estActif": true,
     "features": [
-      "Maquette pédagogique charge-démarrage",
-      "Alternateur et démarreur sectionnés pour visualisation",
-      "Schéma électrique sérigraphié",
-      "Points de test accessibles",
-      "Mallette de transport incluse"
+      "Environnement charge-démarrage 12V",
+      "Démarreur et alternateur",
+      "Contrôleur MI250S inclus"
     ],
+<<<<<<< Updated upstream
     "fullDescription": "Le MT-4002V est une maquette pédagogique pour l'étude des circuits de charge et démarrage. Les composants sont sectionnés pour permettre la visualisation interne, et le schéma électrique est sérigraphié sur le panneau pour faciliter la compréhension des circuits.",
     "specifications": {
       "Composants": "Alternateur, démarreur, batterie, relais",
@@ -680,25 +551,36 @@ export const cncProductDetails = {
     "stockApres": 15,
     "id": "697f91119e5f50c871efa231",
     "updatedAt": "2026-04-27T10:20:04.867Z"
+=======
+    "fullDescription": "Maquette pédagogique pour la formation à l'électricité automobile.",
+    "images": ["/images/products/voitures/ÉLECTRICITÉ/MT-4002V – Maquette de Charge Démarrage 12V.png"],
+    "modele": "MT-4002V",
+    "categorie": "697f9052a494e767414f1257"
+>>>>>>> Stashed changes
   },
-  "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur": {
-    "_id": "697f95159e5f50c871efa238",
-    "nom": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
-    "title": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
-    "slug": "mt-moteur-meca-diagnostic-mecanique-moteur",
-    "category": "RÉSEAUX MULTIPLEXÉS",
+  "DT-M005 – Mesure des Courants et des Tensions": {
+    "_id": "697f91fe9e5f50c871efa233",
+    "nom": "DT-M005 – Mesure des Courants et des Tensions",
+    "title": "DT-M005 – Mesure des Courants et des Tensions",
+    "slug": "dt-m005-mesure-courants-tensions",
+    "category": "ÉLECTRICITÉ",
     "mainCategory": "Voitures",
+<<<<<<< Updated upstream
     "price": 110.98,
     "prix": 110.98,
     "stock": 25,
+=======
+    "price": 750.5,
+    "prix": 750.5,
+    "stock": 40,
+>>>>>>> Stashed changes
     "estActif": true,
     "features": [
-      "Maquette de moteur avec capteurs et actionneurs",
-      "Interface CAN pour communication",
-      "Simulation de défauts mécaniques et électriques",
-      "Diagnostic par prise OBD-II",
-      "Logiciel d'analyse temps réel"
+      "Apprentissage mesures électriques",
+      "Mesure courant et tension",
+      "Pratique fondamentaux électricité"
     ],
+<<<<<<< Updated upstream
     "fullDescription": "Le MT-MOTEUR-MECA est une maquette didactique complète pour l'étude du diagnostic moteur. Elle reproduit le fonctionnement d'un moteur à essence avec tous ses capteurs (PMH, température, pression, cliquetis) et actionneurs (injecteurs, bobines, papillon motorisé), communiquant via bus CAN.",
     "specifications": {
       "Type moteur": "4 cylindres, injection séquentielle",
@@ -721,47 +603,54 @@ export const cncProductDetails = {
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
     }
+=======
+    "fullDescription": "Module pédagogique pour l'apprentissage de la mesure des courants et tensions.",
+    "images": ["/images/products/voitures/ÉLECTRICITÉ/DT-M005 – Mesure des Courants et des Tensions.png"],
+    "modele": "DT-M005",
+    "categorie": "697f9052a494e767414f1257"
+>>>>>>> Stashed changes
   },
-  "MT-E5000 – Maquette d'Injection Essence Séquentielle": {
-    "_id": "697f94e89e5f50c871efa237",
-    "nom": "MT-E5000 – Maquette d'Injection Essence Séquentielle",
-    "title": "MT-E5000 – Maquette d'Injection Essence Séquentielle",
-    "slug": "mt-e5000-maquette-injection-essence-sequentielle",
-    "category": "RÉSEAUX MULTIPLEXÉS",
+  "DTM7000 – Modules Éclairage et Signalisation": {
+    "_id": "697f93b69e5f50c871efa234",
+    "nom": "DTM7000 – Modules Éclairage et Signalisation",
+    "title": "DTM7000 – Modules Éclairage et Signalisation",
+    "slug": "dtm7000-modules-eclairage-signalisation",
+    "category": "ÉLECTRICITÉ",
     "mainCategory": "Voitures",
-    "price": 160.99,
-    "prix": 160.99,
-    "stock": 20,
+    "price": 150.99,
+    "prix": 150.99,
+    "stock": 5,
     "estActif": true,
     "features": [
-      "Système d'injection essence séquentielle",
-      "Calculateur moteur programmable",
-      "Visualisation en temps réel des paramètres",
-      "Simulation de régimes et charges moteur",
-      "Étude des stratégies d'injection"
+      "10 modules Éclairage & Signalisation",
+      "Reconstitution ensemble automobile",
+      "Étude fusibles et commutateurs"
     ],
-    "fullDescription": "Le MT-E5000 est un système didactique pour l'étude de l'injection essence séquentielle. Il permet de comprendre le fonctionnement d'un système d'injection moderne, les stratégies de calcul des temps d'injection, et l'adaptation aux conditions de fonctionnement.",
-    "specifications": {
-      "Type injection": "Séquentielle multipoints",
-      "Calculateur": "Programmable, 32 bits",
-      "Capteurs": "Pression, température, position",
-      "Actionneurs": "4 injecteurs, pompe à essence",
-      "Communication": "CAN, K-Line"
-    },
-    "images": [
-      "/images/products/voitures/RÉSEAUX MULTIPLEXÉS/produit1.png"
+    "fullDescription": "Ensemble de 10 modules pour l'étude de l'éclairage et signalisation automobile.",
+    "images": ["/images/products/voitures/ÉLECTRICITÉ/DTM7000 – Modules Éclairage et Signalisation.png"],
+    "modele": "DTM7000",
+    "categorie": "697f9052a494e767414f1257"
+  },
+  "DTM7020 – Modules Essuie-Glaces": {
+    "_id": "697f93e49e5f50c871efa235",
+    "nom": "DTM7020 – Modules Essuie-Glaces",
+    "title": "DTM7020 – Modules Essuie-Glaces",
+    "slug": "dtm7020-modules-essuie-glaces",
+    "category": "ÉLECTRICITÉ",
+    "mainCategory": "Voitures",
+    "price": 120.95,
+    "prix": 120.95,
+    "stock": 6,
+    "estActif": true,
+    "features": [
+      "5 modules Essuie-glaces",
+      "Composants réels",
+      "Étude retour position repos"
     ],
-    "technicalSpecs": {
-      "Plage injection": "1-20 ms",
-      "Pression injection": "3.5 bar",
-      "Régime max simulé": "7000 tr/min",
-      "Logiciel": "Cartographie, calibration",
-      "Interface": "USB, Ethernet"
-    },
-    "modele": "MT-E5000",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "fullDescription": "Ensemble de 5 modules pour l'étude du système d'essuie-glaces automobile.",
+    "images": ["/images/products/voitures/ÉLECTRICITÉ/DTM7020 – Modules Essuie-Glaces.png"],
+    "modele": "DTM7020",
+    "categorie": "697f9052a494e767414f1257"
   },
   "MT-H9000 – Maquette d'Injection Diesel Common Rail": {
     "_id": "697f94b79e5f50c871efa236",
@@ -775,35 +664,17 @@ export const cncProductDetails = {
     "stock": 10,
     "estActif": true,
     "features": [
-      "Système d'injection diesel Common Rail",
-      "Pompe haute pression et rampe commune",
-      "Injecteurs piézo-électriques",
-      "Calculateur avec gestion de pression",
-      "Étude des stratégies d'injection diesel"
+      "Étude injection Diesel Common Rail",
+      "Calculateur réel",
+      "Boîte à pannes",
+      "Diagnostic EOBD"
     ],
-    "fullDescription": "Le MT-H9000 est un système didactique pour l'étude de l'injection diesel Common Rail. Il reproduit fidèlement le fonctionnement d'un système diesel moderne avec pompe haute pression, rampe commune, et injecteurs piézo-électriques, permettant l'étude des stratégies d'injection et de la gestion moteur.",
-    "specifications": {
-      "Type injection": "Common Rail",
-      "Pression max": "1600 bar",
-      "Injecteurs": "Piézo-électriques",
-      "Calculateur": "Gestion pression et injection",
-      "Capteurs": "Pression rampe, température, régime"
-    },
-    "images": [
-      "/images/products/voitures/RÉSEAUX MULTIPLEXÉS/produit2.png"
-    ],
-    "technicalSpecs": {
-      "Sécurités": "Détection fuites, surpression",
-      "Pilotage injecteurs": "Haute tension (100V)",
-      "Communication": "CAN bus",
-      "Logiciel": "Diagnostic, paramétrage",
-      "Alimentation": "12V DC / 230V AC"
-    },
+    "fullDescription": "Maquette pour l'étude du système d'injection Diesel Common Rail.",
+    "images": ["/images/products/voitures/RÉSEAUX MULTIPLEXÉS/produit2.png"],
     "modele": "MT-H9000",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f9469a494e767414f132c"
   },
+<<<<<<< Updated upstream
   "PTL908-2H – High Voltage Safety Test Lead 10kV": {
     "_id": "697f96479e5f50c871efa23a",
     "nom": "PTL908-2H – High Voltage Safety Test Lead 10kV",
@@ -814,14 +685,26 @@ export const cncProductDetails = {
     "price": 40,
     "prix": 40,
     "stock": 10,
+=======
+  "MT-E5000 – Maquette d'Injection Essence Séquentielle": {
+    "_id": "697f94e89e5f50c871efa237",
+    "nom": "MT-E5000 – Maquette d'Injection Essence Séquentielle",
+    "title": "MT-E5000 – Maquette d'Injection Essence Séquentielle",
+    "slug": "mt-e5000-maquette-injection-essence-sequentielle",
+    "category": "RÉSEAUX MULTIPLEXÉS",
+    "mainCategory": "Voitures",
+    "price": 160.99,
+    "prix": 160.99,
+    "stock": 20,
+>>>>>>> Stashed changes
     "estActif": true,
     "features": [
-      "Câble de test haute tension 10kV",
-      "Double isolation de sécurité",
-      "Connecteurs de sécurité 4mm",
-      "Longueur: 1m",
-      "Conforme aux normes IEC 61010"
+      "Injection essence séquentielle",
+      "Papillon motorisé",
+      "Platine calculateur avec pannes",
+      "Diagnostic EOBD"
     ],
+<<<<<<< Updated upstream
     "fullDescription": "Le PTL908-2H est un câble de test haute tension spécialement conçu pour les mesures électriques sécurisées jusqu'à 10kV. Idéal pour les travaux pratiques en électronique de puissance et haute tension. Sa double isolation garantit une sécurité maximale pour les étudiants et techniciens.",
     "specifications": {
       "Tension max": "10kV DC/AC",
@@ -856,14 +739,31 @@ export const cncProductDetails = {
     "price": 78.4,
     "prix": 78.4,
     "stock": 10,
+=======
+    "fullDescription": "Maquette pour l'étude des systèmes d'injection essence séquentielle.",
+    "images": ["/images/products/voitures/RÉSEAUX MULTIPLEXÉS/produit1.png"],
+    "modele": "MT-E5000",
+    "categorie": "697f9469a494e767414f132c"
+  },
+  "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur": {
+    "_id": "697f95159e5f50c871efa238",
+    "nom": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
+    "title": "MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur",
+    "slug": "mt-moteur-meca-diagnostic-mecanique-moteur",
+    "category": "RÉSEAUX MULTIPLEXÉS",
+    "mainCategory": "Voitures",
+    "price": 110.98,
+    "prix": 110.98,
+    "stock": 23,
+>>>>>>> Stashed changes
     "estActif": true,
     "features": [
-      "Sonde oscilloscope haute tension 5kV",
-      "Atténuation x100",
-      "Large bande passante 100MHz",
-      "Compensation automatique",
-      "Sécurité renforcée pour travaux pratiques"
+      "Moteur essence 4 cylindres",
+      "Diagnostic pannes mécaniques",
+      "Mesure compression",
+      "10+ pannes simulées"
     ],
+<<<<<<< Updated upstream
     "fullDescription": "La sonde oscilloscope PTL970 permet des mesures sécurisées jusqu'à 5kV. Idéale pour l'analyse de signaux haute tension en électronique de puissance, alimentations à découpage et convertisseurs. Sa conception robuste et sa sécurité renforcée la rendent parfaite pour l'enseignement.",
     "specifications": {
       "Tension max": "5kV DC/AC crête",
@@ -1013,6 +913,12 @@ export const cncProductDetails = {
     "metadata": {
       "migratedAt": "2026-03-16T22:00:34.663Z"
     }
+=======
+    "fullDescription": "Maquette pour l'étude et le diagnostic mécanique d'un moteur essence.",
+    "images": ["/images/products/voitures/RÉSEAUX MULTIPLEXÉS/MT-MOTEUR-MECA – Maquette Diagnostic Mécanique Moteur.png"],
+    "modele": "MT-MOTEUR-MECA",
+    "categorie": "697f9469a494e767414f132c"
+>>>>>>> Stashed changes
   },
   "PTL960 – Oscilloscope Probe 500MHz": {
     "_id": "697f96139e5f50c871efa239",
@@ -1026,35 +932,115 @@ export const cncProductDetails = {
     "stock": 10,
     "estActif": true,
     "features": [
-      "Sonde oscilloscope haute fréquence 500MHz",
-      "Atténuation fixe x10",
-      "Très faible capacité d'entrée",
-      "Idéale pour signaux rapides et numérique haute vitesse",
-      "Design compact et robuste"
+      "Bande passante 500 MHz",
+      "Boîtier métallique",
+      "Conforme IEC-1010"
     ],
-    "fullDescription": "La sonde PTL960 est conçue pour les mesures haute fréquence jusqu'à 500MHz. Parfaite pour l'étude des signaux numériques rapides, des bus de communication et des circuits haute fréquence dans les formations avancées.",
-    "specifications": {
-      "Bande passante": "500MHz",
-      "Tension max": "300V DC/AC crête",
-      "Atténuation": "x10 fixe",
-      "Résistance entrée": "10 MΩ",
-      "Capacité entrée": "<8pF",
-      "Temps de montée": "<0.7ns"
-    },
-    "images": [
-      "/images/products/MCP lab electronics/Accessoires/PTL960 – Oscilloscope Probe 500MHz.png"
-    ],
-    "technicalSpecs": {
-      "Précision DC": "±2%",
-      "Longueur câble": "1.2m",
-      "Compensation": "Intégrée",
-      "Sécurité": "CAT I 300V",
-      "Poids": "60g"
-    },
+    "fullDescription": "Sonde oscilloscope haute fréquence 500MHz.",
+    "images": ["/images/products/MCP lab electronics/Accessoires/PTL960 – Oscilloscope Probe 500MHz.png"],
     "modele": "PTL960",
-    "metadata": {
-      "migratedAt": "2026-03-16T22:00:34.663Z"
-    }
+    "categorie": "697f95cfa494e767414f1371"
+  },
+  "PTL908-2H – High Voltage Safety Test Lead 10kV": {
+    "_id": "697f96479e5f50c871efa23a",
+    "nom": "PTL908-2H – High Voltage Safety Test Lead 10kV",
+    "title": "PTL908-2H – High Voltage Safety Test Lead 10kV",
+    "slug": "ptl908-2h-high-voltage-test-lead-10kv",
+    "category": "Accessoires",
+    "mainCategory": "MCP lab electronics",
+    "price": 40,
+    "prix": 40,
+    "stock": 9,
+    "estActif": true,
+    "features": [
+      "Tension max 10 000 V",
+      "Connecteurs Ø4 mm"
+    ],
+    "fullDescription": "Cordon de test haute tension jusqu'à 10kV.",
+    "images": ["/images/products/MCP lab electronics/Accessoires/PTL908-2H – High Voltage Safety Test Lead 10kV.png"],
+    "modele": "PTL908-2H",
+    "categorie": "697f95cfa494e767414f1371"
+  },
+  "PTL908-8 – Test Lead 4mm 20A": {
+    "_id": "697f965c9e5f50c871efa23b",
+    "nom": "PTL908-8 – Test Lead 4mm 20A",
+    "title": "PTL908-8 – Test Lead 4mm 20A",
+    "slug": "ptl908-8-test-lead-4mm-20a",
+    "category": "Accessoires",
+    "mainCategory": "MCP lab electronics",
+    "price": 4,
+    "prix": 4,
+    "stock": 30,
+    "estActif": true,
+    "features": [
+      "Fiches banane 4 mm",
+      "Courant max 20 A"
+    ],
+    "fullDescription": "Câble de test avec fiches banane 4mm.",
+    "images": ["/images/products/MCP lab electronics/Accessoires/PTL908-8 – Test Lead 4mm 20A.png"],
+    "modele": "PTL908-8",
+    "categorie": "697f95cfa494e767414f1371"
+  },
+  "PTL940 – Oscilloscope Probe 100MHz": {
+    "_id": "697f966a9e5f50c871efa23c",
+    "nom": "PTL940 – Oscilloscope Probe 100MHz",
+    "title": "PTL940 – Oscilloscope Probe 100MHz",
+    "slug": "ptl940-oscilloscope-probe-100mhz",
+    "category": "Accessoires",
+    "mainCategory": "MCP lab electronics",
+    "price": 45.99,
+    "prix": 45.99,
+    "stock": 5,
+    "estActif": true,
+    "features": [
+      "Bande passante 100 MHz",
+      "Tension max 2 kV",
+      "Conforme IEC-1010"
+    ],
+    "fullDescription": "Sonde oscilloscope standard 100MHz.",
+    "images": ["/images/products/MCP lab electronics/Accessoires/PTL940 – Oscilloscope Probe 100MHz.png"],
+    "modele": "PTL940",
+    "categorie": "697f95cfa494e767414f1371"
+  },
+  "PTL970 – Oscilloscope Probe 5kV": {
+    "_id": "697f96799e5f50c871efa23d",
+    "nom": "PTL970 – Oscilloscope Probe 5kV",
+    "title": "PTL970 – Oscilloscope Probe 5kV",
+    "slug": "ptl970-oscilloscope-probe-5kv",
+    "category": "Accessoires",
+    "mainCategory": "MCP lab electronics",
+    "price": 78.4,
+    "prix": 78.4,
+    "stock": 9,
+    "estActif": true,
+    "features": [
+      "Tension max 5 kV",
+      "Mesures haute tension"
+    ],
+    "fullDescription": "Sonde oscilloscope haute tension 5kV.",
+    "images": ["/images/products/MCP lab electronics/Accessoires/PTL970 – Oscilloscope Probe 5kV.png"],
+    "modele": "PTL970",
+    "categorie": "697f95cfa494e767414f1371"
+  },
+  "PTL955 – Oscilloscope Probe 40kV": {
+    "_id": "697f968b9e5f50c871efa23e",
+    "nom": "PTL955 – Oscilloscope Probe 40kV",
+    "title": "PTL955 – Oscilloscope Probe 40kV",
+    "slug": "ptl955-oscilloscope-probe-40kv",
+    "category": "Accessoires",
+    "mainCategory": "MCP lab electronics",
+    "price": 300,
+    "prix": 300,
+    "stock": 8,
+    "estActif": true,
+    "features": [
+      "Tension max 40 kV",
+      "Mesures très haute tension"
+    ],
+    "fullDescription": "Sonde oscilloscope très haute tension 40kV.",
+    "images": ["/images/products/MCP lab electronics/Accessoires/PTL955 – Oscilloscope Probe 40kV.png"],
+    "modele": "PTL955",
+    "categorie": "697f95cfa494e767414f1371"
   },
   "ACL-7000 – Analogue Training System": {
     "_id": "697f978e9e5f50c871efa240",
@@ -1068,13 +1054,11 @@ export const cncProductDetails = {
     "stock": 18,
     "estActif": true,
     "features": [
-      "Système complet pour l'apprentissage de l'électronique analogique",
-      "Amplificateurs opérationnels, transistors, diodes",
-      "Générateur de fonctions intégré",
-      "Alimentation double ±15V et 5V",
-      "Plaque d'essai intégrée pour montages",
-      "Cahier de travaux pratiques inclus"
+      "22 expériences",
+      "6 cartes électroniques",
+      "Système autonome"
     ],
+<<<<<<< Updated upstream
     "fullDescription": "L'ACL-7000 est un système didactique complet pour l'enseignement de l'électronique analogique. Il intègre tous les composants nécessaires à la réalisation de montages analogiques (amplificateurs, filtres, oscillateurs) ainsi que les instruments de mesure de base. Idéal pour les travaux pratiques en école d'ingénieurs et BTS.",
     "specifications": {
       "Alimentations": "+5V/1A, ±15V/0.5A",
@@ -1132,6 +1116,12 @@ export const cncProductDetails = {
       "Dimensions": "400 x 300 x 100mm",
       "Poids": "3.8kg"
     }
+=======
+    "fullDescription": "Laboratoire complet pour l'étude des circuits analogiques.",
+    "images": ["/images/products/MCP lab electronics/EDUCATION EQUIPMENT/ACL-7000 – Analogue Training System.png"],
+    "modele": "ACL-7000",
+    "categorie": "697f976ba494e767414f13e6"
+>>>>>>> Stashed changes
   },
   "F1-3 – Basic Logic Circuit Training System": {
     "_id": "697f97e09e5f50c871efa242",
@@ -1145,13 +1135,11 @@ export const cncProductDetails = {
     "stock": 10,
     "estActif": true,
     "features": [
-      "Système d'apprentissage des circuits logiques de base",
-      "Portes AND, OR, NOT, NAND, NOR, XOR",
-      "Bascules RS, JK, D",
-      "Compteurs et registres",
-      "Afficheurs 7 segments intégrés",
-      "Générateur d'horloge réglable"
+      "26 expériences",
+      "Composants modulaires",
+      "Assemblage par fiches"
     ],
+<<<<<<< Updated upstream
     "fullDescription": "Le F1-3 est conçu spécifiquement pour l'apprentissage des circuits logiques numériques. Parfait pour les premières années d'enseignement technique, il permet de réaliser tous les montages de base en logique combinatoire et séquentielle de manière intuitive et sécurisée.",
     "specifications": {
       "Portes logiques": "AND, OR, NOT, NAND, NOR, XOR (4 de chaque)",
@@ -4745,3 +4733,11 @@ export const cncProductDetails = {
     }
   }
 };
+=======
+    "fullDescription": "Système de formation pour les circuits logiques numériques.",
+    "images": ["/images/products/MCP lab electronics/EDUCATION EQUIPMENT/F1-3 – Basic Logic Circuit Training System.png"],
+    "modele": "F1-3",
+    "categorie": "697f976ba494e767414f13e6"
+  },
+}
+>>>>>>> Stashed changes

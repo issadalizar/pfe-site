@@ -54,7 +54,7 @@ const notificationSchema = new mongoose.Schema({
   }
 });
 
-// Index pour optimiser les recherches
+// utiliser des index pour améliorer les performances des requêtes
 notificationSchema.index({ dateNotification: -1 });
 notificationSchema.index({ produitId: 1, dateNotification: -1 });
 notificationSchema.index({ lu: 1 });

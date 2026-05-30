@@ -38,7 +38,7 @@ const accountSchema = new mongoose.Schema({
 
 // Index pour améliorer les performances des recherches
 accountSchema.index({ email: 1 });
-accountSchema.index({ user: 1 });
+accountSchema.index({ user: 1 });//1 pour ordre croissant, -1 pour ordre décroissant
 
 // Hasher le mot de passe avant la sauvegarde
 accountSchema.pre('save', async function (next) {
@@ -59,7 +59,7 @@ accountSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Générer un token de réinitialisation : retourne le token en clair (à envoyer par email),
+// Générer un token de réinitialisation 
 // stocke uniquement son hash sha256 + une expiration 1h.
 accountSchema.methods.createPasswordResetToken = function () {
   const rawToken = crypto.randomBytes(32).toString('hex');

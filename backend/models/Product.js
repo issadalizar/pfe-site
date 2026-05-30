@@ -1,4 +1,7 @@
+<<<<<<< Updated upstream
 // models/Product.js
+=======
+>>>>>>> Stashed changes
 import mongoose from "mongoose";
 
 const productSchema = new mongoose.Schema(
@@ -140,8 +143,7 @@ function genererCheminImageAuto(nomProduit, modele) {
     } else if (lowerName.includes("lathe") || lowerName.includes("turn") || 
                lowerModel.includes("ikc") || lowerModel.includes("kc") || lowerModel.includes("pc")) {
       dossierCategorie = "CNC Turning Machine";
-    } else if (lowerName.includes("virtual")) {
-      dossierCategorie = "CNC Virtual Machine";
+    
     } else {
       dossierCategorie = "CNC EDUCATION";
     }
@@ -201,7 +203,11 @@ productSchema.pre("save", function (next) {
   next();
 });
 
+<<<<<<< Updated upstream
 //  IMPORTANT: findOneAndUpdate / findByIdAndUpdate ne déclenche PAS pre('save')
+=======
+// fonction pour mettre à jour le slug et les infos d'image avant une mise à jour
+>>>>>>> Stashed changes
 productSchema.pre("findOneAndUpdate", function (next) {
   const update = this.getUpdate() || {};
   const $set = update.$set || {};
@@ -249,17 +255,17 @@ productSchema.pre("findOneAndUpdate", function (next) {
   next();
 });
 
-// Indexes utiles
+// Indexes utiles utlises pour les recherches fréquentes
 productSchema.index({ categorie: 1 });
 productSchema.index({ estActif: 1 });
 productSchema.index({ modele: 1 });
 
-// Relation virtuelle avec les spécifications
+// Virtual pour les specifications liées à ce produit, triées par ordre et type
 productSchema.virtual('specifications', {
   ref: 'Specification',
   localField: '_id',
   foreignField: 'productId',
-  options: { sort: { order: 1, type: 1 } }
+  options: { sort: { order: 1, type: 1 } } 
 });
 
 // Configurez les options pour inclure les virtuals

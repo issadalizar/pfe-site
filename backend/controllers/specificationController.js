@@ -1,10 +1,8 @@
-// backend/controllers/specificationController.js
 import Specification from '../models/Specification.js';
 import Product from '../models/Product.js';
-import dataSyncService from '../services/dataSyncService.js'; // AJOUT
+import dataSyncService from '../services/dataSyncService.js'; 
 
-// @desc    Récupérer toutes les spécifications d'un produit
-// @route   GET /api/specifications/product/:productId
+//Récupérer toutes les spécifications d'un produit
 export const getProductSpecifications = async (req, res) => {
   try {
     const specs = await Specification.find({ 
@@ -24,13 +22,12 @@ export const getProductSpecifications = async (req, res) => {
   }
 };
 
-// @desc    Récupérer les spécifications groupées par type
-// @route   GET /api/specifications/product/:productId/grouped
+// Récupérer les spécifications groupées par type ex: général et avancé
 export const getGroupedSpecifications = async (req, res) => {
   try {
     const specs = await Specification.find({ 
       productId: req.params.productId 
-    }).sort({ order: 1 });
+    }).sort({ order: 1 });// Tri par ordre d'ajout pour garder une certaine cohérence
 
     const grouped = {
       general: specs.filter(s => s.type === 'general'),
@@ -54,13 +51,10 @@ export const getGroupedSpecifications = async (req, res) => {
   }
 };
 
-// @desc    Créer une spécification
-// @route   POST /api/specifications
+// Créer une spécification
 export const createSpecification = async (req, res) => {
   try {
     const { productId, key, value, type, order } = req.body;
-
-    // Vérifier que le produit existe
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ 
@@ -91,14 +85,14 @@ export const createSpecification = async (req, res) => {
 
     await spec.save();
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    // SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.updateSpecificationInFile(
         spec._id.toString(),
         spec.toObject()
       );
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
+      console.error(' Erreur sync productData:', syncError);
     }
     
     res.status(201).json({ 
@@ -120,8 +114,7 @@ export const createSpecification = async (req, res) => {
   }
 };
 
-// @desc    Créer plusieurs spécifications en lot
-// @route   POST /api/specifications/product/:productId/bulk
+// Créer plusieurs spécifications en lot
 export const createBulkSpecifications = async (req, res) => {
   try {
     const { specs } = req.body;
@@ -178,7 +171,7 @@ export const createBulkSpecifications = async (req, res) => {
       ordered: false
     });
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS (pour chaque spécification)
+    // SYNC AVEC PRODUCTDATA.JS (pour chaque spécification)
     for (const spec of created) {
       try {
         await dataSyncService.updateSpecificationInFile(
@@ -186,7 +179,7 @@ export const createBulkSpecifications = async (req, res) => {
           spec.toObject()
         );
       } catch (syncError) {
-        console.error('⚠️ Erreur sync productData:', syncError);
+        console.error(' Erreur sync productData:', syncError);
       }
     }
 
@@ -210,13 +203,10 @@ export const createBulkSpecifications = async (req, res) => {
   }
 };
 
-// @desc    Mettre à jour une spécification (seulement value et type)
-// @route   PUT /api/specifications/:id
+// Mettre à jour une spécification (seulement value et type)
 export const updateSpecification = async (req, res) => {
   try {
     const { value, type, order } = req.body;
-    
-    // Valider le type si fourni
     if (type && !['general', 'advanced'].includes(type)) {
       return res.status(400).json({ 
         success: false, 
@@ -244,14 +234,14 @@ export const updateSpecification = async (req, res) => {
       });
     }
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    // SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.updateSpecificationInFile(
         req.params.id,
         spec.toObject()
       );
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
+      console.error(' Erreur sync productData:', syncError);
     }
 
     res.json({ 
@@ -266,8 +256,7 @@ export const updateSpecification = async (req, res) => {
   }
 };
 
-// @desc    Supprimer une spécification
-// @route   DELETE /api/specifications/:id
+//Supprimer une spécification
 export const deleteSpecification = async (req, res) => {
   try {
     const spec = await Specification.findByIdAndDelete(req.params.id);
@@ -279,11 +268,11 @@ export const deleteSpecification = async (req, res) => {
       });
     }
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS
+    // SYNC AVEC PRODUCTDATA.JS
     try {
       await dataSyncService.deleteSpecificationFromFile(req.params.id);
     } catch (syncError) {
-      console.error('⚠️ Erreur sync productData:', syncError);
+      console.error(' Erreur sync productData:', syncError);
     }
 
     res.json({ 
@@ -298,8 +287,7 @@ export const deleteSpecification = async (req, res) => {
   }
 };
 
-// @desc    Supprimer toutes les spécifications d'un produit
-// @route   DELETE /api/specifications/product/:productId
+// Supprimer toutes les spécifications d'un produit
 export const deleteProductSpecifications = async (req, res) => {
   try {
     const specs = await Specification.find({ productId: req.params.productId });
@@ -307,12 +295,12 @@ export const deleteProductSpecifications = async (req, res) => {
       productId: req.params.productId 
     });
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS (supprimer chaque spécification)
+    // SYNC AVEC PRODUCTDATA.JS (supprimer chaque spécification)
     for (const spec of specs) {
       try {
         await dataSyncService.deleteSpecificationFromFile(spec._id.toString());
       } catch (syncError) {
-        console.error('⚠️ Erreur sync productData:', syncError);
+        console.error('Erreur sync productData:', syncError);
       }
     }
     
@@ -329,8 +317,7 @@ export const deleteProductSpecifications = async (req, res) => {
   }
 };
 
-// @desc    Réordonner les spécifications
-// @route   PATCH /api/specifications/reorder/:productId
+// Réordonner les spécifications d'un produit (en fonction du tableau envoyé avec les nouveaux ordres)
 export const reorderSpecifications = async (req, res) => {
   try {
     const { specs } = req.body;
@@ -357,7 +344,7 @@ export const reorderSpecifications = async (req, res) => {
     const updatedSpecs = await Specification.find({ productId })
       .sort({ type: 1, order: 1 });
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS (mettre à jour chaque spécification)
+    //SYNC AVEC PRODUCTDATA.JS 
     for (const spec of updatedSpecs) {
       try {
         await dataSyncService.updateSpecificationInFile(
@@ -365,7 +352,7 @@ export const reorderSpecifications = async (req, res) => {
           spec.toObject()
         );
       } catch (syncError) {
-        console.error('⚠️ Erreur sync productData:', syncError);
+        console.error('Erreur sync productData:', syncError);
       }
     }
     
@@ -381,8 +368,7 @@ export const reorderSpecifications = async (req, res) => {
   }
 };
 
-// @desc    Dupliquer les spécifications d'un produit vers un autre
-// @route   POST /api/specifications/copy
+// Dupliquer les spécifications si existe déjà dans  un produit similaire
 export const copySpecifications = async (req, res) => {
   try {
     const { fromProductId, toProductId } = req.body;
@@ -412,7 +398,7 @@ export const copySpecifications = async (req, res) => {
       });
     }
 
-    // Supprimer les anciennes spécifications du produit cible
+    // Supprimer les anciennes spécifications du produit cible(peut copier dans lui-même pour réinitialiser)
     await Specification.deleteMany({ productId: toProductId });
 
     // Préparer les nouvelles spécifications
@@ -427,7 +413,7 @@ export const copySpecifications = async (req, res) => {
     // Créer les nouvelles
     const created = await Specification.insertMany(newSpecs);
 
-    // 🔄 SYNC AVEC PRODUCTDATA.JS (ajouter les nouvelles spécifications)
+    // SYNC AVEC PRODUCTDATA.JS (ajouter les nouvelles spécifications)
     for (const spec of created) {
       try {
         await dataSyncService.updateSpecificationInFile(
@@ -435,7 +421,7 @@ export const copySpecifications = async (req, res) => {
           spec.toObject()
         );
       } catch (syncError) {
-        console.error('⚠️ Erreur sync productData:', syncError);
+        console.error('Erreur sync productData:', syncError);
       }
     }
 

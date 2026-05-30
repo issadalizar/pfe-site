@@ -32,16 +32,43 @@ const devisSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+<<<<<<< Updated upstream
     //  MODIFICATION: Référence au produit au lieu de stocker les attributs
+=======
+    // ✅ AJOUTER productTitle pour l'affichage (obligatoire)
+    productTitle: {
+        type: String,
+        required: true,
+        trim: true
+    },
+    // ✅ Rendre product optionnel (pas obligatoire)
+>>>>>>> Stashed changes
     product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Product',
-        required: true
+        required: false
     },
+<<<<<<< Updated upstream
     //  Garder productId si nécessaire pour compatibilité, mais rendre optionnel
+=======
+    // Garder productId pour compatibilité (optionnel)
+>>>>>>> Stashed changes
     productId: {
         type: String,
-        required: false // Optionnel maintenant car on utilise product
+        required: false
+    },
+    // Champs optionnels supplémentaires
+    productCategory: {
+        type: String,
+        required: false
+    },
+    productMainCategory: {
+        type: String,
+        required: false
+    },
+    productPrice: {
+        type: Number,
+        required: false
     },
     status: {
         type: String,
@@ -52,6 +79,7 @@ const devisSchema = new mongoose.Schema({
     timestamps: true
 });
 
+<<<<<<< Updated upstream
 // Middleware pre-save pour assurer la compatibilité
 devisSchema.pre('save', async function(next) {
     // Si product est défini et productId n'existe pas, on peut le générer
@@ -63,25 +91,12 @@ devisSchema.pre('save', async function(next) {
 
 // Ajouter des indexes pour les performances
 devisSchema.index({ product: 1 });
+=======
+// Index pour les performances
+>>>>>>> Stashed changes
 devisSchema.index({ status: 1 });
 devisSchema.index({ createdAt: -1 });
-
-// Méthode pour peupler automatiquement les données du produit
-devisSchema.methods.populateProduct = function() {
-    return this.populate('product', 'nom prix description images categorie');
-};
-
-// Méthode statique pour récupérer un devis avec les détails du produit
-devisSchema.statics.findByIdWithProduct = function(id) {
-    return this.findById(id).populate('product', 'nom prix description images categorie modele');
-};
-
-// Méthode statique pour récupérer tous les devis avec produits
-devisSchema.statics.findAllWithProducts = function() {
-    return this.find()
-        .sort({ createdAt: -1 })
-        .populate('product', 'nom prix description images categorie modele');
-};
+devisSchema.index({ productTitle: 1 });
 
 const Devis = mongoose.model('Devis', devisSchema);
 

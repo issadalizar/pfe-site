@@ -21,12 +21,6 @@ export const categoryAPI = {
   getSubCategories: (parentId) => api.get(`/categories/${parentId}/subcategories`),
 };
 
-export const contactAPI = {
-  create: (data) => api.post('/contact', data),
-  getAll: () => api.get('/contact'),
-  updateStatus: (id, status) => api.patch(`/contact/${id}/status`, { status }),
-  delete: (id) => api.delete(`/contact/${id}`),
-};
 
 // Produits
 export const productAPI = {

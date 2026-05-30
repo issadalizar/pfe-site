@@ -51,7 +51,7 @@ export const productAPI = {
       const response = await api.get('/products', { params });
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur getAll products:', error);
+      console.error(' Erreur getAll products:', error);
       throw error;
     }
   },
@@ -64,7 +64,7 @@ export const productAPI = {
       const response = await api.get('/products?populate=specifications');
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur getAllWithSpecs:', error);
+      console.error(' Erreur getAllWithSpecs:', error);
       throw error;
     }
   },
@@ -78,7 +78,7 @@ export const productAPI = {
       const response = await api.get(`/products/${id}`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur getById product ${id}:`, error);
+      console.error(` Erreur getById product ${id}:`, error);
       throw error;
     }
   },
@@ -92,7 +92,7 @@ export const productAPI = {
       const response = await api.get(`/products/${id}?populate=specifications`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur getByIdWithSpecs ${id}:`, error);
+      console.error(` Erreur getByIdWithSpecs ${id}:`, error);
       throw error;
     }
   },
@@ -106,7 +106,7 @@ export const productAPI = {
       const response = await api.get(`/products/slug/${slug}`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur getBySlug ${slug}:`, error);
+      console.error(` Erreur getBySlug ${slug}:`, error);
       throw error;
     }
   },
@@ -120,7 +120,7 @@ export const productAPI = {
       const response = await api.post('/products', productData);
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur create product:', error);
+      console.error(' Erreur create product:', error);
       throw error;
     }
   },
@@ -135,7 +135,7 @@ export const productAPI = {
       const response = await api.put(`/products/${id}`, productData);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur update product ${id}:`, error);
+      console.error(` Erreur update product ${id}:`, error);
       throw error;
     }
   },
@@ -149,7 +149,7 @@ export const productAPI = {
       const response = await api.delete(`/products/${id}`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur delete product ${id}:`, error);
+      console.error(` Erreur delete product ${id}:`, error);
       throw error;
     }
   },
@@ -163,7 +163,7 @@ export const productAPI = {
       const response = await api.post('/products/delete-multiple', { ids });
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur deleteMultiple:', error);
+      console.error(' Erreur deleteMultiple:', error);
       throw error;
     }
   },
@@ -179,7 +179,7 @@ export const productAPI = {
       const response = await api.get(`/products/category/${categoryId}`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur getByCategory ${categoryId}:`, error);
+      console.error(` Erreur getByCategory ${categoryId}:`, error);
       throw error;
     }
   },
@@ -193,7 +193,7 @@ export const productAPI = {
       const response = await api.get(`/products/category/${categoryId}/with-children`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur getByCategoryWithChildren ${categoryId}:`, error);
+      console.error(` Erreur getByCategoryWithChildren ${categoryId}:`, error);
       throw error;
     }
   },
@@ -208,7 +208,7 @@ export const productAPI = {
       const response = await api.get('/products/rupture-stock');
       return response;
     } catch (error) {
-      console.error('❌ Erreur getOutOfStock:', error);
+      console.error(' Erreur getOutOfStock:', error);
       throw error;
     }
   },
@@ -223,7 +223,7 @@ export const productAPI = {
       const response = await api.patch(`/products/${id}/stock`, { stock: quantity });
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur updateStock ${id}:`, error);
+      console.error(` Erreur updateStock ${id}:`, error);
       throw error;
     }
   },
@@ -239,7 +239,7 @@ export const productAPI = {
       const response = await api.get('/products/search', { params: filters });
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur search products:', error);
+      console.error(' Erreur search products:', error);
       throw error;
     }
   },
@@ -252,7 +252,7 @@ export const productAPI = {
       const response = await api.get('/products/featured');
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur getFeatured:', error);
+      console.error(' Erreur getFeatured:', error);
       throw error;
     }
   },
@@ -266,7 +266,7 @@ export const productAPI = {
       const response = await api.get('/products/recent', { params: { limit } });
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur getRecent:', error);
+      console.error(' Erreur getRecent:', error);
       throw error;
     }
   },
@@ -283,7 +283,7 @@ export const productAPI = {
       });
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur exportToCSV:', error);
+      console.error(' Erreur exportToCSV:', error);
       throw error;
     }
   },
@@ -296,7 +296,7 @@ export const productAPI = {
       const response = await api.get('/products/export/json');
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur exportToJSON:', error);
+      console.error(' Erreur exportToJSON:', error);
       throw error;
     }
   },
@@ -314,7 +314,7 @@ export const productAPI = {
       });
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur import products:', error);
+      console.error(' Erreur import products:', error);
       throw error;
     }
   },
@@ -329,7 +329,7 @@ export const productAPI = {
       const response = await api.get('/products/stats');
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur getStats:', error);
+      console.error(' Erreur getStats:', error);
       throw error;
     }
   },
@@ -342,7 +342,7 @@ export const productAPI = {
       const response = await api.get('/products/stats/by-category');
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur getStatsByCategory:', error);
+      console.error(' Erreur getStatsByCategory:', error);
       throw error;
     }
   },
@@ -366,7 +366,7 @@ export const productAPI = {
       });
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur uploadImage ${productId}:`, error);
+      console.error(` Erreur uploadImage ${productId}:`, error);
       throw error;
     }
   },
@@ -390,7 +390,7 @@ export const productAPI = {
       });
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur uploadMultipleImages ${productId}:`, error);
+      console.error(` Erreur uploadMultipleImages ${productId}:`, error);
       throw error;
     }
   },
@@ -407,7 +407,7 @@ export const productAPI = {
       });
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur deleteImage ${productId}:`, error);
+      console.error(` Erreur deleteImage ${productId}:`, error);
       throw error;
     }
   },
@@ -423,7 +423,7 @@ export const productAPI = {
       const response = await api.get(`/specifications/product/${productId}`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur getSpecifications ${productId}:`, error);
+      console.error(` Erreur getSpecifications ${productId}:`, error);
       throw error;
     }
   },
@@ -437,7 +437,7 @@ export const productAPI = {
       const response = await api.post('/specifications', specData);
       return response.data;
     } catch (error) {
-      console.error('❌ Erreur addSpecification:', error);
+      console.error(' Erreur addSpecification:', error);
       throw error;
     }
   },
@@ -452,7 +452,7 @@ export const productAPI = {
       const response = await api.post(`/specifications/product/${productId}/bulk`, { specs });
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur addMultipleSpecifications ${productId}:`, error);
+      console.error(` Erreur addMultipleSpecifications ${productId}:`, error);
       throw error;
     }
   },
@@ -467,7 +467,7 @@ export const productAPI = {
       const response = await api.put(`/specifications/${specId}`, specData);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur updateSpecification ${specId}:`, error);
+      console.error(` Erreur updateSpecification ${specId}:`, error);
       throw error;
     }
   },
@@ -481,7 +481,7 @@ export const productAPI = {
       const response = await api.delete(`/specifications/${specId}`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur deleteSpecification ${specId}:`, error);
+      console.error(` Erreur deleteSpecification ${specId}:`, error);
       throw error;
     }
   },
@@ -495,7 +495,7 @@ export const productAPI = {
       const response = await api.delete(`/specifications/product/${productId}`);
       return response.data;
     } catch (error) {
-      console.error(`❌ Erreur deleteAllSpecifications ${productId}:`, error);
+      console.error(` Erreur deleteAllSpecifications ${productId}:`, error);
       throw error;
     }
   },
@@ -523,7 +523,7 @@ export const productAPI = {
       
       return { success: true, data: [] };
     } catch (error) {
-      console.error(`❌ Erreur updateSpecificationsBulk ${productId}:`, error);
+      console.error(` Erreur updateSpecificationsBulk ${productId}:`, error);
       throw error;
     }
   },
@@ -544,7 +544,7 @@ export const productAPI = {
       
       return { success: true, data: grouped };
     } catch (error) {
-      console.error(`❌ Erreur getSpecificationsGrouped ${productId}:`, error);
+      console.error(` Erreur getSpecificationsGrouped ${productId}:`, error);
       throw error;
     }
   },

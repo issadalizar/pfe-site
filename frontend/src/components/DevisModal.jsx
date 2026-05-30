@@ -38,27 +38,25 @@ const DevisModal = ({ product, isOpen, onClose }) => {
     
     try {
       // Préparer les données pour MongoDB
-      const devisData = {
-        company: quoteForm.company,
-        name: quoteForm.name,
-        email: quoteForm.email,
-        phone: quoteForm.phone,
-        quantity: parseInt(quoteForm.quantity),
-        message: quoteForm.message,
-        productId: product?.id || product?._id || `prod_${Date.now()}`,
-        productTitle: product?.title,
-        productCategory: product?.category,
-        productMainCategory: product?.mainCategory,
-        productPrice: product?.price,
-        status: 'pending'
-      };
+      // Dans handleSubmit, modifiez devisData :
+const devisData = {
+    company: quoteForm.company,
+    name: quoteForm.name,
+    email: quoteForm.email,
+    phone: quoteForm.phone,
+    quantity: parseInt(quoteForm.quantity),
+    message: quoteForm.message,
+    product: product?._id || product?.id,  // ← CHANGÉ: utiliser "product" au lieu de "productId"
+    productTitle: product?.title,           // ← AJOUTÉ
+    status: 'pending'
+};
       
-      console.log('📤 Envoi à MongoDB:', devisData);
+      console.log(' Envoi à MongoDB:', devisData);
       
       // Envoyer à l'API backend
       const response = await devisAPI.create(devisData);
       
-      console.log('✅ Réponse MongoDB:', response.data);
+      console.log(' Réponse MongoDB:', response.data);
       
       // Aussi sauvegarder dans localStorage pour fallback
       try {
@@ -70,7 +68,7 @@ const DevisModal = ({ product, isOpen, onClose }) => {
         });
         localStorage.setItem('devis_list', JSON.stringify(existingDevis));
       } catch (storageError) {
-        console.warn('⚠️ Erreur sauvegarde localStorage:', storageError);
+        console.warn(' Erreur sauvegarde localStorage:', storageError);
       }
       
       setQuoteSubmitted(true);
@@ -82,22 +80,22 @@ const DevisModal = ({ product, isOpen, onClose }) => {
       }, 3000);
       
     } catch (error) {
-      console.error('❌ Erreur complète:', error);
+      console.error(' Erreur complète:', error);
       
       // Message d'erreur détaillé
       let errorMessage = 'Une erreur est survenue lors de l\'envoi.';
       
       if (error.response) {
         // La requête a été faite mais le serveur a répondu avec un code d'erreur
-        console.error('📡 Erreur réponse serveur:', error.response.data);
+        console.error(' Erreur réponse serveur:', error.response.data);
         errorMessage = error.response.data?.error || error.response.data?.message || errorMessage;
       } else if (error.request) {
         // La requête a été faite mais pas de réponse
-        console.error('📡 Pas de réponse du serveur');
+        console.error(' Erreur requête:', error.request);
         errorMessage = 'Le serveur ne répond pas. Vérifiez que le backend est démarré.';
       } else {
         // Erreur de configuration
-        console.error('📡 Erreur requête:', error.message);
+        console.error(' Erreur requête:', error.message);
       }
       
       alert(errorMessage);

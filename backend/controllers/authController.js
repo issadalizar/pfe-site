@@ -38,7 +38,7 @@ export const register = async (req, res) => {
             });
         }
 
-        // MODIFICATION: Vérifier si l'email existe déjà dans Account
+        //  Vérifier si l'email existe déjà dans Account
         const existingAccount = await Account.findOne({ email: email.toLowerCase() });
         if (existingAccount) {
             return res.status(400).json({
@@ -51,19 +51,19 @@ export const register = async (req, res) => {
         const userCount = await User.countDocuments();
         const client_code = `CLT-${String(userCount + 1).padStart(4, '0')}`;
 
-        // MODIFICATION: 1. Créer l'utilisateur (sans email, password, actif)
+        //  Créer l'utilisateur (sans email, password, actif)
         const user = new User({
             client_code,
             client_name,
             telephone: telephone || '',
             adresse: adresse || '',
             isAdmin: false
-            // SUPPRIMÉ: email, password, actif
+            
         });
 
         await user.save();
 
-        // AJOUT: 2. Créer le compte associé (avec email, password, actif)
+        //  Créer le compte associé (avec email, password, actif)
         const account = new Account({
             email: email.toLowerCase(),
             password, // Sera hashé automatiquement par le pre-save hook d'Account
@@ -76,7 +76,7 @@ export const register = async (req, res) => {
         // Générer le token
         const token = generateToken(user);
 
-        // MODIFICATION: Retourner les informations combinées
+        // Retourner les informations combinées
         res.status(201).json({
             success: true,
             message: 'Inscription réussie !',
@@ -116,7 +116,7 @@ export const login = async (req, res) => {
             });
         }
 
-        // MODIFICATION: Chercher d'abord dans Account, puis peupler User
+        //  Chercher d'abord dans Account, puis peupler User
         const account = await Account.findOne({ email: email.toLowerCase() })
             .populate('user');
 

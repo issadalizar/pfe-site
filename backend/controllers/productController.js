@@ -123,7 +123,11 @@ export const createProduct = async (req, res) => {
       });
     }
 
+<<<<<<< Updated upstream
     // ✅ parse numbers
+=======
+    // fonction de prix et stock pour gérer les cas où ils sont envoyés en string vide ou null
+>>>>>>> Stashed changes
     const parsedPrix = prix === "" || prix === undefined || prix === null ? 0 : Number(prix);
     const parsedStock = stock === "" || stock === undefined || stock === null ? 0 : Number.parseInt(stock, 10);
 
@@ -133,7 +137,7 @@ export const createProduct = async (req, res) => {
     if (Number.isNaN(parsedStock) || parsedStock < 0) {
       return res.status(400).json({ success: false, error: "Stock invalide" });
     }
-
+// ajouter produit crée dans file productData.js pour le synchroniser avec le frontend
     const productData = {
       nom,
       description: description ?? "",
@@ -184,9 +188,13 @@ export const createProduct = async (req, res) => {
   }
 };
 
+<<<<<<< Updated upstream
 // @desc    Mettre à jour un produit (AVEC NOTIFICATIONS)
 // @route   PUT /api/products/:id
 // @access  Public (à protéger plus tard)
+=======
+// Mettre à jour un produit 
+>>>>>>> Stashed changes
 export const updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -217,7 +225,7 @@ export const updateProduct = async (req, res) => {
       "estActif",
       "ordre",
     ];
-
+// Construire l'objet de mise à jour avec uniquement les champs autorisés
     const updates = {};
     for (const field of allowedUpdates) {
       if (req.body[field] !== undefined) {
@@ -255,7 +263,7 @@ export const updateProduct = async (req, res) => {
     // ✅ normaliser arrays si envoyés en string "a,b,c"
     if (updates.caracteristiques && !Array.isArray(updates.caracteristiques)) {
       updates.caracteristiques = String(updates.caracteristiques)
-        .split(",")
+        .split(",")// split par virgule pour les convertir en array
         .map((s) => s.trim())
         .filter(Boolean);
     }
@@ -285,7 +293,7 @@ export const updateProduct = async (req, res) => {
         ancienProduit,
         ancienStock,
         ancienProduit.stock,
-        req.user?._id // Si vous avez l'utilisateur connecté
+        req.user?._id  // Si vous avez l'utilisateur connecté
       );
       
       console.log(`📢 Notification créée pour ${ancienProduit.nom || ancienProduit.name}`);
@@ -379,9 +387,13 @@ export const getOutOfStockProducts = async (req, res) => {
   }
 };
 
+<<<<<<< Updated upstream
 // @desc    Récupérer les statistiques de stock
 // @route   GET /api/products/statistiques-stock
 // @access  Private/Admin
+=======
+// Récupérer les statistiques de stock qui mettre dans les KPICARD
+>>>>>>> Stashed changes
 export const getStockStats = async (req, res) => {
   console.log("📊 [DEBUG] Début de getStockStats");
   
@@ -397,6 +409,7 @@ export const getStockStats = async (req, res) => {
     if (dbState !== 1) {
       return res.json({
         success: true,
+        // Fournir des données par défaut en cas de problème de connexion à la base de données
         data: {
           totalProduits: 15,
           ruptureStock: 3,
@@ -468,13 +481,18 @@ export const getStockStats = async (req, res) => {
   }
 };
 
+<<<<<<< Updated upstream
 // ============= NOUVELLES FONCTIONS POUR LES NOTIFICATIONS =============
 
 // @desc    Récupérer toutes les notifications
 // @route   GET /api/notifications
 // @access  Private/Admin
+=======
+// Récupérer toutes les notifications
+>>>>>>> Stashed changes
 export const getNotifications = async (req, res) => {
   try {
+    // Permet de filtrer par type et statut lu/non lu
     const { page = 1, limit = 50, type, lu } = req.query;
     
     const result = await notificationService.getNotifications(
@@ -498,6 +516,7 @@ export const getNotifications = async (req, res) => {
   }
 };
 
+<<<<<<< Updated upstream
 // @desc    Récupérer les notifications non lues
 // @route   GET /api/notifications/non-lues
 // @access  Private/Admin
@@ -523,6 +542,9 @@ export const getNotificationsNonLues = async (req, res) => {
 // @desc    Marquer une notification comme lue
 // @route   PUT /api/notifications/:id/lire
 // @access  Private/Admin
+=======
+// Marquer une notification spécifique comme lue ou non lue
+>>>>>>> Stashed changes
 export const marquerNotificationLue = async (req, res) => {
   try {
     const { id } = req.params;
@@ -573,9 +595,13 @@ export const marquerToutesNotificationsLues = async (req, res) => {
   }
 };
 
+<<<<<<< Updated upstream
 // @desc    Récupérer les statistiques des notifications
 // @route   GET /api/notifications/stats
 // @access  Private/Admin
+=======
+// Récupérer les statistiques des notifications pour les KPICARD
+>>>>>>> Stashed changes
 export const getNotificationsStats = async (req, res) => {
   try {
     const stats = await notificationService.getStatistiques();
@@ -610,7 +636,7 @@ export const getRuptureNotifications = async (req, res) => {
     res.status(200).json({
       success: true,
       data: result.notifications,
-      pagination: result.pagination
+      pagination: result.pagination// Fournir les données de pagination(diviser grand données en plusieurs partiesou pages) pour le frontend
     });
     
   } catch (error) {
